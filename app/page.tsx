@@ -55,9 +55,9 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="grid lg:grid-cols-12 gap-6 items-center relative">
             {/* Left Column: Text Content */}
-            <div className="lg:col-span-5 space-y-8">
+            <div className="lg:col-span-5 space-y-8 relative z-10">
               <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
@@ -101,19 +101,19 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Center Column: Hero Image */}
-            <div className="lg:col-span-3 flex items-center justify-center">
+            {/* Center: Hero Image (Overlapping) */}
+            <div className="lg:col-span-4 flex items-center justify-center relative">
               <div className="relative">
                 <img
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
-                  className="w-full h-auto max-w-xs drop-shadow-2xl"
+                  className="w-full h-auto max-w-md drop-shadow-2xl"
                 />
               </div>
             </div>
 
-            {/* Right Column: Calculator (More Compact) */}
-            <div className="lg:col-span-4 bg-white rounded-3xl shadow-2xl p-5 border border-gray-100">
+            {/* Right Column: Calculator (Compact) */}
+            <div className="lg:col-span-3 bg-white rounded-3xl shadow-2xl p-5 border border-gray-100 relative z-10">
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex items-center justify-end">
                   <div className="flex items-center text-green-600 text-xs font-semibold">
