@@ -73,10 +73,8 @@ export default function LoginPage() {
         <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-gray-100">
           {/* Logo and title */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
-              QoriCash
-            </h1>
-            <p className="text-gray-600">Inicia sesión en tu cuenta</p>
+            <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
+            <p className="text-gray-600 text-lg">Inicia sesión en tu cuenta</p>
           </div>
 
           {/* Error message */}
@@ -164,7 +162,7 @@ export default function LoginPage() {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="text-primary-600 hover:text-primary-500 font-medium">
+                <a href="#" className="text-primary hover:text-primary-600 font-medium">
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
@@ -174,7 +172,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="w-full flex items-center justify-center bg-primary text-secondary py-3 px-4 rounded-xl font-bold hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
             >
               {isLoading ? (
                 <>
@@ -204,7 +202,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <Link
               href="/registro"
-              className="inline-flex items-center justify-center w-full border-2 border-primary-600 text-primary-600 py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition"
+              className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition"
             >
               Crear cuenta nueva
             </Link>

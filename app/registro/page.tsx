@@ -134,7 +134,8 @@ export default function RegistroPage() {
         <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-gray-100">
           {/* Logo and title */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent mb-2">
+            <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
+            <h1 className="text-2xl font-display font-bold text-secondary mb-2">
               Crear Cuenta
             </h1>
             <p className="text-gray-600">Completa tus datos para registrarte en QoriCash</p>
@@ -143,14 +144,14 @@ export default function RegistroPage() {
           {/* Progress indicator */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-primary-600">
+              <span className="text-sm font-medium text-primary">
                 Paso {currentStep} de 2
               </span>
               <span className="text-sm text-gray-500">{currentStep === 1 ? 'Datos personales' : 'Datos bancarios'}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-primary-600 to-primary-700 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-primary to-primary-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${(currentStep / 2) * 100}%` }}
               ></div>
             </div>
@@ -321,7 +322,7 @@ export default function RegistroPage() {
                 <button
                   type="button"
                   onClick={() => setCurrentStep(2)}
-                  className="w-full bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 transition shadow-md hover:shadow-lg"
+                  className="w-full bg-primary text-secondary py-3 px-4 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg"
                 >
                   Continuar a Datos Bancarios
                 </button>
@@ -501,7 +502,7 @@ export default function RegistroPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 flex items-center justify-center bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+                    className="flex-1 flex items-center justify-center bg-primary text-secondary py-3 px-4 rounded-xl font-bold hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
                   >
                     {isLoading ? (
                       <>
@@ -524,7 +525,7 @@ export default function RegistroPage() {
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <p className="text-sm text-gray-600">
               ¿Ya tienes una cuenta?{' '}
-              <Link href="/login" className="text-primary-600 hover:text-primary-500 font-semibold">
+              <Link href="/login" className="text-primary hover:text-primary-600 font-semibold">
                 Inicia sesión aquí
               </Link>
             </p>

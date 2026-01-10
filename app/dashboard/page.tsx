@@ -127,9 +127,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                QoriCash
-              </h1>
+              <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center text-sm text-gray-700">
@@ -200,7 +198,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total_operations}</p>
                 </div>
                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-primary-600" />
+                  <DollarSign className="w-6 h-6 text-primary" />
                 </div>
               </div>
             </div>
@@ -254,7 +252,7 @@ export default function DashboardPage() {
               <h3 className="text-xl font-bold text-gray-900">Mis Operaciones</h3>
               <button
                 onClick={() => router.push('/dashboard/nueva-operacion')}
-                className="inline-flex items-center bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition shadow-md hover:shadow-lg group"
+                className="inline-flex items-center bg-primary text-secondary px-6 py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
               >
                 <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition" />
                 Nueva Operación
@@ -273,7 +271,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab(tab.key as any)}
                   className={`pb-3 px-2 font-medium text-sm transition ${
                     activeTab === tab.key
-                      ? 'text-primary-600 border-b-2 border-primary-600'
+                      ? 'text-primary border-b-2 border-primary'
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >

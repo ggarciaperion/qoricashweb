@@ -30,10 +30,8 @@ export default function Home() {
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                QoriCash
-              </span>
+            <div className="flex items-center gap-2">
+              <img src="/logo-principal.png" alt="QoriCash" className="h-10 w-auto" />
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#servicios" className="text-gray-700 hover:text-primary-600 transition">Servicios</a>
@@ -60,7 +58,7 @@ export default function Home() {
             <div className="space-y-8">
               <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
-                <span className="bg-gradient-to-r from-primary-600 to-gold-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
                   dólares
                 </span>{' '}
                 al mejor precio
@@ -71,14 +69,14 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/registro"
-                  className="inline-flex items-center justify-center bg-primary-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary-700 transition shadow-lg hover:shadow-xl group"
+                  className="inline-flex items-center justify-center bg-primary text-secondary px-8 py-4 rounded-full text-lg font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
                 >
                   Empezar Ahora
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
                 </Link>
                 <Link
                   href="#como-funciona"
-                  className="inline-flex items-center justify-center border-2 border-primary-600 text-primary-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary-50 transition"
+                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary-50 transition"
                 >
                   Ver cómo funciona
                 </Link>
@@ -87,15 +85,15 @@ export default function Home() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
                 <div>
-                  <div className="text-3xl font-bold text-primary-600">10k+</div>
+                  <div className="text-3xl font-bold text-primary">10k+</div>
                   <div className="text-sm text-gray-600">Clientes</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary-600">$50M+</div>
+                  <div className="text-3xl font-bold text-primary">$50M+</div>
                   <div className="text-sm text-gray-600">Cambiados</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary-600">4.9/5</div>
+                  <div className="text-3xl font-bold text-primary">4.9/5</div>
                   <div className="text-sm text-gray-600">Calificación</div>
                 </div>
               </div>
@@ -135,7 +133,7 @@ export default function Home() {
 
               <Link
                 href="/registro"
-                className="w-full mt-6 bg-primary-600 text-white py-4 rounded-xl font-semibold hover:bg-primary-700 transition shadow-md flex items-center justify-center group"
+                className="w-full mt-6 bg-primary text-secondary py-4 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group"
               >
                 Cambiar Ahora
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
@@ -257,17 +255,17 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-800">
+      <section className="py-20 bg-gradient-to-r from-secondary to-secondary-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
             Comienza a cambiar hoy mismo
           </h2>
-          <p className="text-xl text-primary-100 mb-8">
+          <p className="text-xl text-gray-300 mb-8">
             Únete a miles de peruanos que confían en QoriCash para sus cambios de divisas
           </p>
           <Link
             href="/registro"
-            className="inline-flex items-center bg-white text-primary-600 px-10 py-5 rounded-full text-lg font-bold hover:bg-gray-100 transition shadow-xl hover:shadow-2xl group"
+            className="inline-flex items-center bg-primary text-secondary px-10 py-5 rounded-full text-lg font-bold hover:bg-primary-600 transition shadow-xl hover:shadow-2xl group"
           >
             Abrir mi cuenta gratis
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
@@ -280,7 +278,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white text-2xl font-display font-bold mb-4">QoriCash</h3>
+              <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto mb-4" />
               <p className="text-sm">
                 Casa de cambio online líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.
               </p>
