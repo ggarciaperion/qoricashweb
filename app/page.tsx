@@ -55,7 +55,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-12 gap-6 items-center relative">
+          <div className="grid lg:grid-cols-12 gap-8 items-center relative">
             {/* Left Column: Text Content */}
             <div className="lg:col-span-5 space-y-8 relative z-10">
               <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
@@ -101,8 +101,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Center: Hero Image (Overlapping) */}
-            <div className="lg:col-span-4 flex items-center justify-center relative">
+            {/* Center: Hero Image (Overlapping to the left) */}
+            <div className="lg:col-span-3 flex items-center justify-center relative lg:-ml-16">
               <div className="relative">
                 <img
                   src="/hero-visual.png"
@@ -112,8 +112,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Column: Calculator (Compact) */}
-            <div className="lg:col-span-3 bg-white rounded-3xl shadow-2xl p-5 border border-gray-100 relative z-10">
+            {/* Right Column: Calculator (More Width) */}
+            <div className="lg:col-span-4 bg-white rounded-3xl shadow-2xl p-6 border border-gray-100 relative z-10">
               <div className="flex flex-col gap-2 mb-4">
                 <div className="flex items-center justify-end">
                   <div className="flex items-center text-green-600 text-xs font-semibold">
