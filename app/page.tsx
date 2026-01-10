@@ -55,8 +55,9 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column: Text Content */}
+            <div className="lg:col-span-5 space-y-8">
               <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
@@ -100,14 +101,29 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Exchange Rates Card with Calculator */}
-            <div className="bg-white rounded-3xl shadow-2xl p-6 border border-gray-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-display font-bold text-gray-900">Tipo de cambio hoy en QoriCash</h3>
-                <div className="flex items-center text-green-600 text-xs font-semibold">
-                  <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
-                  En vivo
+            {/* Center Column: Hero Image */}
+            <div className="lg:col-span-3 flex items-center justify-center">
+              <div className="relative">
+                <img
+                  src="/hero-visual.png"
+                  alt="QoriCash Exchange"
+                  className="w-full h-auto max-w-xs drop-shadow-2xl"
+                />
+              </div>
+            </div>
+
+            {/* Right Column: Calculator (More Compact) */}
+            <div className="lg:col-span-4 bg-white rounded-3xl shadow-2xl p-5 border border-gray-100">
+              <div className="flex flex-col gap-2 mb-4">
+                <div className="flex items-center justify-end">
+                  <div className="flex items-center text-green-600 text-xs font-semibold">
+                    <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
+                    En vivo
+                  </div>
                 </div>
+                <h3 className="text-base font-display font-bold text-gray-900 text-center">
+                  Tipo de cambio hoy en QoriCash
+                </h3>
               </div>
 
               <Calculator
@@ -119,14 +135,14 @@ export default function Home() {
 
               <Link
                 href="/registro"
-                className="w-full mt-4 bg-primary text-secondary py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
+                className="w-full mt-3 bg-primary text-secondary py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
               >
                 Cambiar Ahora
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
               </Link>
 
-              <p className="text-xs text-center text-gray-500 mt-3">
-                * Tipos de cambio actualizados en tiempo real
+              <p className="text-xs text-center text-gray-500 mt-2">
+                Tipos de cambio en tiempo real
               </p>
             </div>
           </div>
