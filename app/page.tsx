@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Calculator from '@/components/Calculator';
 import {
   ArrowRight,
   Shield,
@@ -99,37 +100,22 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Exchange Rates Card */}
+            {/* Exchange Rates Card with Calculator */}
             <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-display font-bold text-gray-900">Tipo de Cambio</h3>
+                <h3 className="text-2xl font-display font-bold text-gray-900">Calculadora de Cambio</h3>
                 <div className="flex items-center text-green-600 text-sm font-semibold">
                   <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
                   En vivo
                 </div>
               </div>
 
-              <div className="space-y-6">
-                {/* Buy Rate */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-green-800">Compra</span>
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="text-4xl font-bold text-green-900">S/ {buyRate}</div>
-                  <div className="text-xs text-green-700 mt-2">Por cada dólar</div>
-                </div>
-
-                {/* Sell Rate */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-blue-800">Venta</span>
-                    <TrendingUp className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="text-4xl font-bold text-blue-900">S/ {sellRate}</div>
-                  <div className="text-xs text-blue-700 mt-2">Por cada dólar</div>
-                </div>
-              </div>
+              <Calculator
+                initialRates={{
+                  compra: parseFloat(buyRate),
+                  venta: parseFloat(sellRate)
+                }}
+              />
 
               <Link
                 href="/registro"
