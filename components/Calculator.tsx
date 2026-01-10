@@ -86,10 +86,10 @@ export default function Calculator({
   return (
     <div className="w-full">
       {/* Tabs de Compra/Venta */}
-      <div className="flex rounded-xl overflow-hidden mb-6 shadow-sm">
+      <div className="flex rounded-xl overflow-hidden mb-4 shadow-sm">
         <button
           onClick={() => setOperationType('Compra')}
-          className={`flex-1 py-4 px-4 font-semibold text-sm transition-all ${
+          className={`flex-1 py-3 px-3 font-semibold text-xs transition-all ${
             operationType === 'Compra'
               ? 'bg-secondary text-white'
               : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -99,7 +99,7 @@ export default function Calculator({
         </button>
         <button
           onClick={() => setOperationType('Venta')}
-          className={`flex-1 py-4 px-4 font-semibold text-sm transition-all ${
+          className={`flex-1 py-3 px-3 font-semibold text-xs transition-all ${
             operationType === 'Venta'
               ? 'bg-secondary text-white'
               : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -110,11 +110,11 @@ export default function Calculator({
       </div>
 
       {/* Calculadora */}
-      <div className="space-y-4 mb-5">
+      <div className="space-y-3 mb-4">
         {/* Fila superior: Input */}
-        <div className="flex gap-3">
-          <div className="flex-1 bg-gray-100 rounded-2xl p-4">
-            <label className="block text-sm text-gray-700 font-medium mb-2">
+        <div className="flex gap-2">
+          <div className="flex-1 bg-gray-100 rounded-xl p-3">
+            <label className="block text-xs text-gray-700 font-medium mb-1">
               ¿Cuánto envías?
             </label>
             <input
@@ -122,43 +122,43 @@ export default function Calculator({
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
               placeholder="0"
-              className="w-full text-3xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
+              className="w-full text-2xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
               step="0.01"
               min="0"
             />
           </div>
-          <div className="w-24 bg-secondary rounded-2xl p-4 flex items-center justify-center">
-            <span className="text-white font-semibold text-sm text-center">
+          <div className="w-20 bg-secondary rounded-xl p-3 flex items-center justify-center">
+            <span className="text-white font-semibold text-xs text-center">
               {inputCurrency === 'USD' ? 'Dólares' : 'Soles'}
             </span>
           </div>
         </div>
 
         {/* Botón de intercambio */}
-        <div className="flex justify-center -my-2 relative z-10">
+        <div className="flex justify-center -my-1 relative z-10">
           <button
             onClick={handleSwapCurrency}
-            className={`bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all ${
+            className={`bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all ${
               isAnimating ? 'rotate-180' : ''
             }`}
             style={{ transition: 'transform 0.3s ease' }}
           >
-            <RefreshCw className={`w-6 h-6 text-gray-700 ${isAnimating ? 'rotate-180' : ''}`} />
+            <RefreshCw className={`w-4 h-4 text-gray-700 ${isAnimating ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
         {/* Fila inferior: Output */}
-        <div className="flex gap-3">
-          <div className="flex-1 bg-gray-100 rounded-2xl p-4">
-            <label className="block text-sm text-gray-700 font-medium mb-2">
+        <div className="flex gap-2">
+          <div className="flex-1 bg-gray-100 rounded-xl p-3">
+            <label className="block text-xs text-gray-700 font-medium mb-1">
               Entonces recibes
             </label>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-gray-900">
               {amountOutput || '0.00'}
             </div>
           </div>
-          <div className="w-24 bg-secondary rounded-2xl p-4 flex items-center justify-center">
-            <span className="text-white font-semibold text-sm text-center">
+          <div className="w-20 bg-secondary rounded-xl p-3 flex items-center justify-center">
+            <span className="text-white font-semibold text-xs text-center">
               {outputCurrency === 'USD' ? 'Dólares' : 'Soles'}
             </span>
           </div>
@@ -166,9 +166,9 @@ export default function Calculator({
 
         {/* Información adicional */}
         {amountOutput && (
-          <div className="flex justify-between text-sm text-gray-700 font-medium px-1 pt-2">
+          <div className="flex justify-between text-xs text-gray-600 font-medium px-1 pt-1">
             <span>Ahorro estimado: S/ {calculateSavings()}</span>
-            <span>Tipo de cambio: {currentRate.toFixed(3)}</span>
+            <span>TC: {currentRate.toFixed(3)}</span>
           </div>
         )}
       </div>

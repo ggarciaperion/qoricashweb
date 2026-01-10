@@ -101,10 +101,10 @@ export default function Home() {
             </div>
 
             {/* Exchange Rates Card with Calculator */}
-            <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-display font-bold text-gray-900">Calculadora de Cambio</h3>
-                <div className="flex items-center text-green-600 text-sm font-semibold">
+            <div className="bg-white rounded-3xl shadow-2xl p-6 border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-display font-bold text-gray-900">Tipo de cambio hoy en QoriCash</h3>
+                <div className="flex items-center text-green-600 text-xs font-semibold">
                   <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
                   En vivo
                 </div>
@@ -119,13 +119,13 @@ export default function Home() {
 
               <Link
                 href="/registro"
-                className="w-full mt-6 bg-primary text-secondary py-4 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group"
+                className="w-full mt-4 bg-primary text-secondary py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
               >
                 Cambiar Ahora
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
               </Link>
 
-              <p className="text-xs text-center text-gray-500 mt-4">
+              <p className="text-xs text-center text-gray-500 mt-3">
                 * Tipos de cambio actualizados en tiempo real
               </p>
             </div>
