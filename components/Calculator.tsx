@@ -30,28 +30,10 @@ export default function Calculator({
   const inputCurrency = operationType === 'Compra' ? 'USD' : 'PEN';
   const outputCurrency = operationType === 'Compra' ? 'PEN' : 'USD';
 
-  // Fetch exchange rates from API
-  useEffect(() => {
-    fetchExchangeRates();
-  }, []);
-
   // Recalculate when input or operation type changes
   useEffect(() => {
     calculateAmount();
   }, [amountInput, operationType, exchangeRates]);
-
-  const fetchExchangeRates = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/client/exchange-rates`);
-      const data = await response.json();
-      if (data.success) {
-        setExchangeRates(data.rates);
-      }
-    } catch (error) {
-      console.error('Error fetching exchange rates:', error);
-      // Keep default rates if fetch fails
-    }
-  };
 
   const calculateAmount = () => {
     if (!amountInput || !exchangeRates) {
