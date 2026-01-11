@@ -23,7 +23,7 @@ import {
 export default function NuevaOperacionPage() {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
-  const { currentRates, fetchRates, calculateExchange } = useExchangeStore();
+  const { currentRates, fetchRates, calculateExchange, isConnected } = useExchangeStore();
 
   // Form state
   const [tipo, setTipo] = useState<'compra' | 'venta'>('compra');
@@ -272,9 +272,9 @@ export default function NuevaOperacionPage() {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-gray-900">Tipo de Cambio Actual</h3>
-                <div className="flex items-center text-green-600 text-sm font-semibold">
-                  <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
-                  En vivo
+                <div className={`flex items-center text-sm font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
+                  {isConnected ? 'En vivo (Tiempo Real)' : 'Actualizando...'}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

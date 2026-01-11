@@ -24,7 +24,7 @@ import {
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { currentRates, fetchRates } = useExchangeStore();
+  const { currentRates, fetchRates, isConnected } = useExchangeStore();
 
   const [operations, setOperations] = useState<Operation[]>([]);
   const [stats, setStats] = useState<ClientStats | null>(null);
@@ -160,9 +160,9 @@ export default function DashboardPage() {
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-gray-900">Tipo de Cambio Actual</h3>
-              <div className="flex items-center text-green-600 text-sm font-semibold">
-                <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
-                En vivo
+              <div className={`flex items-center text-sm font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
+                <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
+                {isConnected ? 'En vivo (Tiempo Real)' : 'Actualizando...'}
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
