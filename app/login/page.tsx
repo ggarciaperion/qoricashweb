@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, Mail, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '@/lib/store/useAuth';
 
 const loginSchema = z.object({
-  email: z.string().email('Ingresa un correo electrónico válido'),
+  dni: z.string().min(8, 'Ingresa un DNI válido').max(12, 'DNI inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 
@@ -17,9 +18,9 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, error, clearError, requiresPasswordChange } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const {
     register,
@@ -31,21 +32,21 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    setErrorMessage('');
+    clearError();
 
     try {
-      // TODO: Integrate with Flask API
-      console.log('Login attempt:', data);
+      const success = await login(data.dni, data.password);
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // TODO: Handle authentication and redirect to dashboard
-      // router.push('/dashboard');
-
-      setErrorMessage('Funcionalidad en desarrollo');
+      if (success) {
+        // Redirigir según si requiere cambio de contraseña
+        if (requiresPasswordChange) {
+          router.push('/cambiar-contrasena');
+        } else {
+          router.push('/dashboard');
+        }
+      }
     } catch (error) {
-      setErrorMessage('Error al iniciar sesión. Por favor, intenta nuevamente.');
+      console.error('Error en login:', error);
     } finally {
       setIsLoading(false);
     }
@@ -78,36 +79,36 @@ export default function LoginPage() {
           </div>
 
           {/* Error message */}
-          {errorMessage && (
+          {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {errorMessage}
+              {error}
             </div>
           )}
 
           {/* Login form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email field */}
+            {/* DNI field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Correo electrónico
+              <label htmlFor="dni" className="block text-sm font-medium text-gray-700 mb-2">
+                DNI / CE / RUC
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <CreditCard className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  {...register('email')}
-                  type="email"
-                  id="email"
+                  {...register('dni')}
+                  type="text"
+                  id="dni"
                   className={`block w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    errors.dni ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                  placeholder="tu@email.com"
+                  placeholder="12345678"
                   disabled={isLoading}
                 />
               </div>
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
+              {errors.dni && (
+                <p className="mt-2 text-sm text-red-600">{errors.dni.message}</p>
               )}
             </div>
 
