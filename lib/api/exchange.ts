@@ -6,48 +6,104 @@ import type { ExchangeRate } from '../types';
  */
 export const exchangeApi = {
   /**
-   * Get current exchange rates
+   * Get current exchange rates from backend
    */
   async getCurrentRates(): Promise<ApiResponse<ExchangeRate>> {
-    const response = await apiClient.get<ApiResponse<ExchangeRate>>('/exchange/current');
-    return response.data;
+    try {
+      const response = await apiClient.get<{ success: boolean; rates: any }>('/client/exchange-rates');
+
+      if (response.data.success && response.data.rates) {
+        // Transform backend response to ExchangeRate format
+        return {
+          success: true,
+          data: {
+            id: 0,
+            tipo_compra: response.data.rates.compra,
+            tipo_venta: response.data.rates.venta,
+            fecha_actualizacion: new Date().toISOString(),
+            updated_by: 0,
+          },
+          message: 'Tipos de cambio obtenidos exitosamente',
+        };
+      }
+
+      return {
+        success: false,
+        message: 'Error al obtener tipos de cambio',
+      };
+    } catch (error: any) {
+      console.error('Error fetching exchange rates:', error);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Error al obtener tipos de cambio',
+      };
+    }
   },
 
   /**
-   * Calculate exchange amount
+   * Calculate exchange amount locally (no backend endpoint)
    */
   async calculateExchange(params: {
     tipo: 'compra' | 'venta';
     monto: number;
     moneda: 'soles' | 'dolares';
   }): Promise<ApiResponse<{ monto_calculado: number; tipo_cambio: number }>> {
-    const response = await apiClient.post<
-      ApiResponse<{ monto_calculado: number; tipo_cambio: number }>
-    >('/exchange/calculate', params);
-    return response.data;
+    try {
+      // Get current rates
+      const ratesResponse = await exchangeApi.getCurrentRates();
+
+      if (!ratesResponse.success || !ratesResponse.data) {
+        return {
+          success: false,
+          message: 'No se pudieron obtener los tipos de cambio',
+        };
+      }
+
+      const rates = ratesResponse.data;
+      const tipo_cambio = params.tipo === 'compra' ? rates.tipo_compra : rates.tipo_venta;
+
+      let monto_calculado: number;
+
+      if (params.moneda === 'soles') {
+        // Si ingresa soles, calcular dólares
+        if (params.tipo === 'compra') {
+          // Compra: cliente vende USD, recibe PEN
+          // PEN = USD * tipo_cambio
+          // USD = PEN / tipo_cambio
+          monto_calculado = params.monto / tipo_cambio;
+        } else {
+          // Venta: cliente compra USD, paga PEN
+          // PEN = USD * tipo_cambio
+          // USD = PEN / tipo_cambio
+          monto_calculado = params.monto / tipo_cambio;
+        }
+      } else {
+        // Si ingresa dólares, calcular soles
+        monto_calculado = params.monto * tipo_cambio;
+      }
+
+      return {
+        success: true,
+        data: {
+          monto_calculado: parseFloat(monto_calculado.toFixed(2)),
+          tipo_cambio: tipo_cambio,
+        },
+        message: 'Cálculo realizado exitosamente',
+      };
+    } catch (error: any) {
+      console.error('Error calculating exchange:', error);
+      return {
+        success: false,
+        message: 'Error al calcular el cambio',
+      };
+    }
   },
 
   /**
-   * Get exchange rate history
-   */
-  async getRateHistory(params?: {
-    fecha_inicio?: string;
-    fecha_fin?: string;
-    limit?: number;
-  }): Promise<ApiResponse<ExchangeRate[]>> {
-    const response = await apiClient.get<ApiResponse<ExchangeRate[]>>(
-      '/exchange/history',
-      { params }
-    );
-    return response.data;
-  },
-
-  /**
-   * Subscribe to rate updates (for WebSocket/SSE)
+   * Subscribe to rate updates (legacy polling - replaced by Socket.IO)
    */
   subscribeToRates(callback: (rate: ExchangeRate) => void): () => void {
-    // TODO: Implement WebSocket/SSE subscription
-    // For now, use polling
+    // Polling every 30 seconds as fallback
     const interval = setInterval(async () => {
       try {
         const response = await exchangeApi.getCurrentRates();
