@@ -6,21 +6,21 @@ import type { ExchangeRate } from '../types';
  */
 export const exchangeApi = {
   /**
-   * Get current exchange rates from backend
+   * Get current exchange rates from backend (public endpoint, no auth required)
    */
   async getCurrentRates(): Promise<ApiResponse<ExchangeRate>> {
     try {
-      const response = await apiClient.get<{ success: boolean; rates: any }>('/client/exchange-rates');
+      const response = await apiClient.get<{ success: boolean; data: any }>('/platform/public/exchange-rates');
 
-      if (response.data.success && response.data.rates) {
+      if (response.data.success && response.data.data) {
         // Transform backend response to ExchangeRate format
         return {
           success: true,
           data: {
             id: 0,
-            tipo_compra: response.data.rates.compra,
-            tipo_venta: response.data.rates.venta,
-            fecha_actualizacion: new Date().toISOString(),
+            tipo_compra: response.data.data.tipo_compra,
+            tipo_venta: response.data.data.tipo_venta,
+            fecha_actualizacion: response.data.data.fecha_actualizacion || new Date().toISOString(),
             updated_by: 0,
           },
           message: 'Tipos de cambio obtenidos exitosamente',
