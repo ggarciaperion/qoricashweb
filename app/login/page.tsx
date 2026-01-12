@@ -202,7 +202,7 @@ export default function LoginPage() {
           {/* Register link */}
           <div className="mt-6 text-center">
             <Link
-              href="/registro"
+              href="/crear-cuenta"
               className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition"
             >
               Crear cuenta nueva
