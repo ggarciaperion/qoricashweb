@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
       dni: body.dni
     });
 
-    // Hacer la petición al backend
-    const response = await fetch(`${BACKEND_URL}/api/client/register`, {
+    // Hacer la petición al backend usando el nuevo endpoint para web
+    const response = await fetch(`${BACKEND_URL}/api/web/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
