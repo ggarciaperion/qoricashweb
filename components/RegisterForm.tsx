@@ -218,9 +218,9 @@ export default function RegisterForm({ clientType }: RegisterFormProps) {
         payload.persona_contacto = personaContacto;
       }
 
-      // TODO: Replace with actual API endpoint
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${API_URL}/api/client/register`, {
+      // Usar proxy API de Next.js para evitar problemas de CORS
+      // El proxy se encarga de reenviar la petición al backend en Render
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
