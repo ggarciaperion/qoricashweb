@@ -13,8 +13,8 @@ export const operationsApi = {
   /**
    * Get all operations for current client
    */
-  async getMyOperations(): Promise<ApiResponse<Operation[]>> {
-    const response = await apiClient.get<ApiResponse<Operation[]>>('/operations/my-operations');
+  async getMyOperations(dni: string): Promise<ApiResponse<Operation[]>> {
+    const response = await apiClient.post<ApiResponse<Operation[]>>('/api/web/my-operations', { dni });
     return response.data;
   },
 
@@ -22,7 +22,7 @@ export const operationsApi = {
    * Get operation by ID
    */
   async getOperation(id: number): Promise<ApiResponse<Operation>> {
-    const response = await apiClient.get<ApiResponse<Operation>>(`/operations/${id}`);
+    const response = await apiClient.get<ApiResponse<Operation>>(`/api/operations/${id}`);
     return response.data;
   },
 
@@ -30,7 +30,7 @@ export const operationsApi = {
    * Create new operation
    */
   async createOperation(data: CreateOperationRequest): Promise<CreateOperationResponse> {
-    const response = await apiClient.post<CreateOperationResponse>('/operations/create', data);
+    const response = await apiClient.post<CreateOperationResponse>('/api/operations/create', data);
     return response.data;
   },
 
@@ -42,7 +42,7 @@ export const operationsApi = {
     formData.append('comprobante', file);
 
     const response = await apiClient.post<ApiResponse>(
-      `/operations/${operationId}/upload-proof`,
+      `/api/operations/${operationId}/upload-proof`,
       formData,
       {
         headers: {
@@ -58,7 +58,7 @@ export const operationsApi = {
    */
   async cancelOperation(operationId: number, reason?: string): Promise<ApiResponse> {
     const response = await apiClient.post<ApiResponse>(
-      `/operations/${operationId}/cancel`,
+      `/api/operations/${operationId}/cancel`,
       { reason }
     );
     return response.data;
@@ -67,8 +67,8 @@ export const operationsApi = {
   /**
    * Get client statistics
    */
-  async getStats(): Promise<ApiResponse<ClientStats>> {
-    const response = await apiClient.get<ApiResponse<ClientStats>>('/operations/stats');
+  async getStats(dni: string): Promise<ApiResponse<ClientStats>> {
+    const response = await apiClient.post<ApiResponse<ClientStats>>('/api/web/stats', { dni });
     return response.data;
   },
 
@@ -85,7 +85,7 @@ export const operationsApi = {
   }): Promise<ApiResponse<{ operations: Operation[]; total: number; pages: number }>> {
     const response = await apiClient.get<
       ApiResponse<{ operations: Operation[]; total: number; pages: number }>
-    >('/operations/history', { params });
+    >('/api/operations/history', { params });
     return response.data;
   },
 
@@ -94,7 +94,7 @@ export const operationsApi = {
    */
   async getOperationDetails(operationId: number): Promise<ApiResponse> {
     const response = await apiClient.get<ApiResponse>(
-      `/operations/${operationId}/details`
+      `/api/operations/${operationId}/details`
     );
     return response.data;
   },

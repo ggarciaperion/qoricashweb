@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { operationsApi } from '@/lib/api';
+import { operationsApi } from '@/lib/api/operations';
 import type { Operation } from '@/lib/types';
 import {
   ArrowLeft,

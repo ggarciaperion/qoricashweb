@@ -55,6 +55,9 @@ export const authService = {
    */
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
+      console.log('🔐 [authService] Attempting login with:', { dni: credentials.dni });
+      console.log('🔐 [authService] API URL:', `${API_BASE_URL}/api/client/login`);
+
       const response = await axios.post(
         `${API_BASE_URL}/api/client/login`,
         credentials,
@@ -64,8 +67,13 @@ export const authService = {
           },
         }
       );
+
+      console.log('✅ [authService] Login response:', response.data);
       return response.data;
     } catch (error: any) {
+      console.error('❌ [authService] Login error:', error);
+      console.error('❌ [authService] Error response:', error.response?.data);
+
       if (error.response?.data) {
         return error.response.data;
       }

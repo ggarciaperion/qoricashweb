@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { exchangeApi } from '../api';
+import { exchangeApi } from '../api/exchange';
 import type { ExchangeRate } from '../types';
 import { socketService, type ExchangeRateUpdate } from '../services/socketService';
 

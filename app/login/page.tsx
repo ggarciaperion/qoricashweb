@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '@/lib/store/useAuth';
+import { useAuthStore } from '@/lib/store';
 
 const loginSchema = z.object({
   dni: z.string().min(8, 'Ingresa un DNI válido').max(12, 'DNI inválido'),
@@ -18,7 +18,9 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, error, clearError, requiresPasswordChange } = useAuth();
+  const login = useAuthStore((state) => state.login);
+  const error = useAuthStore((state) => state.error);
+  const clearError = useAuthStore((state) => state.clearError);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,24 +33,27 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log('📝 [LoginPage] Form submitted with DNI:', data.dni);
     setIsLoading(true);
     clearError();
 
     try {
-      const success = await login(data.dni, data.password);
+      console.log('📝 [LoginPage] Calling login function...');
+      const success = await login({ dni: data.dni, password: data.password });
+      console.log('📝 [LoginPage] Login result:', success);
 
       if (success) {
-        // Redirigir según si requiere cambio de contraseña
-        if (requiresPasswordChange) {
-          router.push('/cambiar-contrasena');
-        } else {
-          router.push('/dashboard');
-        }
+        console.log('✅ [LoginPage] Login successful! Redirecting...');
+        console.log('🔄 [LoginPage] Redirecting to /dashboard');
+        router.push('/dashboard');
+      } else {
+        console.log('❌ [LoginPage] Login failed');
       }
     } catch (error) {
-      console.error('Error en login:', error);
+      console.error('❌ [LoginPage] Error en login:', error);
     } finally {
       setIsLoading(false);
+      console.log('📝 [LoginPage] Loading finished');
     }
   };
 
@@ -205,7 +210,7 @@ export default function LoginPage() {
               href="/crear-cuenta"
               className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition"
             >
-              Crear cuenta nueva
+              Regístrate aquí
             </Link>
           </div>
         </div>

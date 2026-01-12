@@ -10,7 +10,7 @@ export const exchangeApi = {
    */
   async getCurrentRates(): Promise<ApiResponse<ExchangeRate>> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: any }>('/platform/public/exchange-rates');
+      const response = await apiClient.get<{ success: boolean; data: any }>('/api/platform/public/exchange-rates');
 
       if (response.data.success && response.data.data) {
         // Transform backend response to ExchangeRate format

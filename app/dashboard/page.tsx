@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
-import { operationsApi } from '@/lib/api';
+import { operationsApi } from '@/lib/api/operations';
 import type { Operation, ClientStats } from '@/lib/types';
 import {
   DollarSign,
@@ -32,9 +33,6 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'todas' | 'pendientes' | 'completadas'>('todas');
 
   useEffect(() => {
-    // Load user from localStorage
-    useAuthStore.getState().loadUser();
-
     // Fetch exchange rates
     fetchRates();
 
@@ -56,12 +54,17 @@ export default function DashboardPage() {
   }, [isAuthenticated]);
 
   const loadData = async () => {
+    if (!user?.dni) {
+      console.error('No user DNI available');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Load operations and stats
+      // Load operations and stats with user DNI
       const [opsResponse, statsResponse] = await Promise.all([
-        operationsApi.getMyOperations(),
-        operationsApi.getStats(),
+        operationsApi.getMyOperations(user.dni),
+        operationsApi.getStats(user.dni),
       ]);
 
       if (opsResponse.success && opsResponse.data) {
@@ -126,10 +129,19 @@ export default function DashboardPage() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
+            <div className="flex items-center space-x-3">
+              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition">
+                <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
+                <span className="text-xl font-bold text-gray-900">QoriCash</span>
+              </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <Link
+                href="/"
+                className="hidden sm:inline-flex items-center text-gray-700 hover:text-primary-600 transition font-medium"
+              >
+                Inicio
+              </Link>
               <div className="hidden sm:flex items-center text-sm text-gray-700">
                 <User className="w-5 h-5 mr-2 text-gray-400" />
                 <span className="font-medium">{user?.nombres} {user?.apellidos}</span>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { authApi } from '../api';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { authApi } from '../api/auth';
 import type { User, LoginRequest, RegisterRequest } from '../types';
 
 interface AuthState {
@@ -17,11 +18,13 @@ interface AuthState {
   clearError: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  error: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
 
   /**
    * Login user
@@ -32,11 +35,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const response = await authApi.login(credentials);
 
-      if (response.success && response.data) {
-        const { user, token } = response.data;
+      if (response.success && response.client) {
+        const user = response.client;
 
         // Store in localStorage
-        authApi.storeAuth(user, token);
+        authApi.storeAuth(user);
 
         // Update state
         set({
@@ -156,4 +159,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   clearError: () => {
     set({ error: null });
   },
-}));
+}),
+    {
+      name: 'qoricash-auth-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);

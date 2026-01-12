@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Calculator from '@/components/Calculator';
+import { useAuthStore } from '@/lib/store';
 import {
   ArrowRight,
   Shield,
@@ -16,10 +18,14 @@ import {
   Zap,
   UserPlus,
   Calculator as CalculatorIcon,
-  Banknote
+  Banknote,
+  LogOut,
+  User as UserIcon
 } from 'lucide-react';
 
 export default function Home() {
+  const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
 
@@ -27,6 +33,11 @@ export default function Home() {
     // TODO: Fetch real rates from API
     // fetchExchangeRates();
   }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -44,15 +55,37 @@ export default function Home() {
               <a href="#servicios" className="text-gray-700 hover:text-primary-600 transition">Servicios</a>
               <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">Cómo Funciona</a>
               <a href="#nosotros" className="text-gray-700 hover:text-primary-600 transition">Nosotros</a>
-              <Link href="/login" className="text-gray-700 hover:text-primary-600 transition">
-                Iniciar Sesión
-              </Link>
-              <Link
-                href="/crear-cuenta"
-                className="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg"
-              >
-                Registrarse
-              </Link>
+
+              {isAuthenticated ? (
+                <>
+                  <Link href="/dashboard" className="text-gray-700 hover:text-primary-600 transition font-medium">
+                    Mi Dashboard
+                  </Link>
+                  <div className="flex items-center space-x-2 text-gray-700">
+                    <UserIcon className="w-5 h-5" />
+                    <span className="font-medium">{user?.nombres || user?.email}</span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="inline-flex items-center text-gray-700 hover:text-red-600 transition"
+                  >
+                    <LogOut className="w-5 h-5 mr-2" />
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="text-gray-700 hover:text-primary-600 transition">
+                    Iniciar Sesión
+                  </Link>
+                  <Link
+                    href="/crear-cuenta"
+                    className="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg"
+                  >
+                    Registrarse
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -145,13 +178,13 @@ export default function Home() {
                 }}
               />
 
-              <Link
-                href="/crear-cuenta"
+              <button
+                onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
                 className="w-full mt-4 bg-primary text-secondary py-4 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-base"
               >
                 Cambiar Ahora
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-5 h-5" />
-              </Link>
+              </button>
 
               <p className="text-sm text-center text-gray-500 mt-3">
                 Tipos de cambio en tiempo real

@@ -11,6 +11,20 @@ export interface User {
   estado: 'Activo' | 'Inactivo' | 'Suspendido';
   origen?: 'Lima' | 'Provincia';
   fecha_registro: string;
+
+  // Document type
+  document_type?: 'DNI' | 'CE' | 'RUC';
+
+  // KYC Documents
+  dni_front_url?: string | null;
+  dni_back_url?: string | null;
+  dni_representante_front_url?: string | null;
+  dni_representante_back_url?: string | null;
+  ficha_ruc_url?: string | null;
+  validation_oc_url?: string | null;
+
+  // Validation status
+  status?: 'Activo' | 'Inactivo';
 }
 
 // Bank account types
@@ -61,17 +75,15 @@ export interface ExchangeRate {
 
 // Authentication types
 export interface LoginRequest {
-  email: string;
+  dni: string;
   password: string;
 }
 
 export interface LoginResponse {
   success: boolean;
-  data?: {
-    user: User;
-    token?: string;
-  };
+  client?: User;
   message?: string;
+  requires_password_change?: boolean;
 }
 
 export interface RegisterRequest {

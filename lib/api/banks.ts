@@ -8,8 +8,8 @@ export const banksApi = {
   /**
    * Get all bank accounts for current user
    */
-  async getMyAccounts(): Promise<ApiResponse<BankAccount[]>> {
-    const response = await apiClient.get<ApiResponse<BankAccount[]>>('/banks/my-accounts');
+  async getMyAccounts(dni: string): Promise<ApiResponse<BankAccount[]>> {
+    const response = await apiClient.post<ApiResponse<BankAccount[]>>('/api/web/my-accounts', { dni });
     return response.data;
   },
 
@@ -17,7 +17,7 @@ export const banksApi = {
    * Get bank account by ID
    */
   async getAccount(id: number): Promise<ApiResponse<BankAccount>> {
-    const response = await apiClient.get<ApiResponse<BankAccount>>(`/banks/${id}`);
+    const response = await apiClient.get<ApiResponse<BankAccount>>(`/api/banks/${id}`);
     return response.data;
   },
 
@@ -25,11 +25,14 @@ export const banksApi = {
    * Add new bank account
    */
   async addAccount(data: {
-    banco: string;
-    numero_cuenta: string;
-    is_primary?: boolean;
-  }): Promise<ApiResponse<BankAccount>> {
-    const response = await apiClient.post<ApiResponse<BankAccount>>('/banks/add', data);
+    dni: string;
+    bank_name: string;
+    account_number: string;
+    account_type: 'Ahorro' | 'Corriente';
+    currency: 'S/' | '$';
+    origen: 'Lima' | 'Provincia';
+  }): Promise<ApiResponse<any>> {
+    const response = await apiClient.post<ApiResponse<any>>('/api/web/add-bank-account', data);
     return response.data;
   },
 
@@ -40,7 +43,7 @@ export const banksApi = {
     id: number,
     data: Partial<BankAccount>
   ): Promise<ApiResponse<BankAccount>> {
-    const response = await apiClient.put<ApiResponse<BankAccount>>(`/banks/${id}`, data);
+    const response = await apiClient.put<ApiResponse<BankAccount>>(`/api/banks/${id}`, data);
     return response.data;
   },
 
@@ -48,7 +51,7 @@ export const banksApi = {
    * Delete bank account
    */
   async deleteAccount(id: number): Promise<ApiResponse> {
-    const response = await apiClient.delete<ApiResponse>(`/banks/${id}`);
+    const response = await apiClient.delete<ApiResponse>(`/api/banks/${id}`);
     return response.data;
   },
 
@@ -56,7 +59,7 @@ export const banksApi = {
    * Set account as primary
    */
   async setPrimaryAccount(id: number): Promise<ApiResponse> {
-    const response = await apiClient.post<ApiResponse>(`/banks/${id}/set-primary`);
+    const response = await apiClient.post<ApiResponse>(`/api/banks/${id}/set-primary`);
     return response.data;
   },
 

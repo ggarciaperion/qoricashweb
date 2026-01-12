@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
-import { operationsApi, banksApi } from '@/lib/api';
+import { operationsApi } from '@/lib/api/operations';
+import { banksApi } from '@/lib/api/banks';
 import type { BankAccount } from '@/lib/types';
 import {
   ArrowLeft,
@@ -18,6 +19,9 @@ import {
   Calculator,
   ArrowRight,
   RefreshCw,
+  Info,
+  Plus,
+  Landmark,
 } from 'lucide-react';
 
 export default function NuevaOperacionPage() {
@@ -52,9 +56,15 @@ export default function NuevaOperacionPage() {
   const loadInitialData = async () => {
     setIsLoading(true);
     try {
+      if (!user?.dni) {
+        setError('No se pudo obtener la información del usuario');
+        setIsLoading(false);
+        return;
+      }
+
       // Fetch rates and bank accounts in parallel
       await fetchRates();
-      const accountsResponse = await banksApi.getMyAccounts();
+      const accountsResponse = await banksApi.getMyAccounts(user.dni);
 
       if (accountsResponse.success && accountsResponse.data) {
         setBankAccounts(accountsResponse.data);
@@ -76,10 +86,7 @@ export default function NuevaOperacionPage() {
   };
 
   const handleMontoSolesChange = async (value: string) => {
-    // Allow only numbers and decimal point
     const cleanValue = value.replace(/[^0-9.]/g, '');
-
-    // Prevent multiple decimal points
     if ((cleanValue.match(/\./g) || []).length > 1) return;
 
     setMontoSoles(cleanValue);
@@ -90,7 +97,6 @@ export default function NuevaOperacionPage() {
       return;
     }
 
-    // Calculate dollars
     setIsCalculating(true);
     try {
       const result = await calculateExchange({
@@ -110,10 +116,7 @@ export default function NuevaOperacionPage() {
   };
 
   const handleMontoDolaresChange = async (value: string) => {
-    // Allow only numbers and decimal point
     const cleanValue = value.replace(/[^0-9.]/g, '');
-
-    // Prevent multiple decimal points
     if ((cleanValue.match(/\./g) || []).length > 1) return;
 
     setMontoDolares(cleanValue);
@@ -124,7 +127,6 @@ export default function NuevaOperacionPage() {
       return;
     }
 
-    // Calculate soles
     setIsCalculating(true);
     try {
       const result = await calculateExchange({
@@ -146,7 +148,6 @@ export default function NuevaOperacionPage() {
   const handleTipoChange = async (newTipo: 'compra' | 'venta') => {
     setTipo(newTipo);
 
-    // Recalculate with new tipo if we have a value
     if (activeInput === 'soles' && montoSoles) {
       await handleMontoSolesChange(montoSoles);
     } else if (activeInput === 'dolares' && montoDolares) {
@@ -158,7 +159,6 @@ export default function NuevaOperacionPage() {
     e.preventDefault();
     setError(null);
 
-    // Validations
     if (!montoSoles || parseFloat(montoSoles) <= 0) {
       setError('Ingresa un monto válido en soles');
       return;
@@ -187,7 +187,6 @@ export default function NuevaOperacionPage() {
       if (response.success && response.data) {
         setSuccess(true);
 
-        // Redirect to operation details after 2 seconds
         setTimeout(() => {
           router.push(`/dashboard/operaciones/${response.data?.operation.id}`);
         }, 2000);
@@ -206,6 +205,27 @@ export default function NuevaOperacionPage() {
     if (!currentRates) return 0;
     return tipo === 'compra' ? currentRates.tipo_compra : currentRates.tipo_venta;
   };
+
+  // Get helper text based on operation type
+  const getHelperText = () => {
+    if (tipo === 'compra') {
+      return {
+        title: 'QoriCash compra tus dólares',
+        description: 'Tú nos vendes dólares y recibes soles',
+        solesLabel: 'Recibes en Soles',
+        dolaresLabel: 'Entregas en Dólares',
+      };
+    } else {
+      return {
+        title: 'QoriCash te vende dólares',
+        description: 'Tú compras dólares y pagas en soles',
+        solesLabel: 'Pagas en Soles',
+        dolaresLabel: 'Recibes en Dólares',
+      };
+    }
+  };
+
+  const helper = getHelperText();
 
   if (isLoading) {
     return (
@@ -238,274 +258,326 @@ export default function NuevaOperacionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex flex-col">
+      {/* Compact Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-14">
             <button
               onClick={() => router.push('/dashboard')}
-              className="inline-flex items-center text-gray-600 hover:text-gray-900 transition"
+              className="inline-flex items-center text-gray-600 hover:text-gray-900 transition text-sm"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              <span className="font-medium">Volver al Dashboard</span>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              <span className="font-medium">Volver</span>
             </button>
+            <h1 className="text-lg font-bold text-gray-900">Nueva Operación</h1>
+            <div className="w-20"></div> {/* Spacer for centering */}
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page title */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center">
-            <Calculator className="w-8 h-8 mr-3 text-primary" />
-            Nueva Operación
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Completa los datos para crear tu operación de cambio
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Exchange rate indicator */}
-          {currentRates && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-bold text-gray-900">Tipo de Cambio Actual</h3>
-                <div className={`flex items-center text-sm font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
-                  {isConnected ? 'En vivo (Tiempo Real)' : 'Actualizando...'}
+      {/* Main Content - Two Column Layout */}
+      <main className="flex-1 max-w-7xl mx-auto px-6 py-6 w-full">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+          {/* LEFT COLUMN - Calculator & Operation Type */}
+          <div className="space-y-4">
+            {/* Live Exchange Rates Card */}
+            {currentRates && (
+              <div className="bg-white rounded-xl shadow-md p-4 border border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-bold text-gray-900">Tipo de Cambio en Tiempo Real</h3>
+                  <div className={`flex items-center text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
+                    <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
+                    {isConnected ? 'En vivo' : 'Actualizando...'}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-green-800">Compra</span>
+                      <TrendingUp className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-green-900">
+                      {currentRates.tipo_compra.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-blue-800">Venta</span>
+                      <TrendingDown className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-blue-900">
+                      {currentRates.tipo_venta.toFixed(3)}
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-green-800">Compra</span>
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-green-900">
-                    S/ {currentRates.tipo_compra.toFixed(3)}
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-blue-800">Venta</span>
-                    <TrendingDown className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    S/ {currentRates.tipo_venta.toFixed(3)}
+            )}
+
+            {/* Operation Type Selector */}
+            <div className="bg-white rounded-xl shadow-md p-4 border border-gray-200">
+              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                Tipo de Operación
+                <div className="group relative ml-2">
+                  <Info className="w-4 h-4 text-gray-400 cursor-help" />
+                  <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-10">
+                    <strong>Compra:</strong> QoriCash compra tus dólares<br />
+                    <strong>Venta:</strong> QoriCash te vende dólares
                   </div>
                 </div>
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleTipoChange('compra')}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    tipo === 'compra'
+                      ? 'border-green-500 bg-green-50 shadow-md'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    <TrendingDown className={`w-6 h-6 mb-2 ${tipo === 'compra' ? 'text-green-600' : 'text-gray-400'}`} />
+                    <span className={`text-sm font-bold ${tipo === 'compra' ? 'text-green-900' : 'text-gray-700'}`}>
+                      Compra
+                    </span>
+                    <span className="text-xs text-gray-600 mt-1 text-center">
+                      QoriCash compra USD
+                    </span>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleTipoChange('venta')}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    tipo === 'venta'
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  }`}
+                >
+                  <div className="flex flex-col items-center">
+                    <TrendingUp className={`w-6 h-6 mb-2 ${tipo === 'venta' ? 'text-blue-600' : 'text-gray-400'}`} />
+                    <span className={`text-sm font-bold ${tipo === 'venta' ? 'text-blue-900' : 'text-gray-700'}`}>
+                      Venta
+                    </span>
+                    <span className="text-xs text-gray-600 mt-1 text-center">
+                      QoriCash vende USD
+                    </span>
+                  </div>
+                </button>
+              </div>
+
+              {/* Helper text */}
+              <div className={`mt-3 p-3 rounded-lg ${tipo === 'compra' ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'}`}>
+                <p className={`text-xs font-semibold ${tipo === 'compra' ? 'text-green-900' : 'text-blue-900'}`}>
+                  {helper.title}
+                </p>
+                <p className={`text-xs ${tipo === 'compra' ? 'text-green-700' : 'text-blue-700'} mt-1`}>
+                  {helper.description}
+                </p>
               </div>
             </div>
-          )}
 
-          {/* Operation type selector */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <label className="block text-sm font-bold text-gray-900 mb-4">
-              Tipo de Operación
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                type="button"
-                onClick={() => handleTipoChange('compra')}
-                className={`relative p-6 rounded-xl border-2 transition-all ${
-                  tipo === 'compra'
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
-                }`}
-              >
-                {tipo === 'compra' && (
-                  <div className="absolute top-3 right-3">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+            {/* Calculator */}
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 flex-1">
+              <div className={`px-4 py-3 border-b border-gray-200 ${tipo === 'compra' ? 'bg-gradient-to-r from-green-50 to-green-100' : 'bg-gradient-to-r from-blue-50 to-blue-100'}`}>
+                <h3 className="text-sm font-bold text-gray-900 flex items-center">
+                  <Calculator className={`w-4 h-4 mr-2 ${tipo === 'compra' ? 'text-green-600' : 'text-blue-600'}`} />
+                  Calculadora de Cambio
+                </h3>
+              </div>
+
+              <div className="p-4 space-y-4">
+                {/* Soles Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                    {helper.solesLabel}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <span className="text-gray-400 text-xl font-bold">S/</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={montoSoles}
+                      onChange={(e) => handleMontoSolesChange(e.target.value)}
+                      placeholder="0.00"
+                      className="block w-full pl-12 pr-4 py-3 text-2xl font-bold text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Conversion Indicator */}
+                <div className="flex items-center justify-center relative py-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t-2 border-dashed border-gray-300"></div>
+                  </div>
+                  <div className="relative bg-white px-3">
+                    <div className={`rounded-full p-2 shadow-md ${tipo === 'compra' ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'}`}>
+                      {isCalculating ? (
+                        <RefreshCw className="w-4 h-4 text-white animate-spin" />
+                      ) : (
+                        <ArrowRight className="w-4 h-4 text-white transform rotate-90" />
+                      )}
+                    </div>
+                    {currentRates && (
+                      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                        <span className={`text-xs font-semibold px-2 py-1 rounded ${tipo === 'compra' ? 'text-green-700 bg-green-100' : 'text-blue-700 bg-blue-100'}`}>
+                          TC: {getCurrentRate().toFixed(3)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Dollars Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 mt-6">
+                    {helper.dolaresLabel}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <span className="text-gray-400 text-xl font-bold">$</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={montoDolares}
+                      onChange={(e) => handleMontoDolaresChange(e.target.value)}
+                      placeholder="0.00"
+                      className="block w-full pl-12 pr-4 py-3 text-2xl font-bold text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Summary */}
+                {montoSoles && montoDolares && (
+                  <div className={`rounded-lg p-3 border ${tipo === 'compra' ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'} mt-4`}>
+                    <div className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <p className={`text-xs font-semibold uppercase tracking-wide ${tipo === 'compra' ? 'text-green-700' : 'text-blue-700'}`}>
+                          Resumen
+                        </p>
+                        <p className={`text-sm mt-1 ${tipo === 'compra' ? 'text-green-900' : 'text-blue-900'}`}>
+                          {tipo === 'compra'
+                            ? `Entregas $ ${parseFloat(montoDolares).toLocaleString('en-US', {minimumFractionDigits: 2})} y recibes S/ ${parseFloat(montoSoles).toLocaleString('es-PE', {minimumFractionDigits: 2})}`
+                            : `Pagas S/ ${parseFloat(montoSoles).toLocaleString('es-PE', {minimumFractionDigits: 2})} y recibes $ ${parseFloat(montoDolares).toLocaleString('en-US', {minimumFractionDigits: 2})}`
+                          }
+                        </p>
+                      </div>
+                      <CheckCircle className={`w-6 h-6 flex-shrink-0 ml-2 ${tipo === 'compra' ? 'text-green-600' : 'text-blue-600'}`} />
+                    </div>
                   </div>
                 )}
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3">
-                    <TrendingDown className="w-8 h-8 text-green-600" />
-                  </div>
-                  <span className="text-lg font-bold text-gray-900">Compra</span>
-                  <span className="text-sm text-gray-600 mt-1">Compras dólares</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleTipoChange('venta')}
-                className={`relative p-6 rounded-xl border-2 transition-all ${
-                  tipo === 'venta'
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
-                }`}
-              >
-                {tipo === 'venta' && (
-                  <div className="absolute top-3 right-3">
-                    <CheckCircle className="w-6 h-6 text-blue-600" />
-                  </div>
-                )}
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                    <TrendingUp className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <span className="text-lg font-bold text-gray-900">Venta</span>
-                  <span className="text-sm text-gray-600 mt-1">Vendes dólares</span>
-                </div>
-              </button>
+              </div>
             </div>
           </div>
 
-          {/* Amount calculator */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <label className="block text-sm font-bold text-gray-900 mb-4">
-              Monto a Cambiar
-            </label>
-
-            <div className="space-y-4">
-              {/* Soles input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Soles (PEN)
+          {/* RIGHT COLUMN - Bank Account & Submit */}
+          <div className="space-y-4 flex flex-col">
+            {/* Bank Account Selection */}
+            <div className="bg-white rounded-xl shadow-md p-4 border border-gray-200 flex-1">
+              <div className="flex justify-between items-center mb-4">
+                <label className="block text-sm font-semibold text-gray-700">
+                  Cuenta Bancaria
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="text-gray-500 text-lg font-bold">S/</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={montoSoles}
-                    onChange={(e) => handleMontoSolesChange(e.target.value)}
-                    placeholder="0.00"
-                    className="block w-full pl-12 pr-4 py-4 text-xl font-bold text-gray-900 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  />
-                </div>
+                {bankAccounts.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => router.push('/dashboard/agregar-cuenta')}
+                    className="text-xs text-primary hover:text-primary-600 font-semibold flex items-center"
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Agregar
+                  </button>
+                )}
               </div>
 
-              {/* Conversion indicator */}
-              <div className="flex justify-center">
-                <div className="bg-gray-100 rounded-full p-3">
-                  {isCalculating ? (
-                    <RefreshCw className="w-6 h-6 text-gray-400 animate-spin" />
-                  ) : (
-                    <ArrowRight className="w-6 h-6 text-gray-400" />
-                  )}
+              {bankAccounts.length === 0 ? (
+                <div className="text-center py-12">
+                  <Landmark className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-2 font-medium">No tienes cuentas bancarias</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    Agrega una cuenta para poder realizar operaciones
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/dashboard/agregar-cuenta')}
+                    className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition shadow-md"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Agregar Cuenta Bancaria
+                  </button>
                 </div>
-              </div>
-
-              {/* Dollars input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dólares (USD)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <span className="text-gray-500 text-lg font-bold">$</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={montoDolares}
-                    onChange={(e) => handleMontoDolaresChange(e.target.value)}
-                    placeholder="0.00"
-                    className="block w-full pl-12 pr-4 py-4 text-xl font-bold text-gray-900 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  />
-                </div>
-              </div>
-
-              {/* Rate display */}
-              {montoSoles && montoDolares && (
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Tipo de cambio aplicado:</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      S/ {getCurrentRate().toFixed(3)}
-                    </span>
-                  </div>
+              ) : (
+                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                  {bankAccounts.map((account) => (
+                    <button
+                      key={account.id}
+                      type="button"
+                      onClick={() => setSelectedAccount(account.id)}
+                      className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                        selectedAccount === account.id
+                          ? 'border-primary bg-primary-50 shadow-md'
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3 flex-1">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            selectedAccount === account.id ? 'bg-primary-100' : 'bg-gray-100'
+                          }`}>
+                            <CreditCard className={`w-5 h-5 ${
+                              selectedAccount === account.id ? 'text-primary-600' : 'text-gray-600'
+                            }`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-gray-900 truncate">{account.banco}</p>
+                            <p className="text-sm text-gray-600 truncate">{account.numero_cuenta}</p>
+                            {account.is_primary && (
+                              <span className="inline-block mt-1 px-2 py-0.5 bg-primary-100 text-primary-700 text-xs font-semibold rounded">
+                                Principal
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {selectedAccount === account.id && (
+                          <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
+                        )}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Bank account selector */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <label className="block text-sm font-bold text-gray-900 mb-4">
-              Cuenta Bancaria
-            </label>
-
-            {bankAccounts.length === 0 ? (
-              <div className="text-center py-8">
-                <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-600 mb-4">No tienes cuentas bancarias registradas</p>
-                <button
-                  type="button"
-                  onClick={() => router.push('/dashboard/cuentas/nueva')}
-                  className="text-primary hover:text-primary-600 font-semibold"
-                >
-                  Agregar cuenta bancaria
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {bankAccounts.map((account) => (
-                  <button
-                    key={account.id}
-                    type="button"
-                    onClick={() => setSelectedAccount(account.id)}
-                    className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
-                      selectedAccount === account.id
-                        ? 'border-primary bg-primary-50'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <CreditCard className="w-5 h-5 text-gray-600" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900">{account.banco}</p>
-                          <p className="text-sm text-gray-600">{account.numero_cuenta}</p>
-                        </div>
-                      </div>
-                      {selectedAccount === account.id && (
-                        <CheckCircle className="w-6 h-6 text-primary" />
-                      )}
-                    </div>
-                    {account.is_primary && (
-                      <span className="inline-block mt-2 px-2 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded">
-                        Principal
-                      </span>
-                    )}
-                  </button>
-                ))}
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
+                <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                <p className="text-red-800 text-sm">{error}</p>
               </div>
             )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || !montoSoles || !montoDolares || !selectedAccount}
+              className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl"
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                  Creando Operación...
+                </>
+              ) : (
+                <>
+                  <DollarSign className="w-5 h-5 mr-2" />
+                  Crear Operación
+                </>
+              )}
+            </button>
           </div>
-
-          {/* Error message */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start">
-              <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
-              <p className="text-red-800 text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={isSubmitting || !montoSoles || !montoDolares || !selectedAccount}
-            className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl"
-          >
-            {isSubmitting ? (
-              <>
-                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                Creando Operación...
-              </>
-            ) : (
-              <>
-                <DollarSign className="w-5 h-5 mr-2" />
-                Crear Operación
-              </>
-            )}
-          </button>
         </form>
       </main>
     </div>

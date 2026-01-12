@@ -39,12 +39,12 @@ body {
 
 /* Animations */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 
 @keyframes pulse-slow {
@@ -54,4 +54,121 @@ body {
 
 .animate-pulse-slow {
   animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Banks strip animations */
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: #1f2937;
+    box-shadow: 0 0 0 0 rgba(0, 222, 168, 0.4);
+  }
+  50% {
+    border-color: #00DEA8;
+    box-shadow: 0 0 0 8px rgba(0, 222, 168, 0.2);
+  }
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    background-color: #1f2937;
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.4);
+    background-color: #00DEA8;
+  }
+}
+
+.animate-dot-1 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.animate-dot-2 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.animate-dot-3 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-dot-4 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+.animate-dot-5 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-dot-6 {
+  animation: dot-pulse 3s ease-in-out infinite;
+  animation-delay: 2.5s;
+}
+
+/* How it works section animations */
+@keyframes step-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-step-fade-in {
+  animation: step-fade-in 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes icon-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-icon-float {
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+@keyframes arrow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateX(0px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+}
+
+.animate-arrow-pulse {
+  animation: arrow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dot-travel {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.animate-dot-travel {
+  animation: dot-travel 3s ease-in-out infinite;
 }

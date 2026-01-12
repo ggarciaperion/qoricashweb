@@ -12,10 +12,10 @@ import type {
  */
 export const authApi = {
   /**
-   * Login user
+   * Login user (cliente web)
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+    const response = await apiClient.post<LoginResponse>('/api/client/login', credentials);
     return response.data;
   },
 
