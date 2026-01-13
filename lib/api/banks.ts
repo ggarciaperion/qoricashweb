@@ -22,7 +22,7 @@ export const banksApi = {
   },
 
   /**
-   * Add new bank account
+   * Add new bank account (usando el mismo endpoint que la app móvil)
    */
   async addAccount(data: {
     dni: string;
@@ -32,7 +32,8 @@ export const banksApi = {
     currency: 'S/' | '$';
     origen: 'Lima' | 'Provincia';
   }): Promise<ApiResponse<any>> {
-    const response = await apiClient.post<ApiResponse<any>>('/api/web/add-bank-account', data);
+    const { dni, ...bankData } = data;
+    const response = await apiClient.post<ApiResponse<any>>(`/add-bank-account/${dni}`, bankData);
     return response.data;
   },
 
@@ -68,13 +69,13 @@ export const banksApi = {
    */
   getBanksList(): Array<{ value: string; label: string; requiresCCI?: boolean }> {
     return [
-      { value: 'BCP', label: 'BCP - Banco de Crédito del Perú', requiresCCI: false },
+      { value: 'BCP', label: 'BCP', requiresCCI: false },
+      { value: 'INTERBANK', label: 'INTERBANK', requiresCCI: false },
+      { value: 'PICHINCHA', label: 'PICHINCHA', requiresCCI: false },
+      { value: 'BANBIF', label: 'BANBIF', requiresCCI: false },
       { value: 'BBVA', label: 'BBVA', requiresCCI: true },
-      { value: 'INTERBANK', label: 'Interbank', requiresCCI: false },
-      { value: 'SCOTIABANK', label: 'Scotiabank', requiresCCI: true },
-      { value: 'BANBIF', label: 'BanBif', requiresCCI: false },
-      { value: 'PICHINCHA', label: 'Banco Pichincha', requiresCCI: false },
-      { value: 'OTROS', label: 'Otros', requiresCCI: true },
+      { value: 'SCOTIABANK', label: 'SCOTIABANK', requiresCCI: true },
+      { value: 'OTROS', label: 'OTROS', requiresCCI: true },
     ];
   },
 
