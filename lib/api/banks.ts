@@ -33,7 +33,7 @@ export const banksApi = {
     origen: 'Lima' | 'Provincia';
   }): Promise<ApiResponse<any>> {
     const { dni, ...bankData } = data;
-    const response = await apiClient.post<ApiResponse<any>>(`/add-bank-account/${dni}`, bankData);
+    const response = await apiClient.post<ApiResponse<any>>(`/api/client/add-bank-account/${dni}`, bankData);
     return response.data;
   },
 
