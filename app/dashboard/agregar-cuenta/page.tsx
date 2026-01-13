@@ -53,6 +53,7 @@ export default function AgregarCuentaPage() {
   const selectedBank = watch('bank_name');
   const selectedCurrency = watch('currency');
   const accountNumber = watch('account_number');
+  const selectedOrigen = watch('origen');
 
   // Verificar autenticación
   if (!isAuthenticated || !user) {
@@ -103,7 +104,12 @@ export default function AgregarCuentaPage() {
     }
   };
 
-  const banksList = banksApi.getBanksList();
+  const allBanksList = banksApi.getBanksList();
+
+  // Filtrar bancos según origen seleccionado
+  const banksList = selectedOrigen === 'Provincia'
+    ? allBanksList.filter(bank => ['BCP', 'INTERBANK'].includes(bank.value))
+    : allBanksList;
 
   const requiresCCI = selectedBank && ['BBVA', 'SCOTIABANK', 'OTROS'].includes(selectedBank);
 
@@ -156,6 +162,47 @@ export default function AgregarCuentaPage() {
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Origen - PRIMER CAMPO */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Origen de la Cuenta <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    {...register('origen')}
+                    type="radio"
+                    value="Lima"
+                    className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                    disabled={isSubmitting}
+                  />
+                  <span className="ml-2 text-gray-700">Lima</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    {...register('origen')}
+                    type="radio"
+                    value="Provincia"
+                    className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                    disabled={isSubmitting}
+                  />
+                  <span className="ml-2 text-gray-700">Provincia</span>
+                </label>
+              </div>
+              {errors.origen && (
+                <p className="mt-2 text-sm text-red-600">{errors.origen.message}</p>
+              )}
+              {/* Mensaje informativo para Provincia */}
+              {selectedOrigen === 'Provincia' && (
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800 flex items-start">
+                    <Info className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                    <span>Por el momento, las operaciones con cuentas de provincia se realizan únicamente entre <strong>BCP</strong> e <strong>Interbank</strong>.</span>
+                  </p>
+                </div>
+              )}
+            </div>
+
             {/* Bank Selection */}
             <div>
               <label htmlFor="bank_name" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -169,9 +216,11 @@ export default function AgregarCuentaPage() {
                   className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.bank_name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !selectedOrigen}
                 >
-                  <option value="">Selecciona un banco</option>
+                  <option value="">
+                    {!selectedOrigen ? 'Primero selecciona el origen' : 'Selecciona un banco'}
+                  </option>
                   {banksList.map((bank) => (
                     <option key={bank.value} value={bank.value}>
                       {bank.label}
@@ -269,38 +318,6 @@ export default function AgregarCuentaPage() {
                 <p className="mt-2 text-sm text-gray-500">
                   {accountNumber.length} / 20 dígitos
                 </p>
-              )}
-            </div>
-
-            {/* Origen */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
-                Origen de la Cuenta <span className="text-red-500">*</span>
-              </label>
-              <div className="flex gap-4">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    {...register('origen')}
-                    type="radio"
-                    value="Lima"
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                    disabled={isSubmitting}
-                  />
-                  <span className="ml-2 text-gray-700">Lima</span>
-                </label>
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    {...register('origen')}
-                    type="radio"
-                    value="Provincia"
-                    className="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                    disabled={isSubmitting}
-                  />
-                  <span className="ml-2 text-gray-700">Provincia</span>
-                </label>
-              </div>
-              {errors.origen && (
-                <p className="mt-2 text-sm text-red-600">{errors.origen.message}</p>
               )}
             </div>
 
