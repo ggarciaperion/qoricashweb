@@ -23,6 +23,7 @@ import {
   Info,
   Plus,
   Landmark,
+  Trash2,
 } from 'lucide-react';
 
 export default function NuevaOperacionPage() {
@@ -54,6 +55,13 @@ export default function NuevaOperacionPage() {
 
     loadInitialData();
   }, [isAuthenticated]);
+
+  // Auto-select account when operation type changes
+  useEffect(() => {
+    if (bankAccounts.length > 0) {
+      autoSelectAccountByType(bankAccounts);
+    }
+  }, [tipo]);
 
   const loadInitialData = async () => {
     setIsLoading(true);
@@ -90,23 +98,87 @@ export default function NuevaOperacionPage() {
           tipo_cuenta: acc.account_type || acc.tipo_cuenta,
           moneda: acc.currency || acc.moneda,
           origen: acc.origen,
-          is_primary: index === 0, // First account as primary
+          is_primary: index === 0,
         }));
 
         setBankAccounts(transformedAccounts);
 
-        // Auto-select first account if none selected
-        if (transformedAccounts.length > 0 && selectedAccount === null) {
-          setSelectedAccount(0);
-        }
+        // Auto-select account based on operation type
+        autoSelectAccountByType(transformedAccounts);
       }
     } catch (error) {
       console.error('Error loading bank accounts:', error);
     }
   };
 
+  const autoSelectAccountByType = (accounts: BankAccount[]) => {
+    if (accounts.length === 0) {
+      setSelectedAccount(null);
+      return;
+    }
+
+    // Si es COMPRA: seleccionar cuenta en SOLES (porque paga con soles)
+    // Si es VENTA: seleccionar cuenta en DÓLARES (porque entrega dólares)
+    const targetCurrency = tipo === 'compra' ? 'S/' : '$';
+    const accountIndex = accounts.findIndex(acc => acc.moneda === targetCurrency);
+
+    if (accountIndex !== -1) {
+      setSelectedAccount(accountIndex);
+    } else {
+      setSelectedAccount(null);
+    }
+  };
+
   const handleAddAccountSuccess = async () => {
     await loadBankAccounts();
+  };
+
+  const handleDeleteAccount = async (accountIndex: number) => {
+    if (!user?.dni) return;
+
+    const accountToDelete = bankAccounts[accountIndex];
+    const confirmed = window.confirm(
+      `¿Estás seguro de eliminar la cuenta ${accountToDelete.banco} - ${accountToDelete.numero_cuenta}?`
+    );
+    if (!confirmed) return;
+
+    try {
+      // Call backend API to delete account
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/client/delete-bank-account/${user.dni}/${accountIndex}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Reload accounts
+        await loadBankAccounts();
+
+        // Clear selection if deleted account was selected
+        if (selectedAccount === accountIndex) {
+          setSelectedAccount(null);
+        } else if (selectedAccount !== null && selectedAccount > accountIndex) {
+          setSelectedAccount(selectedAccount - 1);
+        }
+      } else {
+        setError(data.message || 'Error al eliminar la cuenta bancaria');
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      setError('Error al eliminar la cuenta bancaria');
+    }
+  };
+
+  const canCreateOperation = () => {
+    const hasSoles = bankAccounts.some(acc => acc.moneda === 'S/');
+    const hasDolares = bankAccounts.some(acc => acc.moneda === '$');
+    return hasSoles && hasDolares;
   };
 
   const handleMontoSolesChange = async (value: string) => {
@@ -534,44 +606,84 @@ export default function NuevaOperacionPage() {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                  {bankAccounts.map((account) => (
-                    <button
-                      key={account.id}
-                      type="button"
-                      onClick={() => setSelectedAccount(account.id)}
-                      className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                        selectedAccount === account.id
-                          ? 'border-primary bg-primary-50 shadow-md'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3 flex-1">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            selectedAccount === account.id ? 'bg-primary-100' : 'bg-gray-100'
-                          }`}>
-                            <CreditCard className={`w-5 h-5 ${
-                              selectedAccount === account.id ? 'text-primary-600' : 'text-gray-600'
-                            }`} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-bold text-gray-900 truncate">{account.banco}</p>
-                            <p className="text-sm text-gray-600 truncate">{account.numero_cuenta}</p>
-                            {account.is_primary && (
-                              <span className="inline-block mt-1 px-2 py-0.5 bg-primary-100 text-primary-700 text-xs font-semibold rounded">
-                                Principal
-                              </span>
+                <>
+                  {/* Validation Message */}
+                  {!canCreateOperation() && (
+                    <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-sm text-yellow-800 flex items-start">
+                        <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                        <span>Necesitas al menos <strong>una cuenta en Soles (S/)</strong> y <strong>una cuenta en Dólares ($)</strong> para crear operaciones.</span>
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                    {bankAccounts.map((account) => (
+                      <div
+                        key={account.id}
+                        className={`relative w-full p-4 rounded-lg border-2 transition-all ${
+                          selectedAccount === account.id
+                            ? 'border-primary bg-primary-50 shadow-md'
+                            : 'border-gray-200 hover:border-gray-300 bg-white'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedAccount(account.id)}
+                            className="flex items-start space-x-3 flex-1 text-left"
+                          >
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                              selectedAccount === account.id ? 'bg-primary-100' : 'bg-gray-100'
+                            }`}>
+                              <CreditCard className={`w-5 h-5 ${
+                                selectedAccount === account.id ? 'text-primary-600' : 'text-gray-600'
+                              }`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-bold text-gray-900 truncate">{account.banco}</p>
+                              <p className="text-sm text-gray-600 truncate">{account.numero_cuenta}</p>
+
+                              {/* Additional Info */}
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded">
+                                  <DollarSign className="w-3 h-3 mr-1" />
+                                  {account.moneda}
+                                </span>
+                                <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded">
+                                  <Landmark className="w-3 h-3 mr-1" />
+                                  {account.tipo_cuenta}
+                                </span>
+                                <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded">
+                                  <Building2 className="w-3 h-3 mr-1" />
+                                  {account.origen}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+
+                          {/* Delete and Check Icons */}
+                          <div className="flex items-center gap-2 ml-2">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteAccount(account.id);
+                              }}
+                              className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition"
+                              title="Eliminar cuenta"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            {selectedAccount === account.id && (
+                              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
                             )}
                           </div>
                         </div>
-                        {selectedAccount === account.id && (
-                          <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
-                        )}
                       </div>
-                    </button>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
@@ -586,8 +698,9 @@ export default function NuevaOperacionPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting || !montoSoles || !montoDolares || !selectedAccount}
+              disabled={isSubmitting || !montoSoles || !montoDolares || !selectedAccount || !canCreateOperation()}
               className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl"
+              title={!canCreateOperation() ? 'Necesitas al menos una cuenta en Soles y una en Dólares' : ''}
             >
               {isSubmitting ? (
                 <>
