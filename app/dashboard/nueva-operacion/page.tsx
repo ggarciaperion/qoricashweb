@@ -646,8 +646,7 @@ export default function NuevaOperacionPage() {
 
                               {/* Additional Info */}
                               <div className="flex flex-wrap gap-2 mt-2">
-                                <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded">
-                                  <DollarSign className="w-3 h-3 mr-1" />
+                                <span className="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
                                   {account.moneda}
                                 </span>
                                 <span className="inline-flex items-center px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded">
