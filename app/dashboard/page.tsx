@@ -328,18 +328,18 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-xs text-gray-500">Monto Soles</p>
                           <p className="text-lg font-bold text-gray-900">
-                            S/ {operation.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                            S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                           </p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Monto Dólares</p>
                           <p className="text-lg font-bold text-gray-900">
-                            $ {operation.monto_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </p>
                         </div>
                       </div>
                       <div className="mt-2 text-xs text-gray-500">
-                        TC: S/ {operation.tipo_cambio.toFixed(3)} • {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
+                        TC: S/ {(operation.tipo_cambio ?? 0).toFixed(3)} • {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
                       </div>
                     </div>
                   </div>

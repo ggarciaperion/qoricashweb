@@ -27,10 +27,10 @@ export const operationsApi = {
   },
 
   /**
-   * Create new operation
+   * Create new operation from web
    */
   async createOperation(data: CreateOperationRequest): Promise<CreateOperationResponse> {
-    const response = await apiClient.post<CreateOperationResponse>('/api/operations/create', data);
+    const response = await apiClient.post<CreateOperationResponse>('/api/web/create-operation', data);
     return response.data;
   },
 
@@ -54,12 +54,12 @@ export const operationsApi = {
   },
 
   /**
-   * Cancel an operation
+   * Cancel an operation from web
    */
   async cancelOperation(operationId: number, reason?: string): Promise<ApiResponse> {
     const response = await apiClient.post<ApiResponse>(
-      `/api/operations/${operationId}/cancel`,
-      { reason }
+      '/api/web/cancel-operation',
+      { operation_id: operationId, reason }
     );
     return response.data;
   },

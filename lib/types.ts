@@ -108,9 +108,10 @@ export interface RegisterResponse {
 
 // Operation creation types
 export interface CreateOperationRequest {
+  dni: string;
   tipo: OperationType;
-  monto_soles?: number;
-  monto_dolares?: number;
+  monto_soles: number;
+  monto_dolares: number;
   banco_cuenta_id: number;
 }
 
