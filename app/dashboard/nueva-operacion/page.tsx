@@ -7,6 +7,7 @@ import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { operationsApi } from '@/lib/api/operations';
 import { banksApi } from '@/lib/api/banks';
 import type { BankAccount } from '@/lib/types';
+import AddBankAccountModal from '@/components/modals/AddBankAccountModal';
 import {
   ArrowLeft,
   DollarSign,
@@ -43,6 +44,7 @@ export default function NuevaOperacionPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [activeInput, setActiveInput] = useState<'soles' | 'dolares'>('soles');
+  const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -64,6 +66,19 @@ export default function NuevaOperacionPage() {
 
       // Fetch rates and bank accounts in parallel
       await fetchRates();
+      await loadBankAccounts();
+    } catch (error) {
+      console.error('Error loading initial data:', error);
+      setError('Error al cargar los datos iniciales');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadBankAccounts = async () => {
+    if (!user?.dni) return;
+
+    try {
       const accountsResponse = await banksApi.getMyAccounts(user.dni);
 
       if (accountsResponse.success && accountsResponse.data) {
@@ -80,17 +95,18 @@ export default function NuevaOperacionPage() {
 
         setBankAccounts(transformedAccounts);
 
-        // Auto-select first account
-        if (transformedAccounts.length > 0) {
+        // Auto-select first account if none selected
+        if (transformedAccounts.length > 0 && selectedAccount === null) {
           setSelectedAccount(0);
         }
       }
     } catch (error) {
-      console.error('Error loading initial data:', error);
-      setError('Error al cargar los datos iniciales');
-    } finally {
-      setIsLoading(false);
+      console.error('Error loading bank accounts:', error);
     }
+  };
+
+  const handleAddAccountSuccess = async () => {
+    await loadBankAccounts();
   };
 
   const handleMontoSolesChange = async (value: string) => {
@@ -489,10 +505,10 @@ export default function NuevaOperacionPage() {
                 <label className="block text-sm font-semibold text-gray-700">
                   Cuenta Bancaria
                 </label>
-                {bankAccounts.length > 0 && (
+                {bankAccounts.length > 0 && bankAccounts.length < 6 && (
                   <button
                     type="button"
-                    onClick={() => router.push('/dashboard/agregar-cuenta')}
+                    onClick={() => setIsAddAccountModalOpen(true)}
                     className="text-xs text-primary hover:text-primary-600 font-semibold flex items-center"
                   >
                     <Plus className="w-3 h-3 mr-1" />
@@ -510,7 +526,7 @@ export default function NuevaOperacionPage() {
                   </p>
                   <button
                     type="button"
-                    onClick={() => router.push('/dashboard/agregar-cuenta')}
+                    onClick={() => setIsAddAccountModalOpen(true)}
                     className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition shadow-md"
                   >
                     <Plus className="w-4 h-4 mr-2" />
@@ -588,6 +604,14 @@ export default function NuevaOperacionPage() {
           </div>
         </form>
       </main>
+
+      {/* Add Bank Account Modal */}
+      <AddBankAccountModal
+        isOpen={isAddAccountModalOpen}
+        onClose={() => setIsAddAccountModalOpen(false)}
+        onSuccess={handleAddAccountSuccess}
+        dni={user?.dni || ''}
+      />
     </div>
   );
 }
