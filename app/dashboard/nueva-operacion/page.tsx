@@ -31,6 +31,8 @@ import {
   Copy,
   Timer,
   X,
+  Upload,
+  FileImage,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -68,6 +70,12 @@ export default function NuevaOperacionPage() {
 
   // Confirm operation state
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  // Upload proof state
+  const [isUploadProofModalOpen, setIsUploadProofModalOpen] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [operationCode, setOperationCode] = useState('');
+  const [isUploadingProof, setIsUploadingProof] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -314,6 +322,35 @@ export default function NuevaOperacionPage() {
       setError(error.response?.data?.message || 'Error al cancelar la operación');
       setIsCancelling(false);
     }
+  };
+
+  // Handle file upload
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      const totalFiles = uploadedFiles.length + newFiles.length;
+
+      if (totalFiles > 4) {
+        setError('Máximo 4 archivos permitidos');
+        return;
+      }
+
+      setUploadedFiles([...uploadedFiles, ...newFiles]);
+      setError(null);
+    }
+  };
+
+  // Remove file from list
+  const handleRemoveFile = (index: number) => {
+    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
+
+  // Submit proof of payment
+  const handleSubmitProof = async () => {
+    // Por ahora solo avanzamos al paso 3
+    // La funcionalidad de subir archivos se implementará cuando esté el endpoint
+    setIsUploadProofModalOpen(false);
+    setCurrentStep(3);
   };
 
   // Get QoriCash account based on client bank and operation type
@@ -776,7 +813,10 @@ export default function NuevaOperacionPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setCurrentStep(3)}
+                      onClick={() => {
+                        setIsUploadProofModalOpen(true);
+                        setOperationCode(createdOperation.codigo_operacion);
+                      }}
                       disabled={timeRemaining === 0}
                       className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-bold hover:from-green-600 hover:to-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center"
                     >
@@ -1277,6 +1317,175 @@ export default function NuevaOperacionPage() {
                   </>
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Proof Modal */}
+      {isUploadProofModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 animate-in fade-in duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Agregar Comprobante</h3>
+              <button
+                onClick={() => {
+                  setIsUploadProofModalOpen(false);
+                  setUploadedFiles([]);
+                  setError(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition"
+                disabled={isUploadingProof}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="space-y-4">
+              {/* Info Text */}
+              <p className="text-sm text-gray-600">
+                Sube tu comprobante de transferencia para que podamos procesar tu operación.
+              </p>
+
+              {/* File Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Comprobante de pago (máximo 4 archivos)
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-secondary transition">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    multiple
+                    accept="image/*,.pdf"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    disabled={isUploadingProof || uploadedFiles.length >= 4}
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <Upload className="w-12 h-12 text-gray-400 mb-2" />
+                    <p className="text-sm font-medium text-gray-700">
+                      {uploadedFiles.length >= 4
+                        ? 'Máximo de archivos alcanzado'
+                        : 'Haz clic para seleccionar archivos'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      PNG, JPG, PDF ({uploadedFiles.length}/4 archivos)
+                    </p>
+                  </label>
+                </div>
+
+                {/* Uploaded Files List */}
+                {uploadedFiles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {uploadedFiles.map((file, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <FileImage className="w-5 h-5 text-gray-400" />
+                          <span className="text-sm text-gray-700 truncate max-w-xs">
+                            {file.name}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveFile(index)}
+                          className="text-red-500 hover:text-red-700 transition"
+                          disabled={isUploadingProof}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Operation Code */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Código de operación
+                </label>
+                <input
+                  type="text"
+                  value={operationCode}
+                  readOnly
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-700 font-mono"
+                />
+              </div>
+
+              {/* Alternative Channels */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-gray-700 mb-2">
+                  <strong>También puedes enviar tu comprobante a:</strong>
+                </p>
+                <div className="space-y-2">
+                  <a
+                    href="mailto:info@qoricash.pe"
+                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition"
+                  >
+                    <Mail className="w-4 h-4" />
+                    info@qoricash.pe
+                  </a>
+                  <a
+                    href="https://wa.me/51940825008"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-green-600 hover:text-green-800 transition"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800 flex items-start">
+                    <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setIsUploadProofModalOpen(false);
+                    setUploadedFiles([]);
+                    setError(null);
+                  }}
+                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
+                  disabled={isUploadingProof}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSubmitProof}
+                  disabled={isUploadingProof}
+                  className="flex-1 bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isUploadingProof ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Enviar
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
