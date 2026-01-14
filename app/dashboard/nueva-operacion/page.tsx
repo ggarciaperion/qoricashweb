@@ -74,7 +74,7 @@ export default function NuevaOperacionPage() {
   // Upload proof state
   const [isUploadProofModalOpen, setIsUploadProofModalOpen] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [operationCode, setOperationCode] = useState('');
+  const [voucherCode, setVoucherCode] = useState('');
   const [isUploadingProof, setIsUploadingProof] = useState(false);
 
   useEffect(() => {
@@ -815,7 +815,6 @@ export default function NuevaOperacionPage() {
                       type="button"
                       onClick={() => {
                         setIsUploadProofModalOpen(true);
-                        setOperationCode(createdOperation.codigo_operacion);
                       }}
                       disabled={timeRemaining === 0}
                       className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-bold hover:from-green-600 hover:to-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center"
@@ -1333,6 +1332,7 @@ export default function NuevaOperacionPage() {
                 onClick={() => {
                   setIsUploadProofModalOpen(false);
                   setUploadedFiles([]);
+                  setVoucherCode('');
                   setError(null);
                 }}
                 className="text-gray-400 hover:text-gray-600 transition"
@@ -1407,17 +1407,22 @@ export default function NuevaOperacionPage() {
                 )}
               </div>
 
-              {/* Operation Code */}
+              {/* Voucher Code */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Código de operación
+                  Código / Número de operación (Opcional)
                 </label>
                 <input
                   type="text"
-                  value={operationCode}
-                  readOnly
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-700 font-mono"
+                  value={voucherCode}
+                  onChange={(e) => setVoucherCode(e.target.value)}
+                  placeholder="Ej: 123456789"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                  disabled={isUploadingProof}
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Ingresa el número de operación o código de tu comprobante de transferencia
+                </p>
               </div>
 
               {/* Alternative Channels */}
@@ -1461,6 +1466,7 @@ export default function NuevaOperacionPage() {
                   onClick={() => {
                     setIsUploadProofModalOpen(false);
                     setUploadedFiles([]);
+                    setVoucherCode('');
                     setError(null);
                   }}
                   className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
