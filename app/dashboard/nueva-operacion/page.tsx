@@ -347,10 +347,52 @@ export default function NuevaOperacionPage() {
 
   // Submit proof of payment
   const handleSubmitProof = async () => {
-    // Por ahora solo avanzamos al paso 3
-    // La funcionalidad de subir archivos se implementará cuando esté el endpoint
-    setIsUploadProofModalOpen(false);
-    setCurrentStep(3);
+    if (!createdOperation) {
+      setError('No hay operación creada');
+      return;
+    }
+
+    setIsUploadingProof(true);
+    setError(null);
+
+    try {
+      // Crear FormData para enviar archivos
+      const formData = new FormData();
+      formData.append('operation_id', createdOperation.id.toString());
+
+      // Agregar código de voucher si fue proporcionado
+      if (voucherCode.trim()) {
+        formData.append('voucher_code', voucherCode.trim());
+      }
+
+      // Agregar archivos
+      uploadedFiles.forEach((file) => {
+        formData.append('files', file);
+      });
+
+      // Enviar al backend
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com'}/api/web/submit-proof`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Cerrar modal y avanzar al paso 3
+        setIsUploadProofModalOpen(false);
+        setUploadedFiles([]);
+        setVoucherCode('');
+        setCurrentStep(3);
+      } else {
+        setError(data.message || 'Error al enviar comprobante');
+        setIsUploadingProof(false);
+      }
+    } catch (err: any) {
+      console.error('Error al enviar comprobante:', err);
+      setError('Error al enviar comprobante. Por favor intenta nuevamente.');
+      setIsUploadingProof(false);
+    }
   };
 
   // Get QoriCash account based on client bank and operation type
