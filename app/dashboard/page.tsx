@@ -185,11 +185,45 @@ export default function DashboardPage() {
           <p className="text-gray-600 mt-1">Gestiona tus operaciones de cambio de divisas</p>
         </div>
 
-        {/* Referral Code Card */}
-        {user?.referral_code && (
-          <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl shadow-lg p-6 mb-8 border-2 border-amber-200">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
+        {/* Layout horizontal: Tipo de Cambio y Referidos */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Exchange rates card */}
+          {currentRates && (
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-full">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Tipo de Cambio Actual</h3>
+                <div className={`flex items-center text-sm font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
+                  <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
+                  {isConnected ? 'En vivo' : 'Actualizando...'}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-green-800">Compra</span>
+                    <TrendingUp className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div className="text-3xl font-bold text-green-900">
+                    S/ {currentRates.tipo_compra.toFixed(3)}
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-blue-800">Venta</span>
+                    <TrendingDown className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="text-3xl font-bold text-blue-900">
+                    S/ {currentRates.tipo_venta.toFixed(3)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Referral Code Card */}
+          {user?.referral_code && (
+            <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl shadow-lg p-6 border-2 border-amber-200 h-full">
+              <div className="flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
                   <Gift className="w-6 h-6 text-amber-600" />
                   <h3 className="text-lg font-bold text-gray-900">¡Invita y Gana!</h3>
@@ -197,15 +231,15 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-700 mb-4">
                   Comparte tu código de referido con amigos y familiares. Ambos recibirán un mejor tipo de cambio en su primera operación.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1 bg-white rounded-lg px-4 py-3 border-2 border-amber-300">
+                <div className="flex flex-col gap-3 mt-auto">
+                  <div className="bg-white rounded-lg px-4 py-3 border-2 border-amber-300">
                     <p className="text-xs text-gray-600 mb-1">Tu código de referido</p>
                     <p className="text-2xl font-bold text-amber-600 tracking-wider font-mono">{user.referral_code}</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={copyReferralCode}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition font-semibold shadow-md hover:shadow-lg"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition font-semibold shadow-md hover:shadow-lg"
                     >
                       {copiedCode ? (
                         <>
@@ -225,7 +259,7 @@ export default function DashboardPage() {
                         const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                         window.open(url, '_blank');
                       }}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-md hover:shadow-lg"
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-md hover:shadow-lg"
                     >
                       <Share2 className="w-5 h-5" />
                       Compartir
@@ -234,41 +268,8 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Exchange rates card */}
-        {currentRates && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Tipo de Cambio Actual</h3>
-              <div className={`flex items-center text-sm font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
-                <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
-                {isConnected ? 'En vivo (Tiempo Real)' : 'Actualizando...'}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-green-800">Compra</span>
-                  <TrendingUp className="w-5 h-5 text-green-600" />
-                </div>
-                <div className="text-3xl font-bold text-green-900">
-                  S/ {currentRates.tipo_compra.toFixed(3)}
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-blue-800">Venta</span>
-                  <TrendingDown className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="text-3xl font-bold text-blue-900">
-                  S/ {currentRates.tipo_venta.toFixed(3)}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Stats cards */}
         {stats && (
