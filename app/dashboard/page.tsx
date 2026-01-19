@@ -20,6 +20,9 @@ import {
   RefreshCw,
   ArrowUpRight,
   ArrowDownRight,
+  Gift,
+  Copy,
+  Share2,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -31,6 +34,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<ClientStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'todas' | 'pendientes' | 'completadas'>('todas');
+  const [copiedCode, setCopiedCode] = useState(false);
 
   useEffect(() => {
     // Fetch exchange rates
@@ -84,6 +88,14 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     await logout();
     router.push('/');
+  };
+
+  const copyReferralCode = () => {
+    if (user?.referral_code) {
+      navigator.clipboard.writeText(user.referral_code);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    }
   };
 
   const filteredOperations = operations.filter((op) => {
@@ -162,10 +174,64 @@ export default function DashboardPage() {
         {/* Welcome section */}
         <div className="mb-8">
           <h2 className="text-3xl font-display font-bold text-gray-900">
-            Bienvenido, {user?.nombres}!
+            Bienvenido, {user?.document_type === 'RUC'
+              ? user?.razon_social || user?.nombres
+              : user?.nombres}!
           </h2>
           <p className="text-gray-600 mt-1">Gestiona tus operaciones de cambio de divisas</p>
         </div>
+
+        {/* Referral Code Card */}
+        {user?.referral_code && (
+          <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-2xl shadow-lg p-6 mb-8 border-2 border-amber-200">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Gift className="w-6 h-6 text-amber-600" />
+                  <h3 className="text-lg font-bold text-gray-900">¡Invita y Gana!</h3>
+                </div>
+                <p className="text-sm text-gray-700 mb-4">
+                  Comparte tu código de referido con amigos y familiares. Ambos recibirán un mejor tipo de cambio en su primera operación.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1 bg-white rounded-lg px-4 py-3 border-2 border-amber-300">
+                    <p className="text-xs text-gray-600 mb-1">Tu código de referido</p>
+                    <p className="text-2xl font-bold text-amber-600 tracking-wider font-mono">{user.referral_code}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={copyReferralCode}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition font-semibold shadow-md hover:shadow-lg"
+                    >
+                      {copiedCode ? (
+                        <>
+                          <CheckCircle2 className="w-5 h-5" />
+                          ¡Copiado!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-5 h-5" />
+                          Copiar
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio. 🎁`;
+                        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                        window.open(url, '_blank');
+                      }}
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold shadow-md hover:shadow-lg"
+                    >
+                      <Share2 className="w-5 h-5" />
+                      Compartir
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Exchange rates card */}
         {currentRates && (

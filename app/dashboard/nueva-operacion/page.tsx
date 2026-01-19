@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
+import { useReferralStore } from '@/lib/store/referralStore';
 import { operationsApi } from '@/lib/api/operations';
 import { banksApi } from '@/lib/api/banks';
 import type { BankAccount } from '@/lib/types';
@@ -33,6 +34,7 @@ import {
   X,
   Upload,
   FileImage,
+  Tag,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -40,6 +42,7 @@ export default function NuevaOperacionPage() {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
+  const { hasCoupon, setHasCoupon, referralCode: storedReferralCode, setReferralCode: storeReferralCode } = useReferralStore();
 
   // Form state
   const [tipo, setTipo] = useState<'Compra' | 'Venta'>('Compra');
@@ -49,6 +52,16 @@ export default function NuevaOperacionPage() {
   const [selectedDestinationAccount, setSelectedDestinationAccount] = useState<number | null>(null);
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const [ownershipConfirmed, setOwnershipConfirmed] = useState(false);
+
+  // Referral/Coupon state
+  const [showCouponField, setShowCouponField] = useState(hasCoupon);
+  const [referralCode, setReferralCode] = useState(storedReferralCode);
+  const [isValidatingCode, setIsValidatingCode] = useState(false);
+  const [codeValidation, setCodeValidation] = useState<{
+    isValid: boolean;
+    message: string;
+  } | null>(null);
+  const [appliedDiscount, setAppliedDiscount] = useState(0); // 0.003 when code is valid
 
   // UI state
   const [currentStep, setCurrentStep] = useState(1); // 1: Cotiza, 2: Transfiere, 3: Recibe
@@ -100,7 +113,12 @@ export default function NuevaOperacionPage() {
   // Recalculate when input or operation type changes
   useEffect(() => {
     calculateAmount();
-  }, [amountInput, tipo, currentRates]);
+  }, [amountInput, tipo, currentRates, appliedDiscount]);
+
+  // Initialize coupon field visibility based on stored state
+  useEffect(() => {
+    setShowCouponField(hasCoupon);
+  }, [hasCoupon]);
 
   const loadInitialData = async () => {
     setIsLoading(true);
@@ -163,12 +181,70 @@ export default function NuevaOperacionPage() {
       return;
     }
 
+    // Apply referral discount if code is valid
+    let adjustedRate = 0;
     if (tipo === 'Compra') {
-      const pen = (amount * currentRates.tipo_compra).toFixed(2);
+      // Compra: QoriCash compra dólares al cliente
+      // Beneficio: suma 0.003 al tipo de cambio
+      adjustedRate = appliedDiscount > 0
+        ? currentRates.tipo_compra + appliedDiscount
+        : currentRates.tipo_compra;
+      const pen = (amount * adjustedRate).toFixed(2);
       setAmountOutput(pen);
     } else {
-      const usd = (amount / currentRates.tipo_venta).toFixed(2);
+      // Venta: QoriCash vende dólares al cliente
+      // Beneficio: resta 0.003 al tipo de cambio
+      adjustedRate = appliedDiscount > 0
+        ? currentRates.tipo_venta - appliedDiscount
+        : currentRates.tipo_venta;
+      const usd = (amount / adjustedRate).toFixed(2);
       setAmountOutput(usd);
+    }
+  };
+
+  // Validate referral code
+  const validateReferralCode = async (code: string) => {
+    if (!code || code.length !== 6) {
+      setCodeValidation({ isValid: false, message: 'Código inválido' });
+      setAppliedDiscount(0);
+      return;
+    }
+
+    setIsValidatingCode(true);
+    try {
+      // TODO: Replace with actual API call
+      // const response = await referralApi.validateCode(code, user?.id);
+
+      // Temporary validation logic
+      // Check if code format is valid
+      const isValidFormat = /^[A-Z0-9]{6}$/.test(code);
+
+      // Check if user is not using their own code
+      const isOwnCode = user?.referral_code === code;
+
+      // Check if user already used a code (for new users only)
+      const hasUsedCode = user?.used_referral_code !== null;
+
+      if (!isValidFormat) {
+        setCodeValidation({ isValid: false, message: 'Formato de código inválido' });
+        setAppliedDiscount(0);
+      } else if (isOwnCode) {
+        setCodeValidation({ isValid: false, message: 'No puedes usar tu propio código' });
+        setAppliedDiscount(0);
+      } else if (hasUsedCode) {
+        setCodeValidation({ isValid: false, message: 'Ya has usado un código promocional' });
+        setAppliedDiscount(0);
+      } else {
+        // Code is valid
+        setCodeValidation({ isValid: true, message: '¡Código aplicado! Beneficio: +0.003 en el tipo de cambio' });
+        setAppliedDiscount(0.003);
+        storeReferralCode(code);
+      }
+    } catch (error) {
+      setCodeValidation({ isValid: false, message: 'Error al validar código' });
+      setAppliedDiscount(0);
+    } finally {
+      setIsValidatingCode(false);
     }
   };
 
@@ -472,7 +548,7 @@ export default function NuevaOperacionPage() {
             <span className="font-medium">Volver</span>
           </button>
 
-          <div className="flex items-center gap-2 bg-gradient-to-r from-green-50 to-emerald-50 px-3 py-1.5 rounded-full border border-green-200">
+          <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
             <div className="relative flex items-center">
               <div className={`w-2 h-2 rounded-full ${currentRates ? 'bg-green-500' : 'bg-gray-400'}`}></div>
               {currentRates && (
@@ -859,7 +935,7 @@ export default function NuevaOperacionPage() {
                         setIsUploadProofModalOpen(true);
                       }}
                       disabled={timeRemaining === 0}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-bold hover:from-green-600 hover:to-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center"
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center"
                     >
                       <CheckCircle className="w-5 h-5 mr-2" />
                       Ya transferí
@@ -1146,8 +1222,30 @@ export default function NuevaOperacionPage() {
               ) : (
                 /* STEP 3: Receive (placeholder) */
                 <div className="text-center py-8">
-                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Wallet className="w-10 h-10 text-green-600" />
+                  <style jsx>{`
+                    @keyframes pulse-ring {
+                      0% {
+                        transform: scale(0.95);
+                        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+                      }
+
+                      50% {
+                        transform: scale(1);
+                        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+                      }
+
+                      100% {
+                        transform: scale(0.95);
+                        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+                      }
+                    }
+
+                    .processing-icon {
+                      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                    }
+                  `}</style>
+                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 processing-icon">
+                    <RefreshCw className="w-10 h-10 text-green-600 animate-spin" style={{ animationDuration: '2s' }} />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Procesando tu operación</h3>
                   <p className="text-gray-600 mb-6">Estamos verificando tu transferencia. Recibirás tu dinero pronto.</p>

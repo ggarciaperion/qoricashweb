@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Calculator from '@/components/Calculator';
+import AnimatedStat from '@/components/AnimatedStat';
 import { useAuthStore } from '@/lib/store';
 import {
   ArrowRight,
@@ -20,7 +22,9 @@ import {
   Calculator as CalculatorIcon,
   Banknote,
   LogOut,
-  User as UserIcon
+  User as UserIcon,
+  ChevronDown,
+  HelpCircle
 } from 'lucide-react';
 
 export default function Home() {
@@ -28,11 +32,30 @@ export default function Home() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
     // TODO: Fetch real rates from API
     // fetchExchangeRates();
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-menu-container')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -52,27 +75,74 @@ export default function Home() {
               </span>
             </Link>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#servicios" className="text-gray-700 hover:text-primary-600 transition">Servicios</a>
-              <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">Cómo Funciona</a>
-              <a href="#nosotros" className="text-gray-700 hover:text-primary-600 transition">Nosotros</a>
+              <Link href="/sobre-nosotros" className="text-gray-700 hover:text-primary-600 transition">
+                Nosotros
+              </Link>
+              <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">
+                Cómo Funciona
+              </a>
+              <a href="#promociones" className="text-gray-700 hover:text-primary-600 transition">
+                Promociones
+              </a>
 
               {isAuthenticated ? (
-                <>
-                  <Link href="/dashboard" className="text-gray-700 hover:text-primary-600 transition font-medium">
-                    Mi Dashboard
-                  </Link>
-                  <div className="flex items-center space-x-2 text-gray-700">
-                    <UserIcon className="w-5 h-5" />
-                    <span className="font-medium">{user?.nombres || user?.email}</span>
-                  </div>
+                <div className="relative user-menu-container">
                   <button
-                    onClick={handleLogout}
-                    className="inline-flex items-center text-gray-700 hover:text-red-600 transition"
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
                   >
-                    <LogOut className="w-5 h-5 mr-2" />
-                    Cerrar Sesión
+                    <UserIcon className="w-5 h-5" />
+                    <span className="font-medium">
+                      {user?.document_type === 'RUC'
+                        ? user?.razon_social || user?.nombres
+                        : `${user?.nombres} ${user?.apellidos}`}
+                    </span>
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
-                </>
+
+                  {/* Dropdown Menu */}
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                      <Link
+                        href="/perfil"
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <UserIcon className="w-5 h-5 mr-3" />
+                        Mi perfil
+                      </Link>
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <TrendingUp className="w-5 h-5 mr-3" />
+                        Mi Dashboard
+                      </Link>
+                      <a
+                        href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <HelpCircle className="w-5 h-5 mr-3" />
+                        Ayuda
+                      </a>
+                      <div className="border-t border-gray-200 my-1"></div>
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition"
+                      >
+                        <LogOut className="w-5 h-5 mr-3" />
+                        Cerrar Sesión
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <>
                   <Link href="/login" className="text-gray-700 hover:text-primary-600 transition">
@@ -82,7 +152,7 @@ export default function Home() {
                     href="/crear-cuenta"
                     className="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg"
                   >
-                    Registrarse
+                    Regístrate
                   </Link>
                 </>
               )}
@@ -92,7 +162,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 sm:px-8 lg:px-12 relative overflow-hidden">
+      <section className="pt-16 pb-0 px-6 sm:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
@@ -100,9 +170,9 @@ export default function Home() {
         </div>
 
         <div className="w-full relative">
-          <div className="grid lg:grid-cols-12 gap-4 items-center relative">
+          <div className="grid lg:grid-cols-12 gap-3 items-center relative">
             {/* Left Column: Text Content */}
-            <div className="lg:col-span-5 space-y-8 relative z-10 lg:pr-8">
+            <div className="lg:col-span-4 space-y-4 relative z-10 lg:pr-4">
               <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
@@ -110,65 +180,72 @@ export default function Home() {
                 </span>{' '}
                 al mejor precio
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Compra y vende dólares de forma segura, rápida y con los mejores tipos de cambio del mercado peruano.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/crear-cuenta"
-                  className="inline-flex items-center justify-center bg-primary text-secondary px-8 py-4 rounded-full text-lg font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta')}
+                  className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-full text-base font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
                 >
                   Empezar Ahora
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
-                </Link>
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
+                </button>
                 <Link
                   href="#como-funciona"
-                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-8 py-4 rounded-full text-lg font-semibold hover:bg-primary-50 transition"
+                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-3 rounded-full text-base font-semibold hover:bg-primary-50 transition"
                 >
                   Ver cómo funciona
                 </Link>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
-                <div>
-                  <div className="text-3xl font-bold text-primary">10k+</div>
-                  <div className="text-sm text-gray-600">Clientes</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-primary">$50M+</div>
-                  <div className="text-sm text-gray-600">Cambiados</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-primary">4.9/5</div>
-                  <div className="text-sm text-gray-600">Calificación</div>
-                </div>
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+                <AnimatedStat
+                  value={10}
+                  suffix="k+"
+                  label="Clientes"
+                  duration={2500}
+                />
+                <AnimatedStat
+                  value={50}
+                  prefix="$"
+                  suffix="M+"
+                  label="Cambiados"
+                  duration={2500}
+                />
+                <AnimatedStat
+                  value={4.9}
+                  suffix="/5"
+                  label="Calificación"
+                  decimals={1}
+                  duration={2500}
+                />
               </div>
             </div>
 
             {/* Center: Hero Image (Overlapping to the left) */}
-            <div className="lg:col-span-3 flex items-center justify-center relative lg:-ml-24 z-20">
-              <div className="relative">
+            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20">
+              <div className="relative" style={{ width: '700px', height: '750px' }}>
                 <img
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
-                  className="w-full h-auto max-w-lg drop-shadow-2xl relative z-10 animate-float"
+                  className="w-full h-full object-contain drop-shadow-2xl relative z-10 animate-float"
+                  style={{ minWidth: '800px', minHeight: '750px' }}
                 />
               </div>
             </div>
 
             {/* Right Column: Calculator (More Width) */}
-            <div className="lg:col-span-4 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-gray-100 relative z-10 hover:shadow-3xl transition-shadow duration-300">
-              <div className="flex flex-col gap-3 mb-6">
-                <div className="flex items-center justify-end">
-                  <div className="flex items-center text-green-600 text-sm font-semibold">
-                    <div className="w-2.5 h-2.5 bg-green-600 rounded-full animate-pulse mr-2"></div>
-                    En vivo
-                  </div>
+            <div className="lg:col-span-4 relative z-30">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs text-gray-500">
+                  Tipos de cambio en tiempo real
+                </p>
+                <div className="flex items-center text-green-600 text-xs font-semibold">
+                  <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
+                  En vivo
                 </div>
-                <h3 className="text-xl font-display font-bold text-gray-900 text-center">
-                  Tipo de cambio hoy en QoriCash
-                </h3>
               </div>
 
               <Calculator
@@ -180,85 +257,227 @@ export default function Home() {
 
               <button
                 onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
-                className="w-full mt-4 bg-primary text-secondary py-4 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-base"
+                className="w-full mt-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
               >
                 Cambiar Ahora
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-5 h-5" />
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
               </button>
 
-              <p className="text-sm text-center text-gray-500 mt-3">
-                Tipos de cambio en tiempo real
-              </p>
+              {/* CTA Tasa Preferencial */}
+              <a
+                href="https://wa.me/51906237356?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full mt-3 group"
+              >
+                <div className="relative bg-gradient-to-r from-green-50 to-primary-50 border-2 border-primary-300 rounded-lg p-3 hover:shadow-lg hover:border-primary-500 transition-all duration-300 overflow-hidden">
+                  {/* Efecto de brillo */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
+
+                  <div className="relative flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-primary animate-pulse" fill="currentColor" />
+                      <span className="text-sm font-bold text-gray-800">
+                        Tasa preferencial +$3,000
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-primary font-semibold text-xs">
+                      <span>WhatsApp</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
         </div>
       </section>
 
       {/* Banks Strip */}
-      <section className="pb-16 px-6 sm:px-8 lg:px-12">
+      <section className="pt-0 pb-8 px-6 sm:px-8 lg:px-12 relative -mt-8">
+        {/* Divider sutil superior */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-gradient-to-b from-primary/5 to-transparent blur-xl"></div>
+
         <div className="w-full mx-auto">
-          <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 py-10 px-12">
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-10">
-              {/* Left: 15 min icon */}
-              <div className="flex items-center gap-6 flex-shrink-0">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full border-[5px] border-gray-800 flex items-center justify-center animate-pulse-border">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-gray-900">10</div>
-                      <div className="text-sm font-semibold text-gray-600">MIN.</div>
-                    </div>
-                  </div>
-                  {/* Dots around circle */}
-                  <div className="absolute -top-1 left-1/2 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-1"></div>
-                  <div className="absolute top-4 -right-1 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-2"></div>
-                  <div className="absolute bottom-4 -right-1 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-3"></div>
-                  <div className="absolute -bottom-1 left-1/2 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-4"></div>
-                  <div className="absolute bottom-4 -left-1 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-5"></div>
-                  <div className="absolute top-4 -left-1 w-2.5 h-2.5 bg-gray-800 rounded-full animate-dot-6"></div>
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 leading-tight">
-                  Transferencias<br/>Inmediatas
-                </h3>
+          <div className="flex flex-row flex-nowrap items-center justify-center gap-4 overflow-x-auto">
+            {/* Imagen y texto sin contenedor */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="relative w-28 h-28">
+                {/* Imagen principal */}
+                <img
+                  src="/pago realizado.png"
+                  alt="Pago realizado"
+                  className="w-full h-full object-contain relative z-10"
+                />
+
+                {/* Animación de flecha diagonal */}
+                <svg
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  viewBox="0 0 120 120"
+                  style={{ transform: 'scale(1.3)' }}
+                >
+                  {/* Flecha animada con cola */}
+                  <defs>
+                    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: '#3B82F6', stopOpacity: 0 }} />
+                      <stop offset="50%" style={{ stopColor: '#3B82F6', stopOpacity: 0.8 }} />
+                      <stop offset="100%" style={{ stopColor: '#10B981', stopOpacity: 1 }} />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Trayectoria curva diagonal */}
+                  <path
+                    d="M 10 90 Q 30 70, 50 50 T 110 10"
+                    fill="none"
+                    stroke="url(#arrowGradient)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    className="animate-arrow-path"
+                    style={{
+                      strokeDasharray: '150',
+                      strokeDashoffset: '150',
+                      animation: 'drawArrow 2s ease-in-out infinite'
+                    }}
+                  />
+
+                  {/* Punta de flecha */}
+                  <polygon
+                    points="110,10 105,5 105,15"
+                    fill="#10B981"
+                    className="animate-arrow-head"
+                    style={{
+                      opacity: 0,
+                      animation: 'fadeArrowHead 2s ease-in-out infinite'
+                    }}
+                  />
+                </svg>
+              </div>
+              <h3 className="text-base font-bold text-gray-900 leading-tight whitespace-nowrap">
+                Transferencias<br/>Inmediatas
+              </h3>
+            </div>
+
+            {/* Estilos de animación */}
+            <style jsx>{`
+              @keyframes drawArrow {
+                0% {
+                  stroke-dashoffset: 150;
+                  opacity: 0;
+                }
+                20% {
+                  opacity: 1;
+                }
+                80% {
+                  stroke-dashoffset: 0;
+                  opacity: 1;
+                }
+                100% {
+                  stroke-dashoffset: -150;
+                  opacity: 0;
+                }
+              }
+
+              @keyframes fadeArrowHead {
+                0%, 60% {
+                  opacity: 0;
+                }
+                70%, 85% {
+                  opacity: 1;
+                }
+                100% {
+                  opacity: 0;
+                }
+              }
+            `}</style>
+
+            {/* Separador vertical */}
+            <div className="w-px h-16 bg-gray-300 flex-shrink-0"></div>
+
+            {/* Contenedor 1 - Beneficios de transferencias inmediatas */}
+            <div className="relative flex-shrink-0 w-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 py-6 px-6">
+              {/* Label superior */}
+              <div className="absolute -top-3 left-6 bg-white px-4 py-1 rounded-full shadow-sm border border-gray-200">
+                <span className="text-xs font-semibold text-gray-600">Beneficios de transferencias inmediatas</span>
               </div>
 
-              {/* Divider */}
-              <div className="hidden lg:block w-px h-20 bg-gray-300"></div>
-
-              {/* Banks logos */}
-              <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-10">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600">BCP</div>
-                  <div className="text-sm text-gray-600">Todo el Perú</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600">Interbank</div>
-                  <div className="text-sm text-gray-600">Todo el Perú</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400">BanBif</div>
-                  <div className="text-sm text-gray-600">Solo Lima</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-yellow-500 flex items-center gap-1">
-                    <span className="text-3xl">▐</span>
-                    <div>
-                      <div className="text-xs leading-none">BANCO</div>
-                      <div className="text-base font-bold leading-tight">PICHINCHA</div>
-                    </div>
+              {/* Bancos en fila horizontal SIN WRAP */}
+              <div className="flex flex-row flex-nowrap items-center gap-4 pt-3">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img
+                      src="/BCP.png"
+                      alt="BCP"
+                      className="max-w-full max-h-full object-contain"
+                    />
                   </div>
-                  <div className="text-sm text-gray-600">Solo Lima</div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-700">BBVA</div>
-                  <div className="text-sm text-gray-600">Solo Lima</div>
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img
+                      src="/Interbank.png"
+                      alt="Interbank"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-red-600">Scotiabank</div>
-                  <div className="text-sm text-gray-600">Solo Lima</div>
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img
+                      src="/BanBif.png"
+                      alt="BanBif"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center bg-gray-100 px-5 py-3 rounded-lg">
-                  <div className="text-base font-semibold text-gray-700">otros bancos</div>
-                  <div className="text-sm text-gray-600">Solo Lima</div>
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-36 h-20 flex items-center justify-center">
+                    <img
+                      src="/Banco Pichincha.png"
+                      alt="Banco Pichincha"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contenedor 2 - Transferencias Interbancarias */}
+            <div className="relative flex-shrink-0 w-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 py-6 px-6">
+              {/* Título superior */}
+              <div className="absolute -top-3 left-6 bg-white px-4 py-1 rounded-full shadow-sm border border-gray-200">
+                <span className="text-xs font-semibold text-gray-600">Transferencias interbancarias ≥ 2 horas</span>
+              </div>
+
+              {/* Bancos en fila horizontal SIN WRAP */}
+              <div className="flex flex-row flex-nowrap items-center gap-4 pt-3">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img
+                      src="/BBVA.png"
+                      alt="BBVA"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                </div>
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img
+                      src="/Scotiabank.png"
+                      alt="Scotiabank"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                </div>
+                <div className="text-center bg-gray-100 px-4 py-3 rounded-xl flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="text-sm font-bold text-gray-800 whitespace-nowrap">otros bancos</div>
+                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
                 </div>
               </div>
             </div>
@@ -267,7 +486,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="servicios" className="py-20 bg-white">
+      <section id="servicios" className="py-12 bg-white">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16 relative">
             {/* Decorative elements */}
@@ -296,35 +515,39 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {[
               {
-                icon: Shield,
+                image: 'Seguro y Confiable.png',
                 title: 'Seguro y Confiable',
                 description: 'Plataforma certificada con los más altos estándares de seguridad',
                 gradient: 'from-blue-500 to-blue-600',
-                delay: '0s'
+                delay: '0s',
+                size: { width: 128, height: 128, className: 'w-32 h-32' }
               },
               {
-                icon: Zap,
+                image: 'Transferencia Rápida.png',
                 title: 'Transferencia Rápida',
                 description: 'Recibe tu dinero en minutos, sin complicaciones',
                 gradient: 'from-primary-500 to-primary-600',
-                delay: '0.1s'
+                delay: '0.1s',
+                size: { width: 128, height: 128, className: 'w-32 h-32' }
               },
               {
-                icon: TrendingUp,
+                image: 'Mejor Tipo de Cambio.png',
                 title: 'Mejor Tipo de Cambio',
                 description: 'Tasas competitivas actualizadas en tiempo real',
                 gradient: 'from-green-500 to-green-600',
-                delay: '0.2s'
+                delay: '0.2s',
+                size: { width: 128, height: 128, className: 'w-32 h-32' }
               },
               {
-                icon: Lock,
+                image: 'Protegido.png',
                 title: '100% Protegido',
                 description: 'Tus datos y transacciones completamente cifrados',
                 gradient: 'from-purple-500 to-purple-600',
-                delay: '0.3s'
+                delay: '0.3s',
+                size: { width: 128, height: 128, className: 'w-32 h-32' }
               }
             ].map((feature, index) => (
               <div
@@ -333,37 +556,43 @@ export default function Home() {
                 style={{ animationDelay: feature.delay }}
               >
                 {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500"></div>
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500"></div>
 
                 {/* Main card */}
-                <div className="relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-gray-100 group-hover:border-primary-200 overflow-hidden h-full">
+                <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-gray-100 group-hover:border-primary-200 overflow-hidden h-full flex flex-col">
                   {/* Background decoration */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-50 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                  {/* Icon container with gradient background */}
-                  <div className="relative mb-4">
-                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${feature.gradient} p-0.5 shadow-md group-hover:shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}>
-                      <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
-                        <feature.icon className="w-8 h-8 text-gray-700 group-hover:text-primary-600 transition-colors duration-500" strokeWidth={2.5} />
-                      </div>
+                  {/* Illustration container */}
+                  <div className="relative mb-6 flex items-center justify-center">
+                    <div className={`relative ${feature.size.className} transform group-hover:scale-110 transition-all duration-500`}>
+                      <Image
+                        src={`/${feature.image}`}
+                        alt={feature.title}
+                        width={feature.size.width}
+                        height={feature.size.height}
+                        className="w-full h-full object-contain drop-shadow-lg"
+                        priority={index < 2}
+                      />
                     </div>
 
                     {/* Floating particles */}
-                    <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
+                    <div className="absolute -top-2 -right-2 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
+                    <div className="absolute -bottom-2 -left-2 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors duration-500">
+                  <div className="relative z-10 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-primary-600 transition-colors duration-500">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed text-sm group-hover:text-gray-700 transition-colors duration-500">
+                    <p className="text-gray-600 leading-relaxed text-sm text-center group-hover:text-gray-700 transition-colors duration-500">
                       {feature.description}
                     </p>
                   </div>
 
                   {/* Bottom accent line */}
-                  <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-primary-500 to-primary-600 group-hover:w-full transition-all duration-500"></div>
+                  <div className="absolute bottom-0 left-0 w-0 h-1.5 bg-gradient-to-r from-primary-500 to-primary-600 group-hover:w-full transition-all duration-500 rounded-b-3xl"></div>
                 </div>
               </div>
             ))}
@@ -372,7 +601,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section id="como-funciona" className="py-20 bg-gradient-to-br from-primary-50 to-blue-50 overflow-hidden">
+      <section id="como-funciona" className="py-12 bg-gradient-to-br from-primary-50 to-blue-50 overflow-hidden">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16 relative">
             {/* Decorative top line */}
@@ -435,27 +664,6 @@ export default function Home() {
                   {/* Glow effect */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
 
-                  {/* Step number above circle */}
-                  <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center relative">
-                      {/* Circular background with gradient border */}
-                      <div className="relative">
-                        {/* Outer glow ring */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
-
-                        {/* Main circle with gradient border */}
-                        <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 p-1 shadow-lg group-hover:shadow-xl transition-all duration-500 group-hover:scale-110">
-                          {/* Inner white circle */}
-                          <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-                            <span className="text-4xl font-bold bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text text-transparent">
-                              {step.step}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Main circle */}
                   <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-80 h-80 border-2 border-gray-100 group-hover:border-primary-300">
                     {/* Animated gradient border on hover */}
@@ -471,7 +679,7 @@ export default function Home() {
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-12 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
                       {/* Image icon */}
                       <div className="mb-6 transform">
-                        <div className={`${index === 2 ? 'w-48 h-48' : 'w-40 h-40'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
+                        <div className={`${index === 2 ? 'w-56 h-56' : 'w-48 h-48'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
                           <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
                         </div>
                       </div>
@@ -483,43 +691,38 @@ export default function Home() {
                     </div>
 
                     {/* Hover state: Full description overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-10 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-gradient-to-br from-white to-gray-50 rounded-full">
-                      <div className="text-center space-y-4">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-12 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-gradient-to-br from-white to-gray-50 rounded-full">
+                      <div className="text-center space-y-2 max-w-[240px]">
                         {/* Icon on hover (smaller) */}
-                        <div className="w-24 h-24 mx-auto mb-4 transform transition-transform duration-500">
+                        <div className="w-24 h-24 mx-auto mb-2 transform transition-transform duration-500">
                           <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
                         </div>
 
                         {/* Title on hover */}
-                        <h3 className="text-xl font-bold text-primary-600 mb-3">
+                        <h3 className="text-lg font-bold text-primary-600 mb-1">
                           {step.title}
                         </h3>
 
                         {/* Divider */}
-                        <div className="w-16 h-1 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full"></div>
+                        <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
 
                         {/* Description */}
-                        <p className="text-sm text-gray-700 leading-relaxed px-4 font-medium">
+                        <p className="text-sm text-gray-700 leading-snug px-2 font-medium">
                           {step.description}
                         </p>
 
                         {/* Detailed description */}
-                        <p className="text-xs text-primary-600 leading-relaxed px-6 mt-3">
+                        <p className="text-xs text-primary-600 leading-snug px-3 mt-1">
                           {step.detailedDescription}
                         </p>
                       </div>
-                    </div>
-
-                    {/* Step badge with gradient */}
-                    <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${step.gradient} flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 z-20`}>
-                      <span className="text-white font-bold text-xl">{step.step}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Enhanced animated connector between steps */}
                 {index < 2 && (
-                  <div className="hidden lg:block absolute left-full z-10 px-4" style={{ width: '100%', top: 'calc(50% + 3rem)' }}>
+                  <div className="hidden lg:block absolute left-full z-10 px-4" style={{ width: '100%', top: '50%' }}>
                     {/* Glow line */}
                     <div className="absolute inset-0 flex items-center px-4">
                       <div className="w-full h-1 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-300 opacity-30 blur-sm"></div>
@@ -544,7 +747,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-secondary to-secondary-700">
+      <section className="py-12 bg-gradient-to-r from-secondary to-secondary-700">
         <div className="w-full px-6 sm:px-8 lg:px-12 text-center">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
             Comienza a cambiar hoy mismo
@@ -553,10 +756,10 @@ export default function Home() {
             Únete a miles de peruanos que confían en QoriCash para sus cambios de divisas
           </p>
           <Link
-            href="/crear-cuenta"
+            href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}
             className="inline-flex items-center bg-primary text-secondary px-10 py-5 rounded-full text-lg font-bold hover:bg-primary-600 transition shadow-xl hover:shadow-2xl group"
           >
-            Abrir mi cuenta gratis
+            {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
           </Link>
         </div>
@@ -580,25 +783,59 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4">Servicios</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">Compra de dólares</a></li>
-                <li><a href="#" className="hover:text-white transition">Venta de dólares</a></li>
-                <li><a href="#" className="hover:text-white transition">Tipo de cambio</a></li>
+                <li><Link href="/servicios#compra" className="hover:text-white transition">Compra de dólares</Link></li>
+                <li><Link href="/servicios#venta" className="hover:text-white transition">Venta de dólares</Link></li>
+                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition">Tipo de cambio</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Empresa</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">Sobre nosotros</a></li>
-                <li><a href="#" className="hover:text-white transition">Términos y condiciones</a></li>
-                <li><a href="#" className="hover:text-white transition">Política de privacidad</a></li>
+                <li><Link href="/sobre-nosotros" className="hover:text-white transition">Sobre nosotros</Link></li>
+                <li><Link href="/terminos-condiciones" className="hover:text-white transition">Términos y condiciones</Link></li>
+                <li><Link href="/politica-privacidad" className="hover:text-white transition">Política de privacidad</Link></li>
+                <li><Link href="/politica-cookies" className="hover:text-white transition">Política de cookies</Link></li>
+                <li><Link href="/libro-reclamaciones" className="hover:text-white transition">Libro de reclamaciones</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Contacto</h4>
-              <ul className="space-y-2 text-sm">
-                <li>📧 contacto@qoricash.pe</li>
-                <li>📱 +51 999 999 999</li>
-                <li>📍 Lima, Perú</li>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  <a href="mailto:info@qoricash.pe" className="hover:text-white transition">
+                    info@qoricash.pe
+                  </a>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                    926 011 920
+                  </a>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition leading-relaxed">
+                    Av. Brasil N° 2790, Int. 504<br />
+                    Lima – Lima – Pueblo Libre
+                  </a>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div className="leading-relaxed">
+                    <div>Lunes a viernes: 9:00 a.m. – 6:00 p.m.</div>
+                    <div>Sábados: 9:00 a.m. – 1:00 p.m.</div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>

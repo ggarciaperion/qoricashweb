@@ -9,20 +9,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Colores principales QoriCash
+        // Colores principales QoriCash - Verde Corporativo
         primary: {
-          DEFAULT: '#00DEA8',
-          50: '#e6fdf8',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#00DEA8',
-          600: '#00c997',
-          700: '#00a67d',
-          800: '#008663',
-          900: '#006b50',
-          950: '#004d39',
+          DEFAULT: '#22C55E',
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22C55E',
+          600: '#16A34A',
+          700: '#15803d',
+          800: '#166534',
+          900: '#14532d',
+          950: '#052e16',
         },
         secondary: {
           DEFAULT: '#0D1B2A',

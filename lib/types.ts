@@ -15,6 +15,15 @@ export interface User {
   // Document type
   document_type?: 'DNI' | 'CE' | 'RUC';
 
+  // Persona Jurídica fields
+  razon_social?: string;
+  persona_contacto?: string;
+
+  // Referral system
+  referral_code?: string;
+  used_referral_code?: string | null;
+  referred_by?: number | null;
+
   // KYC Documents
   dni_front_url?: string | null;
   dni_back_url?: string | null;

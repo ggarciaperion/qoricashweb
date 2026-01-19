@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Tag } from 'lucide-react';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
+import { useReferralStore } from '@/lib/store/referralStore';
 
 interface ExchangeRates {
   compra: number;
@@ -21,6 +22,7 @@ export default function Calculator({
   onOperationReady
 }: CalculatorProps) {
   const { currentRates: liveRates, fetchRates, isConnected } = useExchangeStore();
+  const { hasCoupon, setHasCoupon } = useReferralStore();
   const [operationType, setOperationType] = useState<'Compra' | 'Venta'>('Compra');
   const [amountInput, setAmountInput] = useState('');
   const [amountOutput, setAmountOutput] = useState('');
@@ -109,7 +111,7 @@ export default function Calculator({
       <div className="flex rounded-xl overflow-hidden mb-6 shadow-sm">
         <button
           onClick={() => setOperationType('Compra')}
-          className={`flex-1 py-4 px-4 font-semibold text-base transition-all ${
+          className={`flex-1 py-2 px-2 font-semibold text-base transition-all cursor-pointer ${
             operationType === 'Compra'
               ? 'bg-secondary text-white'
               : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -119,7 +121,7 @@ export default function Calculator({
         </button>
         <button
           onClick={() => setOperationType('Venta')}
-          className={`flex-1 py-4 px-4 font-semibold text-base transition-all ${
+          className={`flex-1 py-2 px-2 font-semibold text-base transition-all cursor-pointer ${
             operationType === 'Venta'
               ? 'bg-secondary text-white'
               : 'bg-white text-gray-600 hover:bg-gray-50'
@@ -133,11 +135,24 @@ export default function Calculator({
       <div className="space-y-4 mb-6">
         {/* Fila superior: Input */}
         <div className="flex gap-2">
-          <div className="flex-1 bg-gray-100 rounded-xl p-4">
-            <label className="block text-base text-gray-700 font-medium mb-2">
+          <div
+            className="flex-1 bg-gray-100 rounded-xl p-4 cursor-text"
+            onClick={(e) => {
+              const input = document.getElementById('amount-input') as HTMLInputElement;
+              if (input) {
+                input.focus();
+                e.preventDefault();
+              }
+            }}
+          >
+            <label
+              htmlFor="amount-input"
+              className="block text-base text-gray-700 font-medium mb-2 cursor-text pointer-events-none select-none"
+            >
               ¿Cuánto envías?
             </label>
             <input
+              id="amount-input"
               type="number"
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
@@ -148,7 +163,7 @@ export default function Calculator({
             />
           </div>
           <div className="w-28 bg-secondary rounded-xl p-4 flex items-center justify-center">
-            <span className="text-white font-semibold text-base text-center">
+            <span className="text-white font-semibold text-sm text-center">
               {inputCurrency === 'USD' ? 'Dólares' : 'Soles'}
             </span>
           </div>
@@ -190,6 +205,22 @@ export default function Calculator({
         }`}>
           <span>Ahorro estimado: S/ {calculateSavings()}</span>
           <span>TC: {currentRate.toFixed(3)}</span>
+        </div>
+
+        {/* Checkbox Cupón Promocional */}
+        <div className="pt-3 border-t border-gray-200">
+          <label className="flex items-center gap-2 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={hasCoupon}
+              onChange={(e) => setHasCoupon(e.target.checked)}
+              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
+            />
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700 group-hover:text-primary-600 transition">
+              <Tag className="w-4 h-4" />
+              <span>Tengo un cupón promocional</span>
+            </div>
+          </label>
         </div>
       </div>
 
