@@ -120,7 +120,7 @@ export default function PerfilPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-white">
-                  {isRUC ? user.razon_social : `${user.nombres} ${user.apellidos}`}
+                  {isRUC ? user.razon_social : user.apellidos ? `${user.nombres} ${user.apellidos}` : user.nombres}
                 </h2>
                 <p className="text-primary-100">
                   {user.document_type} - {user.dni}

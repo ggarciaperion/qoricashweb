@@ -95,7 +95,7 @@ export default function Home() {
                     <span className="font-medium">
                       {user?.document_type === 'RUC'
                         ? user?.razon_social || user?.nombres
-                        : `${user?.nombres} ${user?.apellidos}`}
+                        : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
                     </span>
                     <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                   </button>

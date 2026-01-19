@@ -90,7 +90,24 @@ export default function CrearCuentaPage() {
     }
   }, [error]);
 
+  // Función para validar y convertir a mayúsculas campos específicos
+  const validateAndUppercase = (value: string): string => {
+    // Solo permitir letras, espacios y acentos
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
+    if (!regex.test(value)) {
+      return value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    }
+    return value.toUpperCase();
+  };
+
   const handleChange = (field: string, value: any) => {
+    // Lista de campos que deben convertirse a mayúsculas
+    const uppercaseFields = ['nombres', 'apellidoPaterno', 'apellidoMaterno', 'razonSocial', 'personaContacto', 'direccion'];
+
+    if (uppercaseFields.includes(field) && typeof value === 'string') {
+      value = validateAndUppercase(value);
+    }
+
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
   };

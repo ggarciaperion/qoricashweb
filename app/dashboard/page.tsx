@@ -156,7 +156,11 @@ export default function DashboardPage() {
               </Link>
               <div className="hidden sm:flex items-center text-sm text-gray-700">
                 <User className="w-5 h-5 mr-2 text-gray-400" />
-                <span className="font-medium">{user?.nombres} {user?.apellidos}</span>
+                <span className="font-medium">
+                  {user?.document_type === 'RUC'
+                    ? user?.razon_social || user?.nombres
+                    : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
+                </span>
               </div>
               <button
                 onClick={handleLogout}
