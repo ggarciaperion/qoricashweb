@@ -15,6 +15,7 @@ interface AuthState {
   logout: () => Promise<void>;
   loadUser: () => void;
   updateUser: (user: User) => void;
+  refreshUser: () => Promise<boolean>;
   clearError: () => void;
 }
 
@@ -151,6 +152,36 @@ export const useAuthStore = create<AuthState>()(
   updateUser: (user: User) => {
     authApi.storeAuth(user);
     set({ user });
+  },
+
+  /**
+   * Refresh user data from backend
+   */
+  refreshUser: async (): Promise<boolean> => {
+    const currentUser = get().user;
+
+    if (!currentUser?.dni) {
+      return false;
+    }
+
+    try {
+      const response = await authApi.refreshUserData(currentUser.dni);
+
+      if (response.success && response.client) {
+        const updatedUser = response.client;
+
+        // Update localStorage and state
+        authApi.storeAuth(updatedUser);
+        set({ user: updatedUser });
+
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+      return false;
+    }
   },
 
   /**

@@ -100,6 +100,14 @@ export const authApi = {
   },
 
   /**
+   * Refresh current user data from backend
+   */
+  async refreshUserData(dni: string): Promise<ApiResponse<User>> {
+    const response = await apiClient.post<ApiResponse<User>>('/api/client/me', { dni });
+    return response.data;
+  },
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {

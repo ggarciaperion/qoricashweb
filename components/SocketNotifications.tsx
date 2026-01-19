@@ -15,20 +15,21 @@ import { useAuthStore } from '@/lib/store';
 export default function SocketNotifications() {
   const [notification, setNotification] = useState<NotificationData | null>(null);
   const router = useRouter();
-  const { setUser, user } = useAuthStore();
+  const { refreshUser } = useAuthStore();
 
   // Conectar a Socket.IO y escuchar eventos
   useSocket({
     // Evento: Documentos aprobados (cuenta activada)
-    onDocumentsApproved: (data) => {
+    onDocumentsApproved: async (data) => {
       console.log('🎉 [Socket] Cuenta activada:', data);
 
-      // Actualizar el status del usuario en el store
-      if (user) {
-        setUser({
-          ...user,
-          status: 'Activo', // Cambiar a activo
-        });
+      // Refrescar datos del usuario desde el backend
+      const refreshed = await refreshUser();
+
+      if (refreshed) {
+        console.log('✅ [Socket] Estado del usuario actualizado correctamente');
+      } else {
+        console.warn('⚠️ [Socket] No se pudo actualizar el estado del usuario');
       }
 
       // Mostrar notificación
@@ -39,10 +40,11 @@ export default function SocketNotifications() {
         duration: 10000, // 10 segundos
       });
 
-      // Opcional: Recargar la página para refrescar el estado
+      // Recargar la página para refrescar componentes
       setTimeout(() => {
         router.refresh();
-      }, 1000);
+        window.location.reload();
+      }, 2000);
     },
 
     // Evento: Operación expirada

@@ -56,6 +56,7 @@ apiClient.interceptors.response.use(
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
+  client?: T; // Backend sometimes returns 'client' instead of 'data'
   message?: string;
   error?: string;
 }
