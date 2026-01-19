@@ -90,6 +90,13 @@ export default function NuevaOperacionPage() {
   const [voucherCode, setVoucherCode] = useState('');
   const [isUploadingProof, setIsUploadingProof] = useState(false);
 
+  // KYC Document upload state
+  const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
+  const [dniFront, setDnifront] = useState<File | null>(null);
+  const [dniBack, setDniBack] = useState<File | null>(null);
+  const [rucFicha, setRucFicha] = useState<File | null>(null);
+  const [isUploadingKYC, setIsUploadingKYC] = useState(false);
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -419,6 +426,66 @@ export default function NuevaOperacionPage() {
   // Remove file from list
   const handleRemoveFile = (index: number) => {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
+
+  // Upload KYC Documents
+  const handleUploadKYCDocuments = async () => {
+    if (!dniFront || !dniBack) {
+      setError('Debes subir ambas fotos del DNI (anverso y reverso)');
+      return;
+    }
+
+    // Validar Ficha RUC para RUC
+    if (user?.document_type === 'RUC' && !rucFicha) {
+      setError('Debes subir la Ficha RUC para persona jurídica');
+      return;
+    }
+
+    if (!user?.dni) {
+      setError('No se pudo obtener el DNI del usuario');
+      return;
+    }
+
+    setIsUploadingKYC(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('dni', user.dni);
+      formData.append('dni_front', dniFront);
+      formData.append('dni_back', dniBack);
+
+      if (user.document_type === 'RUC' && rucFicha) {
+        formData.append('ruc_ficha', rucFicha);
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/client/upload-dni`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsKYCModalOpen(false);
+        setDnifront(null);
+        setDniBack(null);
+        setRucFicha(null);
+
+        // Mostrar mensaje de éxito
+        alert('Documentos enviados exitosamente. Estamos validando tu información. Nuestro equipo revisará tus documentos y activará tu cuenta en un plazo aproximado de 10 minutos.');
+
+        // Redirigir al dashboard
+        router.push('/dashboard');
+      } else {
+        setError(data.message || 'Error al subir documentos');
+        setIsUploadingKYC(false);
+      }
+    } catch (err: any) {
+      console.error('Error al subir documentos KYC:', err);
+      setError('Error al subir documentos. Por favor intenta nuevamente.');
+      setIsUploadingKYC(false);
+    }
   };
 
   // Submit proof of payment
@@ -949,6 +1016,34 @@ export default function NuevaOperacionPage() {
               ) : currentStep === 1 ? (
                 /* STEP 1: Form */
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Validación de estado del cliente (KYC) */}
+                  {user?.status === 'Inactivo' && (
+                    <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                      <div className="flex items-start">
+                        <AlertCircle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-red-900 mb-2">
+                            Cuenta Inactiva - Validación Pendiente
+                          </p>
+                          <p className="text-sm text-red-800 mb-3">
+                            Para iniciar operaciones necesitamos validar tu información. Por favor, adjunta tus documentos para activar tu cuenta.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsKYCModalOpen(true);
+                              setError(null);
+                            }}
+                            className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition"
+                          >
+                            <Upload className="w-4 h-4" />
+                            Subir Documentos
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Validación de cuentas */}
                   {!canCreateOperation() && (
                     <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -964,7 +1059,9 @@ export default function NuevaOperacionPage() {
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
                       1. Tipo de operación
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
+
+                    {/* Botones de Compra y Venta */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
                       <button
                         type="button"
                         onClick={() => {
@@ -1003,6 +1100,105 @@ export default function NuevaOperacionPage() {
                           <div className="text-xs opacity-90">S/ {exchangeRates.venta.toFixed(3)}</div>
                         </div>
                       </button>
+                    </div>
+
+                    {/* Checkbox y Campo de Cupón (debajo de los botones) */}
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          checked={showCouponField}
+                          onChange={(e) => {
+                            setShowCouponField(e.target.checked);
+                            if (!e.target.checked) {
+                              setReferralCode('');
+                              setCodeValidation(null);
+                              setAppliedDiscount(0);
+                            }
+                          }}
+                          className="w-4 h-4 text-success border-gray-300 rounded focus:ring-success cursor-pointer accent-success"
+                        />
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700 group-hover:text-success-600 transition">
+                          <Tag className="w-4 h-4" />
+                          <span>Tengo un cupón promocional</span>
+                        </div>
+                      </label>
+
+                      {/* Campo de código (se muestra cuando checkbox está marcado) */}
+                      {showCouponField && (
+                        <div className="bg-success-50 border-2 border-success-200 rounded-lg p-4 space-y-3">
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-900 mb-2">
+                              Ingresa tu cupón aquí
+                            </label>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={referralCode}
+                                onChange={(e) => {
+                                  const value = e.target.value.toUpperCase();
+                                  setReferralCode(value);
+                                  setCodeValidation(null);
+                                  setAppliedDiscount(0);
+                                }}
+                                onBlur={() => {
+                                  if (referralCode && referralCode.length === 6) {
+                                    validateReferralCode(referralCode);
+                                  }
+                                }}
+                                placeholder="Ej: ABC123"
+                                maxLength={6}
+                                className="flex-1 px-4 py-2 text-sm font-mono font-bold uppercase border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-success focus:border-transparent bg-white"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => validateReferralCode(referralCode)}
+                                disabled={isValidatingCode || !referralCode || referralCode.length !== 6}
+                                className="px-4 py-2 bg-success text-white rounded-lg hover:bg-success-600 transition font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
+                              >
+                                {isValidatingCode ? (
+                                  <>
+                                    <RefreshCw className="w-4 h-4 animate-spin" />
+                                    Validando...
+                                  </>
+                                ) : (
+                                  'Validar'
+                                )}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Mensaje de validación */}
+                          {codeValidation && (
+                            <div className={`p-3 rounded-lg border-2 ${
+                              codeValidation.isValid
+                                ? 'bg-white border-success-300'
+                                : 'bg-red-50 border-red-300'
+                            }`}>
+                              <p className={`text-sm flex items-start font-medium ${
+                                codeValidation.isValid ? 'text-success-800' : 'text-red-800'
+                              }`}>
+                                {codeValidation.isValid ? (
+                                  <CheckCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                                ) : (
+                                  <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                                )}
+                                <span>{codeValidation.message}</span>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Información sobre el beneficio */}
+                          {!codeValidation && (
+                            <div className="flex items-start gap-2 text-xs text-success-800">
+                              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                              <p>
+                                Al usar un código de promoción, obtendrás un mejor tipo de cambio.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -1198,7 +1394,8 @@ export default function NuevaOperacionPage() {
                       selectedOriginAccount === null ||
                       selectedDestinationAccount === null ||
                       !ownershipConfirmed ||
-                      !canCreateOperation()
+                      !canCreateOperation() ||
+                      user?.status === 'Inactivo'
                     }
                     className="w-full bg-gradient-to-r from-secondary to-secondary-700 text-white py-4 rounded-lg font-bold text-base hover:from-secondary-600 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl group"
                   >
@@ -1628,6 +1825,197 @@ export default function NuevaOperacionPage() {
                     <>
                       <Send className="w-4 h-4 mr-2" />
                       Enviar
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* KYC Document Upload Modal */}
+      {isKYCModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 animate-in fade-in duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Validación de Documentos</h3>
+              <button
+                onClick={() => {
+                  setIsKYCModalOpen(false);
+                  setDnifront(null);
+                  setDniBack(null);
+                  setRucFicha(null);
+                  setError(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 transition"
+                disabled={isUploadingKYC}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="space-y-4">
+              {/* Info Text */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800">
+                  {user?.document_type === 'RUC'
+                    ? 'Para activar tu cuenta, necesitamos que subas los documentos del representante legal y la Ficha RUC de tu empresa.'
+                    : 'Para activar tu cuenta, necesitamos que subas ambas caras de tu documento de identidad.'}
+                </p>
+                <p className="text-sm text-blue-800 mt-2 font-semibold">
+                  Nuestro equipo validará tus documentos en aproximadamente 10 minutos.
+                </p>
+              </div>
+
+              {/* DNI Front Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  {user?.document_type === 'RUC' ? 'DNI Representante Legal - Anverso *' : 'DNI/CE - Anverso *'}
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
+                  <input
+                    type="file"
+                    id="dni-front-upload"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setDnifront(e.target.files[0]);
+                      }
+                    }}
+                    className="hidden"
+                    disabled={isUploadingKYC}
+                  />
+                  <label htmlFor="dni-front-upload" className="cursor-pointer flex flex-col items-center">
+                    {dniFront ? (
+                      <div className="flex items-center gap-2">
+                        <FileImage className="w-6 h-6 text-green-600" />
+                        <span className="text-sm font-medium text-green-700">{dniFront.name}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
+                        <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {/* DNI Back Upload */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  {user?.document_type === 'RUC' ? 'DNI Representante Legal - Reverso *' : 'DNI/CE - Reverso *'}
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
+                  <input
+                    type="file"
+                    id="dni-back-upload"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setDniBack(e.target.files[0]);
+                      }
+                    }}
+                    className="hidden"
+                    disabled={isUploadingKYC}
+                  />
+                  <label htmlFor="dni-back-upload" className="cursor-pointer flex flex-col items-center">
+                    {dniBack ? (
+                      <div className="flex items-center gap-2">
+                        <FileImage className="w-6 h-6 text-green-600" />
+                        <span className="text-sm font-medium text-green-700">{dniBack.name}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
+                        <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {/* RUC Ficha Upload (only for RUC) */}
+              {user?.document_type === 'RUC' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Ficha RUC *
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
+                    <input
+                      type="file"
+                      id="ruc-ficha-upload"
+                      accept="image/*,.pdf"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setRucFicha(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                      disabled={isUploadingKYC}
+                    />
+                    <label htmlFor="ruc-ficha-upload" className="cursor-pointer flex flex-col items-center">
+                      {rucFicha ? (
+                        <div className="flex items-center gap-2">
+                          <FileImage className="w-6 h-6 text-green-600" />
+                          <span className="text-sm font-medium text-green-700">{rucFicha.name}</span>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                          <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar archivo</p>
+                          <p className="text-xs text-gray-500 mt-1">PNG, JPG, PDF (máx. 5MB)</p>
+                        </>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800 flex items-start">
+                    <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                    <span>{error}</span>
+                  </p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    setIsKYCModalOpen(false);
+                    setDnifront(null);
+                    setDniBack(null);
+                    setRucFicha(null);
+                    setError(null);
+                  }}
+                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
+                  disabled={isUploadingKYC}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleUploadKYCDocuments}
+                  disabled={isUploadingKYC || !dniFront || !dniBack || (user?.document_type === 'RUC' && !rucFicha)}
+                  className="flex-1 bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isUploadingKYC ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Enviar Documentos
                     </>
                   )}
                 </button>

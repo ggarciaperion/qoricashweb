@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/components/AuthProvider";
+import SocketNotifications from "@/components/SocketNotifications";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,8 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <AuthProvider>
           {children}
+          {/* Notificaciones en tiempo real (KYC, operaciones, etc.) */}
+          <SocketNotifications />
         </AuthProvider>
         <WhatsAppButton />
       </body>
