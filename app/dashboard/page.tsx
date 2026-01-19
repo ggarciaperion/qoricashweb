@@ -222,24 +222,24 @@ export default function DashboardPage() {
 
           {/* Referral Code Card */}
           {user?.referral_code && (
-            <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 rounded-xl shadow-md p-4 border border-amber-200">
+            <div className="bg-gradient-to-r from-blue-50 via-primary-50 to-blue-50 rounded-xl shadow-md p-4 border border-primary-200">
               <div className="flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
-                  <Gift className="w-5 h-5 text-amber-600" />
+                  <Gift className="w-5 h-5 text-primary-600" />
                   <h3 className="text-base font-bold text-gray-900">¡Invita y Gana!</h3>
                 </div>
                 <p className="text-xs text-gray-700 mb-3">
                   Comparte tu código con amigos. Ambos recibirán un mejor tipo de cambio.
                 </p>
                 <div className="flex flex-col gap-2 mt-auto">
-                  <div className="bg-white rounded-lg px-3 py-2 border border-amber-300">
+                  <div className="bg-white rounded-lg px-3 py-2 border border-primary-300">
                     <p className="text-xs text-gray-600 mb-0.5">Tu código de referido</p>
-                    <p className="text-xl font-bold text-amber-600 tracking-wider font-mono">{user.referral_code}</p>
+                    <p className="text-xl font-bold text-primary-600 tracking-wider font-mono">{user.referral_code}</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={copyReferralCode}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-sm font-semibold shadow-sm hover:shadow-md"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-semibold shadow-sm hover:shadow-md"
                     >
                       {copiedCode ? (
                         <>
