@@ -5,6 +5,10 @@ import type {
   RegisterRequest,
   RegisterResponse,
   User,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from '../types';
 
 /**
@@ -12,7 +16,8 @@ import type {
  */
 export const authApi = {
   /**
-   * Login user (cliente web)
+   * Login user (cliente web + mobile)
+   * Uses shared /api/client/login endpoint
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/api/client/login', credentials);
@@ -62,7 +67,25 @@ export const authApi = {
   },
 
   /**
-   * Change password
+   * Forgot password - request temporary password
+   * Uses shared /api/client/forgot-password endpoint (web + mobile)
+   */
+  async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
+    const response = await apiClient.post<ForgotPasswordResponse>('/api/client/forgot-password', data);
+    return response.data;
+  },
+
+  /**
+   * Change password (for temporary password flow)
+   * Uses shared /api/client/change-password endpoint (web + mobile)
+   */
+  async changePasswordWeb(data: ChangePasswordRequest): Promise<ChangePasswordResponse> {
+    const response = await apiClient.post<ChangePasswordResponse>('/api/client/change-password', data);
+    return response.data;
+  },
+
+  /**
+   * Change password (legacy - current/new password)
    */
   async changePassword(currentPassword: string, newPassword: string): Promise<ApiResponse> {
     const response = await apiClient.post<ApiResponse>('/auth/change-password', {
@@ -73,7 +96,7 @@ export const authApi = {
   },
 
   /**
-   * Request password reset
+   * Request password reset (legacy)
    */
   async requestPasswordReset(email: string): Promise<ApiResponse> {
     const response = await apiClient.post<ApiResponse>('/auth/forgot-password', { email });

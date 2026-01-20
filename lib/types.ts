@@ -2,11 +2,27 @@
 export interface User {
   id: number;
   dni: string;
+
+  // Campos de nombre (backend usa campos separados)
   nombres: string;
-  apellidos: string;
+  apellidos: string; // Legacy, para compatibilidad
+  apellido_paterno?: string;
+  apellido_materno?: string;
+  full_name?: string; // Nombre completo calculado por el backend
+
   email: string;
-  telefono: string;
+
+  // Campo de teléfono (backend usa "phone")
+  telefono: string; // Legacy
+  phone?: string; // Campo real del backend
+
+  // Campos de dirección
   direccion: string;
+  distrito?: string;
+  provincia?: string;
+  departamento?: string;
+  full_address?: string; // Dirección completa calculada por el backend
+
   role: 'Cliente' | 'Trader' | 'Middle Office' | 'Master' | 'Plataforma';
   estado: 'Activo' | 'Inactivo' | 'Suspendido';
   origen?: 'Lima' | 'Provincia';
@@ -24,6 +40,9 @@ export interface User {
   used_referral_code?: string | null;
   referred_by?: number | null;
 
+  // Bank accounts (múltiples cuentas)
+  bank_accounts?: BankAccount[];
+
   // KYC Documents
   dni_front_url?: string | null;
   dni_back_url?: string | null;
@@ -39,11 +58,17 @@ export interface User {
 
 // Bank account types
 export interface BankAccount {
-  id: number;
-  user_id: number;
-  banco: string;
-  numero_cuenta: string;
-  is_primary: boolean;
+  id?: number;
+  user_id?: number;
+  origen?: string; // Lima | Provincia
+  bank_name: string;
+  account_type?: string; // Ahorro | Corriente
+  currency?: string; // S/ | $
+  account_number: string;
+  is_primary?: boolean;
+  // Legacy fields
+  banco?: string;
+  numero_cuenta?: string;
 }
 
 // Operation types
@@ -114,6 +139,28 @@ export interface RegisterResponse {
     user: User;
   };
   message?: string;
+}
+
+// Forgot password types
+export interface ForgotPasswordRequest {
+  dni: string;  // Can be DNI (8), CE (9), or RUC (11) - backend validates length
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+// Change password types
+export interface ChangePasswordRequest {
+  dni: string;
+  new_password: string;
+}
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  message: string;
 }
 
 // Operation creation types
