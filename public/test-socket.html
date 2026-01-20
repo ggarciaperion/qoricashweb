@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Socket.IO - QoriCash</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .log {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00ff00;
+        }
+        .error { color: #ff0000; border-color: #ff0000; }
+        .success { color: #00ff00; border-color: #00ff00; }
+        .info { color: #00aaff; border-color: #00aaff; }
+        input, button {
+            padding: 10px;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔌 Test Socket.IO Connection - QoriCash</h1>
+
+    <div>
+        <label>DNI del cliente:</label>
+        <input type="text" id="dni" placeholder="12345678" value="73733737">
+        <button onclick="connectSocket()">Conectar</button>
+        <button onclick="disconnectSocket()">Desconectar</button>
+    </div>
+
+    <h3>Logs:</h3>
+    <div id="logs"></div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        let socket = null;
+        const logsDiv = document.getElementById('logs');
+
+        function addLog(message, type = 'info') {
+            const log = document.createElement('div');
+            log.className = `log ${type}`;
+            log.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.insertBefore(log, logsDiv.firstChild);
+        }
+
+        function connectSocket() {
+            const dni = document.getElementById('dni').value;
+            if (!dni) {
+                addLog('❌ Por favor ingresa un DNI', 'error');
+                return;
+            }
+
+            const SOCKET_URL = 'https://app.qoricash.pe';
+            addLog(`🔌 Intentando conectar a: ${SOCKET_URL}`, 'info');
+
+            socket = io(SOCKET_URL, {
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionAttempts: 5,
+                reconnectionDelay: 1000,
+            });
+
+            socket.on('connect', () => {
+                addLog(`✅ Conectado con ID: ${socket.id}`, 'success');
+
+                // Unirse al room del cliente
+                const room = `client_${dni}`;
+                socket.emit('join', { room });
+                addLog(`📍 Enviado join request al room: ${room}`, 'info');
+            });
+
+            socket.on('disconnect', (reason) => {
+                addLog(`🔌 Desconectado: ${reason}`, 'error');
+            });
+
+            socket.on('connect_error', (error) => {
+                addLog(`❌ Error de conexión: ${error.message}`, 'error');
+            });
+
+            socket.on('documents_approved', (data) => {
+                addLog(`🎉 EVENTO RECIBIDO: documents_approved`, 'success');
+                addLog(`📦 Datos: ${JSON.stringify(data)}`, 'success');
+            });
+
+            socket.on('operation_expired', (data) => {
+                addLog(`⏱️ EVENTO RECIBIDO: operation_expired`, 'info');
+                addLog(`📦 Datos: ${JSON.stringify(data)}`, 'info');
+            });
+
+            socket.on('operacion_actualizada', (data) => {
+                addLog(`🔄 EVENTO RECIBIDO: operacion_actualizada`, 'info');
+                addLog(`📦 Datos: ${JSON.stringify(data)}`, 'info');
+            });
+        }
+
+        function disconnectSocket() {
+            if (socket) {
+                socket.disconnect();
+                addLog('🔌 Socket desconectado manualmente', 'info');
+            } else {
+                addLog('⚠️ No hay socket conectado', 'error');
+            }
+        }
+
+        addLog('✅ Script cargado. Ingresa un DNI y presiona Conectar', 'info');
+    </script>
+</body>
+</html>
