@@ -1017,7 +1017,7 @@ export default function NuevaOperacionPage() {
                 /* STEP 1: Form */
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Validación de estado del cliente (KYC) */}
-                  {user?.status === 'Inactivo' && (
+                  {user?.status === 'Inactivo' && !user?.has_complete_documents && (
                     <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
                       <div className="flex items-start">
                         <AlertCircle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
@@ -1039,6 +1039,22 @@ export default function NuevaOperacionPage() {
                             <Upload className="w-4 h-4" />
                             Subir Documentos
                           </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {user?.status === 'Inactivo' && user?.has_complete_documents && (
+                    <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                      <div className="flex items-start">
+                        <Clock className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-blue-900 mb-2">
+                            Documentos en Proceso de Validación
+                          </p>
+                          <p className="text-sm text-blue-800">
+                            Tus documentos están siendo revisados por nuestro equipo. Te notificaremos cuando tu cuenta sea activada. Generalmente este proceso toma menos de 24 horas.
+                          </p>
                         </div>
                       </div>
                     </div>

@@ -160,26 +160,40 @@ export const useAuthStore = create<AuthState>()(
   refreshUser: async (): Promise<boolean> => {
     const currentUser = get().user;
 
+    console.log('🔄 [AuthStore] refreshUser() iniciado');
+    console.log('📋 [AuthStore] Usuario actual:', currentUser?.dni);
+
     if (!currentUser?.dni) {
+      console.error('❌ [AuthStore] No hay DNI del usuario actual');
       return false;
     }
 
     try {
+      console.log('📡 [AuthStore] Llamando a authApi.refreshUserData()...');
       const response = await authApi.refreshUserData(currentUser.dni);
+
+      console.log('📦 [AuthStore] Respuesta del servidor:', {
+        success: response.success,
+        status: response.client?.status,
+        has_complete_documents: response.client?.has_complete_documents
+      });
 
       if (response.success && response.client) {
         const updatedUser = response.client;
 
         // Update localStorage and state
+        console.log('💾 [AuthStore] Actualizando localStorage y state...');
         authApi.storeAuth(updatedUser);
         set({ user: updatedUser });
 
+        console.log('✅ [AuthStore] Usuario actualizado exitosamente');
         return true;
       }
 
+      console.warn('⚠️ [AuthStore] Respuesta inválida del servidor');
       return false;
     } catch (error) {
-      console.error('Error refreshing user data:', error);
+      console.error('❌ [AuthStore] Error refreshing user data:', error);
       return false;
     }
   },

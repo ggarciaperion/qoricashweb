@@ -34,6 +34,7 @@ export interface User {
 
   // Validation status
   status?: 'Activo' | 'Inactivo';
+  has_complete_documents?: boolean;
 }
 
 // Bank account types

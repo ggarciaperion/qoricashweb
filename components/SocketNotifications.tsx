@@ -15,21 +15,35 @@ import { useAuthStore } from '@/lib/store';
 export default function SocketNotifications() {
   const [notification, setNotification] = useState<NotificationData | null>(null);
   const router = useRouter();
-  const { refreshUser } = useAuthStore();
+  const { user, refreshUser } = useAuthStore();
 
   // Conectar a Socket.IO y escuchar eventos
   useSocket({
     // Evento: Documentos aprobados (cuenta activada)
     onDocumentsApproved: async (data) => {
-      console.log('🎉 [Socket] Cuenta activada:', data);
+      console.log('🎉 [Socket] Evento documents_approved recibido:', data);
+      console.log('📊 [Socket] Estado actual del usuario ANTES de refresh:', {
+        dni: user?.dni,
+        status: user?.status,
+        has_complete_documents: user?.has_complete_documents
+      });
 
       // Refrescar datos del usuario desde el backend
+      console.log('🔄 [Socket] Llamando a refreshUser()...');
       const refreshed = await refreshUser();
 
       if (refreshed) {
-        console.log('✅ [Socket] Estado del usuario actualizado correctamente');
+        console.log('✅ [Socket] refreshUser() exitoso - Estado actualizado');
+
+        // Obtener el usuario actualizado
+        const updatedUser = useAuthStore.getState().user;
+        console.log('📊 [Socket] Estado del usuario DESPUÉS de refresh:', {
+          dni: updatedUser?.dni,
+          status: updatedUser?.status,
+          has_complete_documents: updatedUser?.has_complete_documents
+        });
       } else {
-        console.warn('⚠️ [Socket] No se pudo actualizar el estado del usuario');
+        console.error('❌ [Socket] refreshUser() falló - No se pudo actualizar el estado');
       }
 
       // Mostrar notificación
@@ -41,6 +55,7 @@ export default function SocketNotifications() {
       });
 
       // Recargar la página para refrescar componentes
+      console.log('🔄 [Socket] Recargando página en 2 segundos...');
       setTimeout(() => {
         router.refresh();
         window.location.reload();
