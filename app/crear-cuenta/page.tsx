@@ -90,8 +90,8 @@ export default function CrearCuentaPage() {
     }
   }, [error]);
 
-  // Función para validar y convertir a mayúsculas campos específicos
-  const validateAndUppercase = (value: string): string => {
+  // Función para validar y convertir a mayúsculas campos de nombres (solo letras)
+  const validateAndUppercaseNames = (value: string): string => {
     // Solo permitir letras, espacios y acentos
     const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
     if (!regex.test(value)) {
@@ -100,12 +100,22 @@ export default function CrearCuentaPage() {
     return value.toUpperCase();
   };
 
-  const handleChange = (field: string, value: any) => {
-    // Lista de campos que deben convertirse a mayúsculas
-    const uppercaseFields = ['nombres', 'apellidoPaterno', 'apellidoMaterno', 'razonSocial', 'personaContacto', 'direccion'];
+  // Función para convertir a mayúsculas dirección (acepta letras, números y caracteres especiales)
+  const validateAndUppercaseAddress = (value: string): string => {
+    return value.toUpperCase();
+  };
 
-    if (uppercaseFields.includes(field) && typeof value === 'string') {
-      value = validateAndUppercase(value);
+  const handleChange = (field: string, value: any) => {
+    // Campos que solo aceptan letras
+    const nameFields = ['nombres', 'apellidoPaterno', 'apellidoMaterno', 'razonSocial', 'personaContacto'];
+
+    // Campo dirección acepta letras, números y caracteres especiales
+    const addressFields = ['direccion'];
+
+    if (nameFields.includes(field) && typeof value === 'string') {
+      value = validateAndUppercaseNames(value);
+    } else if (addressFields.includes(field) && typeof value === 'string') {
+      value = validateAndUppercaseAddress(value);
     }
 
     setFormData(prev => ({ ...prev, [field]: value }));
