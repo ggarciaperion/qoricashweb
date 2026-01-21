@@ -25,6 +25,11 @@ import {
   Share2,
   ChevronDown,
   HelpCircle,
+  X,
+  FileText,
+  Image as ImageIcon,
+  Calendar,
+  Building2,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -38,6 +43,8 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'todas' | 'pendientes' | 'completadas'>('todas');
   const [copiedCode, setCopiedCode] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [selectedOperation, setSelectedOperation] = useState<any>(null);
+  const [isOperationModalOpen, setIsOperationModalOpen] = useState(false);
 
   useEffect(() => {
     // Fetch exchange rates
@@ -438,7 +445,9 @@ export default function DashboardPage() {
                   if (operation.estado.toLowerCase() === 'pendiente') {
                     router.push(`/dashboard/nueva-operacion?operation_id=${operation.codigo_operacion}`);
                   } else {
-                    router.push(`/dashboard/operaciones/${operation.id}`);
+                    // Abrir modal con detalles completos de la operación
+                    setSelectedOperation(operation);
+                    setIsOperationModalOpen(true);
                   }
                 };
 
@@ -488,6 +497,282 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* Operation Details Modal */}
+      {isOperationModalOpen && selectedOperation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={() => setIsOperationModalOpen(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                  selectedOperation.tipo === 'compra' ? 'bg-green-100' : 'bg-blue-100'
+                }`}>
+                  {selectedOperation.tipo === 'compra' ? (
+                    <ArrowDownRight className={`w-6 h-6 text-green-600`} />
+                  ) : (
+                    <ArrowUpRight className={`w-6 h-6 text-blue-600`} />
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Detalles de Operación</h2>
+                  <p className="text-sm text-gray-500">{selectedOperation.codigo_operacion}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsOperationModalOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Status Badge */}
+              <div className="flex items-center justify-center">
+                {getStatusBadge(selectedOperation.estado)}
+              </div>
+
+              {/* Main Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Tipo de Operación */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <p className="text-xs text-gray-500 mb-1 flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Tipo de Operación
+                  </p>
+                  <p className="text-lg font-bold text-gray-900 capitalize">
+                    {selectedOperation.tipo}
+                  </p>
+                </div>
+
+                {/* Fecha y Hora */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <p className="text-xs text-gray-500 mb-1 flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Fecha de Creación
+                  </p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short'
+                    })}
+                  </p>
+                </div>
+
+                {/* Monto en Soles */}
+                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                  <p className="text-xs text-green-700 mb-1">Monto en Soles</p>
+                  <p className="text-2xl font-bold text-green-900">
+                    S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+
+                {/* Monto en Dólares */}
+                <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                  <p className="text-xs text-blue-700 mb-1">Monto en Dólares</p>
+                  <p className="text-2xl font-bold text-blue-900">
+                    $ {(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+
+                {/* Tipo de Cambio */}
+                <div className="bg-purple-50 rounded-xl p-4 border border-purple-200">
+                  <p className="text-xs text-purple-700 mb-1">Tipo de Cambio</p>
+                  <p className="text-2xl font-bold text-purple-900">
+                    S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
+                  </p>
+                </div>
+
+                {/* Método de Pago */}
+                {selectedOperation.metodo_pago && (
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-xs text-gray-500 mb-1 flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      Método de Pago
+                    </p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {selectedOperation.metodo_pago}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Cuentas Bancarias */}
+              {(selectedOperation.source_account || selectedOperation.destination_account) && (
+                <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Cuentas Bancarias
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedOperation.source_account && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-200">
+                        <p className="text-xs text-gray-500 mb-1">Cuenta Origen</p>
+                        <p className="text-sm font-bold text-gray-900">{selectedOperation.source_account}</p>
+                        {selectedOperation.source_bank && (
+                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.source_bank}</p>
+                        )}
+                      </div>
+                    )}
+                    {selectedOperation.destination_account && (
+                      <div className="bg-white rounded-lg p-3 border border-gray-200">
+                        <p className="text-xs text-gray-500 mb-1">Cuenta Destino</p>
+                        <p className="text-sm font-bold text-gray-900">{selectedOperation.destination_account}</p>
+                        {selectedOperation.destination_bank && (
+                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.destination_bank}</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Documentos */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Documentos
+                </h3>
+
+                {/* Comprobante del Cliente */}
+                {selectedOperation.comprobante_cliente ? (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-gray-600" />
+                        <p className="text-sm font-semibold text-gray-900">Comprobante del Cliente</p>
+                      </div>
+                      <a
+                        href={selectedOperation.comprobante_cliente}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                      >
+                        Ver en nueva pestaña
+                      </a>
+                    </div>
+                    <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+                      <img
+                        src={selectedOperation.comprobante_cliente}
+                        alt="Comprobante del Cliente"
+                        className="w-full h-auto max-h-80 object-contain"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = '<div class="p-8 text-center text-gray-500"><FileText class="w-12 h-12 mx-auto mb-2" /><p>No se pudo cargar la imagen</p></div>';
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-dashed border-gray-300 text-center">
+                    <ImageIcon className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">No hay comprobante del cliente</p>
+                  </div>
+                )}
+
+                {/* Comprobante del Operador */}
+                {selectedOperation.comprobante_operador ? (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-gray-600" />
+                        <p className="text-sm font-semibold text-gray-900">Comprobante del Operador</p>
+                      </div>
+                      <a
+                        href={selectedOperation.comprobante_operador}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                      >
+                        Ver en nueva pestaña
+                      </a>
+                    </div>
+                    <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+                      <img
+                        src={selectedOperation.comprobante_operador}
+                        alt="Comprobante del Operador"
+                        className="w-full h-auto max-h-80 object-contain"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = '<div class="p-8 text-center text-gray-500"><FileText class="w-12 h-12 mx-auto mb-2" /><p>No se pudo cargar la imagen</p></div>';
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-dashed border-gray-300 text-center">
+                    <ImageIcon className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">No hay comprobante del operador</p>
+                  </div>
+                )}
+
+                {/* Boleta/Factura */}
+                {selectedOperation.boleta_factura ? (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-gray-600" />
+                        <p className="text-sm font-semibold text-gray-900">
+                          {user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
+                        </p>
+                      </div>
+                      <a
+                        href={selectedOperation.boleta_factura}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                      >
+                        Ver en nueva pestaña
+                      </a>
+                    </div>
+                    <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+                      <img
+                        src={selectedOperation.boleta_factura}
+                        alt={user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
+                        className="w-full h-auto max-h-80 object-contain"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.parentElement!.innerHTML = '<div class="p-8 text-center text-gray-500"><FileText class="w-12 h-12 mx-auto mb-2" /><p>No se pudo cargar la imagen</p></div>';
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-xl p-4 border border-dashed border-gray-300 text-center">
+                    <FileText className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">
+                      No hay {user?.document_type === 'RUC' ? 'factura' : 'boleta'} disponible
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Notas adicionales */}
+              {selectedOperation.notas && (
+                <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+                  <p className="text-xs text-yellow-700 mb-1 font-semibold">Notas</p>
+                  <p className="text-sm text-yellow-900">{selectedOperation.notas}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end">
+              <button
+                onClick={() => setIsOperationModalOpen(false)}
+                className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold transition"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
