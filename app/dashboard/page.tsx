@@ -7,6 +7,7 @@ import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { operationsApi } from '@/lib/api/operations';
 import type { Operation, ClientStats } from '@/lib/types';
+import ReferralBenefits from '@/components/ReferralBenefits';
 import {
   DollarSign,
   TrendingUp,
@@ -23,6 +24,8 @@ import {
   Gift,
   Copy,
   Share2,
+  ChevronDown,
+  HelpCircle,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -35,6 +38,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'todas' | 'pendientes' | 'completadas'>('todas');
   const [copiedCode, setCopiedCode] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
     // Fetch exchange rates
@@ -56,6 +60,24 @@ export default function DashboardPage() {
 
     loadData();
   }, [isAuthenticated]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-menu-container')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserMenuOpen]);
 
   const loadData = async () => {
     if (!user?.dni) {
@@ -148,27 +170,63 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link
-                href="/"
-                className="hidden sm:inline-flex items-center text-gray-700 hover:text-primary-600 transition font-medium"
-              >
-                Inicio
-              </Link>
-              <div className="hidden sm:flex items-center text-sm text-gray-700">
-                <User className="w-5 h-5 mr-2 text-gray-400" />
-                <span className="font-medium">
-                  {user?.document_type === 'RUC'
-                    ? user?.razon_social || user?.nombres
-                    : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
-                </span>
+              <div className="relative user-menu-container">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="font-medium">
+                    {user?.document_type === 'RUC'
+                      ? user?.razon_social || user?.nombres
+                      : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                    <Link
+                      href="/perfil"
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <User className="w-5 h-5 mr-3" />
+                      Mi perfil
+                    </Link>
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <TrendingUp className="w-5 h-5 mr-3" />
+                      Mi Dashboard
+                    </Link>
+                    <a
+                      href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <HelpCircle className="w-5 h-5 mr-3" />
+                      Ayuda
+                    </a>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <button
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition"
+                    >
+                      <LogOut className="w-5 h-5 mr-3" />
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                )}
               </div>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center text-gray-700 hover:text-red-600 transition"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="ml-2 hidden sm:inline">Salir</span>
-              </button>
             </div>
           </div>
         </div>
@@ -325,6 +383,13 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Referral Benefits Module - Full Stats */}
+        {user?.dni && (
+          <div className="mb-8">
+            <ReferralBenefits clientDni={user.dni} />
           </div>
         )}
 

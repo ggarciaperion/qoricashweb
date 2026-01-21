@@ -170,6 +170,7 @@ export interface CreateOperationRequest {
   monto_soles: number;
   monto_dolares: number;
   banco_cuenta_id: number;
+  referral_code?: string; // Código de referido (opcional)
 }
 
 export interface CreateOperationResponse {
