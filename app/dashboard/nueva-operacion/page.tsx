@@ -328,12 +328,34 @@ export default function NuevaOperacionPage() {
     setIsConfirmModalOpen(false);
 
     try {
+      // Determinar qué cuenta enviar: la cuenta donde el cliente RECIBIRÁ el pago
+      // Para Compra: recibe soles (selectedDestinationAccount)
+      // Para Venta: recibe dólares (selectedDestinationAccount)
+      const accountIdToSend = selectedDestinationAccount!;
+
+      // Convertir el ID de BD a índice del array bankAccounts
+      const accountIndex = bankAccounts.findIndex(acc => acc.id === accountIdToSend);
+
+      console.log('[Nueva Operación] Enviando operación:', {
+        tipo,
+        accountIdToSend,
+        accountIndex,
+        totalAccounts: bankAccounts.length,
+        selectedAccount: bankAccounts[accountIndex]
+      });
+
+      if (accountIndex === -1) {
+        setError('Cuenta bancaria no encontrada');
+        setIsSubmitting(false);
+        return;
+      }
+
       const response = await operationsApi.createOperation({
         dni: user!.dni,
         tipo: tipo.toLowerCase() as 'compra' | 'venta',
         monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
         monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
-        banco_cuenta_id: tipo === 'Compra' ? selectedDestinationAccount! : selectedOriginAccount!,
+        banco_cuenta_id: accountIndex,  // Enviar índice del array, no el ID de BD
         // CRÍTICO: Enviar código de referido solo si fue validado exitosamente
         ...(codeValidation?.isValid && referralCode ? { referral_code: referralCode } : {})
       });
