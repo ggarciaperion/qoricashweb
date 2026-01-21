@@ -752,8 +752,8 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Notas adicionales */}
-              {selectedOperation.notas && (
+              {/* Notas adicionales - Ocultar mensajes del sistema */}
+              {selectedOperation.notas && !selectedOperation.notas.startsWith('[SISTEMA]') && (
                 <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
                   <p className="text-xs text-yellow-700 mb-1 font-semibold">Notas</p>
                   <p className="text-sm text-yellow-900">{selectedOperation.notas}</p>
