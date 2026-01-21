@@ -7,7 +7,6 @@ import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { operationsApi } from '@/lib/api/operations';
 import type { Operation, ClientStats } from '@/lib/types';
-import ReferralBenefits from '@/components/ReferralBenefits';
 import {
   DollarSign,
   TrendingUp,
@@ -386,13 +385,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Referral Benefits Module - Full Stats */}
-        {user?.dni && (
-          <div className="mb-8">
-            <ReferralBenefits clientDni={user.dni} />
-          </div>
-        )}
-
         {/* Operations section */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
@@ -440,11 +432,21 @@ export default function DashboardPage() {
                 </p>
               </div>
             ) : (
-              filteredOperations.map((operation) => (
+              filteredOperations.map((operation) => {
+                // Si la operación está pendiente, redirigir a nueva-operacion para continuar
+                const handleOperationClick = () => {
+                  if (operation.estado.toLowerCase() === 'pendiente') {
+                    router.push(`/dashboard/nueva-operacion?operation_id=${operation.codigo_operacion}`);
+                  } else {
+                    router.push(`/dashboard/operaciones/${operation.id}`);
+                  }
+                };
+
+                return (
                 <div
                   key={operation.id}
                   className="p-6 hover:bg-gray-50 transition cursor-pointer"
-                  onClick={() => router.push(`/dashboard/operaciones/${operation.id}`)}
+                  onClick={handleOperationClick}
                 >
                   <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <div className="flex-1">
@@ -480,7 +482,8 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

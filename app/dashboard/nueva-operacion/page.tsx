@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
@@ -40,6 +40,7 @@ import Image from 'next/image';
 
 export default function NuevaOperacionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isAuthenticated, user } = useAuthStore();
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
   const { clearReferral } = useReferralStore();
@@ -121,6 +122,62 @@ export default function NuevaOperacionPage() {
   useEffect(() => {
     calculateAmount();
   }, [amountInput, tipo, currentRates, appliedDiscount]);
+
+  // Check if loading existing operation from dashboard
+  useEffect(() => {
+    const operationId = searchParams.get('operation_id');
+    if (operationId && isAuthenticated && user) {
+      loadExistingOperation(operationId);
+    }
+  }, [searchParams, isAuthenticated, user]);
+
+  const loadExistingOperation = async (operationId: string) => {
+    console.log('[Nueva Operación] Cargando operación existente:', operationId);
+    try {
+      // Fetch operation details from API
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/web/my-operations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dni: user!.dni })
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch operations');
+
+      const data = await response.json();
+      const operation = data.data?.operations?.find((op: any) => op.codigo_operacion === operationId);
+
+      if (!operation) {
+        console.error('[Nueva Operación] Operación no encontrada:', operationId);
+        return;
+      }
+
+      // Only load if operation is "Pendiente"
+      if (operation.estado.toLowerCase() !== 'pendiente') {
+        console.log('[Nueva Operación] Operación no está pendiente, redirigiendo al dashboard');
+        router.push('/dashboard');
+        return;
+      }
+
+      console.log('[Nueva Operación] Operación cargada:', operation);
+
+      // Calculate time remaining (15 minutes from creation)
+      const createdAt = new Date(operation.fecha_creacion);
+      const now = new Date();
+      const elapsedSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+      const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
+
+      // Set operation data and jump to step 2
+      setCreatedOperation(operation);
+      setTimeRemaining(remaining);
+      setCurrentStep(2);
+      setTipo(operation.tipo === 'compra' ? 'Compra' : 'Venta');
+
+      console.log('[Nueva Operación] Tiempo restante:', remaining, 'segundos');
+    } catch (error) {
+      console.error('[Nueva Operación] Error cargando operación:', error);
+      setError('Error al cargar la operación');
+    }
+  };
 
   const loadInitialData = async () => {
     setIsLoading(true);
