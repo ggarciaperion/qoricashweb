@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
@@ -42,7 +42,7 @@ export default function NuevaOperacionPage() {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
-  const { hasCoupon, setHasCoupon, referralCode: storedReferralCode, setReferralCode: storeReferralCode } = useReferralStore();
+  const { clearReferral } = useReferralStore();
 
   // Form state
   const [tipo, setTipo] = useState<'Compra' | 'Venta'>('Compra');
@@ -53,9 +53,9 @@ export default function NuevaOperacionPage() {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const [ownershipConfirmed, setOwnershipConfirmed] = useState(false);
 
-  // Referral/Coupon state
-  const [showCouponField, setShowCouponField] = useState(hasCoupon);
-  const [referralCode, setReferralCode] = useState(storedReferralCode);
+  // Referral/Coupon state - Always start empty
+  const [showCouponField, setShowCouponField] = useState(false);
+  const [referralCode, setReferralCode] = useState('');
   const [isValidatingCode, setIsValidatingCode] = useState(false);
   const [codeValidation, setCodeValidation] = useState<{
     isValid: boolean;
@@ -122,11 +122,6 @@ export default function NuevaOperacionPage() {
     calculateAmount();
   }, [amountInput, tipo, currentRates, appliedDiscount]);
 
-  // Initialize coupon field visibility based on stored state
-  useEffect(() => {
-    setShowCouponField(hasCoupon);
-  }, [hasCoupon]);
-
   const loadInitialData = async () => {
     setIsLoading(true);
     try {
@@ -170,10 +165,36 @@ export default function NuevaOperacionPage() {
     }
   };
 
-  const canCreateOperation = () => {
+  // Memoize canCreateOperation to automatically update when bankAccounts changes
+  const canCreateOperation = useMemo(() => {
     const hasSoles = bankAccounts.some(acc => acc.moneda === 'S/');
     const hasDolares = bankAccounts.some(acc => acc.moneda === '$');
+    console.log('[Nueva Operación] Verificando cuentas:', {
+      totalCuentas: bankAccounts.length,
+      hasSoles,
+      hasDolares,
+      canCreate: hasSoles && hasDolares
+    });
     return hasSoles && hasDolares;
+  }, [bankAccounts]);
+
+  // Get adjusted exchange rate with referral discount applied
+  const getAdjustedRate = () => {
+    if (!currentRates) return 0;
+
+    if (tipo === 'Compra') {
+      // Compra: QoriCash compra dólares al cliente
+      // Beneficio: suma 0.003 al tipo de cambio
+      return appliedDiscount > 0
+        ? currentRates.tipo_compra + appliedDiscount
+        : currentRates.tipo_compra;
+    } else {
+      // Venta: QoriCash vende dólares al cliente
+      // Beneficio: resta 0.003 al tipo de cambio
+      return appliedDiscount > 0
+        ? currentRates.tipo_venta - appliedDiscount
+        : currentRates.tipo_venta;
+    }
   };
 
   const calculateAmount = () => {
@@ -219,36 +240,32 @@ export default function NuevaOperacionPage() {
 
     setIsValidatingCode(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await referralApi.validateCode(code, user?.id);
+      // Llamada real a la API de validación
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/referrals/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: code.toUpperCase(),
+          client_dni: user?.dni || ''
+        })
+      });
 
-      // Temporary validation logic
-      // Check if code format is valid
-      const isValidFormat = /^[A-Z0-9]{6}$/.test(code);
+      const data = await response.json();
 
-      // Check if user is not using their own code
-      const isOwnCode = user?.referral_code === code;
-
-      // Check if user already used a code (for new users only)
-      const hasUsedCode = user?.used_referral_code !== null;
-
-      if (!isValidFormat) {
-        setCodeValidation({ isValid: false, message: 'Formato de código inválido' });
-        setAppliedDiscount(0);
-      } else if (isOwnCode) {
-        setCodeValidation({ isValid: false, message: 'No puedes usar tu propio código' });
-        setAppliedDiscount(0);
-      } else if (hasUsedCode) {
-        setCodeValidation({ isValid: false, message: 'Ya has usado un código promocional' });
-        setAppliedDiscount(0);
-      } else {
-        // Code is valid
-        setCodeValidation({ isValid: true, message: '¡Código aplicado! Beneficio: +0.003 en el tipo de cambio' });
+      if (data.success && data.is_valid) {
+        // Código válido
+        setCodeValidation({ isValid: true, message: '¡Código aplicado! Beneficio de 30 pips en el tipo de cambio' });
         setAppliedDiscount(0.003);
-        storeReferralCode(code);
+      } else {
+        // Código inválido
+        setCodeValidation({ isValid: false, message: data.message || 'Código de referido inválido' });
+        setAppliedDiscount(0);
       }
     } catch (error) {
-      setCodeValidation({ isValid: false, message: 'Error al validar código' });
+      console.error('Error validating referral code:', error);
+      setCodeValidation({ isValid: false, message: 'Error al validar código. Intenta nuevamente.' });
       setAppliedDiscount(0);
     } finally {
       setIsValidatingCode(false);
@@ -317,12 +334,21 @@ export default function NuevaOperacionPage() {
         monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
         monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
         banco_cuenta_id: tipo === 'Compra' ? selectedDestinationAccount! : selectedOriginAccount!,
+        // CRÍTICO: Enviar código de referido solo si fue validado exitosamente
+        ...(codeValidation?.isValid && referralCode ? { referral_code: referralCode } : {})
       });
 
       if (response.success && response.data) {
         setCreatedOperation(response.data.operation);
         setTimeRemaining(900); // Reset contador a 15 minutos
         setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
+
+        // Clear referral code after successful operation creation
+        setReferralCode('');
+        setCodeValidation(null);
+        setAppliedDiscount(0);
+        setShowCouponField(false);
+        clearReferral(); // Clear from persistent storage
       } else {
         setError(response.message || 'Error al crear la operación');
       }
@@ -522,11 +548,16 @@ export default function NuevaOperacionPage() {
       const data = await response.json();
 
       if (data.success) {
-        // Cerrar modal y avanzar al paso 3
+        // Cerrar modal
         setIsUploadProofModalOpen(false);
         setUploadedFiles([]);
         setVoucherCode('');
-        setCurrentStep(3);
+
+        // Mantener currentStep en 2 por 2 segundos para mostrar la animación
+        // de la línea 2→3 antes de avanzar al paso 3
+        setTimeout(() => {
+          setCurrentStep(3);
+        }, 2000);
       } else {
         setError(data.message || 'Error al enviar comprobante');
         setIsUploadingProof(false);
@@ -540,13 +571,23 @@ export default function NuevaOperacionPage() {
 
   // Get QoriCash account based on client bank and operation type
   const getQoricashAccount = () => {
-    if (!createdOperation || !selectedOriginAccount) return null;
+    if (!createdOperation) {
+      console.log('[getQoricashAccount] No hay operación creada');
+      return null;
+    }
 
-    const clientAccount = bankAccounts.find(acc => acc.id === selectedOriginAccount);
-    if (!clientAccount) return null;
+    // Obtener el banco de la cuenta de origen desde la operación creada
+    const sourceAccountInfo = createdOperation.source_account_info || createdOperation.source_account;
+    if (!sourceAccountInfo) {
+      console.log('[getQoricashAccount] No se encontró información de cuenta de origen en la operación');
+      return null;
+    }
 
-    const clientBank = clientAccount.banco;
-    const currency = tipo === 'Compra' ? '$' : 'S/';
+    // Extraer el banco de la info de la cuenta
+    const clientBank = sourceAccountInfo.banco || sourceAccountInfo.split(' - ')[0];
+    const currency = createdOperation.operation_type === 'Compra' ? '$' : 'S/';
+
+    console.log('[getQoricashAccount] Banco cliente:', clientBank, 'Moneda:', currency);
 
     // Cuentas QoriCash simuladas para pruebas
     const qoricashAccounts: any = {
@@ -1061,7 +1102,7 @@ export default function NuevaOperacionPage() {
                   )}
 
                   {/* Validación de cuentas */}
-                  {!canCreateOperation() && (
+                  {!canCreateOperation && (
                     <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-sm text-yellow-800 flex items-start">
                         <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
@@ -1077,6 +1118,22 @@ export default function NuevaOperacionPage() {
                     </label>
 
                     {/* Botones de Compra y Venta */}
+                    <style jsx>{`
+                      @keyframes pulse-green {
+                        0%, 100% {
+                          opacity: 1;
+                          transform: scale(1);
+                        }
+                        50% {
+                          opacity: 0.8;
+                          transform: scale(1.05);
+                        }
+                      }
+
+                      .live-rate {
+                        animation: pulse-green 2s ease-in-out infinite;
+                      }
+                    `}</style>
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <button
                         type="button"
@@ -1094,7 +1151,18 @@ export default function NuevaOperacionPage() {
                         <TrendingDown className="w-4 h-4" />
                         <div className="text-left">
                           <div className="text-sm font-bold">Compra</div>
-                          <div className="text-xs opacity-90">S/ {exchangeRates.compra.toFixed(3)}</div>
+                          {appliedDiscount > 0 ? (
+                            <div className="flex flex-col gap-0.5">
+                              <div className="text-xs opacity-60 line-through">
+                                S/ {exchangeRates.compra.toFixed(4)}
+                              </div>
+                              <div className={`text-xs font-bold ${tipo === 'Compra' ? 'text-green-200' : 'text-green-600'} live-rate`}>
+                                S/ {(exchangeRates.compra + appliedDiscount).toFixed(4)}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-xs opacity-90">S/ {exchangeRates.compra.toFixed(4)}</div>
+                          )}
                         </div>
                       </button>
                       <button
@@ -1113,7 +1181,18 @@ export default function NuevaOperacionPage() {
                         <TrendingUp className="w-4 h-4" />
                         <div className="text-left">
                           <div className="text-sm font-bold">Venta</div>
-                          <div className="text-xs opacity-90">S/ {exchangeRates.venta.toFixed(3)}</div>
+                          {appliedDiscount > 0 ? (
+                            <div className="flex flex-col gap-0.5">
+                              <div className="text-xs opacity-60 line-through">
+                                S/ {exchangeRates.venta.toFixed(4)}
+                              </div>
+                              <div className={`text-xs font-bold ${tipo === 'Venta' ? 'text-green-200' : 'text-green-600'} live-rate`}>
+                                S/ {(exchangeRates.venta - appliedDiscount).toFixed(4)}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-xs opacity-90">S/ {exchangeRates.venta.toFixed(4)}</div>
+                          )}
                         </div>
                       </button>
                     </div>
@@ -1127,9 +1206,11 @@ export default function NuevaOperacionPage() {
                           onChange={(e) => {
                             setShowCouponField(e.target.checked);
                             if (!e.target.checked) {
+                              // Clear all coupon-related state
                               setReferralCode('');
                               setCodeValidation(null);
                               setAppliedDiscount(0);
+                              clearReferral(); // Clear from persistent storage
                             }
                           }}
                           className="w-4 h-4 text-success border-gray-300 rounded focus:ring-success cursor-pointer accent-success"
@@ -1410,7 +1491,7 @@ export default function NuevaOperacionPage() {
                       selectedOriginAccount === null ||
                       selectedDestinationAccount === null ||
                       !ownershipConfirmed ||
-                      !canCreateOperation() ||
+                      !canCreateOperation ||
                       user?.status === 'Inactivo'
                     }
                     className="w-full bg-gradient-to-r from-secondary to-secondary-700 text-white py-4 rounded-lg font-bold text-base hover:from-secondary-600 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl group"
@@ -1602,7 +1683,7 @@ export default function NuevaOperacionPage() {
                       : `${parseFloat(amountOutput).toFixed(2)} USD`}
                   </strong>{' '}
                   al tipo de cambio{' '}
-                  <strong>S/ {(tipo === 'Compra' ? currentRates?.tipo_compra : currentRates?.tipo_venta)?.toFixed(3)}</strong>?
+                  <strong>S/ {getAdjustedRate()?.toFixed(3)}</strong>?
                 </p>
 
                 <div className="bg-white rounded-lg p-3 space-y-2">
@@ -1625,9 +1706,17 @@ export default function NuevaOperacionPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tipo de cambio:</span>
                     <span className="font-semibold text-gray-900">
-                      S/ {(tipo === 'Compra' ? currentRates?.tipo_compra : currentRates?.tipo_venta)?.toFixed(3)}
+                      S/ {getAdjustedRate()?.toFixed(3)}
                     </span>
                   </div>
+                  {appliedDiscount > 0 && (
+                    <div className="flex justify-between text-sm pt-2 border-t border-gray-200">
+                      <span className="text-green-600">🎉 Descuento por referido:</span>
+                      <span className="font-semibold text-green-600">
+                        {appliedDiscount.toFixed(3)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
