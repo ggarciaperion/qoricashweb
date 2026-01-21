@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Gift, TrendingUp, Sparkles, ArrowRight, Users } from 'lucide-react';
+import { Gift, TrendingUp, Sparkles, ArrowRight, Users, Plus } from 'lucide-react';
 
 export default function PromocionesPage() {
   const router = useRouter();
@@ -47,19 +47,30 @@ export default function PromocionesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-4 mb-3">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary to-secondary-700 rounded-2xl blur-xl opacity-30 animate-pulse"></div>
-              <div className="relative p-3 bg-gradient-to-br from-secondary to-secondary-700 rounded-2xl shadow-lg">
-                <Gift className="w-7 h-7 text-white" />
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary to-secondary-700 rounded-2xl blur-xl opacity-30 animate-pulse"></div>
+                <div className="relative p-3 bg-gradient-to-br from-secondary to-secondary-700 rounded-2xl shadow-lg">
+                  <Gift className="w-7 h-7 text-white" />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-4xl font-black text-gray-900 tracking-tight">Promociones</h1>
+                <p className="text-gray-500 mt-1 text-sm font-medium">
+                  Descubre beneficios exclusivos diseñados para ti
+                </p>
               </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-black text-gray-900 tracking-tight">Promociones</h1>
-              <p className="text-gray-500 mt-1 text-sm font-medium">
-                Descubre beneficios exclusivos diseñados para ti
-              </p>
-            </div>
+
+            {/* Botón Nueva Operación */}
+            <button
+              onClick={() => router.push('/dashboard/nueva-operacion')}
+              className="flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Nueva operación</span>
+            </button>
           </div>
         </div>
 
