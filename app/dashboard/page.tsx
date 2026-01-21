@@ -516,7 +516,9 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">Detalles de Operación</h2>
-                  <p className="text-sm text-gray-500">{selectedOperation.codigo_operacion}</p>
+                  <p className="text-sm text-gray-500">
+                    {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
+                  </p>
                 </div>
               </div>
               <button
@@ -543,7 +545,7 @@ export default function DashboardPage() {
                     ID de Operación
                   </p>
                   <p className="text-lg font-bold text-primary-900 font-mono">
-                    {selectedOperation.codigo_operacion}
+                    {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
                   </p>
                 </div>
 
