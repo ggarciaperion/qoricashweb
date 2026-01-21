@@ -536,6 +536,17 @@ export default function DashboardPage() {
 
               {/* Main Info Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* ID de Operación */}
+                <div className="bg-primary-50 rounded-xl p-4 border border-primary-200">
+                  <p className="text-xs text-primary-700 mb-1 flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    ID de Operación
+                  </p>
+                  <p className="text-lg font-bold text-primary-900 font-mono">
+                    {selectedOperation.codigo_operacion}
+                  </p>
+                </div>
+
                 {/* Tipo de Operación */}
                 <div className="bg-gray-50 rounded-xl p-4">
                   <p className="text-xs text-gray-500 mb-1 flex items-center gap-2">
