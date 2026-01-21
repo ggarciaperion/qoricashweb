@@ -417,7 +417,10 @@ export default function NuevaOperacionPage() {
         ...(codeValidation?.isValid && referralCode ? { referral_code: referralCode } : {})
       });
 
+      console.log('[Nueva Operación] Respuesta del servidor:', response);
+
       if (response.success && response.data) {
+        console.log('[Nueva Operación] Operación creada:', response.data.operation);
         setCreatedOperation(response.data.operation);
         setTimeRemaining(900); // Reset contador a 15 minutos
         setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
@@ -1090,12 +1093,16 @@ export default function NuevaOperacionPage() {
                                     ? `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
                                     : `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
                                   }
-                                </strong>{' '}
-                                desde tu cuenta{' '}
-                                <strong>
-                                  {bankAccounts.find(acc => acc.id === selectedOriginAccount)?.banco} {' '}
-                                  {bankAccounts.find(acc => acc.id === selectedOriginAccount)?.numero_cuenta}
                                 </strong>
+                                {createdOperation.source_account_info && (
+                                  <>
+                                    {' '}desde tu cuenta{' '}
+                                    <strong>
+                                      {createdOperation.source_account_info.banco} {' '}
+                                      {createdOperation.source_account}
+                                    </strong>
+                                  </>
+                                )}
                               </span>
                             </p>
                           </div>
