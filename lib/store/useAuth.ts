@@ -162,6 +162,20 @@ export const useAuth = create<AuthState>()(
     }),
     {
       name: 'qoricash-auth-storage',
+      // Usar sessionStorage en lugar de localStorage
+      // La sesión se cierra al cerrar el navegador
+      storage: {
+        getItem: (name) => {
+          const str = sessionStorage.getItem(name);
+          return str ? JSON.parse(str) : null;
+        },
+        setItem: (name, value) => {
+          sessionStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          sessionStorage.removeItem(name);
+        },
+      },
       partialize: (state) => ({
         client: state.client,
         isAuthenticated: state.isAuthenticated,
