@@ -81,9 +81,15 @@ export default function Home() {
               <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">
                 Cómo Funciona
               </a>
-              <a href="#promociones" className="text-gray-700 hover:text-primary-600 transition">
-                Promociones
-              </a>
+              {isAuthenticated ? (
+                <Link href="/dashboard/promociones" className="text-gray-700 hover:text-primary-600 transition">
+                  Promociones
+                </Link>
+              ) : (
+                <a href="#promociones" className="text-gray-700 hover:text-primary-600 transition">
+                  Promociones
+                </a>
+              )}
 
               {isAuthenticated ? (
                 <div className="relative user-menu-container">
@@ -753,7 +759,7 @@ export default function Home() {
             Comienza a cambiar hoy mismo
           </h2>
           <p className="text-xl text-gray-300 mb-8">
-            Únete a miles de peruanos que confían en QoriCash para sus cambios de divisas
+            Únete a miles de clientes que confían en QoriCash para sus cambios de divisas
           </p>
           <Link
             href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}

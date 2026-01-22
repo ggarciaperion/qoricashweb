@@ -269,7 +269,7 @@ export default function SobreNosotros() {
             ¿Listo para comenzar?
           </h2>
           <p className="text-xl text-gray-100 mb-8">
-            Únete a miles de peruanos que ya confían en QoriCash para sus operaciones de cambio
+            Únete a miles de clientes que ya confían en QoriCash para sus operaciones de cambio
           </p>
           <Link
             href="/crear-cuenta"
