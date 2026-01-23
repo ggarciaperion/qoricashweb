@@ -5,7 +5,7 @@ import { Shield, Zap, Users, Award, CheckCircle, MapPin, Building2, Phone, Mail 
 
 export default function SobreNosotros() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <main className="min-h-screen">
       {/* Header/Navigation */}
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="w-full px-6 sm:px-8 lg:px-12">

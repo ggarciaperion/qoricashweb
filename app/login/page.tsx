@@ -8,6 +8,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
+import { authApi } from '@/lib/api/auth';
+import ForgotPasswordModal from '@/components/ForgotPasswordModal';
+import ChangePasswordModal from '@/components/ChangePasswordModal';
+import type { ForgotPasswordRequest } from '@/lib/types';
 
 const loginSchema = z.object({
   dni: z.string().min(8, 'Ingresa un DNI válido').max(12, 'DNI inválido'),
@@ -24,6 +28,11 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Modals state
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [pendingLoginDni, setPendingLoginDni] = useState<string>('');
+
   const {
     register,
     handleSubmit,
@@ -39,17 +48,37 @@ export default function LoginPage() {
 
     try {
       console.log('📝 [LoginPage] Calling login function...');
-      const success = await login({ dni: data.dni, password: data.password });
-      console.log('📝 [LoginPage] Login result:', success);
 
-      if (success) {
+      // Call the login API directly to check for requires_password_change
+      const response = await authApi.login({ dni: data.dni, password: data.password });
+      console.log('📝 [LoginPage] Login response:', response);
+
+      if (response.success && response.client) {
+        // Check if password change is required
+        if (response.requires_password_change) {
+          console.log('🔐 [LoginPage] Password change required');
+          setPendingLoginDni(data.dni);
+          setIsChangePasswordModalOpen(true);
+          setIsLoading(false);
+          return;
+        }
+
+        // No password change required - proceed with normal login
         console.log('✅ [LoginPage] Login successful! Redirecting...');
-        console.log('🔄 [LoginPage] Redirecting to /dashboard');
-        router.push('/dashboard');
+
+        // Update the auth store
+        const success = await login({ dni: data.dni, password: data.password });
+
+        if (success) {
+          console.log('🔄 [LoginPage] Redirecting to /dashboard');
+          router.push('/dashboard');
+        } else {
+          console.log('❌ [LoginPage] Login failed after password check');
+        }
       } else {
-        console.log('❌ [LoginPage] Login failed');
+        console.log('❌ [LoginPage] Login failed:', response.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ [LoginPage] Error en login:', error);
     } finally {
       setIsLoading(false);
@@ -57,8 +86,53 @@ export default function LoginPage() {
     }
   };
 
+  // Handle forgot password submission
+  const handleForgotPassword = async (data: ForgotPasswordRequest) => {
+    try {
+      const result = await authApi.forgotPassword(data);
+      return result;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message || 'Error al recuperar contraseña'
+      };
+    }
+  };
+
+  // Handle password change submission
+  const handleChangePassword = async (newPassword: string) => {
+    try {
+      const result = await authApi.changePasswordWeb({
+        dni: pendingLoginDni,
+        new_password: newPassword
+      });
+
+      if (result.success) {
+        // Close modal
+        setIsChangePasswordModalOpen(false);
+
+        // Now login with the new password
+        const loginSuccess = await login({
+          dni: pendingLoginDni,
+          password: newPassword
+        });
+
+        if (loginSuccess) {
+          router.push('/dashboard');
+        }
+      }
+
+      return result;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message || 'Error al cambiar contraseña'
+      };
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full blur-3xl opacity-50"></div>
@@ -168,9 +242,13 @@ export default function LoginPage() {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="text-primary hover:text-primary-600 font-medium">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPasswordModalOpen(true)}
+                  className="text-primary hover:text-primary-600 font-medium"
+                >
                   ¿Olvidaste tu contraseña?
-                </a>
+                </button>
               </div>
             </div>
 
@@ -220,6 +298,19 @@ export default function LoginPage() {
           Tus datos están protegidos con encriptación de nivel bancario
         </p>
       </div>
+
+      {/* Modals */}
+      <ForgotPasswordModal
+        isOpen={isForgotPasswordModalOpen}
+        onClose={() => setIsForgotPasswordModalOpen(false)}
+        onSubmit={handleForgotPassword}
+      />
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordModalOpen}
+        onSubmit={handleChangePassword}
+        canClose={false}
+      />
     </main>
   );
 }
