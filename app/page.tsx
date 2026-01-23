@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <main className="min-h-screen">
       {/* Header */}
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
         <nav className="w-full px-6 sm:px-8 lg:px-12">
@@ -492,7 +492,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="servicios" className="py-12 bg-white">
+      <section id="servicios" className="py-12 bg-white/60 backdrop-blur-sm">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16 relative">
             {/* Decorative elements */}
@@ -565,7 +565,7 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500"></div>
 
                 {/* Main card */}
-                <div className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-gray-100 group-hover:border-primary-200 overflow-hidden h-full flex flex-col">
+                <div className="relative bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-gray-100 group-hover:border-primary-200 overflow-hidden h-full flex flex-col">
                   {/* Background decoration */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-50 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
