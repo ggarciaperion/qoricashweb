@@ -4,6 +4,7 @@ import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/components/AuthProvider";
 import SocketNotifications from "@/components/SocketNotifications";
+import BackgroundDecor from "@/components/BackgroundDecor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,9 +38,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased relative">
+        {/* Decoración de fondo sutil y profesional */}
+        <BackgroundDecor />
+        
         <AuthProvider>
-          {children}
+          <div className="relative z-10">
+            {children}
+          </div>
           {/* Notificaciones en tiempo real (KYC, operaciones, etc.) */}
           <SocketNotifications />
         </AuthProvider>
