@@ -172,54 +172,55 @@ body {
 .animate-dot-travel {
   animation: dot-travel 3s ease-in-out infinite;
 }
+
 /* ===================================
    BACKGROUND DECORATIVE PATTERNS
    =================================== */
 
-/* Grid pattern sutil para profundidad */
+/* Grid pattern VISIBLE para profundidad */
 .bg-grid-pattern {
   background-image: 
-    linear-gradient(to right, rgba(13, 27, 42, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(13, 27, 42, 0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(to right, rgba(13, 27, 42, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(13, 27, 42, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 
-/* Gradientes radiales sutiles */
+/* Gradientes radiales VISIBLES */
 .bg-radial-gradient-primary {
   background: radial-gradient(
     circle at top right,
-    rgba(34, 197, 94, 0.03) 0%,
-    transparent 50%
+    rgba(34, 197, 94, 0.12) 0%,
+    transparent 60%
   );
 }
 
 .bg-radial-gradient-secondary {
   background: radial-gradient(
     circle at bottom left,
-    rgba(13, 27, 42, 0.05) 0%,
-    transparent 50%
+    rgba(13, 27, 42, 0.15) 0%,
+    transparent 60%
   );
 }
 
-/* Patrón de puntos diagonal sutil */
+/* Patrón de puntos diagonal VISIBLE */
 .bg-dot-pattern {
   background-image: radial-gradient(
     circle,
-    rgba(34, 197, 94, 0.04) 1px,
-    transparent 1px
+    rgba(34, 197, 94, 0.12) 2px,
+    transparent 2px
   );
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
 }
 
-/* Líneas diagonales sutiles */
+/* Líneas diagonales VISIBLES */
 .bg-diagonal-lines {
   background-image: repeating-linear-gradient(
     45deg,
     transparent,
-    transparent 40px,
-    rgba(34, 197, 94, 0.01) 40px,
-    rgba(34, 197, 94, 0.01) 80px
+    transparent 35px,
+    rgba(34, 197, 94, 0.05) 35px,
+    rgba(34, 197, 94, 0.05) 70px
   );
 }
 
@@ -229,18 +230,18 @@ body {
     transform: translateY(0px) translateX(0px);
   }
   25% {
-    transform: translateY(-20px) translateX(10px);
+    transform: translateY(-30px) translateX(15px);
   }
   50% {
-    transform: translateY(-10px) translateX(-10px);
+    transform: translateY(-15px) translateX(-15px);
   }
   75% {
-    transform: translateY(-30px) translateX(5px);
+    transform: translateY(-40px) translateX(10px);
   }
 }
 
 .animate-float-slow {
-  animation: float-slow 20s ease-in-out infinite;
+  animation: float-slow 25s ease-in-out infinite;
 }
 
 @keyframes rotate-slow {
@@ -256,94 +257,64 @@ body {
   animation: rotate-slow 60s linear infinite;
 }
 
-/* Efecto de glassmorphism sutil */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Orbes decorativos con blur */
+/* Orbes decorativos con blur MÁS VISIBLES */
 .decorative-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(60px);
+  opacity: 0.4;
   pointer-events: none;
   will-change: transform;
 }
 
 .decorative-orb-primary {
-  background: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.5);
 }
 
 .decorative-orb-secondary {
-  background: rgba(13, 27, 42, 0.3);
+  background: rgba(13, 27, 42, 0.6);
 }
 
 .decorative-orb-success {
-  background: rgba(130, 193, 108, 0.2);
+  background: rgba(130, 193, 108, 0.5);
 }
 
-/* Símbolos de moneda sutiles */
+/* Símbolos de moneda MÁS VISIBLES */
 .currency-symbol {
   position: absolute;
-  font-size: 120px;
+  font-size: 150px;
   font-weight: 100;
-  opacity: 0.02;
+  opacity: 0.08;
   color: #22C55E;
   pointer-events: none;
   user-select: none;
 }
 
-/* Líneas de conexión sutiles */
+/* Líneas de conexión MÁS VISIBLES */
 .connection-line {
   position: absolute;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(34, 197, 94, 0.1) 50%,
+    rgba(34, 197, 94, 0.25) 50%,
     transparent 100%
   );
-  opacity: 0.3;
+  opacity: 0.6;
 }
 
 /* Animación de pulso suave */
 @keyframes pulse-glow {
   0%, 100% {
-    opacity: 0.1;
+    opacity: 0.3;
     transform: scale(1);
   }
   50% {
-    opacity: 0.2;
-    transform: scale(1.05);
+    opacity: 0.6;
+    transform: scale(1.08);
   }
 }
 
 .animate-pulse-glow {
-  animation: pulse-glow 8s ease-in-out infinite;
-}
-
-/* Mejora de profundidad para secciones */
-.section-depth {
-  position: relative;
-  z-index: 1;
-}
-
-.section-depth::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.01) 0%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: -1;
+  animation: pulse-glow 6s ease-in-out infinite;
 }

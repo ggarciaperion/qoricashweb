@@ -2,180 +2,179 @@
 
 /**
  * Componente de Decoración de Fondo
- * Agrega elementos visuales sutiles y profesionales al fondo
- * sin competir con el contenido principal
+ * Elementos visuales profesionales y claramente visibles
  */
 
 export default function BackgroundDecor() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-      {/* Grid Pattern Sutil */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-40" />
+      {/* Grid Pattern VISIBLE */}
+      <div className="absolute inset-0 bg-grid-pattern" />
 
-      {/* Dot Pattern Diagonal */}
-      <div className="absolute inset-0 bg-dot-pattern opacity-30" />
+      {/* Dot Pattern Diagonal VISIBLE */}
+      <div className="absolute inset-0 bg-dot-pattern" />
 
-      {/* Diagonal Lines */}
+      {/* Diagonal Lines VISIBLE */}
       <div className="absolute inset-0 bg-diagonal-lines" />
 
-      {/* Gradientes Radiales Estratégicos */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-radial-gradient-primary" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-radial-gradient-secondary" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-radial-gradient-primary opacity-50" />
+      {/* Gradientes Radiales Estratégicos MÁS VISIBLES */}
+      <div className="absolute top-0 right-0 w-[900px] h-[900px] bg-radial-gradient-primary" />
+      <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-radial-gradient-secondary" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] bg-radial-gradient-primary opacity-70" />
 
-      {/* Orbes Decorativos con Blur - Parte Superior */}
+      {/* Orbes Decorativos GRANDES Y VISIBLES - Superior */}
       <div
         className="decorative-orb decorative-orb-primary animate-float-slow"
         style={{
-          top: '10%',
-          right: '15%',
-          width: '400px',
-          height: '400px',
+          top: '8%',
+          right: '12%',
+          width: '500px',
+          height: '500px',
         }}
       />
 
       <div
         className="decorative-orb decorative-orb-success animate-float-slow"
         style={{
-          top: '20%',
-          left: '10%',
-          width: '350px',
-          height: '350px',
-          animationDelay: '3s',
+          top: '15%',
+          left: '8%',
+          width: '450px',
+          height: '450px',
+          animationDelay: '4s',
         }}
       />
 
-      {/* Orbes Decorativos - Parte Media */}
+      {/* Orbes Decorativos - Medio */}
       <div
         className="decorative-orb decorative-orb-secondary animate-float-slow"
         style={{
-          top: '50%',
-          right: '20%',
-          width: '450px',
-          height: '450px',
-          animationDelay: '6s',
+          top: '45%',
+          right: '18%',
+          width: '550px',
+          height: '550px',
+          animationDelay: '8s',
         }}
       />
 
       <div
         className="decorative-orb decorative-orb-primary animate-pulse-glow"
         style={{
-          top: '45%',
-          left: '5%',
-          width: '300px',
-          height: '300px',
+          top: '40%',
+          left: '3%',
+          width: '400px',
+          height: '400px',
         }}
       />
 
-      {/* Orbes Decorativos - Parte Inferior */}
+      {/* Orbes Decorativos - Inferior */}
       <div
         className="decorative-orb decorative-orb-success animate-float-slow"
         style={{
-          bottom: '15%',
-          left: '25%',
-          width: '400px',
-          height: '400px',
-          animationDelay: '9s',
+          bottom: '10%',
+          left: '22%',
+          width: '500px',
+          height: '500px',
+          animationDelay: '12s',
         }}
       />
 
       <div
         className="decorative-orb decorative-orb-secondary animate-pulse-glow"
         style={{
-          bottom: '20%',
-          right: '10%',
-          width: '350px',
-          height: '350px',
-          animationDelay: '4s',
+          bottom: '15%',
+          right: '8%',
+          width: '450px',
+          height: '450px',
+          animationDelay: '6s',
         }}
       />
 
-      {/* Símbolos de Moneda Sutiles */}
-      <div className="currency-symbol" style={{ top: '15%', right: '25%', transform: 'rotate(-15deg)' }}>
+      {/* Símbolos de Moneda VISIBLES */}
+      <div className="currency-symbol" style={{ top: '12%', right: '22%', transform: 'rotate(-12deg)' }}>
         $
       </div>
-      <div className="currency-symbol" style={{ top: '60%', left: '15%', transform: 'rotate(20deg)' }}>
+      <div className="currency-symbol" style={{ top: '55%', left: '12%', transform: 'rotate(18deg)', fontSize: '140px' }}>
         S/
       </div>
-      <div className="currency-symbol" style={{ bottom: '25%', right: '30%', transform: 'rotate(-10deg)' }}>
+      <div className="currency-symbol" style={{ bottom: '22%', right: '28%', transform: 'rotate(-8deg)', fontSize: '130px' }}>
         €
       </div>
-      <div className="currency-symbol" style={{ top: '40%', right: '8%', fontSize: '100px', transform: 'rotate(15deg)' }}>
+      <div className="currency-symbol" style={{ top: '35%', right: '5%', fontSize: '120px', transform: 'rotate(12deg)' }}>
         ¥
       </div>
-      <div className="currency-symbol" style={{ bottom: '35%', left: '8%', fontSize: '110px', transform: 'rotate(-20deg)' }}>
+      <div className="currency-symbol" style={{ bottom: '32%', left: '5%', fontSize: '135px', transform: 'rotate(-18deg)' }}>
         £
       </div>
 
-      {/* Líneas de Conexión Diagonales */}
+      {/* Líneas de Conexión Diagonales VISIBLES */}
       <div
         className="connection-line animate-pulse-glow"
         style={{
-          top: '20%',
-          left: '10%',
-          width: '400px',
-          transform: 'rotate(-30deg)',
+          top: '18%',
+          left: '8%',
+          width: '450px',
+          transform: 'rotate(-25deg)',
           animationDelay: '1s',
         }}
       />
       <div
         className="connection-line animate-pulse-glow"
         style={{
-          top: '50%',
-          right: '5%',
-          width: '500px',
-          transform: 'rotate(45deg)',
+          top: '48%',
+          right: '3%',
+          width: '550px',
+          transform: 'rotate(40deg)',
           animationDelay: '3s',
         }}
       />
       <div
         className="connection-line animate-pulse-glow"
         style={{
-          bottom: '30%',
-          left: '20%',
-          width: '350px',
-          transform: 'rotate(-45deg)',
+          bottom: '25%',
+          left: '18%',
+          width: '400px',
+          transform: 'rotate(-40deg)',
           animationDelay: '5s',
         }}
       />
       <div
         className="connection-line animate-pulse-glow"
         style={{
-          top: '35%',
-          left: '30%',
-          width: '450px',
-          transform: 'rotate(60deg)',
+          top: '32%',
+          left: '28%',
+          width: '500px',
+          transform: 'rotate(55deg)',
           animationDelay: '2s',
         }}
       />
 
-      {/* Círculos decorativos pequeños */}
+      {/* Círculos decorativos MÁS VISIBLES */}
       <div
-        className="absolute rounded-full border border-primary/5 animate-pulse-slow"
+        className="absolute rounded-full border-2 border-primary/20 animate-pulse-slow"
         style={{
-          top: '25%',
-          left: '40%',
-          width: '120px',
-          height: '120px',
+          top: '22%',
+          left: '38%',
+          width: '150px',
+          height: '150px',
         }}
       />
       <div
-        className="absolute rounded-full border border-primary/5 animate-pulse-slow"
+        className="absolute rounded-full border-2 border-primary/20 animate-pulse-slow"
         style={{
-          bottom: '35%',
-          right: '35%',
-          width: '90px',
-          height: '90px',
+          bottom: '32%',
+          right: '32%',
+          width: '120px',
+          height: '120px',
           animationDelay: '2s',
         }}
       />
       <div
-        className="absolute rounded-full border border-success/5 animate-pulse-slow"
+        className="absolute rounded-full border-2 border-success/20 animate-pulse-slow"
         style={{
-          top: '60%',
-          right: '45%',
-          width: '100px',
-          height: '100px',
+          top: '58%',
+          right: '42%',
+          width: '130px',
+          height: '130px',
           animationDelay: '4s',
         }}
       />
