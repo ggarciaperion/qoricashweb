@@ -22,7 +22,7 @@ export const banksApi = {
   },
 
   /**
-   * Add new bank account (usando el mismo endpoint que la app móvil)
+   * Add new bank account
    */
   async addAccount(data: {
     dni: string;
@@ -32,8 +32,18 @@ export const banksApi = {
     currency: 'S/' | '$';
     origen: 'Lima' | 'Provincia';
   }): Promise<ApiResponse<any>> {
-    const { dni, ...bankData } = data;
-    const response = await apiClient.post<ApiResponse<any>>(`/api/client/add-bank-account/${dni}`, bankData);
+    const response = await apiClient.post<ApiResponse<any>>('/api/web/add-bank-account', data);
+    return response.data;
+  },
+
+  /**
+   * Remove bank account by index
+   */
+  async removeAccount(dni: string, accountIndex: number): Promise<ApiResponse<any>> {
+    const response = await apiClient.post<ApiResponse<any>>('/api/web/remove-bank-account', {
+      dni,
+      account_index: accountIndex
+    });
     return response.data;
   },
 

@@ -49,10 +49,14 @@ export const useSocket = (options: UseSocketOptions = {}) => {
     socket.on('connect', () => {
       console.log('✅ [Socket.IO] Conectado con ID:', socket.id);
 
-      // Unirse al room específico del cliente
-      const room = `client_${user.dni}`;
-      socket.emit('join', { room });
-      console.log(`📍 [Socket.IO] Unido al room: ${room}`);
+      // Unirse al room específico del cliente (IGUAL QUE APP MÓVIL)
+      socket.emit('join_client_room', { dni: user.dni });
+      console.log(`📍 [Socket.IO] Evento 'join_client_room' emitido para DNI: ${user.dni}`);
+    });
+
+    // Confirmación de que el servidor nos unió al room
+    socket.on('joined_room', (data) => {
+      console.log('✅ [Socket.IO] Confirmación del servidor - Unido al room:', data);
     });
 
     socket.on('disconnect', (reason) => {

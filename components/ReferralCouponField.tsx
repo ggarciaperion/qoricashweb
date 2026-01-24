@@ -6,6 +6,7 @@ import { Tag, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 interface ReferralCouponFieldProps {
   showCheckbox?: boolean;
   initialShowField?: boolean;
+  operationType?: 'Compra' | 'Venta';
   onCodeChange?: (code: string, isValid: boolean) => void;
   onValidationComplete?: (isValid: boolean, discount: number) => void;
 }
@@ -13,6 +14,7 @@ interface ReferralCouponFieldProps {
 export default function ReferralCouponField({
   showCheckbox = true,
   initialShowField = false,
+  operationType = 'Compra',
   onCodeChange,
   onValidationComplete
 }: ReferralCouponFieldProps) {
@@ -49,19 +51,47 @@ export default function ReferralCouponField({
     }
 
     setIsValidating(true);
-    // Simulate API call delay
-    setTimeout(() => {
-      // This will be replaced with actual API call
-      const isValid = /^[A-Z0-9]{6}$/.test(code);
-      setValidation({
-        isValid,
-        message: isValid
-          ? '¡Código aplicado! Beneficio: +0.003 en el tipo de cambio'
-          : 'Código inválido o ya utilizado'
+
+    try {
+      // Llamar al API real de validación
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/referrals/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          code: code.toUpperCase()
+        })
       });
+
+      const data = await response.json();
+
+      if (data.success && data.is_valid) {
+        // Código válido
+        setValidation({
+          isValid: true,
+          message: data.message || '¡Código aplicado! Beneficio de 30 pips en el tipo de cambio'
+        });
+        onValidationComplete?.(true, 0.003);
+      } else {
+        // Código inválido o ya usado
+        setValidation({
+          isValid: false,
+          message: data.message || 'Código inválido o ya utilizado'
+        });
+        onValidationComplete?.(false, 0);
+      }
+    } catch (error) {
+      console.error('Error validando código de referido:', error);
+      setValidation({
+        isValid: false,
+        message: 'Error al validar el código. Intenta nuevamente.'
+      });
+      onValidationComplete?.(false, 0);
+    } finally {
       setIsValidating(false);
-      onValidationComplete?.(isValid, isValid ? 0.003 : 0);
-    }, 1000);
+    }
   };
 
   return (

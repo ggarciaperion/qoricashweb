@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { RefreshCw, Tag } from 'lucide-react';
+import ReactCountryFlag from 'react-country-flag';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
 
@@ -164,10 +165,16 @@ export default function Calculator({
               min="0"
             />
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-1.5">
-            <span className="text-2xl leading-none">
-              {inputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}
-            </span>
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-2">
+            <ReactCountryFlag
+              countryCode={inputCurrency === 'USD' ? 'US' : 'PE'}
+              svg
+              style={{
+                width: '2em',
+                height: '2em',
+                borderRadius: '4px',
+              }}
+            />
             <span className="text-white font-bold text-xs text-center leading-tight">
               {inputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
@@ -197,10 +204,16 @@ export default function Calculator({
               {amountOutput || '0.00'}
             </div>
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-1.5">
-            <span className="text-2xl leading-none">
-              {outputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}
-            </span>
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-2">
+            <ReactCountryFlag
+              countryCode={outputCurrency === 'USD' ? 'US' : 'PE'}
+              svg
+              style={{
+                width: '2em',
+                height: '2em',
+                borderRadius: '4px',
+              }}
+            />
             <span className="text-white font-bold text-xs text-center leading-tight">
               {outputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>

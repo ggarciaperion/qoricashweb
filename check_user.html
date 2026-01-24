@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><title>Check User Data</title></head>
+<body>
+<h1>User Data Check</h1>
+<pre id="output"></pre>
+<script>
+const userData = localStorage.getItem('qoricash-auth-storage');
+document.getElementById('output').textContent = userData || 'No user data found';
+</script>
+</body>
+</html>
