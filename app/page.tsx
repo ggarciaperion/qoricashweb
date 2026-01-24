@@ -594,7 +594,7 @@ export default function Home() {
 
                 {/* Enhanced animated connector between steps */}
                 {index < 2 && (
-                  <div className="hidden lg:block absolute left-full z-10" style={{ width: '100%', top: '50%' }}>
+                  <div className="hidden lg:block absolute z-10" style={{ left: 'calc(50% + 128px)', width: '128px', top: '50%' }}>
                     {/* Glow line */}
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full h-1 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-300 opacity-30 blur-sm"></div>
