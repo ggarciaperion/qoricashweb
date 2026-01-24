@@ -108,6 +108,17 @@ export default function Calculator({
 
   return (
     <div className="w-full bg-transparent p-6 pt-4">
+      {/* Header con indicadores */}
+      <div className="flex items-center justify-between mb-3 px-1">
+        <p className="text-xs text-gray-600 font-semibold">
+          Tipos de cambio en tiempo real
+        </p>
+        <div className="flex items-center text-green-600 text-xs font-bold bg-green-50/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
+          <div className="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse mr-1.5"></div>
+          En vivo
+        </div>
+      </div>
+
       {/* Tabs de Compra/Venta */}
       <div className="grid grid-cols-2 gap-2 mb-6 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner">
         <button
