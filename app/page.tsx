@@ -258,12 +258,12 @@ export default function Home() {
 
             {/* Center: Hero Image (Overlapping to the left) */}
             <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20">
-              <div className="relative" style={{ width: '700px', height: '750px' }}>
+              <div className="relative" style={{ width: '450px', height: '500px' }}>
                 <img
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
                   className="w-full h-full object-contain drop-shadow-2xl relative z-10 animate-float"
-                  style={{ minWidth: '800px', minHeight: '750px' }}
+                  style={{ maxWidth: '450px', maxHeight: '500px' }}
                 />
               </div>
             </div>
