@@ -164,8 +164,11 @@ export default function Calculator({
               min="0"
             />
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-4 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-sm text-center leading-tight">
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-1.5">
+            <span className="text-2xl leading-none">
+              {inputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}
+            </span>
+            <span className="text-white font-bold text-xs text-center leading-tight">
               {inputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
@@ -194,8 +197,11 @@ export default function Calculator({
               {amountOutput || '0.00'}
             </div>
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-4 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-sm text-center leading-tight">
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-1.5">
+            <span className="text-2xl leading-none">
+              {outputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}
+            </span>
+            <span className="text-white font-bold text-xs text-center leading-tight">
               {outputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
