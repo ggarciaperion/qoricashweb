@@ -100,11 +100,11 @@ export default function LoginPage() {
   };
 
   // Handle password change submission
-  const handleChangePassword = async (newPassword: string) => {
+  const handleChangePassword = async (data: { currentPassword?: string; newPassword: string }) => {
     try {
       const result = await authApi.changePasswordWeb({
         dni: pendingLoginDni,
-        new_password: newPassword
+        new_password: data.newPassword
       });
 
       if (result.success) {
@@ -114,7 +114,7 @@ export default function LoginPage() {
         // Now login with the new password
         const loginSuccess = await login({
           dni: pendingLoginDni,
-          password: newPassword
+          password: data.newPassword
         });
 
         if (loginSuccess) {
