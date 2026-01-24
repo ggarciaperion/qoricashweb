@@ -291,74 +291,10 @@ export default function Home() {
 
       {/* Banks Strip */}
       <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
-        <div className="w-full mx-auto">
-          <div className="flex flex-row flex-nowrap items-center justify-center gap-6 overflow-x-auto py-4">
-            {/* Imagen y texto sin contenedor */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="relative w-24 h-24">
-                <img
-                  src="/pago realizado.png"
-                  alt="Pago realizado"
-                  className="w-full h-full object-contain relative z-10 drop-shadow-lg"
-                />
-
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  viewBox="0 0 120 120"
-                  style={{ transform: 'scale(1.3)' }}
-                >
-                  <defs>
-                    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#3B82F6', stopOpacity: 0 }} />
-                      <stop offset="50%" style={{ stopColor: '#3B82F6', stopOpacity: 0.8 }} />
-                      <stop offset="100%" style={{ stopColor: '#10B981', stopOpacity: 1 }} />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M 10 90 Q 30 70, 50 50 T 110 10"
-                    fill="none"
-                    stroke="url(#arrowGradient)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    style={{
-                      strokeDasharray: '150',
-                      strokeDashoffset: '150',
-                      animation: 'drawArrow 2s ease-in-out infinite'
-                    }}
-                  />
-                  <polygon
-                    points="110,10 105,5 105,15"
-                    fill="#10B981"
-                    style={{
-                      opacity: 0,
-                      animation: 'fadeArrowHead 2s ease-in-out infinite'
-                    }}
-                  />
-                </svg>
-              </div>
-              <h3 className="text-base font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-tight whitespace-nowrap">
-                Transferencias<br/>Inmediatas
-              </h3>
-            </div>
-
-            <style jsx>{`
-              @keyframes drawArrow {
-                0% { stroke-dashoffset: 150; opacity: 0; }
-                20% { opacity: 1; }
-                80% { stroke-dashoffset: 0; opacity: 1; }
-                100% { stroke-dashoffset: -150; opacity: 0; }
-              }
-              @keyframes fadeArrowHead {
-                0%, 60% { opacity: 0; }
-                70%, 85% { opacity: 1; }
-                100% { opacity: 0; }
-              }
-            `}</style>
-
-            <div className="w-px h-16 bg-gradient-to-b from-transparent via-gray-300 to-transparent flex-shrink-0"></div>
-
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
-            <div className="relative flex-shrink-0 w-auto bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
               <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
                 <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
