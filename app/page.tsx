@@ -294,32 +294,32 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
               <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
                 <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
 
-              <div className="flex flex-row flex-nowrap items-center gap-6 pt-2">
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-36 h-24 flex items-center justify-center">
+              <div className="flex flex-row flex-wrap items-start justify-center gap-4 pt-3">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
                     <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-36 h-24 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
                     <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-36 h-24 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
                     <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-40 h-24 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-36 h-20 flex items-center justify-center">
                     <img src="/Banco Pichincha.png" alt="Banco Pichincha" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
@@ -328,27 +328,29 @@ export default function Home() {
             </div>
 
             {/* Contenedor 2 - Transferencias Interbancarias */}
-            <div className="relative flex-shrink-0 w-auto bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
               <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-blue-200">
                 <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
 
-              <div className="flex flex-row flex-nowrap items-center gap-6 pt-2">
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-36 h-24 flex items-center justify-center">
+              <div className="flex flex-row flex-wrap items-start justify-center gap-4 pt-3">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
                     <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-2 flex-shrink-0">
-                  <div className="w-36 h-24 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center">
                     <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center bg-white/90 backdrop-blur-sm px-6 py-4 rounded-xl shadow-sm flex flex-col items-center gap-2 flex-shrink-0 border border-white/60">
-                  <div className="text-base font-bold text-gray-800 whitespace-nowrap">Otros bancos</div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
+                  <div className="w-32 h-20 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/60">
+                    <div className="text-sm font-bold text-gray-800 whitespace-nowrap">Otros bancos</div>
+                  </div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
               </div>
             </div>
