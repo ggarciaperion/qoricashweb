@@ -2075,7 +2075,7 @@ export default function NuevaOperacionPage() {
               {/* Voucher Code */}
               <div>
                 <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Código / Número de operación (Opcional)
+                  Código / Número de operación
                 </label>
                 <input
                   type="text"
