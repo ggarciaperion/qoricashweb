@@ -137,48 +137,49 @@ export default function Calculator({
       {/* Calculadora */}
       <div className="space-y-3">
         {/* Fila superior: Input */}
-        <div className="flex gap-3">
-          <div
-            className="flex-1 bg-white/70 backdrop-blur-sm rounded-xl p-4 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
-            onClick={(e) => {
-              const input = document.getElementById('amount-input') as HTMLInputElement;
-              if (input) {
-                input.focus();
-                e.preventDefault();
-              }
-            }}
-          >
+        <div
+          className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
+          onClick={(e) => {
+            const input = document.getElementById('amount-input') as HTMLInputElement;
+            if (input) {
+              input.focus();
+              e.preventDefault();
+            }
+          }}
+        >
+          <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="amount-input"
-              className="block text-xs text-gray-700 font-bold mb-2 cursor-text pointer-events-none select-none uppercase tracking-wider"
+              className="text-xs text-gray-700 font-bold cursor-text pointer-events-none select-none uppercase tracking-wider"
             >
               Envías
             </label>
-            <input
-              id="amount-input"
-              type="number"
-              value={amountInput}
-              onChange={(e) => setAmountInput(e.target.value)}
-              placeholder="0.00"
-              className="w-full text-2xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
-              step="0.01"
-              min="0"
-            />
+            <div className="flex items-center gap-2 bg-white/80 px-2.5 py-1 rounded-full">
+              <ReactCountryFlag
+                countryCode={inputCurrency === 'USD' ? 'US' : 'PE'}
+                svg
+                style={{
+                  width: '1.2em',
+                  height: '1.2em',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+              <span className="text-gray-800 font-bold text-xs">
+                {inputCurrency === 'USD' ? 'USD' : 'PEN'}
+              </span>
+            </div>
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-2">
-            <ReactCountryFlag
-              countryCode={inputCurrency === 'USD' ? 'US' : 'PE'}
-              svg
-              style={{
-                width: '2em',
-                height: '2em',
-                borderRadius: '4px',
-              }}
-            />
-            <span className="text-white font-bold text-xs text-center leading-tight">
-              {inputCurrency === 'USD' ? 'USD' : 'PEN'}
-            </span>
-          </div>
+          <input
+            id="amount-input"
+            type="number"
+            value={amountInput}
+            onChange={(e) => setAmountInput(e.target.value)}
+            placeholder="0.00"
+            className="w-full text-2xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
+            step="0.01"
+            min="0"
+          />
         </div>
 
         {/* Botón de intercambio */}
@@ -195,28 +196,29 @@ export default function Calculator({
         </div>
 
         {/* Fila inferior: Output */}
-        <div className="flex gap-3">
-          <div className="flex-1 bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-4 border-2 border-primary-200 shadow-sm">
-            <label className="block text-xs text-primary-800 font-bold mb-2 uppercase tracking-wider">
+        <div className="bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-4 border-2 border-primary-200 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs text-primary-800 font-bold uppercase tracking-wider">
               Recibes
             </label>
-            <div className="text-2xl font-bold text-primary-900">
-              {amountOutput || '0.00'}
+            <div className="flex items-center gap-2 bg-white/90 px-2.5 py-1 rounded-full">
+              <ReactCountryFlag
+                countryCode={outputCurrency === 'USD' ? 'US' : 'PE'}
+                svg
+                style={{
+                  width: '1.2em',
+                  height: '1.2em',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+              <span className="text-gray-800 font-bold text-xs">
+                {outputCurrency === 'USD' ? 'USD' : 'PEN'}
+              </span>
             </div>
           </div>
-          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex flex-col items-center justify-center shadow-lg gap-2">
-            <ReactCountryFlag
-              countryCode={outputCurrency === 'USD' ? 'US' : 'PE'}
-              svg
-              style={{
-                width: '2em',
-                height: '2em',
-                borderRadius: '4px',
-              }}
-            />
-            <span className="text-white font-bold text-xs text-center leading-tight">
-              {outputCurrency === 'USD' ? 'USD' : 'PEN'}
-            </span>
+          <div className="text-2xl font-bold text-primary-900">
+            {amountOutput || '0.00'}
           </div>
         </div>
 
