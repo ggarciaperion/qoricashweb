@@ -106,37 +106,39 @@ export default function Calculator({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-5">
       {/* Tabs de Compra/Venta */}
-      <div className="flex rounded-xl overflow-hidden mb-6 shadow-sm">
+      <div className="grid grid-cols-2 gap-2 mb-5 bg-gray-50 p-1.5 rounded-xl">
         <button
           onClick={() => setOperationType('Compra')}
-          className={`flex-1 py-2 px-2 font-semibold text-base transition-all cursor-pointer ${
+          className={`py-2.5 px-3 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Compra'
-              ? 'bg-secondary text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-50'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-white'
           }`}
         >
-          Compra: S/ {exchangeRates.compra.toFixed(3)}
+          <div className="text-xs font-medium opacity-90 mb-0.5">Compra</div>
+          <div className="text-base font-bold">S/ {exchangeRates.compra.toFixed(3)}</div>
         </button>
         <button
           onClick={() => setOperationType('Venta')}
-          className={`flex-1 py-2 px-2 font-semibold text-base transition-all cursor-pointer ${
+          className={`py-2.5 px-3 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Venta'
-              ? 'bg-secondary text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-50'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-white'
           }`}
         >
-          Venta: S/ {exchangeRates.venta.toFixed(3)}
+          <div className="text-xs font-medium opacity-90 mb-0.5">Venta</div>
+          <div className="text-base font-bold">S/ {exchangeRates.venta.toFixed(3)}</div>
         </button>
       </div>
 
       {/* Calculadora */}
-      <div className="space-y-4 mb-6">
+      <div className="space-y-3">
         {/* Fila superior: Input */}
         <div className="flex gap-2">
           <div
-            className="flex-1 bg-gray-100 rounded-xl p-4 cursor-text"
+            className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-3 border border-gray-200 hover:border-primary-300 transition-colors cursor-text"
             onClick={(e) => {
               const input = document.getElementById('amount-input') as HTMLInputElement;
               if (input) {
@@ -147,77 +149,80 @@ export default function Calculator({
           >
             <label
               htmlFor="amount-input"
-              className="block text-base text-gray-700 font-medium mb-2 cursor-text pointer-events-none select-none"
+              className="block text-xs text-gray-600 font-semibold mb-1.5 cursor-text pointer-events-none select-none uppercase tracking-wide"
             >
-              ¿Cuánto envías?
+              Envías
             </label>
             <input
               id="amount-input"
               type="number"
               value={amountInput}
               onChange={(e) => setAmountInput(e.target.value)}
-              placeholder="0"
-              className="w-full text-3xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
+              placeholder="0.00"
+              className="w-full text-2xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
               step="0.01"
               min="0"
             />
           </div>
-          <div className="w-28 bg-secondary rounded-xl p-4 flex items-center justify-center">
-            <span className="text-white font-semibold text-sm text-center">
-              {inputCurrency === 'USD' ? 'Dólares' : 'Soles'}
+          <div className="w-20 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex items-center justify-center shadow-md">
+            <span className="text-white font-bold text-xs text-center leading-tight">
+              {inputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
         </div>
 
         {/* Botón de intercambio */}
-        <div className="flex justify-center -my-2 relative z-10">
+        <div className="flex justify-center -my-1.5 relative z-10">
           <button
             onClick={handleSwapCurrency}
-            className={`bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-all ${
+            className={`bg-white border-2 border-gray-200 rounded-full p-2 shadow-md hover:shadow-lg hover:border-primary-400 hover:bg-primary-50 transition-all ${
               isAnimating ? 'rotate-180' : ''
             }`}
             style={{ transition: 'transform 0.3s ease' }}
           >
-            <RefreshCw className={`w-5 h-5 text-gray-700 ${isAnimating ? 'rotate-180' : ''}`} />
+            <RefreshCw className={`w-4 h-4 text-primary-600 ${isAnimating ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
         {/* Fila inferior: Output */}
         <div className="flex gap-2">
-          <div className="flex-1 bg-gray-100 rounded-xl p-4">
-            <label className="block text-base text-gray-700 font-medium mb-2">
-              Entonces recibes
+          <div className="flex-1 bg-gradient-to-br from-primary-50 to-primary-100/30 rounded-xl p-3 border border-primary-200">
+            <label className="block text-xs text-primary-700 font-semibold mb-1.5 uppercase tracking-wide">
+              Recibes
             </label>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-primary-900">
               {amountOutput || '0.00'}
             </div>
           </div>
-          <div className="w-28 bg-secondary rounded-xl p-4 flex items-center justify-center">
-            <span className="text-white font-semibold text-base text-center">
-              {outputCurrency === 'USD' ? 'Dólares' : 'Soles'}
+          <div className="w-20 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex items-center justify-center shadow-md">
+            <span className="text-white font-bold text-xs text-center leading-tight">
+              {outputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
         </div>
 
         {/* Información adicional */}
-        <div className={`flex justify-between text-base text-gray-600 font-medium px-1 pt-1 transition-opacity duration-300 ${
+        <div className={`flex justify-between text-xs text-gray-600 font-medium px-1 pt-1 transition-opacity duration-300 ${
           amountOutput ? 'opacity-100' : 'opacity-0'
         }`}>
-          <span>Ahorro estimado: S/ {calculateSavings()}</span>
-          <span>TC: {currentRate.toFixed(3)}</span>
+          <span className="flex items-center gap-1">
+            <span className="text-green-600">💰</span>
+            Ahorro: S/ {calculateSavings()}
+          </span>
+          <span className="bg-gray-100 px-2 py-0.5 rounded-md font-bold">TC: {currentRate.toFixed(3)}</span>
         </div>
 
         {/* Checkbox Cupón Promocional */}
         <div className="pt-2 border-t border-gray-200">
-          <label className="flex items-center gap-2 cursor-pointer group">
+          <label className="flex items-center gap-2 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
             <input
               type="checkbox"
               checked={hasCoupon}
               onChange={(e) => setHasCoupon(e.target.checked)}
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
             />
-            <div className="flex items-center gap-2 text-sm font-semibold text-white group-hover:text-primary-300 transition">
-              <Tag className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 group-hover:text-primary-600 transition">
+              <Tag className="w-3.5 h-3.5" />
               <span>Tengo un cupón promocional</span>
             </div>
           </label>
