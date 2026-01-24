@@ -443,8 +443,19 @@ export default function DashboardPage() {
                 // Si la operación está pendiente, redirigir a nueva-operacion para continuar
                 const handleOperationClick = () => {
                   if (operation.estado.toLowerCase() === 'pendiente') {
-                    const opId = operation.codigo_operacion || operation.operation_id || operation.id;
-                    console.log('Redirigiendo a operación pendiente:', opId, operation);
+                    const opId = operation.codigo_operacion;
+                    console.log('Redirigiendo a operación pendiente:', {
+                      codigo_operacion: operation.codigo_operacion,
+                      id: operation.id,
+                      estado: operation.estado,
+                      operation
+                    });
+
+                    if (!opId) {
+                      console.error('Error: codigo_operacion no está disponible en la operación');
+                      return;
+                    }
+
                     router.push(`/dashboard/nueva-operacion?operation_id=${opId}`);
                   } else {
                     // Abrir modal con detalles completos de la operación

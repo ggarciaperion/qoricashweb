@@ -82,6 +82,8 @@ export type OperationStatus =
 
 export interface Operation {
   id: number;
+  operation_id?: string; // Código único de la operación (ej: "QC-20240115-001")
+  codigo_operacion?: string; // Alias del campo operation_id para compatibilidad
   cliente_id: number;
   cliente_nombre?: string;
   tipo: OperationType;
