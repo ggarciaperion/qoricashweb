@@ -41,7 +41,7 @@ import Image from 'next/image';
 export default function NuevaOperacionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, refreshUser } = useAuthStore();
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
   const { clearReferral } = useReferralStore();
 
@@ -71,6 +71,7 @@ export default function NuevaOperacionPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
+  const [accountContext, setAccountContext] = useState<'cargo' | 'destino' | null>(null);
 
   // Step 2 state
   const [createdOperation, setCreatedOperation] = useState<any>(null);
@@ -95,8 +96,15 @@ export default function NuevaOperacionPage() {
   const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
   const [dniFront, setDnifront] = useState<File | null>(null);
   const [dniBack, setDniBack] = useState<File | null>(null);
+
+  // Estado de verificación automática de cuenta activada
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+  const [showActivationToast, setShowActivationToast] = useState(false);
   const [rucFicha, setRucFicha] = useState<File | null>(null);
   const [isUploadingKYC, setIsUploadingKYC] = useState(false);
+
+  // Formatted date for display - compute on client side only
+  const [formattedDate, setFormattedDate] = useState<string>('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -197,6 +205,49 @@ export default function NuevaOperacionPage() {
       setIsLoading(false);
     }
   };
+
+  // Verificar automáticamente el estado de la cuenta cuando tiene documentos pendientes
+  useEffect(() => {
+    // Solo ejecutar si el usuario tiene status Activo pero no tiene documentos completos
+    // Esto significa que subió documentos y está esperando aprobación
+    if (!user || user.status !== 'Activo' || user.has_complete_documents) {
+      return;
+    }
+
+    console.log('🔄 Iniciando verificación automática de estado de cuenta...');
+
+    const checkAccountStatus = async () => {
+      if (isCheckingStatus) return; // Evitar múltiples llamadas simultáneas
+
+      setIsCheckingStatus(true);
+      try {
+        console.log('📡 Verificando estado de cuenta...');
+        const success = await refreshUser();
+
+        if (success && useAuthStore.getState().user?.has_complete_documents) {
+          console.log('✅ ¡Cuenta activada! Mostrando notificación...');
+          setShowActivationToast(true);
+
+          // Ocultar toast después de 10 segundos
+          setTimeout(() => {
+            setShowActivationToast(false);
+          }, 10000);
+        }
+      } catch (error) {
+        console.error('Error verificando estado:', error);
+      } finally {
+        setIsCheckingStatus(false);
+      }
+    };
+
+    // Verificar inmediatamente
+    checkAccountStatus();
+
+    // Verificar cada 30 segundos
+    const interval = setInterval(checkAccountStatus, 30000);
+
+    return () => clearInterval(interval);
+  }, [user?.status, user?.has_complete_documents, refreshUser, isCheckingStatus]);
 
   const loadBankAccounts = async () => {
     if (!user?.dni) return;
@@ -421,7 +472,21 @@ export default function NuevaOperacionPage() {
 
       if (response.success && response.data) {
         console.log('[Nueva Operación] Operación creada:', response.data.operation);
-        setCreatedOperation(response.data.operation);
+
+        // Format date on client side to avoid hydration mismatch
+        const operation = response.data.operation;
+        const formattedDateString = operation.created_at
+          ? new Date(operation.created_at).toLocaleString('es-PE', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          : 'Ahora';
+
+        setFormattedDate(formattedDateString);
+        setCreatedOperation(operation);
         setTimeRemaining(900); // Reset contador a 15 minutos
         setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
 
@@ -575,16 +640,17 @@ export default function NuevaOperacionPage() {
       const data = await response.json();
 
       if (data.success) {
+        // Actualizar el estado del usuario desde el backend
+        await refreshUser();
+
         setIsKYCModalOpen(false);
         setDnifront(null);
         setDniBack(null);
         setRucFicha(null);
+        setIsUploadingKYC(false);
 
         // Mostrar mensaje de éxito
         alert('Documentos enviados exitosamente. Estamos validando tu información. Nuestro equipo revisará tus documentos y activará tu cuenta en un plazo aproximado de 10 minutos.');
-
-        // Redirigir al dashboard
-        router.push('/dashboard');
       } else {
         setError(data.message || 'Error al subir documentos');
         setIsUploadingKYC(false);
@@ -1003,13 +1069,7 @@ export default function NuevaOperacionPage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Fecha y Hora:</span>
                         <span className="font-semibold text-gray-900">
-                          {createdOperation.created_at ? new Date(createdOperation.created_at).toLocaleString('es-PE', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          }) : 'Ahora'}
+                          {formattedDate || 'Ahora'}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm pt-2 border-t border-gray-300">
@@ -1171,6 +1231,29 @@ export default function NuevaOperacionPage() {
                     </div>
                   )}
 
+                  {/* Toast de cuenta activada */}
+                  {showActivationToast && (
+                    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
+                      <div className="bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-md">
+                        <div className="flex-shrink-0 w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-sm mb-1">¡Cuenta Activada!</p>
+                          <p className="text-xs opacity-90">
+                            Tu cuenta ha sido verificada y activada exitosamente. Ya puedes operar sin límites.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setShowActivationToast(false)}
+                          className="flex-shrink-0 hover:bg-white/20 rounded-lg p-1 transition"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {user?.status === 'Inactivo' && user?.has_complete_documents && (
                     <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
                       <div className="flex items-start">
@@ -1179,9 +1262,33 @@ export default function NuevaOperacionPage() {
                           <p className="text-sm font-semibold text-blue-900 mb-2">
                             Documentos en Proceso de Validación
                           </p>
-                          <p className="text-sm text-blue-800">
-                            Tus documentos están siendo revisados por nuestro equipo. Te notificaremos cuando tu cuenta sea activada. Generalmente este proceso toma menos de 24 horas.
+                          <p className="text-sm text-blue-800 mb-3">
+                            Tus documentos están siendo revisados por nuestro equipo. Te notificaremos cuando tu cuenta sea activada. Generalmente este proceso toma menos de 10 minutos.
                           </p>
+                          <button
+                            onClick={async () => {
+                              setIsCheckingStatus(true);
+                              try {
+                                await refreshUser();
+                              } finally {
+                                setIsCheckingStatus(false);
+                              }
+                            }}
+                            disabled={isCheckingStatus}
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition"
+                          >
+                            {isCheckingStatus ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                                Verificando...
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw className="w-4 h-4" />
+                                Verificar Estado
+                              </>
+                            )}
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1442,7 +1549,10 @@ export default function NuevaOperacionPage() {
                       </label>
                       <button
                         type="button"
-                        onClick={() => setIsAddAccountModalOpen(true)}
+                        onClick={() => {
+                          setAccountContext('cargo');
+                          setIsAddAccountModalOpen(true);
+                        }}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition"
                       >
                         <Plus className="w-4 h-4" />
@@ -1475,7 +1585,10 @@ export default function NuevaOperacionPage() {
                         No tienes cuentas en {tipo === 'Compra' ? 'dólares' : 'soles'}.{' '}
                         <button
                           type="button"
-                          onClick={() => setIsAddAccountModalOpen(true)}
+                          onClick={() => {
+                            setAccountContext('cargo');
+                            setIsAddAccountModalOpen(true);
+                          }}
                           className="underline ml-1 hover:text-amber-700"
                         >
                           Agregar cuenta
@@ -1495,7 +1608,10 @@ export default function NuevaOperacionPage() {
                       </label>
                       <button
                         type="button"
-                        onClick={() => setIsAddAccountModalOpen(true)}
+                        onClick={() => {
+                          setAccountContext('destino');
+                          setIsAddAccountModalOpen(true);
+                        }}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition"
                       >
                         <Plus className="w-4 h-4" />
@@ -1528,7 +1644,10 @@ export default function NuevaOperacionPage() {
                         No tienes cuentas en {tipo === 'Compra' ? 'soles' : 'dólares'}.{' '}
                         <button
                           type="button"
-                          onClick={() => setIsAddAccountModalOpen(true)}
+                          onClick={() => {
+                            setAccountContext('destino');
+                            setIsAddAccountModalOpen(true);
+                          }}
                           className="underline ml-1 hover:text-amber-700"
                         >
                           Agregar cuenta
@@ -2222,6 +2341,8 @@ export default function NuevaOperacionPage() {
         onClose={() => setIsAddAccountModalOpen(false)}
         onSuccess={handleAddAccountSuccess}
         dni={user?.dni || ''}
+        operationType={tipo}
+        accountContext={accountContext || undefined}
       />
     </div>
   );
