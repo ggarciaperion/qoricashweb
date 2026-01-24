@@ -347,8 +347,8 @@ export default function Home() {
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/60">
-                    <div className="text-sm font-bold text-gray-800 whitespace-nowrap">Otros bancos</div>
+                  <div className="h-20 flex items-center justify-center">
+                    <div className="text-sm font-bold text-gray-800 whitespace-nowrap bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/60 px-4 py-2">Otros bancos</div>
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
