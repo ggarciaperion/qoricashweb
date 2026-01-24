@@ -258,12 +258,12 @@ export default function Home() {
 
             {/* Center: Hero Image (Overlapping to the left) */}
             <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20">
-              <div className="relative" style={{ width: '450px', height: '500px' }}>
+              <div className="relative" style={{ width: '750px', height: '650px' }}>
                 <img
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
                   className="w-full h-full object-contain drop-shadow-2xl relative z-10 animate-float"
-                  style={{ maxWidth: '450px', maxHeight: '500px' }}
+                  style={{ maxWidth: '600px', maxHeight: '580px' }}
                 />
               </div>
             </div>
@@ -277,39 +277,41 @@ export default function Home() {
                 }}
               />
 
-              <button
-                onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
-                className="w-full mt-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
-              >
-                Cambiar Ahora
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
-              </button>
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
+                  className="flex-1 bg-primary text-white py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
+                >
+                  Cambiar Ahora
+                  <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
+                </button>
 
-              {/* CTA Tasa Preferencial */}
-              <a
-                href="https://wa.me/51906237356?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full mt-3 group"
-              >
-                <div className="relative bg-gradient-to-r from-green-50 to-primary-50 border-2 border-primary-300 rounded-lg p-3 hover:shadow-lg hover:border-primary-500 transition-all duration-300 overflow-hidden">
-                  {/* Efecto de brillo */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
+                {/* CTA Tasa Preferencial */}
+                <a
+                  href="https://wa.me/51906237356?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 group"
+                >
+                  <div className="relative bg-gradient-to-r from-green-50 to-primary-50 border-2 border-primary-300 rounded-xl py-2.5 px-3 hover:shadow-lg hover:border-primary-500 transition-all duration-300 overflow-hidden h-full flex items-center">
+                    {/* Efecto de brillo */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
 
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-primary animate-pulse" fill="currentColor" />
-                      <span className="text-sm font-bold text-gray-800">
-                        Tasa preferencial +$3,000
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 text-primary font-semibold text-xs">
-                      <span>WhatsApp</span>
-                      <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    <div className="relative flex items-center justify-between w-full">
+                      <div className="flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5 text-primary animate-pulse" fill="currentColor" />
+                        <span className="text-xs font-bold text-gray-800">
+                          Tasa +$3k
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-0.5 text-primary font-semibold text-xs">
+                        <span className="text-[10px]">WhatsApp</span>
+                        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
             </div>
           </div>
         </div>

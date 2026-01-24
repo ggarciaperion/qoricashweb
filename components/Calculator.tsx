@@ -149,7 +149,7 @@ export default function Calculator({
       <div className="space-y-3">
         {/* Fila superior: Input */}
         <div
-          className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
+          className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
           onClick={(e) => {
             const input = document.getElementById('amount-input') as HTMLInputElement;
             if (input) {
@@ -187,7 +187,7 @@ export default function Calculator({
             value={amountInput}
             onChange={(e) => setAmountInput(e.target.value)}
             placeholder="0.00"
-            className="w-full text-2xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
+            className="w-full text-xl font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400"
             step="0.01"
             min="0"
           />
@@ -207,7 +207,7 @@ export default function Calculator({
         </div>
 
         {/* Fila inferior: Output */}
-        <div className="bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-4 border-2 border-primary-200 shadow-sm">
+        <div className="bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-3 border-2 border-primary-200 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs text-primary-800 font-bold uppercase tracking-wider">
               Recibes
@@ -228,7 +228,7 @@ export default function Calculator({
               </span>
             </div>
           </div>
-          <div className="text-2xl font-bold text-primary-900">
+          <div className="text-xl font-bold text-primary-900">
             {amountOutput || '0.00'}
           </div>
         </div>
