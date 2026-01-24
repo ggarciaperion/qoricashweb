@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ChevronRight, User, Building2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
 
@@ -268,7 +269,10 @@ export default function CrearCuentaPage() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <img src="/logo-principal.png" alt="QoriCash" className="h-10 w-auto" />
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+              <img src="/logo-principal.png" alt="QoriCash" className="h-10 w-auto" />
+              <span className="text-2xl font-bold text-gray-900">QoriCash</span>
+            </Link>
             <a href="/login" className="text-sm text-gray-600 hover:text-primary transition">
               ¿Ya tienes cuenta? <span className="font-semibold text-primary">Inicia sesión</span>
             </a>
