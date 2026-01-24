@@ -176,16 +176,30 @@ export default function NuevaOperacionPage() {
       // Calculate time remaining (15 minutes from creation)
       const createdAt = new Date(operation.fecha_creacion);
       const now = new Date();
+
+      console.log('[Nueva Operación] Debug tiempos:', {
+        fecha_creacion_raw: operation.fecha_creacion,
+        createdAt_parsed: createdAt.toISOString(),
+        now: now.toISOString(),
+        createdAt_timestamp: createdAt.getTime(),
+        now_timestamp: now.getTime(),
+        difference_ms: now.getTime() - createdAt.getTime()
+      });
+
       const elapsedSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
       const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
+
+      console.log('[Nueva Operación] Cálculo tiempo:', {
+        elapsedSeconds,
+        remaining,
+        remainingMinutes: Math.floor(remaining / 60)
+      });
 
       // Set operation data and jump to step 2
       setCreatedOperation(operation);
       setTimeRemaining(remaining);
       setCurrentStep(2);
       setTipo(operation.tipo === 'compra' ? 'Compra' : 'Venta');
-
-      console.log('[Nueva Operación] Tiempo restante:', remaining, 'segundos');
     } catch (error) {
       console.error('[Nueva Operación] Error cargando operación:', error);
       setError('Error al cargar la operación');
