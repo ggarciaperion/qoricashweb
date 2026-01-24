@@ -106,15 +106,15 @@ export default function Calculator({
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-5">
+    <div className="w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/40 p-6">
       {/* Tabs de Compra/Venta */}
-      <div className="grid grid-cols-2 gap-2 mb-5 bg-gray-50 p-1.5 rounded-xl">
+      <div className="grid grid-cols-2 gap-2 mb-6 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner">
         <button
           onClick={() => setOperationType('Compra')}
-          className={`py-2.5 px-3 font-bold text-sm rounded-lg transition-all ${
+          className={`py-3 px-4 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Compra'
-              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-[1.02]'
+              : 'text-gray-700 hover:text-gray-900 hover:bg-white/60'
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Compra</div>
@@ -122,10 +122,10 @@ export default function Calculator({
         </button>
         <button
           onClick={() => setOperationType('Venta')}
-          className={`py-2.5 px-3 font-bold text-sm rounded-lg transition-all ${
+          className={`py-3 px-4 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Venta'
-              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-[1.02]'
+              : 'text-gray-700 hover:text-gray-900 hover:bg-white/60'
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Venta</div>
@@ -136,9 +136,9 @@ export default function Calculator({
       {/* Calculadora */}
       <div className="space-y-3">
         {/* Fila superior: Input */}
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <div
-            className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-3 border border-gray-200 hover:border-primary-300 transition-colors cursor-text"
+            className="flex-1 bg-white/70 backdrop-blur-sm rounded-xl p-4 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
             onClick={(e) => {
               const input = document.getElementById('amount-input') as HTMLInputElement;
               if (input) {
@@ -149,7 +149,7 @@ export default function Calculator({
           >
             <label
               htmlFor="amount-input"
-              className="block text-xs text-gray-600 font-semibold mb-1.5 cursor-text pointer-events-none select-none uppercase tracking-wide"
+              className="block text-xs text-gray-700 font-bold mb-2 cursor-text pointer-events-none select-none uppercase tracking-wider"
             >
               Envías
             </label>
@@ -164,65 +164,65 @@ export default function Calculator({
               min="0"
             />
           </div>
-          <div className="w-20 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex items-center justify-center shadow-md">
-            <span className="text-white font-bold text-xs text-center leading-tight">
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-4 flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-sm text-center leading-tight">
               {inputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
         </div>
 
         {/* Botón de intercambio */}
-        <div className="flex justify-center -my-1.5 relative z-10">
+        <div className="flex justify-center -my-2 relative z-10">
           <button
             onClick={handleSwapCurrency}
-            className={`bg-white border-2 border-gray-200 rounded-full p-2 shadow-md hover:shadow-lg hover:border-primary-400 hover:bg-primary-50 transition-all ${
+            className={`bg-white/90 backdrop-blur-sm border-2 border-white/80 rounded-full p-2.5 shadow-lg hover:shadow-xl hover:border-primary-400 hover:bg-primary-50 transition-all ${
               isAnimating ? 'rotate-180' : ''
             }`}
             style={{ transition: 'transform 0.3s ease' }}
           >
-            <RefreshCw className={`w-4 h-4 text-primary-600 ${isAnimating ? 'rotate-180' : ''}`} />
+            <RefreshCw className={`w-5 h-5 text-primary-600 ${isAnimating ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
         {/* Fila inferior: Output */}
-        <div className="flex gap-2">
-          <div className="flex-1 bg-gradient-to-br from-primary-50 to-primary-100/30 rounded-xl p-3 border border-primary-200">
-            <label className="block text-xs text-primary-700 font-semibold mb-1.5 uppercase tracking-wide">
+        <div className="flex gap-3">
+          <div className="flex-1 bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-4 border-2 border-primary-200 shadow-sm">
+            <label className="block text-xs text-primary-800 font-bold mb-2 uppercase tracking-wider">
               Recibes
             </label>
             <div className="text-2xl font-bold text-primary-900">
               {amountOutput || '0.00'}
             </div>
           </div>
-          <div className="w-20 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-3 flex items-center justify-center shadow-md">
-            <span className="text-white font-bold text-xs text-center leading-tight">
+          <div className="w-24 bg-gradient-to-br from-secondary to-secondary-700 rounded-xl p-4 flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-sm text-center leading-tight">
               {outputCurrency === 'USD' ? 'USD' : 'PEN'}
             </span>
           </div>
         </div>
 
         {/* Información adicional */}
-        <div className={`flex justify-between text-xs text-gray-600 font-medium px-1 pt-1 transition-opacity duration-300 ${
+        <div className={`flex justify-between text-xs font-semibold px-1 pt-2 transition-opacity duration-300 ${
           amountOutput ? 'opacity-100' : 'opacity-0'
         }`}>
-          <span className="flex items-center gap-1">
-            <span className="text-green-600">💰</span>
+          <span className="flex items-center gap-1.5 text-green-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-lg">
+            <span>💰</span>
             Ahorro: S/ {calculateSavings()}
           </span>
-          <span className="bg-gray-100 px-2 py-0.5 rounded-md font-bold">TC: {currentRate.toFixed(3)}</span>
+          <span className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-gray-800 border border-white/60">TC: {currentRate.toFixed(3)}</span>
         </div>
 
         {/* Checkbox Cupón Promocional */}
-        <div className="pt-2 border-t border-gray-200">
-          <label className="flex items-center gap-2 cursor-pointer group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+        <div className="pt-3 border-t border-white/40">
+          <label className="flex items-center gap-2.5 cursor-pointer group hover:bg-white/40 p-2.5 rounded-lg transition-all">
             <input
               type="checkbox"
               checked={hasCoupon}
               onChange={(e) => setHasCoupon(e.target.checked)}
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
             />
-            <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 group-hover:text-primary-600 transition">
-              <Tag className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 group-hover:text-primary-700 transition">
+              <Tag className="w-4 h-4" />
               <span>Tengo un cupón promocional</span>
             </div>
           </label>
