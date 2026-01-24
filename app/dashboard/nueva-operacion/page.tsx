@@ -733,12 +733,21 @@ export default function NuevaOperacionPage() {
 
     // Extraer el banco de la info de la cuenta - manejar tanto objetos como strings
     let clientBank;
-    if (typeof sourceAccountInfo === 'object' && sourceAccountInfo.banco) {
-      clientBank = sourceAccountInfo.banco;
+    if (typeof sourceAccountInfo === 'object') {
+      // Si es objeto, intentar obtener banco desde banco_nombre o banco
+      clientBank = sourceAccountInfo.banco_nombre || sourceAccountInfo.banco || sourceAccountInfo.bank_name;
+
+      // Si banco es null, intentar obtenerlo desde las cuentas bancarias del usuario
+      if (!clientBank && selectedOriginAccount) {
+        const originAccount = bankAccounts.find(acc => acc.id === selectedOriginAccount);
+        clientBank = originAccount?.bank_name;
+      }
     } else if (typeof sourceAccountInfo === 'string') {
       clientBank = sourceAccountInfo.split(' - ')[0];
-    } else {
-      console.log('[getQoricashAccount] Formato de sourceAccountInfo no reconocido:', sourceAccountInfo);
+    }
+
+    if (!clientBank) {
+      console.log('[getQoricashAccount] No se pudo determinar el banco. sourceAccountInfo:', sourceAccountInfo);
       return null;
     }
 
