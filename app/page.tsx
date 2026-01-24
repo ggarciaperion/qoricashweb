@@ -431,9 +431,9 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500"></div>
 
                 {/* Main card */}
-                <div className="relative bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-gray-100 group-hover:border-primary-200 overflow-hidden h-full flex flex-col">
+                <div className="relative bg-white/60 backdrop-blur-md rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-white/60 group-hover:border-primary-300/60 overflow-hidden h-full flex flex-col">
                   {/* Background decoration */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-50 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100/40 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                   {/* Illustration container */}
                   <div className="relative mb-6 flex items-center justify-center">
@@ -537,10 +537,10 @@ export default function Home() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
 
                   {/* Main circle */}
-                  <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-80 h-80 border-2 border-gray-100 group-hover:border-primary-300">
+                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-80 h-80 border-2 border-white/60 group-hover:border-primary-300/60">
                     {/* Animated gradient border on hover */}
                     <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
-                      <div className="w-full h-full rounded-full bg-gradient-to-br from-white to-gray-50"></div>
+                      <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
                     </div>
 
                     {/* Floating particles decoration */}
@@ -563,7 +563,7 @@ export default function Home() {
                     </div>
 
                     {/* Hover state: Full description overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-12 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-gradient-to-br from-white to-gray-50 rounded-full">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-12 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
                       <div className="text-center space-y-2 max-w-[240px]">
                         {/* Icon on hover (smaller) */}
                         <div className="w-24 h-24 mx-auto mb-2 transform transition-transform duration-500">
