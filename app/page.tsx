@@ -17,7 +17,6 @@ import {
   Smartphone,
   Globe,
   Lock,
-  Zap,
   UserPlus,
   Calculator as CalculatorIcon,
   Banknote,
@@ -277,41 +276,13 @@ export default function Home() {
                 }}
               />
 
-              <div className="flex gap-2 mt-2">
-                <button
-                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
-                  className="flex-1 bg-primary text-white py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
-                >
-                  Cambiar Ahora
-                  <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
-                </button>
-
-                {/* CTA Tasa Preferencial */}
-                <a
-                  href="https://wa.me/51906237356?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 group"
-                >
-                  <div className="relative bg-gradient-to-r from-green-50 to-primary-50 border-2 border-primary-300 rounded-xl py-2.5 px-3 hover:shadow-lg hover:border-primary-500 transition-all duration-300 overflow-hidden h-full flex items-center">
-                    {/* Efecto de brillo */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 group-hover:translate-x-full transition-transform duration-700"></div>
-
-                    <div className="relative flex items-center justify-between w-full">
-                      <div className="flex items-center gap-1.5">
-                        <Zap className="w-3.5 h-3.5 text-primary animate-pulse" fill="currentColor" />
-                        <span className="text-xs font-bold text-gray-800">
-                          Tasa +$3k
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-0.5 text-primary font-semibold text-xs">
-                        <span className="text-[10px]">WhatsApp</span>
-                        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>
+              <button
+                onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
+                className="w-full mt-2 bg-primary text-white py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
+              >
+                Cambiar Ahora
+                <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         </div>
