@@ -537,7 +537,7 @@ export default function Home() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
 
                   {/* Main circle */}
-                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-80 h-80 border-2 border-white/60 group-hover:border-primary-300/60">
+                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-64 h-64 border-2 border-white/60 group-hover:border-primary-300/60">
                     {/* Animated gradient border on hover */}
                     <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
                       <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
@@ -548,30 +548,30 @@ export default function Home() {
                     <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
 
                     {/* Default state: Image and Title */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-12 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
                       {/* Image icon */}
-                      <div className="mb-6 transform">
-                        <div className={`${index === 2 ? 'w-56 h-56' : 'w-48 h-48'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
+                      <div className="mb-2 transform">
+                        <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
                           <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-2xl font-bold text-gray-900 text-center">
+                      <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">
                         {step.title}
                       </h3>
                     </div>
 
                     {/* Hover state: Full description overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-12 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
-                      <div className="text-center space-y-2 max-w-[240px]">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
+                      <div className="text-center space-y-2 max-w-[200px]">
                         {/* Icon on hover (smaller) */}
-                        <div className="w-24 h-24 mx-auto mb-2 transform transition-transform duration-500">
+                        <div className="w-16 h-16 mx-auto mb-1 transform transition-transform duration-500">
                           <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
                         </div>
 
                         {/* Title on hover */}
-                        <h3 className="text-lg font-bold text-primary-600 mb-1">
+                        <h3 className="text-base font-bold text-primary-600 mb-1">
                           {step.title}
                         </h3>
 
