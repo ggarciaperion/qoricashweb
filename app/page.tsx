@@ -291,7 +291,7 @@ export default function Home() {
 
       {/* Banks Strip */}
       <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto animate-slide-in-left">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
             <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
