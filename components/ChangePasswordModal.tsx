@@ -112,7 +112,7 @@ export default function ChangePasswordModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border-2 border-white/60">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-orange-500 to-orange-600">
           <div className="flex items-center gap-3">

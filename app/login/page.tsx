@@ -150,7 +150,7 @@ export default function LoginPage() {
         </Link>
 
         {/* Login card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-gray-100">
+        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 sm:p-10 border-2 border-white/60">
           {/* Logo and title */}
           <div className="text-center mb-8">
             <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
@@ -278,7 +278,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">¿No tienes una cuenta?</span>
+              <span className="px-4 bg-white/70 backdrop-blur-sm text-gray-500">¿No tienes una cuenta?</span>
             </div>
           </div>
 

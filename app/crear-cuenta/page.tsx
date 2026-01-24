@@ -250,7 +250,7 @@ export default function CrearCuentaPage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
+        <div className="max-w-md w-full bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center border-2 border-white/60">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-12 h-12 text-green-600" />
           </div>
@@ -307,7 +307,7 @@ export default function CrearCuentaPage() {
         </div>
 
         {/* Card del formulario */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 border-2 border-white/60">
           {/* Mensaje de error */}
           {error && (
             <div ref={errorRef} className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-xl flex items-start gap-3 shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
