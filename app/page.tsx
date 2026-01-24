@@ -290,7 +290,7 @@ export default function Home() {
       </section>
 
       {/* Banks Strip */}
-      <section className="pt-0 pb-10 px-6 sm:px-8 lg:px-12 relative -mt-6">
+      <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
         <div className="w-full mx-auto">
           <div className="flex flex-row flex-nowrap items-center justify-center gap-6 overflow-x-auto py-4">
             {/* Imagen y texto sin contenedor */}
