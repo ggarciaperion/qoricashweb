@@ -731,8 +731,17 @@ export default function NuevaOperacionPage() {
       return null;
     }
 
-    // Extraer el banco de la info de la cuenta
-    const clientBank = sourceAccountInfo.banco || sourceAccountInfo.split(' - ')[0];
+    // Extraer el banco de la info de la cuenta - manejar tanto objetos como strings
+    let clientBank;
+    if (typeof sourceAccountInfo === 'object' && sourceAccountInfo.banco) {
+      clientBank = sourceAccountInfo.banco;
+    } else if (typeof sourceAccountInfo === 'string') {
+      clientBank = sourceAccountInfo.split(' - ')[0];
+    } else {
+      console.log('[getQoricashAccount] Formato de sourceAccountInfo no reconocido:', sourceAccountInfo);
+      return null;
+    }
+
     const currency = createdOperation.operation_type === 'Compra' ? '$' : 'S/';
 
     console.log('[getQoricashAccount] Banco cliente:', clientBank, 'Moneda:', currency);
