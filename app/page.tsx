@@ -290,30 +290,23 @@ export default function Home() {
       </section>
 
       {/* Banks Strip */}
-      <section className="pt-0 pb-8 px-6 sm:px-8 lg:px-12 relative -mt-8">
-        {/* Divider sutil superior */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-gradient-to-b from-primary/5 to-transparent blur-xl"></div>
-
+      <section className="pt-0 pb-10 px-6 sm:px-8 lg:px-12 relative -mt-6">
         <div className="w-full mx-auto">
-          <div className="flex flex-row flex-nowrap items-center justify-center gap-4 overflow-x-auto">
+          <div className="flex flex-row flex-nowrap items-center justify-center gap-6 overflow-x-auto py-4">
             {/* Imagen y texto sin contenedor */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="relative w-28 h-28">
-                {/* Imagen principal */}
+              <div className="relative w-24 h-24">
                 <img
                   src="/pago realizado.png"
                   alt="Pago realizado"
-                  className="w-full h-full object-contain relative z-10"
+                  className="w-full h-full object-contain relative z-10 drop-shadow-lg"
                 />
 
-                {/* Animación de flecha diagonal */}
                 <svg
                   className="absolute inset-0 w-full h-full pointer-events-none"
                   viewBox="0 0 120 120"
                   style={{ transform: 'scale(1.3)' }}
                 >
-                  {/* Flecha animada con cola */}
                   <defs>
                     <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" style={{ stopColor: '#3B82F6', stopOpacity: 0 }} />
@@ -321,27 +314,21 @@ export default function Home() {
                       <stop offset="100%" style={{ stopColor: '#10B981', stopOpacity: 1 }} />
                     </linearGradient>
                   </defs>
-
-                  {/* Trayectoria curva diagonal */}
                   <path
                     d="M 10 90 Q 30 70, 50 50 T 110 10"
                     fill="none"
                     stroke="url(#arrowGradient)"
                     strokeWidth="3"
                     strokeLinecap="round"
-                    className="animate-arrow-path"
                     style={{
                       strokeDasharray: '150',
                       strokeDashoffset: '150',
                       animation: 'drawArrow 2s ease-in-out infinite'
                     }}
                   />
-
-                  {/* Punta de flecha */}
                   <polygon
                     points="110,10 105,5 105,15"
                     fill="#10B981"
-                    className="animate-arrow-head"
                     style={{
                       opacity: 0,
                       animation: 'fadeArrowHead 2s ease-in-out infinite'
@@ -349,131 +336,83 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-base font-bold text-gray-900 leading-tight whitespace-nowrap">
+              <h3 className="text-base font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent leading-tight whitespace-nowrap">
                 Transferencias<br/>Inmediatas
               </h3>
             </div>
 
-            {/* Estilos de animación */}
             <style jsx>{`
               @keyframes drawArrow {
-                0% {
-                  stroke-dashoffset: 150;
-                  opacity: 0;
-                }
-                20% {
-                  opacity: 1;
-                }
-                80% {
-                  stroke-dashoffset: 0;
-                  opacity: 1;
-                }
-                100% {
-                  stroke-dashoffset: -150;
-                  opacity: 0;
-                }
+                0% { stroke-dashoffset: 150; opacity: 0; }
+                20% { opacity: 1; }
+                80% { stroke-dashoffset: 0; opacity: 1; }
+                100% { stroke-dashoffset: -150; opacity: 0; }
               }
-
               @keyframes fadeArrowHead {
-                0%, 60% {
-                  opacity: 0;
-                }
-                70%, 85% {
-                  opacity: 1;
-                }
-                100% {
-                  opacity: 0;
-                }
+                0%, 60% { opacity: 0; }
+                70%, 85% { opacity: 1; }
+                100% { opacity: 0; }
               }
             `}</style>
 
-            {/* Separador vertical */}
-            <div className="w-px h-16 bg-gray-300 flex-shrink-0"></div>
+            <div className="w-px h-16 bg-gradient-to-b from-transparent via-gray-300 to-transparent flex-shrink-0"></div>
 
-            {/* Contenedor 1 - Beneficios de transferencias inmediatas */}
-            <div className="relative flex-shrink-0 w-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 py-6 px-6">
-              {/* Label superior */}
-              <div className="absolute -top-3 left-6 bg-white px-4 py-1 rounded-full shadow-sm border border-gray-200">
-                <span className="text-xs font-semibold text-gray-600">Beneficios de transferencias inmediatas</span>
+            {/* Contenedor 1 - Transferencias inmediatas */}
+            <div className="relative flex-shrink-0 w-auto bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
+              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
+                <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
 
-              {/* Bancos en fila horizontal SIN WRAP */}
-              <div className="flex flex-row flex-nowrap items-center gap-4 pt-3">
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
-                    <img
-                      src="/BCP.png"
-                      alt="BCP"
-                      className="max-w-full max-h-full object-contain"
-                    />
+              <div className="flex flex-row flex-nowrap items-center gap-4 pt-2">
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-28 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Todo el Perú</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
-                    <img
-                      src="/Interbank.png"
-                      alt="Interbank"
-                      className="max-w-full max-h-full object-contain"
-                    />
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-28 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Todo el Perú</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
-                    <img
-                      src="/BanBif.png"
-                      alt="BanBif"
-                      className="max-w-full max-h-full object-contain"
-                    />
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-28 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-36 h-20 flex items-center justify-center">
-                    <img
-                      src="/Banco Pichincha.png"
-                      alt="Banco Pichincha"
-                      className="max-w-full max-h-full object-contain"
-                    />
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-32 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/Banco Pichincha.png" alt="Banco Pichincha" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
               </div>
             </div>
 
             {/* Contenedor 2 - Transferencias Interbancarias */}
-            <div className="relative flex-shrink-0 w-auto bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg border border-gray-200 py-6 px-6">
-              {/* Título superior */}
-              <div className="absolute -top-3 left-6 bg-white px-4 py-1 rounded-full shadow-sm border border-gray-200">
-                <span className="text-xs font-semibold text-gray-600">Transferencias interbancarias ≥ 2 horas</span>
+            <div className="relative flex-shrink-0 w-auto bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
+              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-orange-50 to-yellow-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-orange-200">
+                <span className="text-xs font-bold text-orange-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
 
-              {/* Bancos en fila horizontal SIN WRAP */}
-              <div className="flex flex-row flex-nowrap items-center gap-4 pt-3">
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
-                    <img
-                      src="/BBVA.png"
-                      alt="BBVA"
-                      className="max-w-full max-h-full object-contain"
-                    />
+              <div className="flex flex-row flex-nowrap items-center gap-4 pt-2">
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-28 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
-                    <img
-                      src="/Scotiabank.png"
-                      alt="Scotiabank"
-                      className="max-w-full max-h-full object-contain"
-                    />
+                <div className="text-center flex flex-col items-center gap-1.5 flex-shrink-0">
+                  <div className="w-28 h-16 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain" />
                   </div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
-                <div className="text-center bg-gray-100 px-4 py-3 rounded-xl flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="text-sm font-bold text-gray-800 whitespace-nowrap">otros bancos</div>
-                  <div className="text-xs font-medium text-gray-700 whitespace-nowrap">Solo Lima</div>
+                <div className="text-center bg-white/90 backdrop-blur-sm px-4 py-3 rounded-xl shadow-sm flex flex-col items-center gap-1 flex-shrink-0 border border-white/60">
+                  <div className="text-sm font-bold text-gray-800 whitespace-nowrap">Otros bancos</div>
+                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
               </div>
             </div>
