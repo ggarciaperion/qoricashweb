@@ -244,11 +244,11 @@ export default function Home() {
 
             {/* Right Column: Calculator (More Width) */}
             <div className="lg:col-span-4 relative z-30">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs text-gray-500">
+              <div className="bg-white/60 backdrop-blur-sm rounded-t-2xl px-6 py-3 flex items-center justify-between border-b border-white/40">
+                <p className="text-xs text-gray-700 font-semibold">
                   Tipos de cambio en tiempo real
                 </p>
-                <div className="flex items-center text-green-600 text-xs font-semibold">
+                <div className="flex items-center text-green-600 text-xs font-bold bg-green-50/80 px-2.5 py-1 rounded-full">
                   <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse mr-2"></div>
                   En vivo
                 </div>

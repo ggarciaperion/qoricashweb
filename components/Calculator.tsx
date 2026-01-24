@@ -107,7 +107,7 @@ export default function Calculator({
   };
 
   return (
-    <div className="w-full bg-transparent rounded-2xl p-6">
+    <div className="w-full bg-transparent p-6 pt-4">
       {/* Tabs de Compra/Venta */}
       <div className="grid grid-cols-2 gap-2 mb-6 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner">
         <button
