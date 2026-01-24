@@ -329,8 +329,8 @@ export default function Home() {
 
             {/* Contenedor 2 - Transferencias Interbancarias */}
             <div className="relative flex-shrink-0 w-auto bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-5 px-6 hover:shadow-2xl transition-all">
-              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-orange-50 to-yellow-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-orange-200">
-                <span className="text-xs font-bold text-orange-700">⏱ Interbancarias ≥ 2 horas</span>
+              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-blue-200">
+                <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
 
               <div className="flex flex-row flex-nowrap items-center gap-4 pt-2">
