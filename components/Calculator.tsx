@@ -146,10 +146,10 @@ export default function Calculator({
       </div>
 
       {/* Calculadora */}
-      <div className="space-y-3">
+      <div className="space-y-0">
         {/* Fila superior: Input */}
         <div
-          className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md"
+          className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md relative z-10"
           onClick={(e) => {
             const input = document.getElementById('amount-input') as HTMLInputElement;
             if (input) {
@@ -194,7 +194,7 @@ export default function Calculator({
         </div>
 
         {/* Botón de intercambio */}
-        <div className="flex justify-center -my-2 relative z-10">
+        <div className="flex justify-center -my-5 relative z-20">
           <button
             onClick={handleSwapCurrency}
             className={`bg-white/90 backdrop-blur-sm border-2 border-white/80 rounded-full p-2.5 shadow-lg hover:shadow-xl hover:border-primary-400 hover:bg-primary-50 transition-all ${
@@ -207,7 +207,7 @@ export default function Calculator({
         </div>
 
         {/* Fila inferior: Output */}
-        <div className="bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-3 border-2 border-primary-200 shadow-sm">
+        <div className="bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl p-3 border-2 border-primary-200 shadow-sm relative z-10">
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs text-primary-800 font-bold uppercase tracking-wider">
               Recibes
