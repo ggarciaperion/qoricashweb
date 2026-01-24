@@ -208,7 +208,7 @@ export default function Calculator({
         </div>
 
         {/* Checkbox Cupón Promocional */}
-        <div className="pt-3 border-t border-gray-200">
+        <div className="pt-1 border-t border-gray-200">
           <label className="flex items-center gap-2 cursor-pointer group">
             <input
               type="checkbox"
@@ -216,7 +216,7 @@ export default function Calculator({
               onChange={(e) => setHasCoupon(e.target.checked)}
               className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
             />
-            <div className="flex items-center gap-2 text-sm font-medium text-gray-700 group-hover:text-primary-600 transition">
+            <div className="flex items-center gap-2 text-sm font-semibold text-white group-hover:text-primary-300 transition">
               <Tag className="w-4 h-4" />
               <span>Tengo un cupón promocional</span>
             </div>

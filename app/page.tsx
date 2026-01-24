@@ -607,7 +607,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section id="como-funciona" className="py-12 bg-gradient-to-br from-primary-50 to-blue-50 overflow-hidden">
+      <section id="como-funciona" className="py-12 overflow-hidden">
         <div className="w-full px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16 relative">
             {/* Decorative top line */}
