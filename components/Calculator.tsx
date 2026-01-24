@@ -200,7 +200,7 @@ export default function Calculator({
         </div>
 
         {/* Información adicional */}
-        <div className={`flex justify-between text-base text-gray-600 font-medium px-1 pt-2 transition-opacity duration-300 ${
+        <div className={`flex justify-between text-base text-gray-600 font-medium px-1 pt-1 transition-opacity duration-300 ${
           amountOutput ? 'opacity-100' : 'opacity-0'
         }`}>
           <span>Ahorro estimado: S/ {calculateSavings()}</span>
@@ -208,7 +208,7 @@ export default function Calculator({
         </div>
 
         {/* Checkbox Cupón Promocional */}
-        <div className="pt-1 border-t border-gray-200">
+        <div className="pt-2 border-t border-gray-200">
           <label className="flex items-center gap-2 cursor-pointer group">
             <input
               type="checkbox"
