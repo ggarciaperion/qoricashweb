@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -33,6 +33,8 @@ export default function Home() {
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
+  const banksSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // TODO: Fetch real rates from API
@@ -56,6 +58,30 @@ export default function Home() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isUserMenuOpen]);
+
+  // Intersection Observer for banks section animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsBanksSectionVisible(true);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    if (banksSectionRef.current) {
+      observer.observe(banksSectionRef.current);
+    }
+
+    return () => {
+      if (banksSectionRef.current) {
+        observer.unobserve(banksSectionRef.current);
+      }
+    };
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -291,7 +317,7 @@ export default function Home() {
 
       {/* Banks Strip */}
       <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
-        <div className="max-w-7xl mx-auto animate-slide-in-left">
+        <div ref={banksSectionRef} className={`max-w-7xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
             <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
