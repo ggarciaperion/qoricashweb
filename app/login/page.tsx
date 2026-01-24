@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { authApi } from '@/lib/api/auth';
 import ForgotPasswordModal from '@/components/ForgotPasswordModal';
@@ -159,8 +159,14 @@ export default function LoginPage() {
 
           {/* Error message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in duration-300">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100/80 flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-red-800 mb-0.5">Error de autenticación</p>
+                <p className="text-sm text-red-700/90">{error}</p>
+              </div>
             </div>
           )}
 
@@ -179,8 +185,8 @@ export default function LoginPage() {
                   {...register('dni')}
                   type="text"
                   id="dni"
-                  className={`block w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.dni ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    errors.dni ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
                   }`}
                   placeholder="12345678"
                   disabled={isLoading}
@@ -204,8 +210,8 @@ export default function LoginPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  className={`block w-full pl-12 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-12 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    errors.password ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
                   disabled={isLoading}

@@ -148,7 +148,7 @@ export default function ChangePasswordModal({
           {/* Success Message */}
           {success ? (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-green-50/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-green-200/50">
                 <CheckCircle className="w-10 h-10 text-green-600" />
               </div>
               <h4 className="text-xl font-bold text-gray-900 mb-2">
@@ -162,20 +162,26 @@ export default function ChangePasswordModal({
             <>
               {/* Error Message */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start">
-                  <AlertCircle className="w-5 h-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-red-900 font-semibold">Error</p>
-                    <p className="text-red-700 text-sm mt-1">{error}</p>
+                <div className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in duration-300">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100/80 flex items-center justify-center">
+                    <AlertCircle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-red-800 mb-0.5">Error</p>
+                    <p className="text-sm text-red-700/90">{error}</p>
                   </div>
                 </div>
               )}
 
               {!requireCurrentPassword && (
-                <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-xl">
-                  <p className="text-sm text-orange-800">
-                    <strong>Importante:</strong> Estás usando una contraseña temporal. Por seguridad, debes establecer una nueva contraseña antes de continuar.
-                  </p>
+                <div className="mb-6 p-4 bg-orange-50/80 backdrop-blur-sm border border-orange-200/50 rounded-xl flex items-start gap-3 shadow-sm">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100/80 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-orange-800 mb-0.5">Importante</p>
+                    <p className="text-sm text-orange-700/90">Estás usando una contraseña temporal. Por seguridad, debes establecer una nueva contraseña antes de continuar.</p>
+                  </div>
                 </div>
               )}
 

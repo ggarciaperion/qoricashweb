@@ -251,7 +251,7 @@ export default function CrearCuentaPage() {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center border-2 border-white/60">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-green-50/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-green-200/50">
             <CheckCircle2 className="w-12 h-12 text-green-600" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Cuenta Creada!</h2>
@@ -310,11 +310,13 @@ export default function CrearCuentaPage() {
         <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 border-2 border-white/60">
           {/* Mensaje de error */}
           {error && (
-            <div ref={errorRef} className="mb-6 p-4 bg-red-100 border-2 border-red-500 rounded-xl flex items-start gap-3 shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
-              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5 animate-pulse" />
-              <div>
-                <p className="text-sm font-semibold text-red-900 mb-1">Error de validación</p>
-                <p className="text-sm text-red-700">{error}</p>
+            <div ref={errorRef} className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100/80 flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-red-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-red-800 mb-0.5">Error de validación</p>
+                <p className="text-sm text-red-700/90">{error}</p>
               </div>
             </div>
           )}
