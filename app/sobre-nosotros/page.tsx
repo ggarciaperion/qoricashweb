@@ -51,7 +51,7 @@ export default function SobreNosotros() {
       {/* Mission & Vision */}
       <section className="py-12 px-6 sm:px-8 lg:px-12">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-lg p-8 border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-6">
               <Award className="w-8 h-8 text-white" />
             </div>
@@ -64,7 +64,7 @@ export default function SobreNosotros() {
               siempre que cuente con una cuenta bancaria en el Perú.
             </p>
           </div>
-          <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-lg p-8 border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-br from-secondary to-secondary-700 rounded-2xl flex items-center justify-center mb-6">
               <Zap className="w-8 h-8 text-white" />
             </div>
@@ -112,7 +112,7 @@ export default function SobreNosotros() {
                 description: 'Miles de clientes satisfechos respaldan nuestro compromiso con la excelencia.'
               }
             ].map((value, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow">
+              <div key={index} className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-4">
                   <value.icon className="w-6 h-6 text-white" />
                 </div>
@@ -168,7 +168,7 @@ export default function SobreNosotros() {
                 stat: 'Asistencia inmediata'
               }
             ].map((item, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-md p-6 border border-gray-100 hover:border-primary-300 transition-colors">
+              <div key={index} className="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl shadow-md p-6 border border-gray-100 hover:border-primary-300 transition-colors">
                 <div className="text-3xl font-bold text-primary-600 mb-3">{item.stat}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.description}</p>
@@ -181,7 +181,7 @@ export default function SobreNosotros() {
       {/* Company Information */}
       <section className="py-12 px-6 sm:px-8 lg:px-12 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border border-gray-200">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-lg p-8 md:p-12 border border-gray-200">
             <div className="text-center mb-8">
               <div className="inline-block p-4 bg-primary-100 rounded-2xl mb-4">
                 <Building2 className="w-8 h-8 text-primary-600" />

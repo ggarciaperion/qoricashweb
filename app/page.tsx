@@ -106,15 +106,9 @@ export default function Home() {
               <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">
                 Cómo Funciona
               </a>
-              {isAuthenticated ? (
-                <Link href="/dashboard/promociones" className="text-gray-700 hover:text-primary-600 transition">
-                  Promociones
-                </Link>
-              ) : (
-                <a href="#promociones" className="text-gray-700 hover:text-primary-600 transition">
-                  Promociones
-                </a>
-              )}
+              <Link href="/dashboard/promociones" className="text-gray-700 hover:text-primary-600 transition">
+                Promociones
+              </Link>
 
               {isAuthenticated ? (
                 <div className="relative user-menu-container">

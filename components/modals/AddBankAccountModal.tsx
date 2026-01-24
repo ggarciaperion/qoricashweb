@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -34,25 +34,58 @@ interface AddBankAccountModalProps {
   onClose: () => void;
   onSuccess: () => void;
   dni: string;
+  operationType?: 'Compra' | 'Venta';
+  accountContext?: 'cargo' | 'destino';
 }
 
-export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni }: AddBankAccountModalProps) {
+export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, operationType, accountContext }: AddBankAccountModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Determinar la moneda predeterminada según el tipo de operación y contexto
+  const getDefaultCurrency = (): 'S/' | '$' | '' => {
+    if (!operationType || !accountContext) return '';
+
+    if (operationType === 'Compra') {
+      return accountContext === 'cargo' ? '$' : 'S/';
+    } else {
+      return accountContext === 'cargo' ? 'S/' : '$';
+    }
+  };
+
+  const defaultCurrency = getDefaultCurrency();
+  const isCurrencyReadOnly = !!operationType && !!accountContext;
 
   const {
     register,
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<BankAccountFormData>({
     resolver: zodResolver(bankAccountSchema),
     defaultValues: {
       ownership_confirmed: false,
+      currency: defaultCurrency,
     },
   });
+
+  // Actualizar el valor de currency cuando cambien los props
+  useEffect(() => {
+    if (operationType && accountContext) {
+      let currency: 'S/' | '$' = 'S/';
+
+      if (operationType === 'Compra') {
+        currency = accountContext === 'cargo' ? '$' : 'S/';
+      } else {
+        currency = accountContext === 'cargo' ? 'S/' : '$';
+      }
+
+      setValue('currency', currency);
+    }
+  }, [operationType, accountContext, setValue]);
 
   const selectedBank = watch('bank_name');
   const selectedCurrency = watch('currency');
@@ -266,9 +299,9 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni }:
                       {...register('currency')}
                       id="currency"
                       className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                        errors.currency ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                        errors.currency ? 'border-red-300 bg-red-50' : isCurrencyReadOnly ? 'border-gray-300 bg-gray-100' : 'border-gray-300'
                       }`}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isCurrencyReadOnly}
                     >
                       <option value="">Selecciona</option>
                       <option value="S/">Soles (S/)</option>

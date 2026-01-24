@@ -134,13 +134,13 @@ export default function CrearCuentaPage() {
     }
 
     if (tipoPersona === 'natural') {
-      if (!formData.nombres || !formData.apellidoPaterno) {
-        setError('Nombres y apellido paterno son obligatorios');
+      if (!formData.nombres || !formData.apellidoPaterno || !formData.apellidoMaterno) {
+        setError('Todos los campos son obligatorios');
         return false;
       }
     } else {
       if (!formData.razonSocial || !formData.personaContacto) {
-        setError('Razón social y persona de contacto son obligatorios');
+        setError('Todos los campos son obligatorios');
         return false;
       }
     }
@@ -281,15 +281,15 @@ export default function CrearCuentaPage() {
       </header>
 
       {/* Contenido */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Título */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold text-gray-900 mb-2">Crear Cuenta</h1>
-          <p className="text-lg text-gray-600">Únete a QoriCash en 3 simples pasos</p>
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-display font-bold text-gray-900 mb-1">Crear Cuenta</h1>
+          <p className="text-base text-gray-600">Únete a QoriCash en 3 simples pasos</p>
         </div>
 
         {/* Indicador de pasos */}
-        <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center justify-center mb-6">
           {[1, 2, 3].map((num) => (
             <div key={num} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition ${
@@ -307,7 +307,7 @@ export default function CrearCuentaPage() {
         </div>
 
         {/* Card del formulario */}
-        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 border-2 border-white/60">
+        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-6 border-2 border-white/60">
           {/* Mensaje de error */}
           {error && (
             <div ref={errorRef} className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
@@ -323,28 +323,28 @@ export default function CrearCuentaPage() {
 
           {/* PASO 1: Selección de tipo y datos básicos */}
           {paso === 1 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right duration-300">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Paso 1: Información Básica</h3>
+            <div className="space-y-4 animate-in fade-in slide-in-from-right duration-300">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Paso 1: Información Básica</h3>
 
               {/* Tipo de persona */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">Tipo de Persona</label>
-                <div className="grid grid-cols-2 gap-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Persona</label>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => {
                       setTipoPersona('natural');
                       setFormData(prev => ({ ...prev, tipoDocumento: 'DNI' }));
                     }}
-                    className={`p-6 rounded-xl border-2 transition ${
+                    className={`p-4 rounded-xl border-2 transition ${
                       tipoPersona === 'natural'
                         ? 'border-primary bg-primary/5'
                         : 'border-gray-200 hover:border-primary/50'
                     }`}
                   >
-                    <User className={`w-8 h-8 mx-auto mb-2 ${tipoPersona === 'natural' ? 'text-primary' : 'text-gray-400'}`} />
-                    <p className="font-semibold text-gray-900">Persona Natural</p>
-                    <p className="text-sm text-gray-500 mt-1">DNI o CE</p>
+                    <User className={`w-6 h-6 mx-auto mb-1.5 ${tipoPersona === 'natural' ? 'text-primary' : 'text-gray-400'}`} />
+                    <p className="font-semibold text-gray-900 text-sm">Persona Natural</p>
+                    <p className="text-xs text-gray-500 mt-0.5">DNI o CE</p>
                   </button>
 
                   <button
@@ -353,15 +353,15 @@ export default function CrearCuentaPage() {
                       setTipoPersona('juridica');
                       setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' }));
                     }}
-                    className={`p-6 rounded-xl border-2 transition ${
+                    className={`p-4 rounded-xl border-2 transition ${
                       tipoPersona === 'juridica'
                         ? 'border-primary bg-primary/5'
                         : 'border-gray-200 hover:border-primary/50'
                     }`}
                   >
-                    <Building2 className={`w-8 h-8 mx-auto mb-2 ${tipoPersona === 'juridica' ? 'text-primary' : 'text-gray-400'}`} />
-                    <p className="font-semibold text-gray-900">Persona Jurídica</p>
-                    <p className="text-sm text-gray-500 mt-1">RUC</p>
+                    <Building2 className={`w-6 h-6 mx-auto mb-1.5 ${tipoPersona === 'juridica' ? 'text-primary' : 'text-gray-400'}`} />
+                    <p className="font-semibold text-gray-900 text-sm">Persona Jurídica</p>
+                    <p className="text-xs text-gray-500 mt-0.5">RUC</p>
                   </button>
                 </div>
               </div>
@@ -370,13 +370,13 @@ export default function CrearCuentaPage() {
               {tipoPersona === 'natural' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento</label>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {(['DNI', 'CE'] as TipoDocumento[]).map((tipo) => (
                       <button
                         key={tipo}
                         type="button"
                         onClick={() => handleChange('tipoDocumento', tipo)}
-                        className={`py-3 px-4 rounded-xl font-semibold transition ${
+                        className={`py-2 px-4 rounded-xl font-semibold transition text-sm ${
                           formData.tipoDocumento === tipo
                             ? 'bg-primary text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -399,7 +399,7 @@ export default function CrearCuentaPage() {
                   value={formData.dni}
                   onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
                   maxLength={formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   placeholder={formData.tipoDocumento === 'DNI' ? '12345678' : formData.tipoDocumento === 'CE' ? '123456789' : '20123456789'}
                 />
               </div>
@@ -413,30 +413,30 @@ export default function CrearCuentaPage() {
                       type="text"
                       value={formData.nombres}
                       onChange={(e) => handleChange('nombres', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                       placeholder="Juan Carlos"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Paterno *</label>
                       <input
                         type="text"
                         value={formData.apellidoPaterno}
                         onChange={(e) => handleChange('apellidoPaterno', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                         placeholder="García"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Materno</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Materno *</label>
                       <input
                         type="text"
                         value={formData.apellidoMaterno}
                         onChange={(e) => handleChange('apellidoMaterno', e.target.value)}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                         placeholder="López"
                       />
                     </div>
@@ -450,7 +450,7 @@ export default function CrearCuentaPage() {
                       type="text"
                       value={formData.razonSocial}
                       onChange={(e) => handleChange('razonSocial', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                       placeholder="EMPRESA SAC"
                     />
                   </div>
@@ -461,18 +461,18 @@ export default function CrearCuentaPage() {
                       type="text"
                       value={formData.personaContacto}
                       onChange={(e) => handleChange('personaContacto', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
                       placeholder="Juan García"
                     />
                   </div>
                 </>
               )}
 
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-2">
                 <button
                   type="button"
                   onClick={siguientePaso}
-                  className="inline-flex items-center bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
+                  className="inline-flex items-center bg-primary text-white px-6 py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
                 >
                   Siguiente
                   <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition" />
