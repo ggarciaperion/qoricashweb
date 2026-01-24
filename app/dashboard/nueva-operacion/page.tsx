@@ -152,10 +152,15 @@ export default function NuevaOperacionPage() {
       if (!response.ok) throw new Error('Failed to fetch operations');
 
       const data = await response.json();
-      const operation = data.data?.operations?.find((op: any) => op.codigo_operacion === operationId);
+      console.log('[Nueva Operación] Respuesta API:', data);
+
+      // El backend devuelve data.data como un array directamente
+      const operations = data.data || [];
+      const operation = operations.find((op: any) => op.codigo_operacion === operationId || op.operation_id === operationId);
 
       if (!operation) {
         console.error('[Nueva Operación] Operación no encontrada:', operationId);
+        console.error('[Nueva Operación] Operaciones disponibles:', operations);
         return;
       }
 
