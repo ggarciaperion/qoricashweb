@@ -30,9 +30,7 @@ import {
   Image as ImageIcon,
   Calendar,
   Building2,
-  Upload,
 } from 'lucide-react';
-import UploadProofModal from '@/components/modals/UploadProofModal';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -47,7 +45,6 @@ export default function DashboardPage() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedOperation, setSelectedOperation] = useState<any>(null);
   const [isOperationModalOpen, setIsOperationModalOpen] = useState(false);
-  const [isUploadProofModalOpen, setIsUploadProofModalOpen] = useState(false);
 
   useEffect(() => {
     // Fetch exchange rates
@@ -134,24 +131,6 @@ export default function DashboardPage() {
     if (activeTab === 'completadas') return op.estado === 'completado';
     return true;
   });
-
-  const handleUploadProof = async (files: File[], voucherCode: string) => {
-    if (!selectedOperation || !user?.dni) return;
-
-    try {
-      await operationsApi.uploadProof(
-        selectedOperation.codigo_operacion || selectedOperation.operation_id,
-        user.dni,
-        files,
-        voucherCode
-      );
-
-      // Reload operations after successful upload
-      await loadData();
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || error.message || 'Error al enviar comprobante');
-    }
-  };
 
   const getStatusBadge = (estado: string) => {
     const badges = {
@@ -461,10 +440,15 @@ export default function DashboardPage() {
               </div>
             ) : (
               filteredOperations.map((operation) => {
-                // Abrir modal con detalles de la operación (tanto pendiente como completada)
+                // Si la operación está pendiente, redirigir a nueva-operacion para continuar
                 const handleOperationClick = () => {
-                  setSelectedOperation(operation);
-                  setIsOperationModalOpen(true);
+                  if (operation.estado.toLowerCase() === 'pendiente') {
+                    router.push(`/dashboard/nueva-operacion?operation_id=${operation.codigo_operacion}`);
+                  } else {
+                    // Abrir modal con detalles completos de la operación
+                    setSelectedOperation(operation);
+                    setIsOperationModalOpen(true);
+                  }
                 };
 
                 return (
@@ -734,34 +718,10 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* Upload Proof Button - Only for pending operations */}
-              {selectedOperation.estado === 'pendiente' && (
-                <button
-                  onClick={() => {
-                    setIsOperationModalOpen(false);
-                    setIsUploadProofModalOpen(true);
-                  }}
-                  className="w-full bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition flex items-center justify-center gap-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  Adjuntar Comprobante
-                </button>
-              )}
             </div>
           </div>
         </div>
       )}
-
-      {/* Upload Proof Modal */}
-      <UploadProofModal
-        isOpen={isUploadProofModalOpen}
-        onClose={() => {
-          setIsUploadProofModalOpen(false);
-          setSelectedOperation(null);
-        }}
-        onSubmit={handleUploadProof}
-        operationCode={selectedOperation?.codigo_operacion || selectedOperation?.operation_id}
-      />
     </div>
   );
 }
