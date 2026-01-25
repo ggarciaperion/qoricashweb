@@ -269,7 +269,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3">
+                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-3 border border-green-200/30">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-medium text-green-800">Compra</span>
                     <TrendingUp className="w-4 h-4 text-green-600" />
@@ -278,7 +278,7 @@ export default function DashboardPage() {
                     S/ {currentRates.tipo_compra.toFixed(3)}
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3">
+                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-3 border border-blue-200/30">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-medium text-blue-800">Venta</span>
                     <TrendingDown className="w-4 h-4 text-blue-600" />
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                   Comparte tu código con amigos. Ambos recibirán un mejor tipo de cambio.
                 </p>
                 <div className="flex flex-col gap-2 mt-auto">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-3 border border-gold-200/50 shadow-sm">
+                  <div className="bg-white/60 backdrop-blur-sm rounded-xl px-4 py-3 border border-gold-200/40 shadow-sm">
                     <p className="text-xs text-gray-600 mb-0.5">Tu código de referido</p>
                     <p className="text-xl font-bold bg-gradient-to-r from-primary-600 to-gold-600 bg-clip-text text-transparent tracking-wider font-mono">{user.referral_code}</p>
                   </div>
