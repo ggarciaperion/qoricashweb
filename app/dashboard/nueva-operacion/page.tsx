@@ -745,28 +745,34 @@ export default function NuevaOperacionPage() {
 
     // Obtener el banco de la cuenta de origen desde la operación creada
     const sourceAccountInfo = createdOperation.source_account_info || createdOperation.source_account;
-    if (!sourceAccountInfo) {
-      console.log('[getQoricashAccount] No se encontró información de cuenta de origen en la operación');
-      return null;
-    }
 
     // Extraer el banco de la info de la cuenta - manejar tanto objetos como strings
     let clientBank;
-    if (typeof sourceAccountInfo === 'object') {
-      // Si es objeto, intentar obtener banco desde banco_nombre o banco
-      clientBank = sourceAccountInfo.banco_nombre || sourceAccountInfo.banco || sourceAccountInfo.bank_name;
 
-      // Si banco es null, intentar obtenerlo desde las cuentas bancarias del usuario
-      if (!clientBank && selectedOriginAccount) {
-        const originAccount = bankAccounts.find(acc => acc.id === selectedOriginAccount);
-        clientBank = originAccount?.bank_name;
+    if (sourceAccountInfo) {
+      if (typeof sourceAccountInfo === 'object') {
+        // Si es objeto, intentar obtener banco desde banco_nombre o banco
+        clientBank = sourceAccountInfo.banco_nombre || sourceAccountInfo.banco || sourceAccountInfo.bank_name;
+      } else if (typeof sourceAccountInfo === 'string') {
+        clientBank = sourceAccountInfo.split(' - ')[0];
       }
-    } else if (typeof sourceAccountInfo === 'string') {
-      clientBank = sourceAccountInfo.split(' - ')[0];
+    }
+
+    // Si no se pudo obtener el banco desde sourceAccountInfo, intentar desde las cuentas bancarias
+    if (!clientBank && bankAccounts && bankAccounts.length > 0) {
+      // Determinar la moneda de origen según el tipo de operación
+      const sourceCurrency = createdOperation.operation_type === 'Compra' ? '$' : 'S/';
+
+      // Buscar una cuenta bancaria del cliente que coincida con la moneda de origen
+      const originAccount = bankAccounts.find(acc => acc.currency === sourceCurrency);
+      if (originAccount) {
+        clientBank = originAccount.bank_name;
+        console.log('[getQoricashAccount] Banco obtenido desde cuentas bancarias del usuario:', clientBank);
+      }
     }
 
     if (!clientBank) {
-      console.log('[getQoricashAccount] No se pudo determinar el banco. sourceAccountInfo:', sourceAccountInfo);
+      console.log('[getQoricashAccount] No se pudo determinar el banco. sourceAccountInfo:', sourceAccountInfo, 'bankAccounts:', bankAccounts);
       return null;
     }
 
