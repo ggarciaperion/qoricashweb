@@ -1288,10 +1288,13 @@ export default function NuevaOperacionPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setIsCancelModalOpen(true);
-                        setError(null);
+                        if (timeRemaining > 0) {
+                          setIsCancelModalOpen(true);
+                          setError(null);
+                        }
                       }}
-                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
+                      disabled={timeRemaining === 0}
+                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100"
                     >
                       Cancelar operación
                     </button>
