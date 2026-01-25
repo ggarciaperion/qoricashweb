@@ -1256,11 +1256,7 @@ export default function NuevaOperacionPage() {
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-800">No se pudo determinar la cuenta QoriCash. Contacta a soporte.</p>
-                      </div>
-                    )}
+                    ) : null}
 
                         {/* Cuenta donde recibirás el pago */}
                         <div className="bg-green-50 border border-green-200 rounded-xl p-4">
