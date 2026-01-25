@@ -106,6 +106,10 @@ export default function NuevaOperacionPage() {
   // Formatted date for display - compute on client side only
   const [formattedDate, setFormattedDate] = useState<string>('');
 
+  // Estado para operación activa
+  const [hasActiveOperation, setHasActiveOperation] = useState(false);
+  const [activeOperationMessage, setActiveOperationMessage] = useState('');
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -113,6 +117,7 @@ export default function NuevaOperacionPage() {
     }
 
     loadInitialData();
+    checkForActiveOperations();
   }, [isAuthenticated]);
 
   // Start WebSocket subscription for real-time rates
@@ -220,6 +225,40 @@ export default function NuevaOperacionPage() {
     } catch (error) {
       console.error('[Nueva Operación] Error cargando operación:', error);
       setError('Error al cargar la operación');
+    }
+  };
+
+  const checkForActiveOperations = async () => {
+    if (!user?.dni) return;
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/web/my-operations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dni: user.dni })
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const operations = data.data || [];
+
+      // Buscar operaciones en estado "Pendiente" o "En proceso"
+      const activeOp = operations.find((op: any) =>
+        op.estado === 'Pendiente' || op.estado === 'En proceso'
+      );
+
+      if (activeOp) {
+        setHasActiveOperation(true);
+        setActiveOperationMessage(
+          `Tienes una operación en estado "${activeOp.estado}" (${activeOp.codigo_operacion || activeOp.operation_id}). Debes completarla o cancelarla antes de crear una nueva.`
+        );
+      } else {
+        setHasActiveOperation(false);
+        setActiveOperationMessage('');
+      }
+    } catch (error) {
+      console.error('Error checking for active operations:', error);
     }
   };
 
@@ -432,6 +471,12 @@ export default function NuevaOperacionPage() {
     e.preventDefault();
     setError(null);
 
+    // Verificar si hay una operación activa antes de continuar
+    if (hasActiveOperation) {
+      setError(activeOperationMessage);
+      return;
+    }
+
     if (!amountInput || parseFloat(amountInput) <= 0) {
       setError('Ingresa un monto válido');
       return;
@@ -560,6 +605,10 @@ export default function NuevaOperacionPage() {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
+            // Cancelar la operación automáticamente cuando el tiempo expira
+            if (createdOperation) {
+              handleCancelOperation('Tiempo expirado');
+            }
             return 0;
           }
           return prev - 1;
@@ -568,7 +617,7 @@ export default function NuevaOperacionPage() {
 
       return () => clearInterval(timer);
     }
-  }, [currentStep, timeRemaining]);
+  }, [currentStep, timeRemaining, createdOperation]);
 
   // Format time remaining
   const formatTime = (seconds: number) => {
@@ -890,7 +939,7 @@ export default function NuevaOperacionPage() {
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar izquierdo - Información de QoriCash */}
           <div className="col-span-12 lg:col-span-3">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-6">
+            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-6 sticky top-6">
               <div className="text-center mb-6">
                 <div className="w-24 h-24 mx-auto mb-3 relative">
                   <Image
@@ -962,7 +1011,7 @@ export default function NuevaOperacionPage() {
 
           {/* Contenido principal */}
           <div className="col-span-12 lg:col-span-9">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4">
+            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-4">
               {/* Header */}
               <div className="mb-4">
                 <h1 className="text-xl font-bold text-gray-900 mb-1">
@@ -1141,8 +1190,14 @@ export default function NuevaOperacionPage() {
                       </div>
                       <div className="flex justify-between text-sm pt-2 border-t border-gray-300">
                         <span className="text-gray-600">Estado:</span>
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                          {createdOperation.estado}
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
+                          timeRemaining === 0
+                            ? 'bg-red-100 text-red-800'
+                            : createdOperation.estado === 'Cancelado'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {timeRemaining === 0 ? 'Expirado' : createdOperation.estado}
                         </span>
                       </div>
                     </div>
@@ -1173,50 +1228,51 @@ export default function NuevaOperacionPage() {
                     });
 
                     return (
-                      <div className="space-y-4">
-                        {/* Cuenta de Cargo del Cliente */}
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                          <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                            <Send className="w-5 h-5 mr-2 text-gray-600" />
-                            Tu cuenta de cargo ({sourceCurrency})
-                          </h3>
-                          <div className="bg-white rounded-lg p-3 border border-gray-200">
-                            <p className="text-xs text-gray-600 mb-1">Número de Cuenta</p>
-                            <p className="text-base font-bold text-gray-900">
-                              {sourceAccount || 'No especificada'}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Cuenta de Destino QoriCash */}
-                        {qoricashAccount ? (
-                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                              <Building2 className="w-5 h-5 mr-2 text-secondary" />
-                              Transfiere a esta cuenta de QoriCash ({sourceCurrency})
+                      <div className="space-y-2">
+                        {/* Cuentas en línea horizontal */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {/* Cuenta de Cargo del Cliente */}
+                          <div className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-lg p-2.5">
+                            <h3 className="text-xs font-bold text-gray-900 mb-2 flex items-center">
+                              <Send className="w-4 h-4 mr-1.5 text-gray-600" />
+                              Tu cuenta de cargo ({sourceCurrency})
                             </h3>
-                        <div className="space-y-3">
-                          <div className="bg-white rounded-lg p-3 border border-blue-200">
-                            <div className="flex justify-between items-start mb-2">
+                            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 border border-gray-200/50">
+                              <p className="text-xs text-gray-900 font-semibold">
+                                {sourceAccount || 'No especificada'}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Cuenta de Destino QoriCash */}
+                          {qoricashAccount ? (
+                            <div className="bg-blue-50/60 backdrop-blur-sm border border-blue-200/50 rounded-lg p-2.5">
+                            <h3 className="text-xs font-bold text-gray-900 mb-2 flex items-center">
+                              <Building2 className="w-4 h-4 mr-1.5 text-secondary" />
+                              Transfiere a QoriCash ({sourceCurrency})
+                            </h3>
+                        <div className="space-y-2">
+                          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 border border-blue-200/50">
+                            <div className="grid grid-cols-2 gap-2 mb-1.5">
                               <div>
                                 <p className="text-xs text-gray-600">Banco</p>
-                                <p className="text-sm font-bold text-gray-900">{qoricashAccount.banco}</p>
+                                <p className="text-xs font-bold text-gray-900">{qoricashAccount.banco}</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-xs text-gray-600">Tipo</p>
-                                <p className="text-sm font-semibold text-gray-900">{qoricashAccount.tipo}</p>
+                                <p className="text-xs font-semibold text-gray-900">{qoricashAccount.tipo}</p>
                               </div>
                             </div>
-                            <div className="mb-2">
+                            <div className="mb-1.5">
                               <p className="text-xs text-gray-600">Titular</p>
-                              <p className="text-sm font-semibold text-gray-900">{qoricashAccount.titular}</p>
+                              <p className="text-xs font-semibold text-gray-900">{qoricashAccount.titular}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-600 mb-1">
-                                {qoricashAccount.useCCI ? 'Código Interbancario (CCI)' : 'Número de Cuenta'}
+                              <p className="text-xs text-gray-600 mb-0.5">
+                                {qoricashAccount.useCCI ? 'CCI' : 'Nro. Cuenta'}
                               </p>
-                              <div className="flex items-center gap-2">
-                                <p className="text-lg font-bold text-secondary flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-sm font-bold text-secondary flex-1">
                                   {qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}
                                 </p>
                                 <button
@@ -1225,26 +1281,23 @@ export default function NuevaOperacionPage() {
                                     qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero,
                                     'account'
                                   )}
-                                  className="p-2 bg-secondary text-white rounded-lg hover:bg-secondary-700 transition"
+                                  className="p-1.5 bg-secondary text-white rounded-lg hover:bg-secondary-700 transition"
                                 >
                                   {copiedField === 'account' ? (
-                                    <CheckCircle className="w-5 h-5" />
+                                    <CheckCircle className="w-4 h-4" />
                                   ) : (
-                                    <Copy className="w-5 h-5" />
+                                    <Copy className="w-4 h-4" />
                                   )}
                                 </button>
                               </div>
-                              {copiedField === 'account' && (
-                                <p className="text-xs text-green-600 mt-1">Copiado al portapapeles</p>
-                              )}
                             </div>
                           </div>
 
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                          <div className="bg-yellow-50/60 backdrop-blur-sm border border-yellow-200/50 rounded-lg p-2">
                             <p className="text-xs text-yellow-800 flex items-start">
-                              <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
+                              <AlertCircle className="w-3.5 h-3.5 mr-1.5 flex-shrink-0 mt-0.5" />
                               <span>
-                                <strong>Importante:</strong> Transfiere exactamente{' '}
+                                <strong>Importante:</strong> Transfiere{' '}
                                 <strong>
                                   {operationType === 'compra'
                                     ? `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
@@ -1258,25 +1311,25 @@ export default function NuevaOperacionPage() {
                       </div>
                     ) : null}
 
-                        {/* Cuenta donde recibirás el pago */}
-                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                          <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                            <Wallet className="w-5 h-5 mr-2 text-green-600" />
-                            Tu cuenta donde recibirás el pago ({destCurrency})
-                          </h3>
-                          <div className="bg-white rounded-lg p-3 border border-green-200">
-                            <p className="text-xs text-gray-600 mb-1">Número de Cuenta</p>
-                            <p className="text-base font-bold text-gray-900">
-                              {destAccount || 'No especificada'}
-                            </p>
-                            <p className="text-xs text-green-700 mt-2">
-                              Recibirás <strong>
-                                {operationType === 'compra'
-                                  ? `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
-                                  : `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
-                                }
-                              </strong> en esta cuenta
-                            </p>
+                          {/* Cuenta donde recibirás el pago */}
+                          <div className="bg-green-50/60 backdrop-blur-sm border border-green-200/50 rounded-lg p-2.5">
+                            <h3 className="text-xs font-bold text-gray-900 mb-2 flex items-center">
+                              <Wallet className="w-4 h-4 mr-1.5 text-green-600" />
+                              Recibirás el pago ({destCurrency})
+                            </h3>
+                            <div className="bg-white/80 backdrop-blur-sm rounded-lg p-2 border border-green-200/50">
+                              <p className="text-xs text-gray-900 font-semibold mb-1">
+                                {destAccount || 'No especificada'}
+                              </p>
+                              <p className="text-xs text-green-700">
+                                Recibirás <strong>
+                                  {operationType === 'compra'
+                                    ? `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
+                                    : `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
+                                  }
+                                </strong>
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1812,7 +1865,8 @@ export default function NuevaOperacionPage() {
                       selectedDestinationAccount === null ||
                       !ownershipConfirmed ||
                       !canCreateOperation ||
-                      user?.status === 'Inactivo'
+                      user?.status === 'Inactivo' ||
+                      hasActiveOperation
                     }
                     className="w-full bg-gradient-to-r from-secondary to-secondary-700 text-white py-4 rounded-lg font-bold text-base hover:from-secondary-600 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl group"
                   >
