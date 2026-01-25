@@ -495,12 +495,6 @@ export default function DashboardPage() {
                     {/* Amounts */}
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="text-xs text-gray-500">Soles</p>
-                        <p className="text-base font-bold text-gray-900">
-                          S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                        </p>
-                      </div>
-                      <div className="text-right">
                         <p className="text-xs text-gray-500">Dólares</p>
                         <p className="text-base font-bold text-gray-900">
                           $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -510,6 +504,12 @@ export default function DashboardPage() {
                         <p className="text-xs text-gray-500">T.C.</p>
                         <p className="text-base font-bold text-gray-900">
                           S/ {(operation.tipo_cambio ?? 0).toFixed(3)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">Soles</p>
+                        <p className="text-base font-bold text-gray-900">
+                          S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                         </p>
                       </div>
                     </div>
@@ -588,16 +588,6 @@ export default function DashboardPage() {
               {/* Montos y TC */}
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
                 <div className="grid grid-cols-3 gap-4">
-                  {/* Monto en Soles */}
-                  <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Soles</p>
-                    <div className="bg-gradient-to-br from-green-50 to-green-100/80 rounded-lg p-3 border border-green-200/50">
-                      <p className="text-lg font-bold text-green-900">
-                        S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                  </div>
-
                   {/* Monto en Dólares */}
                   <div className="text-center">
                     <p className="text-xs text-gray-600 mb-1.5 font-medium">Dólares</p>
@@ -614,6 +604,16 @@ export default function DashboardPage() {
                     <div className="bg-gradient-to-br from-purple-50 to-purple-100/80 rounded-lg p-3 border border-purple-200/50">
                       <p className="text-lg font-bold text-purple-900">
                         S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Monto en Soles */}
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Soles</p>
+                    <div className="bg-gradient-to-br from-green-50 to-green-100/80 rounded-lg p-3 border border-green-200/50">
+                      <p className="text-lg font-bold text-green-900">
+                        S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   </div>
