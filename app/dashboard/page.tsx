@@ -260,30 +260,30 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
           {/* Exchange rates card */}
           {currentRates && (
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300">
+            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-5 border border-white/60 hover:shadow-2xl transition-all duration-300">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-base font-bold text-gray-900">Tipo de Cambio Actual</h3>
+                <h3 className="text-sm font-bold text-gray-900">Tipo de Cambio Actual</h3>
                 <div className={`flex items-center text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
                   <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
                   {isConnected ? 'En vivo' : 'Actualizando...'}
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-3 border border-green-200/30">
-                  <div className="flex items-center justify-between mb-1">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-2.5 border border-green-200/30">
+                  <div className="flex items-center justify-between mb-0.5">
                     <span className="text-xs font-medium text-green-800">Compra</span>
-                    <TrendingUp className="w-4 h-4 text-green-600" />
+                    <TrendingUp className="w-3.5 h-3.5 text-green-600" />
                   </div>
-                  <div className="text-2xl font-bold text-green-900">
+                  <div className="text-xl font-bold text-green-900">
                     S/ {currentRates.tipo_compra.toFixed(3)}
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-3 border border-blue-200/30">
-                  <div className="flex items-center justify-between mb-1">
+                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-2.5 border border-blue-200/30">
+                  <div className="flex items-center justify-between mb-0.5">
                     <span className="text-xs font-medium text-blue-800">Venta</span>
-                    <TrendingDown className="w-4 h-4 text-blue-600" />
+                    <TrendingDown className="w-3.5 h-3.5 text-blue-600" />
                   </div>
-                  <div className="text-2xl font-bold text-blue-900">
+                  <div className="text-xl font-bold text-blue-900">
                     S/ {currentRates.tipo_venta.toFixed(3)}
                   </div>
                 </div>
