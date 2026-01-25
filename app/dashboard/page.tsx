@@ -293,24 +293,26 @@ export default function DashboardPage() {
 
           {/* Referral Code Card */}
           {user?.referral_code && (
-            <div className="bg-gradient-to-r from-blue-50 via-primary-50 to-blue-50 rounded-xl shadow-md p-4 border border-primary-200">
+            <div className="bg-gradient-to-br from-gold-50/50 via-white/70 to-primary-50/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300">
               <div className="flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
-                  <Gift className="w-5 h-5 text-primary-600" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-md">
+                    <Gift className="w-5 h-5 text-white" />
+                  </div>
                   <h3 className="text-base font-bold text-gray-900">¡Invita y Gana!</h3>
                 </div>
                 <p className="text-xs text-gray-700 mb-3">
                   Comparte tu código con amigos. Ambos recibirán un mejor tipo de cambio.
                 </p>
                 <div className="flex flex-col gap-2 mt-auto">
-                  <div className="bg-white rounded-lg px-3 py-2 border border-primary-300">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl px-4 py-3 border border-gold-200/50 shadow-sm">
                     <p className="text-xs text-gray-600 mb-0.5">Tu código de referido</p>
-                    <p className="text-xl font-bold text-primary-600 tracking-wider font-mono">{user.referral_code}</p>
+                    <p className="text-xl font-bold bg-gradient-to-r from-primary-600 to-gold-600 bg-clip-text text-transparent tracking-wider font-mono">{user.referral_code}</p>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={copyReferralCode}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm font-semibold shadow-sm hover:shadow-md"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all text-sm font-semibold shadow-md hover:shadow-lg"
                     >
                       {copiedCode ? (
                         <>
@@ -330,7 +332,7 @@ export default function DashboardPage() {
                         const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                         window.open(url, '_blank');
                       }}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-semibold shadow-sm hover:shadow-md"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all text-sm font-semibold shadow-md hover:shadow-lg"
                     >
                       <Share2 className="w-4 h-4" />
                       <span>Compartir</span>
@@ -345,54 +347,54 @@ export default function DashboardPage() {
         {/* Stats cards */}
         {stats && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Operaciones</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total_operations}</p>
+                  <p className="text-sm text-gray-600 font-medium">Total Operaciones</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total_operations}</p>
                 </div>
-                <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <DollarSign className="w-7 h-7 text-white" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total en Soles</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                  <p className="text-sm text-gray-600 font-medium">Total en Soles</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">
                     S/ {stats.total_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <ArrowUpRight className="w-6 h-6 text-green-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <ArrowUpRight className="w-7 h-7 text-white" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total en Dólares</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">
+                  <p className="text-sm text-gray-600 font-medium">Total en Dólares</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">
                     $ {stats.total_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <ArrowDownRight className="w-6 h-6 text-blue-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <ArrowDownRight className="w-7 h-7 text-white" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Pendientes</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{stats.pending_operations}</p>
+                  <p className="text-sm text-gray-600 font-medium">Pendientes</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.pending_operations}</p>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-yellow-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Clock className="w-7 h-7 text-white" />
                 </div>
               </div>
             </div>
@@ -400,15 +402,15 @@ export default function DashboardPage() {
         )}
 
         {/* Operations section */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden">
+          <div className="p-6 border-b border-gray-200/50">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h3 className="text-xl font-bold text-gray-900">Mis Operaciones</h3>
               <button
                 onClick={() => router.push('/dashboard/nueva-operacion')}
-                className="inline-flex items-center bg-primary text-secondary px-6 py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
+                className="inline-flex items-center bg-gradient-to-r from-primary to-primary-600 text-secondary px-6 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all shadow-md hover:shadow-lg group"
               >
-                <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition" />
+                <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                 Nueva Operación
               </button>
             </div>
@@ -474,17 +476,17 @@ export default function DashboardPage() {
                 return (
                 <div
                   key={operation.id}
-                  className="p-6 hover:bg-gray-50 transition cursor-pointer"
+                  className="p-6 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
                   onClick={handleOperationClick}
                 >
                   <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center gap-3 mb-3">
                         <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+                          className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${
                             operation.tipo === 'compra'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
+                              ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'
+                              : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
                           }`}
                         >
                           {operation.tipo === 'compra' ? '↓ COMPRA' : '↑ VENTA'}
@@ -493,19 +495,19 @@ export default function DashboardPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-4 mt-3">
                         <div>
-                          <p className="text-xs text-gray-500">Monto Soles</p>
-                          <p className="text-lg font-bold text-gray-900">
+                          <p className="text-xs text-gray-600 font-medium mb-1">Monto Soles</p>
+                          <p className="text-xl font-bold text-gray-900">
                             S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500">Monto Dólares</p>
-                          <p className="text-lg font-bold text-gray-900">
+                          <p className="text-xs text-gray-600 font-medium mb-1">Monto Dólares</p>
+                          <p className="text-xl font-bold text-gray-900">
                             $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </p>
                         </div>
                       </div>
-                      <div className="mt-2 text-xs text-gray-500">
+                      <div className="mt-3 text-xs text-gray-600 font-medium">
                         TC: S/ {(operation.tipo_cambio ?? 0).toFixed(3)} • {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
                       </div>
                     </div>
@@ -520,59 +522,59 @@ export default function DashboardPage() {
 
       {/* Operation Details Modal */}
       {isOperationModalOpen && selectedOperation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4" onClick={() => setIsOperationModalOpen(false)}>
-          <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setIsOperationModalOpen(false)}>
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-white/60 animate-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  selectedOperation.tipo === 'compra' ? 'bg-green-100' : 'bg-blue-100'
+            <div className="bg-gradient-to-r from-primary/5 via-white/80 to-gold/5 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${
+                  selectedOperation.tipo === 'compra' ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
                 }`}>
                   {selectedOperation.tipo === 'compra' ? (
-                    <ArrowDownRight className={`w-5 h-5 text-green-600`} />
+                    <ArrowDownRight className={`w-6 h-6 text-white`} />
                   ) : (
-                    <ArrowUpRight className={`w-5 h-5 text-blue-600`} />
+                    <ArrowUpRight className={`w-6 h-6 text-white`} />
                   )}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Detalles de Operación</h2>
-                  <p className="text-xs text-gray-500">
+                  <h2 className="text-xl font-bold text-gray-900">Detalles de Operación</h2>
+                  <p className="text-sm text-gray-600 font-medium">
                     {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOperationModalOpen(false)}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 transition"
+                className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100/80 transition-all hover:scale-105"
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-4 space-y-3 overflow-y-auto">
+            <div className="p-6 space-y-4 overflow-y-auto">
               {/* Status Badge & Main Info - Single Row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {/* Status */}
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-[10px] text-gray-500 mb-0.5">Estado</p>
-                  <div className="scale-90 origin-left">
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
+                  <p className="text-xs text-gray-600 mb-1 font-medium">Estado</p>
+                  <div className="scale-95 origin-left">
                     {getStatusBadge(selectedOperation.estado)}
                   </div>
                 </div>
 
                 {/* Tipo */}
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-[10px] text-gray-500 mb-0.5">Tipo</p>
-                  <p className="text-sm font-bold text-gray-900 capitalize">
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
+                  <p className="text-xs text-gray-600 mb-1 font-medium">Tipo</p>
+                  <p className="text-base font-bold text-gray-900 capitalize">
                     {selectedOperation.tipo}
                   </p>
                 </div>
 
                 {/* Fecha */}
-                <div className="bg-gray-50 rounded-lg p-2 col-span-2">
-                  <p className="text-[10px] text-gray-500 mb-0.5">Fecha de Creación</p>
-                  <p className="text-sm font-bold text-gray-900">
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 col-span-2 border border-gray-200/50 shadow-sm">
+                  <p className="text-xs text-gray-600 mb-1 font-medium">Fecha de Creación</p>
+                  <p className="text-base font-bold text-gray-900">
                     {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', {
                       dateStyle: 'short',
                       timeStyle: 'short'
@@ -582,27 +584,27 @@ export default function DashboardPage() {
               </div>
 
               {/* Montos y TC */}
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {/* Monto en Soles */}
-                <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                  <p className="text-[10px] text-green-700 mb-0.5">Soles</p>
-                  <p className="text-base font-bold text-green-900">
+                <div className="bg-gradient-to-br from-green-50 to-green-100/50 rounded-xl p-4 border border-green-200/50 shadow-sm">
+                  <p className="text-xs text-green-700 mb-1 font-semibold">Soles</p>
+                  <p className="text-lg font-bold text-green-900">
                     S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
 
                 {/* Monto en Dólares */}
-                <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-                  <p className="text-[10px] text-blue-700 mb-0.5">Dólares</p>
-                  <p className="text-base font-bold text-blue-900">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 border border-blue-200/50 shadow-sm">
+                  <p className="text-xs text-blue-700 mb-1 font-semibold">Dólares</p>
+                  <p className="text-lg font-bold text-blue-900">
                     $ {(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                   </p>
                 </div>
 
                 {/* Tipo de Cambio */}
-                <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
-                  <p className="text-[10px] text-purple-700 mb-0.5">T.C.</p>
-                  <p className="text-base font-bold text-purple-900">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-4 border border-purple-200/50 shadow-sm">
+                  <p className="text-xs text-purple-700 mb-1 font-semibold">T.C.</p>
+                  <p className="text-lg font-bold text-purple-900">
                     S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
                   </p>
                 </div>
@@ -610,24 +612,24 @@ export default function DashboardPage() {
 
               {/* Cuentas Bancarias */}
               {(selectedOperation.source_account || selectedOperation.destination_account) && (
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-[10px] text-gray-600 mb-1 font-semibold">Cuentas Bancarias</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
+                  <p className="text-sm text-gray-700 mb-3 font-semibold">Cuentas Bancarias</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {selectedOperation.source_account && (
-                      <div className="bg-white rounded p-2 border border-gray-200">
-                        <p className="text-[9px] text-gray-500">Origen</p>
-                        <p className="text-xs font-bold text-gray-900">{selectedOperation.source_account}</p>
+                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
+                        <p className="text-xs text-gray-500 font-medium mb-1">Origen</p>
+                        <p className="text-sm font-bold text-gray-900">{selectedOperation.source_account}</p>
                         {selectedOperation.source_bank && (
-                          <p className="text-[9px] text-gray-600">{selectedOperation.source_bank}</p>
+                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.source_bank}</p>
                         )}
                       </div>
                     )}
                     {selectedOperation.destination_account && (
-                      <div className="bg-white rounded p-2 border border-gray-200">
-                        <p className="text-[9px] text-gray-500">Destino</p>
-                        <p className="text-xs font-bold text-gray-900">{selectedOperation.destination_account}</p>
+                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
+                        <p className="text-xs text-gray-500 font-medium mb-1">Destino</p>
+                        <p className="text-sm font-bold text-gray-900">{selectedOperation.destination_account}</p>
                         {selectedOperation.destination_bank && (
-                          <p className="text-[9px] text-gray-600">{selectedOperation.destination_bank}</p>
+                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.destination_bank}</p>
                         )}
                       </div>
                     )}
@@ -637,19 +639,19 @@ export default function DashboardPage() {
 
               {/* Documentos - Solo mostrar si la operación está completada */}
               {selectedOperation.estado?.toLowerCase() === 'completado' && (
-              <div>
-                <p className="text-[10px] text-gray-600 mb-2 font-semibold">Documentos</p>
-                <div className="grid grid-cols-3 gap-2">
+              <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
+                <p className="text-sm text-gray-700 mb-3 font-semibold">Documentos</p>
+                <div className="grid grid-cols-3 gap-3">
                   {/* Comprobante del Cliente */}
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-                    <p className="text-[9px] text-gray-600 mb-1 font-medium">Comprobante Cliente</p>
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
+                    <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Cliente</p>
                     {selectedOperation.comprobante_cliente ? (
                       <>
-                        <div className="bg-white rounded overflow-hidden border border-gray-200 mb-1">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
                           <img
                             src={selectedOperation.comprobante_cliente}
                             alt="Comprobante Cliente"
-                            className="w-full h-24 object-cover cursor-pointer hover:opacity-80"
+                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.comprobante_cliente, '_blank')}
                           />
                         </div>
@@ -657,28 +659,28 @@ export default function DashboardPage() {
                           href={selectedOperation.comprobante_cliente}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[9px] text-primary-600 hover:text-primary-700 block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
                         >
                           Ver imagen
                         </a>
                       </>
                     ) : (
-                      <div className="bg-white rounded border border-dashed border-gray-300 h-24 flex items-center justify-center">
-                        <p className="text-[9px] text-gray-400">Sin documento</p>
+                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
+                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
                     )}
                   </div>
 
                   {/* Comprobante del Operador */}
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-                    <p className="text-[9px] text-gray-600 mb-1 font-medium">Comprobante Operador</p>
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
+                    <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
                     {selectedOperation.comprobante_operador ? (
                       <>
-                        <div className="bg-white rounded overflow-hidden border border-gray-200 mb-1">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
                           <img
                             src={selectedOperation.comprobante_operador}
                             alt="Comprobante Operador"
-                            className="w-full h-24 object-cover cursor-pointer hover:opacity-80"
+                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.comprobante_operador, '_blank')}
                           />
                         </div>
@@ -686,30 +688,30 @@ export default function DashboardPage() {
                           href={selectedOperation.comprobante_operador}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[9px] text-primary-600 hover:text-primary-700 block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
                         >
                           Ver imagen
                         </a>
                       </>
                     ) : (
-                      <div className="bg-white rounded border border-dashed border-gray-300 h-24 flex items-center justify-center">
-                        <p className="text-[9px] text-gray-400">Sin documento</p>
+                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
+                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
                     )}
                   </div>
 
                   {/* Boleta/Factura */}
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-                    <p className="text-[9px] text-gray-600 mb-1 font-medium">
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
+                    <p className="text-xs text-gray-600 mb-2 font-medium">
                       {user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
                     </p>
                     {selectedOperation.boleta_factura ? (
                       <>
-                        <div className="bg-white rounded overflow-hidden border border-gray-200 mb-1">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
                           <img
                             src={selectedOperation.boleta_factura}
                             alt={user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
-                            className="w-full h-24 object-cover cursor-pointer hover:opacity-80"
+                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.boleta_factura, '_blank')}
                           />
                         </div>
@@ -717,14 +719,14 @@ export default function DashboardPage() {
                           href={selectedOperation.boleta_factura}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[9px] text-primary-600 hover:text-primary-700 block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
                         >
                           Ver imagen
                         </a>
                       </>
                     ) : (
-                      <div className="bg-white rounded border border-dashed border-gray-300 h-24 flex items-center justify-center">
-                        <p className="text-[9px] text-gray-400">Sin documento</p>
+                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
+                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
                     )}
                   </div>
@@ -734,9 +736,9 @@ export default function DashboardPage() {
 
               {/* Notas adicionales - Ocultar mensajes del sistema */}
               {selectedOperation.notas && !selectedOperation.notas.startsWith('[SISTEMA]') && (
-                <div className="bg-yellow-50 rounded-lg p-2 border border-yellow-200">
-                  <p className="text-[10px] text-yellow-700 mb-0.5 font-semibold">Notas</p>
-                  <p className="text-xs text-yellow-900">{selectedOperation.notas}</p>
+                <div className="bg-gradient-to-br from-yellow-50 to-yellow-100/50 rounded-xl p-4 border border-yellow-200/50 shadow-sm">
+                  <p className="text-sm text-yellow-700 mb-2 font-semibold">Notas</p>
+                  <p className="text-sm text-yellow-900">{selectedOperation.notas}</p>
                 </div>
               )}
 
