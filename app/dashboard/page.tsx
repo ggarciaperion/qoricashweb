@@ -741,14 +741,6 @@ export default function DashboardPage() {
               </div>
               )}
 
-              {/* Notas adicionales - Ocultar mensajes del sistema */}
-              {selectedOperation.notas && !selectedOperation.notas.startsWith('[SISTEMA]') && (
-                <div className="bg-gradient-to-br from-yellow-50 to-yellow-100/50 rounded-xl p-4 border border-yellow-200/50 shadow-sm">
-                  <p className="text-sm text-yellow-700 mb-2 font-semibold">Notas</p>
-                  <p className="text-sm text-yellow-900">{selectedOperation.notas}</p>
-                </div>
-              )}
-
             </div>
           </div>
         </div>
