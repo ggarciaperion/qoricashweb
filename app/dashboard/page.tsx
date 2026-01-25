@@ -166,7 +166,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
@@ -523,12 +523,12 @@ export default function DashboardPage() {
       {/* Operation Details Modal */}
       {isOperationModalOpen && selectedOperation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setIsOperationModalOpen(false)}>
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col border border-white/60 animate-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-white/60 animate-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className="bg-gradient-to-r from-primary/5 via-white/80 to-gold/5 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shrink-0">
+            <div className="bg-gradient-to-r from-primary/10 via-white/90 to-gold/10 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md ${
-                  selectedOperation.tipo === 'compra' ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-lg ${
+                  selectedOperation.tipo === 'compra' ? 'bg-gradient-to-br from-green-500 to-green-700' : 'bg-gradient-to-br from-blue-500 to-blue-700'
                 }`}>
                   {selectedOperation.tipo === 'compra' ? (
                     <ArrowDownRight className={`w-6 h-6 text-white`} />
@@ -537,8 +537,8 @@ export default function DashboardPage() {
                   )}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Detalles de Operación</h2>
-                  <p className="text-sm text-gray-600 font-medium">
+                  <h2 className="text-lg font-bold text-gray-900">Detalles de Operación</h2>
+                  <p className="text-xs text-gray-600 font-medium">
                     {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
                   </p>
                 </div>
@@ -552,29 +552,21 @@ export default function DashboardPage() {
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-4 overflow-y-auto">
-              {/* Status Badge & Main Info - Single Row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="p-5 space-y-4 overflow-y-auto bg-gradient-to-b from-gray-50/50 to-white/50">
+              {/* Status Badge & Main Info */}
+              <div className="grid grid-cols-2 gap-3">
                 {/* Status */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1 font-medium">Estado</p>
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
+                  <p className="text-xs text-gray-600 mb-1.5 font-medium">Estado</p>
                   <div className="scale-95 origin-left">
                     {getStatusBadge(selectedOperation.estado)}
                   </div>
                 </div>
 
-                {/* Tipo */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1 font-medium">Tipo</p>
-                  <p className="text-base font-bold text-gray-900 capitalize">
-                    {selectedOperation.tipo}
-                  </p>
-                </div>
-
                 {/* Fecha */}
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-3 col-span-2 border border-gray-200/50 shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1 font-medium">Fecha de Creación</p>
-                  <p className="text-base font-bold text-gray-900">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
+                  <p className="text-xs text-gray-600 mb-1.5 font-medium">Fecha de Creación</p>
+                  <p className="text-sm font-bold text-gray-900">
                     {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', {
                       dateStyle: 'short',
                       timeStyle: 'short'
@@ -584,52 +576,63 @@ export default function DashboardPage() {
               </div>
 
               {/* Montos y TC */}
-              <div className="grid grid-cols-3 gap-3">
-                {/* Monto en Soles */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100/50 rounded-xl p-4 border border-green-200/50 shadow-sm">
-                  <p className="text-xs text-green-700 mb-1 font-semibold">Soles</p>
-                  <p className="text-lg font-bold text-green-900">
-                    S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Monto en Soles */}
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Soles</p>
+                    <div className="bg-gradient-to-br from-green-50 to-green-100/80 rounded-lg p-3 border border-green-200/50">
+                      <p className="text-lg font-bold text-green-900">
+                        S/ {(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  </div>
 
-                {/* Monto en Dólares */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-4 border border-blue-200/50 shadow-sm">
-                  <p className="text-xs text-blue-700 mb-1 font-semibold">Dólares</p>
-                  <p className="text-lg font-bold text-blue-900">
-                    $ {(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
+                  {/* Monto en Dólares */}
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Dólares</p>
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100/80 rounded-lg p-3 border border-blue-200/50">
+                      <p className="text-lg font-bold text-blue-900">
+                        $ {(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  </div>
 
-                {/* Tipo de Cambio */}
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl p-4 border border-purple-200/50 shadow-sm">
-                  <p className="text-xs text-purple-700 mb-1 font-semibold">T.C.</p>
-                  <p className="text-lg font-bold text-purple-900">
-                    S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
-                  </p>
+                  {/* Tipo de Cambio */}
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 mb-1.5 font-medium">T.C.</p>
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100/80 rounded-lg p-3 border border-purple-200/50">
+                      <p className="text-lg font-bold text-purple-900">
+                        S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Cuentas Bancarias */}
               {(selectedOperation.source_account || selectedOperation.destination_account) && (
-                <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
-                  <p className="text-sm text-gray-700 mb-3 font-semibold">Cuentas Bancarias</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
+                  <p className="text-sm text-gray-700 mb-3 font-semibold flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Cuentas Bancarias
+                  </p>
+                  <div className="grid grid-cols-1 gap-3">
                     {selectedOperation.source_account && (
-                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
-                        <p className="text-xs text-gray-500 font-medium mb-1">Origen</p>
+                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                        <p className="text-xs text-gray-500 font-medium mb-1">Cuenta Origen</p>
                         <p className="text-sm font-bold text-gray-900">{selectedOperation.source_account}</p>
                         {selectedOperation.source_bank && (
-                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.source_bank}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{selectedOperation.source_bank}</p>
                         )}
                       </div>
                     )}
                     {selectedOperation.destination_account && (
-                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
-                        <p className="text-xs text-gray-500 font-medium mb-1">Destino</p>
+                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                        <p className="text-xs text-gray-500 font-medium mb-1">Cuenta Destino</p>
                         <p className="text-sm font-bold text-gray-900">{selectedOperation.destination_account}</p>
                         {selectedOperation.destination_bank && (
-                          <p className="text-xs text-gray-600 mt-1">{selectedOperation.destination_bank}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{selectedOperation.destination_bank}</p>
                         )}
                       </div>
                     )}
@@ -639,19 +642,22 @@ export default function DashboardPage() {
 
               {/* Documentos - Solo mostrar si la operación está completada */}
               {selectedOperation.estado?.toLowerCase() === 'completado' && (
-              <div className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
-                <p className="text-sm text-gray-700 mb-3 font-semibold">Documentos</p>
-                <div className="grid grid-cols-3 gap-3">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
+                <p className="text-sm text-gray-700 mb-3 font-semibold flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Documentos
+                </p>
+                <div className="grid grid-cols-1 gap-3">
                   {/* Comprobante del Cliente */}
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Cliente</p>
-                    {selectedOperation.comprobante_cliente ? (
-                      <>
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
+                  {selectedOperation.comprobante_cliente && (
+                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                      <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Cliente</p>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
                           <img
                             src={selectedOperation.comprobante_cliente}
                             alt="Comprobante Cliente"
-                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
+                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.comprobante_cliente, '_blank')}
                           />
                         </div>
@@ -659,28 +665,25 @@ export default function DashboardPage() {
                           href={selectedOperation.comprobante_cliente}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
                         >
-                          Ver imagen
+                          <ImageIcon className="w-3 h-3" />
+                          Ver documento completo
                         </a>
-                      </>
-                    ) : (
-                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
-                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* Comprobante del Operador */}
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
-                    {selectedOperation.comprobante_operador ? (
-                      <>
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
+                  {selectedOperation.comprobante_operador && (
+                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                      <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
                           <img
                             src={selectedOperation.comprobante_operador}
                             alt="Comprobante Operador"
-                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
+                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.comprobante_operador, '_blank')}
                           />
                         </div>
@@ -688,30 +691,27 @@ export default function DashboardPage() {
                           href={selectedOperation.comprobante_operador}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
                         >
-                          Ver imagen
+                          <ImageIcon className="w-3 h-3" />
+                          Ver documento completo
                         </a>
-                      </>
-                    ) : (
-                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
-                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {/* Boleta/Factura */}
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50 shadow-sm">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">
-                      {user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
-                    </p>
-                    {selectedOperation.boleta_factura ? (
-                      <>
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 mb-2 shadow-sm hover:shadow-md transition-shadow">
+                  {selectedOperation.boleta_factura && (
+                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                      <p className="text-xs text-gray-600 mb-2 font-medium">
+                        {user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
                           <img
                             src={selectedOperation.boleta_factura}
                             alt={user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
-                            className="w-full h-28 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
+                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
                             onClick={() => window.open(selectedOperation.boleta_factura, '_blank')}
                           />
                         </div>
@@ -719,17 +719,14 @@ export default function DashboardPage() {
                           href={selectedOperation.boleta_factura}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium block text-center"
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
                         >
-                          Ver imagen
+                          <ImageIcon className="w-3 h-3" />
+                          Ver documento completo
                         </a>
-                      </>
-                    ) : (
-                      <div className="bg-white rounded-lg border border-dashed border-gray-300 h-28 flex items-center justify-center">
-                        <p className="text-xs text-gray-400">Sin documento</p>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
               )}
