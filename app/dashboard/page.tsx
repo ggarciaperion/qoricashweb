@@ -296,9 +296,7 @@ export default function DashboardPage() {
             <div className="bg-gradient-to-br from-gold-50/40 via-white/50 to-primary-50/40 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300">
               <div className="flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-md">
-                    <Gift className="w-5 h-5 text-white" />
-                  </div>
+                  <Gift className="w-6 h-6 text-gold-600" />
                   <h3 className="text-base font-bold text-gray-900">¡Invita y Gana!</h3>
                 </div>
                 <p className="text-xs text-gray-700 mb-3">
