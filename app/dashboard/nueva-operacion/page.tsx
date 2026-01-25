@@ -761,13 +761,18 @@ export default function NuevaOperacionPage() {
     // Si no se pudo obtener el banco desde sourceAccountInfo, intentar desde las cuentas bancarias
     if (!clientBank && bankAccounts && bankAccounts.length > 0) {
       // Determinar la moneda de origen según el tipo de operación
-      const sourceCurrency = createdOperation.operation_type === 'Compra' ? '$' : 'S/';
+      const operationType = (createdOperation.operation_type || createdOperation.tipo || '').toLowerCase();
+      const sourceCurrency = operationType === 'compra' ? '$' : 'S/';
+
+      console.log('[getQoricashAccount] Tipo operación:', operationType, 'Moneda origen:', sourceCurrency);
 
       // Buscar una cuenta bancaria del cliente que coincida con la moneda de origen
       const originAccount = bankAccounts.find(acc => acc.currency === sourceCurrency);
       if (originAccount) {
         clientBank = originAccount.bank_name;
         console.log('[getQoricashAccount] Banco obtenido desde cuentas bancarias del usuario:', clientBank);
+      } else {
+        console.log('[getQoricashAccount] No se encontró cuenta bancaria con moneda:', sourceCurrency, 'Cuentas disponibles:', bankAccounts);
       }
     }
 
@@ -776,9 +781,11 @@ export default function NuevaOperacionPage() {
       return null;
     }
 
-    const currency = createdOperation.operation_type === 'Compra' ? '$' : 'S/';
+    // Determinar moneda de destino (la cuenta QoriCash a usar)
+    const operationType = (createdOperation.operation_type || createdOperation.tipo || '').toLowerCase();
+    const currency = operationType === 'compra' ? '$' : 'S/';
 
-    console.log('[getQoricashAccount] Banco cliente:', clientBank, 'Moneda:', currency);
+    console.log('[getQoricashAccount] Banco cliente:', clientBank, 'Moneda:', currency, 'Tipo operación:', operationType);
 
     // Cuentas QoriCash simuladas para pruebas
     const qoricashAccounts: any = {
