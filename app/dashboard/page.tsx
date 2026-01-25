@@ -628,7 +628,8 @@ export default function DashboardPage() {
                 </div>
               )}
 
-              {/* Documentos - Grid de 3 columnas */}
+              {/* Documentos - Solo mostrar si la operación está completada */}
+              {selectedOperation.estado?.toLowerCase() === 'completado' && (
               <div>
                 <p className="text-[10px] text-gray-600 mb-2 font-semibold">Documentos</p>
                 <div className="grid grid-cols-3 gap-2">
@@ -722,6 +723,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
+              )}
 
               {/* Notas adicionales - Ocultar mensajes del sistema */}
               {selectedOperation.notas && !selectedOperation.notas.startsWith('[SISTEMA]') && (
