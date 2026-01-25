@@ -634,8 +634,10 @@ export default function NuevaOperacionPage() {
   };
 
   // Handle operation cancellation
-  const handleCancelOperation = async () => {
-    if (!cancelReason.trim()) {
+  const handleCancelOperation = async (reason?: string) => {
+    const motivo = reason || cancelReason;
+
+    if (!motivo.trim()) {
       setError('Por favor, indica el motivo de la cancelación');
       return;
     }
@@ -649,7 +651,7 @@ export default function NuevaOperacionPage() {
     setError(null);
 
     try {
-      const response = await operationsApi.cancelOperation(createdOperation.id, cancelReason);
+      const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
 
       if (response.success) {
         // Redirigir al dashboard
