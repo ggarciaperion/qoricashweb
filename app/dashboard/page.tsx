@@ -476,40 +476,52 @@ export default function DashboardPage() {
                 return (
                 <div
                   key={operation.id}
-                  className="p-6 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
+                  className="px-6 py-4 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
                   onClick={handleOperationClick}
                 >
-                  <div className="flex flex-col sm:flex-row justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span
-                          className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${
-                            operation.tipo === 'compra'
-                              ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'
-                              : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
-                          }`}
-                        >
-                          {operation.tipo === 'compra' ? '↓ COMPRA' : '↑ VENTA'}
-                        </span>
-                        {getStatusBadge(operation.estado)}
+                  <div className="flex items-center justify-between gap-4">
+                    {/* Badges and Type */}
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm ${
+                          operation.tipo === 'compra'
+                            ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'
+                            : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
+                        }`}
+                      >
+                        {operation.tipo === 'compra' ? '↓ COMPRA' : '↑ VENTA'}
+                      </span>
+                      {getStatusBadge(operation.estado)}
+                    </div>
+
+                    {/* Amounts */}
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">Soles</p>
+                        <p className="text-base font-bold text-gray-900">
+                          S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                        </p>
                       </div>
-                      <div className="grid grid-cols-2 gap-4 mt-3">
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium mb-1">Monto Soles</p>
-                          <p className="text-xl font-bold text-gray-900">
-                            S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium mb-1">Monto Dólares</p>
-                          <p className="text-xl font-bold text-gray-900">
-                            $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </p>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">Dólares</p>
+                        <p className="text-base font-bold text-gray-900">
+                          $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </p>
                       </div>
-                      <div className="mt-3 text-xs text-gray-600 font-medium">
-                        TC: S/ {(operation.tipo_cambio ?? 0).toFixed(3)} • {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
+                      <div className="text-right min-w-[100px]">
+                        <p className="text-xs text-gray-500">T.C.</p>
+                        <p className="text-base font-bold text-gray-900">
+                          S/ {(operation.tipo_cambio ?? 0).toFixed(3)}
+                        </p>
                       </div>
+                    </div>
+
+                    {/* Date */}
+                    <div className="text-right min-w-[90px]">
+                      <p className="text-xs text-gray-500">Fecha</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
+                      </p>
                     </div>
                   </div>
                 </div>
