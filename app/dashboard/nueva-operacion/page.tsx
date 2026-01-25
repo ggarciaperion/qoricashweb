@@ -1880,6 +1880,11 @@ export default function NuevaOperacionPage() {
       {isCancelModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in duration-200">
+            {/* Logo */}
+            <div className="flex justify-center mb-4">
+              <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
+            </div>
+
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-gray-900">Cancelar Operación</h3>
