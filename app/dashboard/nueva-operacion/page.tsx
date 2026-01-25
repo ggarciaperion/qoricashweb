@@ -174,32 +174,49 @@ export default function NuevaOperacionPage() {
       console.log('[Nueva Operación] Operación cargada:', operation);
 
       // Calculate time remaining (15 minutes from creation)
-      const createdAt = new Date(operation.fecha_creacion);
+      // IMPORTANTE: El backend devuelve fechas en formato ISO pero sin timezone
+      // Necesitamos parsearla correctamente
+      let createdAt: Date;
+
+      if (operation.fecha_creacion) {
+        // Si la fecha viene sin 'Z' al final, añadirla para que se interprete como UTC
+        const dateStr = operation.fecha_creacion.endsWith('Z')
+          ? operation.fecha_creacion
+          : operation.fecha_creacion + 'Z';
+        createdAt = new Date(dateStr);
+      } else if (operation.created_at) {
+        const dateStr = operation.created_at.endsWith('Z')
+          ? operation.created_at
+          : operation.created_at + 'Z';
+        createdAt = new Date(dateStr);
+      } else {
+        console.error('[Nueva Operación] No se encontró fecha de creación en la operación');
+        createdAt = new Date();
+      }
+
       const now = new Date();
-
-      console.log('[Nueva Operación] Debug tiempos:', {
-        fecha_creacion_raw: operation.fecha_creacion,
-        createdAt_parsed: createdAt.toISOString(),
-        now: now.toISOString(),
-        createdAt_timestamp: createdAt.getTime(),
-        now_timestamp: now.getTime(),
-        difference_ms: now.getTime() - createdAt.getTime()
-      });
-
-      const elapsedSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+      const elapsedMs = now.getTime() - createdAt.getTime();
+      const elapsedSeconds = Math.floor(elapsedMs / 1000);
       const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
 
       console.log('[Nueva Operación] Cálculo tiempo:', {
+        fecha_raw: operation.fecha_creacion || operation.created_at,
+        createdAt: createdAt.toISOString(),
+        now: now.toISOString(),
         elapsedSeconds,
         remaining,
-        remainingMinutes: Math.floor(remaining / 60)
+        remainingMinutes: Math.floor(remaining / 60),
+        remainingSeconds: remaining % 60
       });
 
       // Set operation data and jump to step 2
       setCreatedOperation(operation);
       setTimeRemaining(remaining);
       setCurrentStep(2);
-      setTipo(operation.tipo === 'compra' ? 'Compra' : 'Venta');
+
+      // Normalizar tipo de operación
+      const operationType = (operation.tipo || operation.operation_type || '').toLowerCase();
+      setTipo(operationType === 'compra' ? 'Compra' : 'Venta');
     } catch (error) {
       console.error('[Nueva Operación] Error cargando operación:', error);
       setError('Error al cargar la operación');
@@ -1133,21 +1150,51 @@ export default function NuevaOperacionPage() {
 
                   {/* Transfer Instructions */}
                   {(() => {
+                    // Determinar moneda y cuentas según el tipo de operación
+                    const operationType = (createdOperation.tipo || createdOperation.operation_type || '').toLowerCase();
+                    const sourceCurrency = operationType === 'compra' ? '$' : 'S/';
+                    const destCurrency = operationType === 'compra' ? 'S/' : '$';
+
+                    // Obtener cuenta de origen del cliente
+                    const sourceAccount = createdOperation.source_account || '';
+                    const destAccount = createdOperation.destination_account || '';
+
+                    // Obtener cuenta QoriCash
                     const qoricashAccount = getQoricashAccount();
-                    if (!qoricashAccount) {
-                      return (
-                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                          <p className="text-sm text-red-800">No se pudo determinar la cuenta de destino. Contacta a soporte.</p>
-                        </div>
-                      );
-                    }
+
+                    console.log('[Transfer Instructions] Debug:', {
+                      operationType,
+                      sourceCurrency,
+                      destCurrency,
+                      sourceAccount,
+                      destAccount,
+                      qoricashAccount,
+                      bankAccounts
+                    });
 
                     return (
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                        <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                          <Building2 className="w-5 h-5 mr-2 text-secondary" />
-                          Transfiere a esta cuenta de QoriCash
-                        </h3>
+                      <div className="space-y-4">
+                        {/* Cuenta de Cargo del Cliente */}
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                          <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                            <Send className="w-5 h-5 mr-2 text-gray-600" />
+                            Tu cuenta de cargo ({sourceCurrency})
+                          </h3>
+                          <div className="bg-white rounded-lg p-3 border border-gray-200">
+                            <p className="text-xs text-gray-600 mb-1">Número de Cuenta</p>
+                            <p className="text-base font-bold text-gray-900">
+                              {sourceAccount || 'No especificada'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Cuenta de Destino QoriCash */}
+                        {qoricashAccount ? (
+                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                              <Building2 className="w-5 h-5 mr-2 text-secondary" />
+                              Transfiere a esta cuenta de QoriCash ({sourceCurrency})
+                            </h3>
                         <div className="space-y-3">
                           <div className="bg-white rounded-lg p-3 border border-blue-200">
                             <div className="flex justify-between items-start mb-2">
@@ -1199,21 +1246,40 @@ export default function NuevaOperacionPage() {
                               <span>
                                 <strong>Importante:</strong> Transfiere exactamente{' '}
                                 <strong>
-                                  {tipo === 'Compra'
+                                  {operationType === 'compra'
                                     ? `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
                                     : `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
                                   }
                                 </strong>
-                                {createdOperation.source_account_info && (
-                                  <>
-                                    {' '}desde tu cuenta{' '}
-                                    <strong>
-                                      {createdOperation.source_account_info.banco} {' '}
-                                      {createdOperation.source_account}
-                                    </strong>
-                                  </>
-                                )}
                               </span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-sm text-red-800">No se pudo determinar la cuenta QoriCash. Contacta a soporte.</p>
+                      </div>
+                    )}
+
+                        {/* Cuenta donde recibirás el pago */}
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                          <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                            <Wallet className="w-5 h-5 mr-2 text-green-600" />
+                            Tu cuenta donde recibirás el pago ({destCurrency})
+                          </h3>
+                          <div className="bg-white rounded-lg p-3 border border-green-200">
+                            <p className="text-xs text-gray-600 mb-1">Número de Cuenta</p>
+                            <p className="text-base font-bold text-gray-900">
+                              {destAccount || 'No especificada'}
+                            </p>
+                            <p className="text-xs text-green-700 mt-2">
+                              Recibirás <strong>
+                                {operationType === 'compra'
+                                  ? `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
+                                  : `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
+                                }
+                              </strong> en esta cuenta
                             </p>
                           </div>
                         </div>
