@@ -238,7 +238,14 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gold-100/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gradient-to-br from-primary-50/20 to-gold-50/20 rounded-full blur-3xl"></div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-0">
         {/* Welcome section */}
         <div className="mb-8">
           <h2 className="text-3xl font-display font-bold text-gray-900">
@@ -253,7 +260,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
           {/* Exchange rates card */}
           {currentRates && (
-            <div className="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+            <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-base font-bold text-gray-900">Tipo de Cambio Actual</h3>
                 <div className={`flex items-center text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
