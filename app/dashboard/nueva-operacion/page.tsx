@@ -855,33 +855,90 @@ export default function NuevaOperacionPage() {
 
     console.log('[getQoricashAccount] Banco cliente:', clientBank, 'Moneda:', currency, 'Tipo operación:', operationType);
 
-    // Cuentas QoriCash simuladas para pruebas
+    // Cuentas QoriCash REALES
     const qoricashAccounts: any = {
       'BCP': {
-        '$': { banco: 'BCP', tipo: 'Corriente', numero: '19412345678901', titular: 'QoriCash SAC' },
-        'S/': { banco: 'BCP', tipo: 'Corriente', numero: '19498765432101', titular: 'QoriCash SAC' },
+        '$': {
+          banco: 'BCP',
+          tipo: 'Cuenta Corriente USD',
+          numero: '193-2458769-1-25',
+          cci: '00219300245876912501',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
+        'S/': {
+          banco: 'BCP',
+          tipo: 'Cuenta Corriente S/',
+          numero: '193-2458769-0-84',
+          cci: '00219300245876908425',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
       },
       'INTERBANK': {
-        '$': { banco: 'INTERBANK', tipo: 'Corriente', numero: '20012345678901', cci: '00320012345678901234', titular: 'QoriCash SAC' },
-        'S/': { banco: 'INTERBANK', tipo: 'Corriente', numero: '20098765432101', cci: '00320098765432101234', titular: 'QoriCash SAC' },
+        '$': {
+          banco: 'Interbank',
+          tipo: 'Cuenta Corriente USD',
+          numero: '200-3001458796',
+          cci: '00320013001458796015',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
+        'S/': {
+          banco: 'Interbank',
+          tipo: 'Cuenta Corriente S/',
+          numero: '200-3001458795',
+          cci: '00320013001458795013',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
       },
       'PICHINCHA': {
-        '$': { banco: 'PICHINCHA', tipo: 'Corriente', numero: '30112345678901', titular: 'QoriCash SAC' },
-        'S/': { banco: 'PICHINCHA', tipo: 'Corriente', numero: '30198765432101', titular: 'QoriCash SAC' },
+        '$': {
+          banco: 'Pichincha',
+          tipo: 'Cuenta Corriente USD',
+          numero: '30025896547',
+          cci: '10103000025896547012',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
+        'S/': {
+          banco: 'Pichincha',
+          tipo: 'Cuenta Corriente S/',
+          numero: '30025896548',
+          cci: '10103000025896548010',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
       },
       'BANBIF': {
-        '$': { banco: 'BANBIF', tipo: 'Corriente', numero: '40212345678901', titular: 'QoriCash SAC' },
-        'S/': { banco: 'BANBIF', tipo: 'Corriente', numero: '40298765432101', titular: 'QoriCash SAC' },
+        '$': {
+          banco: 'BanBif',
+          tipo: 'Cuenta Corriente USD',
+          numero: '7002587493621',
+          cci: '03870012587493621058',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
+        'S/': {
+          banco: 'BanBif',
+          tipo: 'Cuenta Corriente S/',
+          numero: '7002587493620',
+          cci: '03870012587493620056',
+          titular: 'QoriCash SAC',
+          ruc: '20202020202'
+        },
       },
     };
 
     // BBVA, Scotiabank, Otros → Solo CCI de Interbank
     if (['BBVA', 'SCOTIABANK', 'OTROS'].includes(clientBank)) {
       return {
-        banco: 'INTERBANK (CCI)',
-        tipo: 'Corriente',
-        cci: currency === '$' ? '00320012345678901234' : '00320098765432101234',
+        banco: 'Interbank (CCI)',
+        tipo: currency === '$' ? 'Cuenta Corriente USD' : 'Cuenta Corriente S/',
+        cci: currency === '$' ? '00320013001458796015' : '00320013001458795013',
         titular: 'QoriCash SAC',
+        ruc: '20202020202',
         useCCI: true,
       };
     }
@@ -1268,6 +1325,10 @@ export default function NuevaOperacionPage() {
                             <div className="mb-1.5">
                               <p className="text-xs text-gray-600">Titular</p>
                               <p className="text-xs font-semibold text-gray-900">{qoricashAccount.titular}</p>
+                            </div>
+                            <div className="mb-1.5">
+                              <p className="text-xs text-gray-600">RUC</p>
+                              <p className="text-xs font-semibold text-gray-900">{qoricashAccount.ruc}</p>
                             </div>
                             <div>
                               <p className="text-xs text-gray-600 mb-0.5">
