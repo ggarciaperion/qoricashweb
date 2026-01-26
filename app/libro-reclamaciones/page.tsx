@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { uploadToCloudinary } from '@/lib/cloudinary';
+import { Camera, X } from 'lucide-react';
 
 export default function LibroReclamaciones() {
   const [formData, setFormData] = useState({
@@ -20,6 +22,9 @@ export default function LibroReclamaciones() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [evidenceImage, setEvidenceImage] = useState<File | null>(null);
+  const [evidenceImagePreview, setEvidenceImagePreview] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -29,11 +34,64 @@ export default function LibroReclamaciones() {
     }));
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validar tipo de archivo
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido');
+        return;
+      }
+
+      // Validar tamaño (máx 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen no debe superar los 5MB');
+        return;
+      }
+
+      setEvidenceImage(file);
+
+      // Crear preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEvidenceImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setEvidenceImage(null);
+    setEvidenceImagePreview(null);
+  };
+
+  const handleNewComplaint = () => {
+    setShowConfirmation(false);
+    setEvidenceImage(null);
+    setEvidenceImagePreview(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      let evidenceImageUrl = '';
+
+      // Si hay imagen, subirla a Cloudinary primero
+      if (evidenceImage) {
+        setIsUploadingImage(true);
+        try {
+          evidenceImageUrl = await uploadToCloudinary(evidenceImage, 'complaints/evidence');
+          console.log('Imagen subida a Cloudinary:', evidenceImageUrl);
+        } catch (uploadError) {
+          console.error('Error al subir imagen:', uploadError);
+          alert('Error al subir la imagen de evidencia. El reclamo se enviará sin imagen.');
+        } finally {
+          setIsUploadingImage(false);
+        }
+      }
+
       // Preparar datos para el API
       const complaintData = {
         tipoDocumento: formData.tipoDocumento,
@@ -46,7 +104,8 @@ export default function LibroReclamaciones() {
         telefono: formData.telefono,
         direccion: formData.direccion,
         tipoSolicitud: formData.tipoSolicitud,
-        detalle: formData.detalle
+        detalle: formData.detalle,
+        evidenceImageUrl: evidenceImageUrl || undefined
       };
 
       // Hacer POST al API
@@ -79,6 +138,8 @@ export default function LibroReclamaciones() {
           tipoSolicitud: 'Reclamo',
           detalle: ''
         });
+        setEvidenceImage(null);
+        setEvidenceImagePreview(null);
       } else {
         // Mostrar mensaje de error
         alert(`Error: ${result.message || 'No se pudo enviar el reclamo. Por favor intenta nuevamente.'}`);
@@ -145,33 +206,69 @@ export default function LibroReclamaciones() {
         </div>
 
         {/* Confirmation Message */}
-        {showConfirmation && (
-          <div className="mb-8 bg-green-50 border-l-4 border-green-500 p-6 rounded-lg shadow-md">
-            <div className="flex items-start">
-              <svg className="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <h3 className="text-lg font-semibold text-green-900 mb-2">
-                  Reclamo enviado correctamente
-                </h3>
-                <p className="text-green-800">
-                  Tu {formData.tipoSolicitud.toLowerCase()} ha sido registrado y enviado a nuestro equipo.
-                  Recibirás una respuesta en tu correo electrónico dentro de las próximas 24-48 horas hábiles.
+        {showConfirmation ? (
+          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+            <div className="text-center max-w-2xl mx-auto">
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                ¡Reclamo enviado correctamente!
+              </h2>
+
+              <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-6">
+                <p className="text-lg text-green-900 mb-3">
+                  Tu reclamo ha sido registrado exitosamente y enviado a nuestro equipo.
                 </p>
+                <p className="text-green-800">
+                  Recibirás una respuesta en tu correo electrónico <strong>{formData.email}</strong> dentro de las próximas <strong>24-48 horas hábiles</strong>.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-xl p-6 mb-8">
+                <p className="text-sm text-gray-700 mb-4">
+                  <strong>¿Qué sigue?</strong>
+                </p>
+                <ul className="text-left text-sm text-gray-600 space-y-2">
+                  <li className="flex items-start">
+                    <span className="text-green-600 mr-2">✓</span>
+                    <span>Nuestro equipo revisará tu solicitud en el menor tiempo posible</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-600 mr-2">✓</span>
+                    <span>Recibirás un email de confirmación con el número de tu reclamo</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-600 mr-2">✓</span>
+                    <span>Te contactaremos para informarte sobre la resolución</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  onClick={() => setShowConfirmation(false)}
-                  className="mt-4 text-green-700 hover:text-green-900 font-medium underline"
+                  onClick={handleNewComplaint}
+                  className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-xl hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg"
                 >
-                  Cerrar mensaje
+                  Ingresar nuevo reclamo
                 </button>
+                <Link
+                  href="/"
+                  className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all"
+                >
+                  Volver al inicio
+                </Link>
               </div>
             </div>
           </div>
-        )}
-
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+        ) : (
+          /* Form Card */
+          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Tipo de Documento Section */}
             <div>
@@ -428,23 +525,76 @@ export default function LibroReclamaciones() {
               </div>
             </div>
 
+            {/* Image Upload Section */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">5</span>
+                Adjuntar Evidencia (Opcional)
+              </h2>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                <p className="text-sm text-blue-800">
+                  Si tienes capturas de pantalla o fotografías que respalden tu reclamo, puedes adjuntarlas aquí.
+                  Formatos permitidos: JPG, PNG. Tamaño máximo: 5MB.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center">
+                {!evidenceImagePreview ? (
+                  <label className="w-full cursor-pointer">
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-green-500 hover:bg-green-50 transition-all text-center">
+                      <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-700 font-medium mb-1">Haz clic para seleccionar una imagen</p>
+                      <p className="text-sm text-gray-500">o arrastra y suelta aquí</p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                    />
+                  </label>
+                ) : (
+                  <div className="w-full">
+                    <div className="relative rounded-xl overflow-hidden border-2 border-green-500">
+                      <img
+                        src={evidenceImagePreview}
+                        alt="Vista previa"
+                        className="w-full h-64 object-contain bg-gray-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all shadow-lg"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <p className="text-sm text-green-700 mt-2 text-center font-medium">
+                      ✓ Imagen seleccionada correctamente
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Submit Button */}
             <div className="flex justify-center pt-6">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isUploadingImage}
                 className="bg-gradient-to-r from-green-500 to-green-600 text-white px-12 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                {isSubmitting ? (
+                {isSubmitting || isUploadingImage ? (
                   <span className="flex items-center">
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Enviando...
+                    {isUploadingImage ? 'Subiendo imagen...' : 'Enviando...'}
                   </span>
                 ) : (
-                  'Enviar reclamo'
+                  'ENVIAR RECLAMO'
                 )}
               </button>
             </div>
@@ -459,6 +609,7 @@ export default function LibroReclamaciones() {
             </p>
           </form>
         </div>
+        )}
 
         {/* Additional Info */}
         <div className="mt-12 grid md:grid-cols-2 gap-6">
