@@ -1305,113 +1305,79 @@ export default function NuevaOperacionPage() {
                     });
 
                     return (
-                      <div className="relative bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-green-50/50 rounded-2xl p-4">
-                        <div className="flex items-center justify-between gap-3 relative">
-                          {/* Línea punteada de conexión */}
-                          <div className="absolute top-8 left-0 right-0 h-0.5 border-t-2 border-dashed border-blue-300/60 z-0" />
+                      <div className="bg-white rounded-lg border border-gray-200 p-4">
+                        {/* Header con título de la operación */}
+                        <div className="mb-3 pb-2 border-b border-gray-200">
+                          <h3 className="text-sm font-bold text-gray-800">Instrucciones de Transferencia</h3>
+                          <p className="text-xs text-gray-600 mt-0.5">Sigue estos pasos para completar tu operación</p>
+                        </div>
 
-                          {/* Paso 1: Tu cuenta */}
-                          <div className="flex-1 relative z-10">
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-blue-200/50 hover:shadow-xl transition-all duration-300">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-full w-7 h-7 flex items-center justify-center shadow-md">
-                                  <span className="text-sm font-bold text-white">1</span>
-                                </div>
-                                <h3 className="text-sm font-bold text-gray-800">Tu Cuenta</h3>
-                              </div>
-                              <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-lg p-2 border border-blue-200/50">
-                                <p className="text-xs text-gray-700 font-semibold truncate">{sourceAccount}</p>
-                                <p className="text-xs text-blue-600 font-bold mt-1">{sourceCurrency}</p>
+                        {/* Flujo compacto */}
+                        <div className="space-y-2.5">
+                          {/* Paso 1: Desde */}
+                          <div className="flex items-start gap-2">
+                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
+                              <span className="text-xs font-bold text-white">1</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold text-gray-700 mb-0.5">Desde tu cuenta</p>
+                              <div className="bg-blue-50 rounded px-2 py-1 border border-blue-200">
+                                <p className="text-xs text-gray-800 font-medium truncate">{sourceAccount}</p>
+                                <p className="text-xs text-blue-600 font-semibold">{sourceCurrency}</p>
                               </div>
                             </div>
                           </div>
 
-                          {/* Flecha animada 1 */}
-                          <div className="relative z-10 flex-shrink-0">
-                            <div className="bg-white rounded-full p-1.5 shadow-md border border-blue-200">
-                              <ArrowRight className="w-5 h-5 text-blue-600 animate-pulse" />
-                            </div>
-                          </div>
-
-                          {/* Paso 2: Cuenta QoriCash */}
+                          {/* Paso 2: Transfiere a QoriCash */}
                           {qoricashAccount && (
-                            <>
-                              <div className="flex-1 relative z-10">
-                                <div className="bg-gradient-to-br from-white via-blue-50/30 to-white backdrop-blur-sm rounded-xl p-3 shadow-xl border-2 border-blue-400/70 hover:shadow-2xl transition-all duration-300">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <div className="bg-gradient-to-br from-secondary to-blue-700 rounded-full w-7 h-7 flex items-center justify-center shadow-md">
-                                      <span className="text-sm font-bold text-white">2</span>
-                                    </div>
-                                    <h3 className="text-sm font-bold bg-gradient-to-r from-secondary to-blue-700 bg-clip-text text-transparent">
-                                      Transfiere a QoriCash
-                                    </h3>
+                            <div className="flex items-start gap-2">
+                              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary flex items-center justify-center">
+                                <span className="text-xs font-bold text-white">2</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold text-secondary mb-1">Transfiere a QoriCash</p>
+                                <div className="bg-blue-50 rounded p-2 border border-blue-300 space-y-1">
+                                  <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
+                                    <div><span className="text-gray-600">Banco:</span> <strong>{qoricashAccount.banco}</strong></div>
+                                    <div><span className="text-gray-600">Tipo:</span> <strong>{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</strong></div>
+                                    <div><span className="text-gray-600">Titular:</span> <strong>{qoricashAccount.titular}</strong></div>
+                                    <div><span className="text-gray-600">RUC:</span> <strong>{qoricashAccount.ruc}</strong></div>
                                   </div>
-                                  <div className="space-y-1.5">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="bg-white/70 rounded-lg p-1.5 border border-blue-200/50">
-                                        <span className="text-gray-500 text-[10px] block">Banco</span>
-                                        <strong className="text-gray-900">{qoricashAccount.banco}</strong>
-                                      </div>
-                                      <div className="bg-white/70 rounded-lg p-1.5 border border-blue-200/50">
-                                        <span className="text-gray-500 text-[10px] block">Tipo</span>
-                                        <strong className="text-gray-900">{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</strong>
-                                      </div>
+                                  <div className="flex items-center gap-1 bg-white rounded p-1.5 border border-blue-300 mt-1">
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-[10px] text-gray-600 uppercase">{qoricashAccount.useCCI ? 'CCI' : 'N° Cuenta'}</p>
+                                      <p className="text-xs font-bold text-secondary truncate">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</p>
                                     </div>
-                                    <div className="bg-white/70 rounded-lg p-1.5 border border-blue-200/50">
-                                      <span className="text-gray-500 text-[10px] block">Titular</span>
-                                      <strong className="text-gray-900 text-xs">{qoricashAccount.titular}</strong>
-                                    </div>
-                                    <div className="bg-white/70 rounded-lg p-1.5 border border-blue-200/50">
-                                      <span className="text-gray-500 text-[10px] block">RUC</span>
-                                      <strong className="text-gray-900 text-xs">{qoricashAccount.ruc}</strong>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg p-2 border border-blue-300/70 shadow-sm">
-                                      <div className="flex-1">
-                                        <p className="text-[10px] text-blue-700 font-semibold">{qoricashAccount.useCCI ? 'CCI' : 'N° Cuenta'}</p>
-                                        <p className="text-sm font-bold text-secondary tracking-wide">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</p>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
-                                        className="p-2 bg-gradient-to-br from-secondary to-blue-700 text-white rounded-lg hover:shadow-lg transition-all duration-200 hover:scale-105"
-                                      >
-                                        {copiedField === 'account' ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                      </button>
-                                    </div>
-                                    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300/70 rounded-lg p-2 flex items-center gap-2 shadow-sm">
-                                      <div className="bg-amber-400 rounded-full p-1">
-                                        <AlertCircle className="w-3.5 h-3.5 text-white" />
-                                      </div>
-                                      <div className="flex-1">
-                                        <span className="text-[10px] text-amber-700 font-medium block">Monto exacto</span>
-                                        <span className="text-amber-900 font-bold text-sm">{operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</span>
-                                      </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
+                                      className="p-1.5 bg-secondary text-white rounded hover:bg-blue-700"
+                                    >
+                                      {copiedField === 'account' ? <CheckCircle className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                                    </button>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 bg-amber-50 rounded p-1.5 border border-amber-300 mt-1">
+                                    <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                                    <div className="flex-1">
+                                      <span className="text-[10px] text-amber-700">Monto exacto:</span>
+                                      <strong className="text-xs text-amber-900 ml-1">{operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</strong>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-
-                              {/* Flecha animada 2 */}
-                              <div className="relative z-10 flex-shrink-0">
-                                <div className="bg-white rounded-full p-1.5 shadow-md border border-green-200">
-                                  <ArrowRight className="w-5 h-5 text-green-600 animate-pulse" />
-                                </div>
-                              </div>
-                            </>
+                            </div>
                           )}
 
                           {/* Paso 3: Recibirás */}
-                          <div className="flex-1 relative z-10">
-                            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-3 shadow-lg border border-green-200/50 hover:shadow-xl transition-all duration-300">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-full w-7 h-7 flex items-center justify-center shadow-md">
-                                  <span className="text-sm font-bold text-white">3</span>
-                                </div>
-                                <h3 className="text-sm font-bold text-gray-800">Recibirás</h3>
-                              </div>
-                              <div className="bg-gradient-to-br from-green-50 to-green-100/50 rounded-lg p-2 border border-green-200/50">
-                                <p className="text-xs text-gray-700 font-semibold truncate">{destAccount}</p>
-                                <p className="text-sm text-green-600 font-bold mt-1">{operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`}</p>
+                          <div className="flex items-start gap-2">
+                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 flex items-center justify-center">
+                              <span className="text-xs font-bold text-white">3</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold text-gray-700 mb-0.5">Recibirás en tu cuenta</p>
+                              <div className="bg-green-50 rounded px-2 py-1 border border-green-200">
+                                <p className="text-xs text-gray-800 font-medium truncate">{destAccount}</p>
+                                <p className="text-xs text-green-700 font-bold">{operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`}</p>
                               </div>
                             </div>
                           </div>
