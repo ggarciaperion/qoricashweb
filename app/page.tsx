@@ -263,20 +263,24 @@ export default function Home() {
 
             {/* Right Column: Calculator (More Width) */}
             <div className="lg:col-span-4 relative z-30">
-              <Calculator
-                initialRates={{
-                  compra: parseFloat(buyRate),
-                  venta: parseFloat(sellRate)
-                }}
-              />
+              <div className="w-full bg-transparent p-6 pt-4">
+                <Calculator
+                  initialRates={{
+                    compra: parseFloat(buyRate),
+                    venta: parseFloat(sellRate)
+                  }}
+                />
 
-              <button
-                onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
-                className="w-full mt-2 bg-primary text-white py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md flex items-center justify-center group text-sm"
-              >
-                Cambiar Ahora
-                <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
-              </button>
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
+                    className="-mt-2 bg-primary text-white py-2 px-8 rounded-xl font-bold hover:bg-primary-600 transition shadow-md inline-flex items-center justify-center group text-sm"
+                  >
+                    Cambiar Ahora
+                    <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

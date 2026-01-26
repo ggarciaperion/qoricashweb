@@ -33,79 +33,62 @@ export default function LibroReclamaciones() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Get current date
-    const fecha = new Date().toLocaleDateString('es-PE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    try {
+      // Preparar datos para el API
+      const complaintData = {
+        tipoDocumento: formData.tipoDocumento,
+        numeroDocumento: formData.numeroDocumento,
+        nombres: formData.nombres,
+        apellidos: formData.apellidos,
+        razonSocial: formData.razonSocial,
+        personaContacto: formData.personaContacto,
+        email: formData.email,
+        telefono: formData.telefono,
+        direccion: formData.direccion,
+        tipoSolicitud: formData.tipoSolicitud,
+        detalle: formData.detalle
+      };
 
-    // Create email body based on document type
-    let datosReclamante = '';
-    let subject = '';
-
-    if (formData.tipoDocumento === 'RUC') {
-      datosReclamante = `
-- Razón Social: ${formData.razonSocial}
-- Persona de contacto: ${formData.personaContacto}
-- RUC: ${formData.numeroDocumento}`;
-      subject = `[${formData.tipoSolicitud}] Libro de Reclamaciones - ${formData.razonSocial}`;
-    } else {
-      datosReclamante = `
-- Nombres: ${formData.nombres}
-- Apellidos: ${formData.apellidos}
-- Tipo de documento: ${formData.tipoDocumento}
-- Número de documento: ${formData.numeroDocumento}`;
-      subject = `[${formData.tipoSolicitud}] Libro de Reclamaciones - ${formData.nombres} ${formData.apellidos}`;
-    }
-
-    const emailBody = `
-LIBRO DE RECLAMACIONES - QORICASH
-
-Fecha: ${fecha}
-
-DATOS DEL RECLAMANTE:${datosReclamante}
-- Correo electrónico: ${formData.email}
-- Teléfono: ${formData.telefono}
-- Dirección: ${formData.direccion || 'No proporcionada'}
-
-TIPO DE SOLICITUD: ${formData.tipoSolicitud}
-
-DETALLE:
-${formData.detalle}
-
----
-Este mensaje fue generado automáticamente desde el Libro de Reclamaciones de QoriCash.
-    `.trim();
-
-    // Create mailto link
-    const mailtoLink = `mailto:info@qoricash.pe?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-
-    // Open email client
-    window.location.href = mailtoLink;
-
-    // Show confirmation after a brief delay
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setShowConfirmation(true);
-
-      // Reset form
-      setFormData({
-        tipoDocumento: 'DNI',
-        numeroDocumento: '',
-        nombres: '',
-        apellidos: '',
-        razonSocial: '',
-        personaContacto: '',
-        email: '',
-        telefono: '',
-        direccion: '',
-        tipoSolicitud: 'Reclamo',
-        detalle: ''
+      // Hacer POST al API
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/web/complaints`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(complaintData),
       });
-    }, 1000);
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Mostrar mensaje de éxito
+        setShowConfirmation(true);
+
+        // Resetear formulario solo si el envío fue exitoso
+        setFormData({
+          tipoDocumento: 'DNI',
+          numeroDocumento: '',
+          nombres: '',
+          apellidos: '',
+          razonSocial: '',
+          personaContacto: '',
+          email: '',
+          telefono: '',
+          direccion: '',
+          tipoSolicitud: 'Reclamo',
+          detalle: ''
+        });
+      } else {
+        // Mostrar mensaje de error
+        alert(`Error: ${result.message || 'No se pudo enviar el reclamo. Por favor intenta nuevamente.'}`);
+      }
+    } catch (error) {
+      console.error('Error al enviar reclamo:', error);
+      alert('Error al enviar el reclamo. Por favor verifica tu conexión e intenta nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Determine if RUC is selected

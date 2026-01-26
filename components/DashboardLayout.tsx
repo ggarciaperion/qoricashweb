@@ -67,7 +67,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="hidden md:flex items-center space-x-4 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="relative flex items-center">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
+                    </div>
                     <span className="text-xs font-medium text-gray-500">En vivo</span>
                   </div>
                   <div className="flex items-center space-x-2 px-3 py-1.5 bg-green-50 rounded-lg">

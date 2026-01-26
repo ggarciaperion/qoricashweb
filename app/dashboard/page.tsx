@@ -45,6 +45,8 @@ export default function DashboardPage() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedOperation, setSelectedOperation] = useState<any>(null);
   const [isOperationModalOpen, setIsOperationModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const operationsPerPage = 10;
 
   useEffect(() => {
     // Fetch exchange rates
@@ -131,6 +133,17 @@ export default function DashboardPage() {
     if (activeTab === 'completadas') return op.estado === 'completado';
     return true;
   });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredOperations.length / operationsPerPage);
+  const startIndex = (currentPage - 1) * operationsPerPage;
+  const endIndex = startIndex + operationsPerPage;
+  const paginatedOperations = filteredOperations.slice(startIndex, endIndex);
+
+  // Reset to page 1 when changing tabs
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
 
   const getStatusBadge = (estado: string) => {
     const badges = {
@@ -260,30 +273,37 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
           {/* Exchange rates card */}
           {currentRates && (
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-5 border border-white/60 hover:shadow-2xl transition-all duration-300">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-sm font-bold text-gray-900">Tipo de Cambio Actual</h3>
+            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300 flex flex-col justify-center">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-base font-bold text-gray-900">Tipo de Cambio Actual</h3>
                 <div className={`flex items-center text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isConnected ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></div>
+                  {isConnected ? (
+                    <div className="relative flex items-center mr-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+                      <div className="absolute w-1.5 h-1.5 rounded-full bg-green-600 animate-ping"></div>
+                    </div>
+                  ) : (
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></div>
+                  )}
                   {isConnected ? 'En vivo' : 'Actualizando...'}
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-2.5 border border-green-200/30">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-xs font-medium text-green-800">Compra</span>
-                    <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-4 border border-green-200/30">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-green-800">Compra</span>
+                    <TrendingUp className="w-4 h-4 text-green-600" />
                   </div>
-                  <div className="text-xl font-bold text-green-900">
+                  <div className="text-2xl font-bold text-green-900">
                     S/ {currentRates.tipo_compra.toFixed(3)}
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-2.5 border border-blue-200/30">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-xs font-medium text-blue-800">Venta</span>
-                    <TrendingDown className="w-3.5 h-3.5 text-blue-600" />
+                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-4 border border-blue-200/30">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-blue-800">Venta</span>
+                    <TrendingDown className="w-4 h-4 text-blue-600" />
                   </div>
-                  <div className="text-xl font-bold text-blue-900">
+                  <div className="text-2xl font-bold text-blue-900">
                     S/ {currentRates.tipo_venta.toFixed(3)}
                   </div>
                 </div>
@@ -304,38 +324,45 @@ export default function DashboardPage() {
                 </p>
                 <div className="flex flex-col gap-2 mt-auto">
                   <div className="bg-white/60 backdrop-blur-sm rounded-xl px-4 py-3 border border-gold-200/40 shadow-sm">
-                    <p className="text-xs text-gray-600 mb-0.5">Tu código de referido</p>
-                    <p className="text-xl font-bold bg-gradient-to-r from-primary-600 to-gold-600 bg-clip-text text-transparent tracking-wider font-mono">{user.referral_code}</p>
+                    <p className="text-xs text-gray-600 mb-1">Tu código de referido</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xl font-bold bg-gradient-to-r from-primary-600 to-gold-600 bg-clip-text text-transparent tracking-wider font-mono flex-1">{user.referral_code}</p>
+                      <button
+                        onClick={copyReferralCode}
+                        className="flex items-center justify-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all text-xs font-semibold shadow-sm hover:shadow-md"
+                      >
+                        {copiedCode ? (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>¡Copiado!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copiar</span>
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio. 🎁`;
+                          const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                          window.open(url, '_blank');
+                        }}
+                        className="flex items-center justify-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all text-xs font-semibold shadow-sm hover:shadow-md"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>Compartir</span>
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={copyReferralCode}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all text-sm font-semibold shadow-md hover:shadow-lg"
-                    >
-                      {copiedCode ? (
-                        <>
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>¡Copiado!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4" />
-                          <span>Copiar</span>
-                        </>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => {
-                        const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio. 🎁`;
-                        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                        window.open(url, '_blank');
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all text-sm font-semibold shadow-md hover:shadow-lg"
-                    >
-                      <Share2 className="w-4 h-4" />
-                      <span>Compartir</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => router.push('/dashboard/promociones/codigo-referido')}
+                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/60 backdrop-blur-sm text-gray-700 rounded-xl hover:bg-white/80 transition-all text-sm font-semibold border border-gray-200 shadow-sm hover:shadow-md"
+                  >
+                    <Gift className="w-4 h-4" />
+                    <span>Ver detalles</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -446,7 +473,7 @@ export default function DashboardPage() {
                 </p>
               </div>
             ) : (
-              filteredOperations.map((operation) => {
+              paginatedOperations.map((operation) => {
                 // Si la operación está pendiente, redirigir a nueva-operacion para continuar
                 const handleOperationClick = () => {
                   if (operation.estado.toLowerCase() === 'pendiente') {
@@ -480,6 +507,9 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between gap-4">
                     {/* Badges and Type */}
                     <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg">
+                        {operation.codigo_operacion}
+                      </span>
                       <span
                         className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm ${
                           operation.tipo === 'compra'
@@ -527,6 +557,58 @@ export default function DashboardPage() {
               })
             )}
           </div>
+
+          {/* Pagination */}
+          {filteredOperations.length > operationsPerPage && (
+            <div className="p-4 border-t border-gray-200/50 bg-white/30 backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600">
+                  Mostrando {startIndex + 1} - {Math.min(endIndex, filteredOperations.length)} de {filteredOperations.length} operaciones
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-lg font-medium transition ${
+                      currentPage === 1
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-sm'
+                    }`}
+                  >
+                    Anterior
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-10 h-10 rounded-lg font-medium transition ${
+                          currentPage === page
+                            ? 'bg-primary text-white shadow-md'
+                            : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-lg font-medium transition ${
+                      currentPage === totalPages
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-sm'
+                    }`}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

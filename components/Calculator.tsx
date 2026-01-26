@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { RefreshCw, Tag } from 'lucide-react';
+import { RefreshCw, Tag, Gift } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
@@ -114,7 +114,10 @@ export default function Calculator({
           Tipos de cambio en tiempo real
         </p>
         <div className="flex items-center text-green-600 text-xs font-bold bg-green-50/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
-          <div className="w-1.5 h-1.5 bg-green-600 rounded-full animate-pulse mr-1.5"></div>
+          <div className="relative flex items-center mr-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+            <div className="absolute w-1.5 h-1.5 rounded-full bg-green-600 animate-ping"></div>
+          </div>
           En vivo
         </div>
       </div>
@@ -266,8 +269,8 @@ export default function Calculator({
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 cursor-pointer group hover:bg-white/40 p-2.5 rounded-lg transition-all text-sm font-semibold text-gray-800 group-hover:text-primary-700"
           >
-            <span className="text-green-600">💬</span>
-            <span>Tasa preferencial para operaciones mayores a $3,000</span>
+            <Gift className="w-4 h-4 text-white" />
+            <span>Tasa preferencial desde $3,000</span>
           </a>
         </div>
       </div>

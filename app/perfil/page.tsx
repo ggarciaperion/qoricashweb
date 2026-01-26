@@ -165,9 +165,15 @@ export default function PerfilPage() {
   const isRUC = user.document_type === 'RUC';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white/50 to-gold-50/30">
+      {/* Background decorative elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-primary-200/40 to-primary-300/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-gold-200/30 to-gold-300/20 rounded-full blur-3xl animate-pulse"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white/60 backdrop-blur-md shadow-sm border-b border-white/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center text-primary-600 hover:text-primary-700 transition">
@@ -197,7 +203,7 @@ export default function PerfilPage() {
         )}
 
         {/* Profile Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 overflow-hidden">
           {/* Header Section */}
           <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-6">
             <div className="flex items-center justify-between">
@@ -253,14 +259,14 @@ export default function PerfilPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">Tipo de Documento</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <FileText className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.document_type}</span>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">Número de Documento</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <CreditCard className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.dni}</span>
                   </div>
@@ -269,14 +275,14 @@ export default function PerfilPage() {
                   <>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-600 mb-2">Razón Social</label>
-                      <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                         <Building2 className="w-5 h-5 text-gray-400 mr-3" />
                         <span className="text-gray-900">{user.razon_social}</span>
                       </div>
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-600 mb-2">Persona de Contacto</label>
-                      <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                         <User className="w-5 h-5 text-gray-400 mr-3" />
                         <span className="text-gray-900">{user.persona_contacto}</span>
                       </div>
@@ -286,21 +292,21 @@ export default function PerfilPage() {
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">Nombres</label>
-                      <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                         <User className="w-5 h-5 text-gray-400 mr-3" />
                         <span className="text-gray-900">{user.nombres}</span>
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">Apellido Paterno</label>
-                      <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                         <User className="w-5 h-5 text-gray-400 mr-3" />
                         <span className="text-gray-900">{user.apellido_paterno || user.apellidos}</span>
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">Apellido Materno</label>
-                      <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                         <User className="w-5 h-5 text-gray-400 mr-3" />
                         <span className="text-gray-900">{user.apellido_materno || '-'}</span>
                       </div>
@@ -338,7 +344,7 @@ export default function PerfilPage() {
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
                     />
                   ) : (
-                    <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                       <Phone className="w-5 h-5 text-gray-400 mr-3" />
                       <span className="text-gray-900">{user.phone || user.telefono || '-'}</span>
                     </div>
@@ -354,7 +360,7 @@ export default function PerfilPage() {
                       className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
                     />
                   ) : (
-                    <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                       <Mail className="w-5 h-5 text-gray-400 mr-3" />
                       <span className="text-gray-900">{user.email}</span>
                     </div>
@@ -394,7 +400,7 @@ export default function PerfilPage() {
                 <Lock className="w-5 h-5 mr-2 text-primary-600" />
                 Seguridad
               </h3>
-              <div className="flex items-center justify-between p-6 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between p-6 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">Contraseña</h4>
                   <p className="text-sm text-gray-600">
@@ -420,28 +426,28 @@ export default function PerfilPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-600 mb-2">Dirección</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <MapPin className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.direccion || '-'}</span>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">Distrito</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <MapPin className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.distrito || '-'}</span>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">Provincia</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <MapPin className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.provincia || '-'}</span>
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-2">Departamento</label>
-                  <div className="flex items-center px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center px-4 py-3 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50">
                     <MapPin className="w-5 h-5 text-gray-400 mr-3" />
                     <span className="text-gray-900">{user.departamento || '-'}</span>
                   </div>
@@ -470,7 +476,7 @@ export default function PerfilPage() {
                   {user.bank_accounts.map((account, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between px-4 py-4 bg-gray-50 rounded-lg border border-gray-200 group hover:border-gray-300 transition"
+                      className="flex items-center justify-between px-4 py-4 bg-white/70 backdrop-blur-sm rounded-lg border border-gray-200/50 group hover:border-gray-300 transition"
                     >
                       <div className="flex items-center space-x-4">
                         <CreditCard className="w-6 h-6 text-primary-600" />
@@ -509,7 +515,7 @@ export default function PerfilPage() {
                   ))}
                 </div>
               ) : (
-                <div className="p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
+                <div className="p-6 bg-white/70 backdrop-blur-sm rounded-lg border-2 border-dashed border-gray-300 text-center">
                   <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                   <p className="text-gray-600 font-medium mb-2">
                     No tienes cuentas bancarias registradas
