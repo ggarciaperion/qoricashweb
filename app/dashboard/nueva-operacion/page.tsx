@@ -571,6 +571,12 @@ export default function NuevaOperacionPage() {
         setTimeRemaining(900); // Reset contador a 15 minutos
         setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
 
+        // Marcar que ahora hay una operación activa
+        setHasActiveOperation(true);
+        setActiveOperationMessage(
+          `Tienes una operación en estado "Pendiente" (${operation.codigo_operacion || operation.operation_id}). Debes completarla o cancelarla antes de crear una nueva.`
+        );
+
         // Clear referral code after successful operation creation
         setReferralCode('');
         setCodeValidation(null);
