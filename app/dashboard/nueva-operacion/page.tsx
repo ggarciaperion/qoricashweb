@@ -1242,32 +1242,32 @@ export default function NuevaOperacionPage() {
                   {/* Operation Summary and Transfer Instructions - Side by Side */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     {/* Operation Summary */}
-                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                      <h3 className="text-xs font-bold text-gray-900 mb-2">Resumen de la Operación</h3>
-                      <div className="space-y-1">
+                    <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-200">
+                      <h3 className="text-xs font-bold text-gray-900 mb-1.5">Resumen de la Operación</h3>
+                      <div className="space-y-0.5">
                         <div className="flex justify-between text-xs">
                           <span className="text-gray-600">Tipo:</span>
                           <span className="font-semibold text-gray-900">{createdOperation.tipo}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Monto en Soles:</span>
+                          <span className="text-gray-600">Soles:</span>
                           <span className="font-semibold text-gray-900">S/ {parseFloat(createdOperation.monto_soles).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Monto en Dólares:</span>
+                          <span className="text-gray-600">Dólares:</span>
                           <span className="font-semibold text-gray-900">$ {parseFloat(createdOperation.monto_dolares).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Tipo de Cambio:</span>
+                          <span className="text-gray-600">T. Cambio:</span>
                           <span className="font-semibold text-gray-900">S/ {parseFloat(createdOperation.tipo_cambio).toFixed(3)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Fecha y Hora:</span>
+                          <span className="text-gray-600">Fecha:</span>
                           <span className="font-semibold text-gray-900">
                             {formattedDate || 'Ahora'}
                           </span>
                         </div>
-                        <div className="flex justify-between text-xs pt-1 border-t border-gray-300">
+                        <div className="flex justify-between text-xs pt-0.5 border-t border-gray-300">
                           <span className="text-gray-600">Estado:</span>
                           <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold ${
                             timeRemaining === 0
