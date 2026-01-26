@@ -1305,109 +1305,64 @@ export default function NuevaOperacionPage() {
                     });
 
                     return (
-                      <div className="space-y-4">
-                        {/* Tarjetas de instrucciones de transferencia */}
-                        <div className="grid grid-cols-1 gap-4">
-                          {/* Cuenta de Cargo del Cliente */}
-                          <div className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-xl p-4 shadow-sm">
-                            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                              <Send className="w-5 h-5 mr-2 text-gray-600" />
-                              Tu cuenta de cargo ({sourceCurrency})
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                          {/* Cuenta de Cargo */}
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
+                            <h3 className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center">
+                              <Send className="w-3 h-3 mr-1" />
+                              Tu cuenta ({sourceCurrency})
                             </h3>
-                            <div className="bg-white rounded-lg p-3 border border-gray-200">
-                              <p className="text-sm text-gray-900 font-semibold">
-                                {sourceAccount || 'No especificada'}
-                              </p>
-                            </div>
+                            <p className="text-xs text-gray-900 font-medium">{sourceAccount}</p>
                           </div>
 
-                          {/* Cuenta de Destino QoriCash */}
+                          {/* Cuenta QoriCash */}
                           {qoricashAccount && (
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-xl p-4 shadow-md">
-                              <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                                <Building2 className="w-5 h-5 mr-2 text-secondary" />
-                                Transfiere a QoriCash ({sourceCurrency})
+                            <div className="bg-blue-50 border border-blue-300 rounded-lg p-2">
+                              <h3 className="text-xs font-semibold text-blue-900 mb-1.5 flex items-center">
+                                <Building2 className="w-3 h-3 mr-1" />
+                                Transfiere a ({sourceCurrency})
                               </h3>
-                              <div className="bg-white rounded-lg p-4 border border-blue-200 space-y-3">
-                                <div className="grid grid-cols-2 gap-3">
-                                  <div>
-                                    <p className="text-xs text-gray-600 mb-1">Banco</p>
-                                    <p className="text-sm font-bold text-gray-900">{qoricashAccount.banco}</p>
+                              <div className="space-y-1">
+                                <div className="grid grid-cols-2 gap-1 text-xs">
+                                  <div><span className="text-gray-600">Banco:</span> <span className="font-semibold">{qoricashAccount.banco}</span></div>
+                                  <div><span className="text-gray-600">Tipo:</span> <span className="font-medium">{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</span></div>
+                                </div>
+                                <div className="text-xs"><span className="text-gray-600">Titular:</span> <span className="font-medium">{qoricashAccount.titular}</span></div>
+                                <div className="text-xs"><span className="text-gray-600">RUC:</span> <span className="font-medium">{qoricashAccount.ruc}</span></div>
+                                <div className="flex items-center gap-1 bg-white rounded p-1.5 border border-blue-200">
+                                  <div className="flex-1">
+                                    <p className="text-xs text-gray-600">{qoricashAccount.useCCI ? 'CCI' : 'Cuenta'}</p>
+                                    <p className="text-xs font-bold text-secondary">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</p>
                                   </div>
-                                  <div>
-                                    <p className="text-xs text-gray-600 mb-1">Tipo</p>
-                                    <p className="text-sm font-semibold text-gray-900">{qoricashAccount.tipo}</p>
-                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
+                                    className="p-1 bg-secondary text-white rounded hover:bg-secondary-700"
+                                  >
+                                    {copiedField === 'account' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                  </button>
                                 </div>
-                                <div>
-                                  <p className="text-xs text-gray-600 mb-1">Titular</p>
-                                  <p className="text-sm font-semibold text-gray-900">{qoricashAccount.titular}</p>
-                                </div>
-                                <div>
-                                  <p className="text-xs text-gray-600 mb-1">RUC</p>
-                                  <p className="text-sm font-semibold text-gray-900">{qoricashAccount.ruc}</p>
-                                </div>
-                                <div>
-                                  <p className="text-xs text-gray-600 mb-1.5">
-                                    {qoricashAccount.useCCI ? 'CCI' : 'Nro. Cuenta'}
+                                <div className="bg-yellow-50 border border-yellow-200 rounded p-1.5 mt-1">
+                                  <p className="text-xs text-yellow-900 flex items-center">
+                                    <AlertCircle className="w-3 h-3 mr-1 flex-shrink-0" />
+                                    <span><strong>Monto:</strong> {operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</span>
                                   </p>
-                                  <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-2.5 border border-gray-200">
-                                    <p className="text-base font-bold text-secondary flex-1 tracking-wide">
-                                      {qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}
-                                    </p>
-                                    <button
-                                      type="button"
-                                      onClick={() => copyToClipboard(
-                                        qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero,
-                                        'account'
-                                      )}
-                                      className="p-2 bg-secondary text-white rounded-lg hover:bg-secondary-700 transition-all shadow-sm"
-                                    >
-                                      {copiedField === 'account' ? (
-                                        <CheckCircle className="w-5 h-5" />
-                                      ) : (
-                                        <Copy className="w-5 h-5" />
-                                      )}
-                                    </button>
-                                  </div>
                                 </div>
-                              </div>
-                              <div className="mt-3 bg-yellow-50 border border-yellow-300 rounded-lg p-3">
-                                <p className="text-sm text-yellow-900 flex items-start">
-                                  <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5 text-yellow-600" />
-                                  <span>
-                                    <strong>Importante:</strong> Transfiere exactamente{' '}
-                                    <strong className="text-yellow-800">
-                                      {operationType === 'compra'
-                                        ? `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
-                                        : `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
-                                      }
-                                    </strong>
-                                  </span>
-                                </p>
                               </div>
                             </div>
                           )}
 
-                          {/* Cuenta donde recibirás el pago */}
-                          <div className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 rounded-xl p-4 shadow-sm">
-                            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                              <Wallet className="w-5 h-5 mr-2 text-green-600" />
-                              Recibirás el pago ({destCurrency})
+                          {/* Recibirás */}
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-2">
+                            <h3 className="text-xs font-semibold text-green-700 mb-1.5 flex items-center">
+                              <Wallet className="w-3 h-3 mr-1" />
+                              Recibirás ({destCurrency})
                             </h3>
-                            <div className="bg-white rounded-lg p-3 border border-green-200">
-                              <p className="text-sm text-gray-900 font-semibold mb-2">
-                                {destAccount || 'No especificada'}
-                              </p>
-                              <p className="text-sm text-green-700">
-                                Recibirás <strong className="text-green-800">
-                                  {operationType === 'compra'
-                                    ? `S/ ${parseFloat(createdOperation.monto_soles).toFixed(2)}`
-                                    : `$ ${parseFloat(createdOperation.monto_dolares).toFixed(2)}`
-                                  }
-                                </strong>
-                              </p>
-                            </div>
+                            <p className="text-xs text-gray-900 font-medium mb-1">{destAccount}</p>
+                            <p className="text-xs text-green-700">
+                              <strong>{operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`}</strong>
+                            </p>
                           </div>
                         </div>
                       </div>
