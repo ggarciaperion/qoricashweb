@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { uploadToCloudinary } from '@/lib/cloudinary';
 import { Camera, X } from 'lucide-react';
 
 export default function LibroReclamaciones() {
@@ -76,46 +75,30 @@ export default function LibroReclamaciones() {
     setIsSubmitting(true);
 
     try {
-      let evidenceImageUrl = '';
+      // Preparar FormData para enviar archivos
+      const formDataToSend = new FormData();
+      formDataToSend.append('tipoDocumento', formData.tipoDocumento);
+      formDataToSend.append('numeroDocumento', formData.numeroDocumento);
+      formDataToSend.append('nombres', formData.nombres);
+      formDataToSend.append('apellidos', formData.apellidos);
+      formDataToSend.append('razonSocial', formData.razonSocial);
+      formDataToSend.append('personaContacto', formData.personaContacto);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('telefono', formData.telefono);
+      formDataToSend.append('direccion', formData.direccion);
+      formDataToSend.append('tipoSolicitud', formData.tipoSolicitud);
+      formDataToSend.append('detalle', formData.detalle);
 
-      // Si hay imagen, subirla a Cloudinary primero
+      // Si hay imagen, agregarla al FormData
       if (evidenceImage) {
-        setIsUploadingImage(true);
-        try {
-          evidenceImageUrl = await uploadToCloudinary(evidenceImage, 'complaints/evidence');
-          console.log('Imagen subida a Cloudinary:', evidenceImageUrl);
-        } catch (uploadError) {
-          console.error('Error al subir imagen:', uploadError);
-          alert('Error al subir la imagen de evidencia. El reclamo se enviará sin imagen.');
-        } finally {
-          setIsUploadingImage(false);
-        }
+        formDataToSend.append('evidenceImage', evidenceImage);
       }
-
-      // Preparar datos para el API
-      const complaintData = {
-        tipoDocumento: formData.tipoDocumento,
-        numeroDocumento: formData.numeroDocumento,
-        nombres: formData.nombres,
-        apellidos: formData.apellidos,
-        razonSocial: formData.razonSocial,
-        personaContacto: formData.personaContacto,
-        email: formData.email,
-        telefono: formData.telefono,
-        direccion: formData.direccion,
-        tipoSolicitud: formData.tipoSolicitud,
-        detalle: formData.detalle,
-        evidenceImageUrl: evidenceImageUrl || undefined
-      };
 
       // Hacer POST al API
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const response = await fetch(`${apiUrl}/api/web/complaints`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(complaintData),
+        body: formDataToSend,
       });
 
       const result = await response.json();

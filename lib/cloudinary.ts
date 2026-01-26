@@ -29,7 +29,6 @@ export async function uploadToCloudinary(
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
-  formData.append('folder', folder);
 
   try {
     const response = await fetch(
@@ -41,7 +40,9 @@ export async function uploadToCloudinary(
     );
 
     if (!response.ok) {
-      throw new Error('Failed to upload image to Cloudinary');
+      const errorData = await response.json();
+      console.error('Cloudinary error:', errorData);
+      throw new Error(`Failed to upload: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data: CloudinaryUploadResult = await response.json();
