@@ -1305,64 +1305,79 @@ export default function NuevaOperacionPage() {
                     });
 
                     return (
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                          {/* Cuenta de Cargo */}
-                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-2">
-                            <h3 className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center">
-                              <Send className="w-3 h-3 mr-1" />
-                              Tu cuenta ({sourceCurrency})
-                            </h3>
-                            <p className="text-xs text-gray-900 font-medium">{sourceAccount}</p>
+                      <div className="bg-gradient-to-r from-blue-50 via-white to-green-50 rounded-xl p-3 border-2 border-blue-200">
+                        <div className="flex items-center justify-between gap-2">
+                          {/* Paso 1: Tu cuenta */}
+                          <div className="flex-1 bg-white rounded-lg p-2 border border-gray-300 shadow-sm">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <div className="bg-gray-100 rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="text-xs font-bold text-gray-700">1</span>
+                              </div>
+                              <h3 className="text-xs font-bold text-gray-700">Desde tu cuenta</h3>
+                            </div>
+                            <div className="bg-gray-50 rounded p-1.5">
+                              <p className="text-xs text-gray-900 font-medium">{sourceAccount}</p>
+                              <p className="text-xs text-gray-600 mt-0.5">{sourceCurrency}</p>
+                            </div>
                           </div>
 
-                          {/* Cuenta QoriCash */}
+                          {/* Flecha 1 */}
+                          <ArrowRight className="w-5 h-5 text-secondary flex-shrink-0" />
+
+                          {/* Paso 2: Cuenta QoriCash */}
                           {qoricashAccount && (
-                            <div className="bg-blue-50 border border-blue-300 rounded-lg p-2">
-                              <h3 className="text-xs font-semibold text-blue-900 mb-1.5 flex items-center">
-                                <Building2 className="w-3 h-3 mr-1" />
-                                Transfiere a ({sourceCurrency})
-                              </h3>
-                              <div className="space-y-1">
-                                <div className="grid grid-cols-2 gap-1 text-xs">
-                                  <div><span className="text-gray-600">Banco:</span> <span className="font-semibold">{qoricashAccount.banco}</span></div>
-                                  <div><span className="text-gray-600">Tipo:</span> <span className="font-medium">{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</span></div>
-                                </div>
-                                <div className="text-xs"><span className="text-gray-600">Titular:</span> <span className="font-medium">{qoricashAccount.titular}</span></div>
-                                <div className="text-xs"><span className="text-gray-600">RUC:</span> <span className="font-medium">{qoricashAccount.ruc}</span></div>
-                                <div className="flex items-center gap-1 bg-white rounded p-1.5 border border-blue-200">
-                                  <div className="flex-1">
-                                    <p className="text-xs text-gray-600">{qoricashAccount.useCCI ? 'CCI' : 'Cuenta'}</p>
-                                    <p className="text-xs font-bold text-secondary">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</p>
+                            <>
+                              <div className="flex-1 bg-white rounded-lg p-2 border-2 border-secondary shadow-md">
+                                <div className="flex items-center gap-1.5 mb-1">
+                                  <div className="bg-secondary rounded-full w-5 h-5 flex items-center justify-center">
+                                    <span className="text-xs font-bold text-white">2</span>
                                   </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
-                                    className="p-1 bg-secondary text-white rounded hover:bg-secondary-700"
-                                  >
-                                    {copiedField === 'account' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                  </button>
+                                  <h3 className="text-xs font-bold text-secondary">Transfiere a QoriCash</h3>
                                 </div>
-                                <div className="bg-yellow-50 border border-yellow-200 rounded p-1.5 mt-1">
-                                  <p className="text-xs text-yellow-900 flex items-center">
-                                    <AlertCircle className="w-3 h-3 mr-1 flex-shrink-0" />
-                                    <span><strong>Monto:</strong> {operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</span>
-                                  </p>
+                                <div className="space-y-0.5 text-xs">
+                                  <div className="grid grid-cols-2 gap-1">
+                                    <span className="text-gray-600">Banco: <strong className="text-gray-900">{qoricashAccount.banco}</strong></span>
+                                    <span className="text-gray-600">Tipo: <strong className="text-gray-900">{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</strong></span>
+                                  </div>
+                                  <div className="text-gray-600">Titular: <strong className="text-gray-900">{qoricashAccount.titular}</strong></div>
+                                  <div className="text-gray-600">RUC: <strong className="text-gray-900">{qoricashAccount.ruc}</strong></div>
+                                  <div className="flex items-center gap-1 bg-blue-50 rounded p-1 border border-blue-200 mt-1">
+                                    <div className="flex-1">
+                                      <p className="text-xs text-gray-600">{qoricashAccount.useCCI ? 'CCI' : 'Cuenta'}</p>
+                                      <p className="text-xs font-bold text-secondary">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</p>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
+                                      className="p-1 bg-secondary text-white rounded hover:bg-secondary-700"
+                                    >
+                                      {copiedField === 'account' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                                    </button>
+                                  </div>
+                                  <div className="bg-yellow-50 border border-yellow-300 rounded p-1 mt-1 flex items-center gap-1">
+                                    <AlertCircle className="w-3 h-3 text-yellow-600 flex-shrink-0" />
+                                    <span className="text-yellow-900 font-semibold">{operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+
+                              {/* Flecha 2 */}
+                              <ArrowRight className="w-5 h-5 text-green-600 flex-shrink-0" />
+                            </>
                           )}
 
-                          {/* Recibirás */}
-                          <div className="bg-green-50 border border-green-200 rounded-lg p-2">
-                            <h3 className="text-xs font-semibold text-green-700 mb-1.5 flex items-center">
-                              <Wallet className="w-3 h-3 mr-1" />
-                              Recibirás ({destCurrency})
-                            </h3>
-                            <p className="text-xs text-gray-900 font-medium mb-1">{destAccount}</p>
-                            <p className="text-xs text-green-700">
-                              <strong>{operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`}</strong>
-                            </p>
+                          {/* Paso 3: Recibirás */}
+                          <div className="flex-1 bg-white rounded-lg p-2 border border-green-300 shadow-sm">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <div className="bg-green-100 rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="text-xs font-bold text-green-700">3</span>
+                              </div>
+                              <h3 className="text-xs font-bold text-green-700">Recibirás</h3>
+                            </div>
+                            <div className="bg-green-50 rounded p-1.5">
+                              <p className="text-xs text-gray-900 font-medium">{destAccount}</p>
+                              <p className="text-xs text-green-700 font-bold mt-0.5">{operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
