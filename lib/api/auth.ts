@@ -41,10 +41,10 @@ export const authApi = {
   async logout(): Promise<ApiResponse> {
     const response = await apiClient.post<ApiResponse>('/auth/logout');
 
-    // Clear local storage
+    // Clear session storage
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      sessionStorage.removeItem('authToken');
+      sessionStorage.removeItem('user');
     }
 
     return response.data;
@@ -135,8 +135,8 @@ export const authApi = {
    */
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false;
-    const token = localStorage.getItem('authToken');
-    const user = localStorage.getItem('user');
+    const token = sessionStorage.getItem('authToken');
+    const user = sessionStorage.getItem('user');
     return !!(token && user);
   },
 
@@ -145,7 +145,7 @@ export const authApi = {
    */
   getStoredUser(): User | null {
     if (typeof window === 'undefined') return null;
-    const userStr = localStorage.getItem('user');
+    const userStr = sessionStorage.getItem('user');
     if (!userStr) return null;
     try {
       return JSON.parse(userStr);
@@ -159,9 +159,9 @@ export const authApi = {
    */
   storeAuth(user: User, token?: string) {
     if (typeof window === 'undefined') return;
-    localStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('user', JSON.stringify(user));
     if (token) {
-      localStorage.setItem('authToken', token);
+      sessionStorage.setItem('authToken', token);
     }
   },
 };
