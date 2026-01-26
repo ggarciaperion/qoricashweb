@@ -1476,6 +1476,30 @@ export default function NuevaOperacionPage() {
                     </div>
                   )}
 
+                  {/* Alerta de operación activa */}
+                  {hasActiveOperation && (
+                    <div className="p-4 bg-red-50 border-2 border-red-300 rounded-lg">
+                      <div className="flex items-start">
+                        <AlertCircle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-red-900 mb-2">
+                            Operación en Progreso
+                          </p>
+                          <p className="text-sm text-red-800 mb-3">
+                            {activeOperationMessage}
+                          </p>
+                          <button
+                            onClick={() => router.push('/dashboard')}
+                            className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition"
+                          >
+                            Ver mis operaciones
+                            <ArrowRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {user?.status === 'Inactivo' && user?.has_complete_documents && (
                     <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
                       <div className="flex items-start">
