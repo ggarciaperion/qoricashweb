@@ -35,13 +35,19 @@ Tu proyecto `qoricash-web` es un **Next.js frontend con exportación estática**
 
 #### Variables de Entorno
 
-Agregar las siguientes Environment Variables:
+**IMPORTANTE:** Debes configurar estas variables en Render Dashboard:
+- Ve a tu Web Service → Settings → Environment
+- Agrega las siguientes Environment Variables:
 
 ```
 NEXT_PUBLIC_API_URL=https://app.qoricash.pe
+NEXT_PUBLIC_APP_NAME=QoriCash
+NEXT_PUBLIC_APP_URL=https://qoricash-web.onrender.com
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dbks8vqoh
 NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=qoricash_complaints
 ```
+
+**Nota:** Si no configuras estas variables, el sitio no podrá conectarse al backend y el login no funcionará.
 
 ### 3. Desplegar
 
@@ -147,6 +153,26 @@ const nextConfig = {
 5. **Build exitoso pero dice "Build failed 😞"**
    - ❌ Problema: Estás usando Web Service en lugar de Static Site
    - ✅ Solución: Eliminar Web Service y crear Static Site
+
+### Si el login no funciona en producción:
+
+1. **El botón de login no hace nada**
+   - ✅ Ya solucionado (commit 26e942d): Manejo de errores mejorado
+   - Ahora los errores se muestran visualmente al usuario
+
+2. **Error: "Cannot connect to API"**
+   - ❌ Problema: Variables de entorno no configuradas en Render
+   - ✅ Solución:
+     1. Ve a Render Dashboard → tu Web Service
+     2. Ve a Settings → Environment
+     3. Agrega `NEXT_PUBLIC_API_URL=https://app.qoricash.pe`
+     4. Haz clic en "Save Changes"
+     5. Render redesplegará automáticamente
+
+3. **Error: "CORS error" en consola del navegador**
+   - ❌ Problema: El backend no permite requests desde el dominio de Render
+   - ✅ Solución: Verificar configuración CORS en el backend Flask
+   - El backend debe permitir: `https://qoricash-web.onrender.com`
 
 ---
 
