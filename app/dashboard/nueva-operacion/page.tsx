@@ -333,12 +333,15 @@ export default function NuevaOperacionPage() {
       if (accountsResponse.success && accountsResponse.data) {
         const transformedAccounts = accountsResponse.data.map((acc: any, index: number) => ({
           id: index,
-          banco: acc.bank_name || acc.banco,
-          numero_cuenta: acc.account_number || acc.numero_cuenta,
-          tipo_cuenta: acc.account_type || acc.tipo_cuenta,
-          moneda: acc.currency || acc.moneda,
+          bank_name: acc.bank_name || acc.banco,
+          account_number: acc.account_number || acc.numero_cuenta,
+          account_type: acc.account_type || acc.tipo_cuenta,
+          currency: acc.currency || acc.moneda,
           origen: acc.origen,
           is_primary: index === 0,
+          // Legacy fields for backwards compatibility
+          banco: acc.bank_name || acc.banco,
+          numero_cuenta: acc.account_number || acc.numero_cuenta,
         }));
 
         setBankAccounts(transformedAccounts);
