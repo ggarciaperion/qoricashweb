@@ -342,6 +342,8 @@ export default function NuevaOperacionPage() {
           // Legacy fields for backwards compatibility
           banco: acc.bank_name || acc.banco,
           numero_cuenta: acc.account_number || acc.numero_cuenta,
+          tipo_cuenta: acc.account_type || acc.tipo_cuenta,
+          moneda: acc.currency || acc.moneda,
         }));
 
         setBankAccounts(transformedAccounts);
