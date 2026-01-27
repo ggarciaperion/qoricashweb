@@ -74,12 +74,17 @@ export default function LoginPage() {
           router.push('/dashboard');
         } else {
           console.log('❌ [LoginPage] Login failed after password check');
+          // Error will be displayed from store's error state
         }
       } else {
+        // Login failed - use the store's login function to set error properly
         console.log('❌ [LoginPage] Login failed:', response.message);
+        await login({ dni: data.dni, password: data.password });
       }
     } catch (error: any) {
       console.error('❌ [LoginPage] Error en login:', error);
+      // Try to login via store to set proper error message
+      await login({ dni: data.dni, password: data.password });
     } finally {
       setIsLoading(false);
       console.log('📝 [LoginPage] Loading finished');
