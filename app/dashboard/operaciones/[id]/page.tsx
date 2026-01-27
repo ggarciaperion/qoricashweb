@@ -24,12 +24,6 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
-// Generate static params for static export
-// Return empty array since this is a dynamic user-specific page
-export function generateStaticParams() {
-  return [];
-}
-
 export default function OperacionDetallesPage() {
   const router = useRouter();
   const params = useParams();

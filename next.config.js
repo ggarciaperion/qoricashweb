@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Static export para Render Static Site
+  // output: 'export' no funciona con rutas dinámicas [id]
+  // Se despliega como Web Service en lugar de Static Site
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -8,7 +9,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true, // Requerido para static export
     remotePatterns: [
       {
         protocol: 'https',
