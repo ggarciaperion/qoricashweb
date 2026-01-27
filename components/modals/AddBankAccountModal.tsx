@@ -331,6 +331,17 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                     placeholder={requiresCCI ? '20 dígitos' : '13-20 dígitos'}
                     maxLength={20}
                     disabled={isSubmitting}
+                    onKeyPress={(e) => {
+                      if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData('text');
+                      if (!/^\d+$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                 </div>
                 {requiresCCI && (

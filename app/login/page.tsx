@@ -195,6 +195,17 @@ export default function LoginPage() {
                   }`}
                   placeholder="12345678"
                   disabled={isLoading}
+                  onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    const pastedText = e.clipboardData.getData('text');
+                    if (!/^\d+$/.test(pastedText)) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
               {errors.dni && (
