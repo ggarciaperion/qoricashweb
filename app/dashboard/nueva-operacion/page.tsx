@@ -571,35 +571,13 @@ export default function NuevaOperacionPage() {
             })
           : 'Ahora';
 
-        // Calculate remaining time based on created_at
-        const now = new Date();
-        let createdAt: Date;
-
-        if (operation.created_at) {
-          const dateStr = operation.created_at.endsWith('Z')
-            ? operation.created_at
-            : operation.created_at + 'Z';
-          createdAt = new Date(dateStr);
-        } else {
-          createdAt = new Date();
-        }
-
-        const elapsedMs = now.getTime() - createdAt.getTime();
-        const elapsedSeconds = Math.floor(elapsedMs / 1000);
-        const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
-
-        console.log('[Nueva Operación] Cálculo tiempo inicial:', {
-          created_at: operation.created_at,
-          createdAt: createdAt.toISOString(),
-          now: now.toISOString(),
-          elapsedSeconds,
-          remaining,
-          remainingMinutes: Math.floor(remaining / 60),
-        });
+        // Para operaciones recién creadas, iniciar con 15 minutos completos
+        // La latencia de red es mínima (< 1 segundo) y evita problemas de zona horaria
+        console.log('[Nueva Operación] Operación recién creada, iniciando timer en 15 minutos');
 
         setFormattedDate(formattedDateString);
         setCreatedOperation(operation);
-        setTimeRemaining(remaining); // Set tiempo restante calculado basado en created_at
+        setTimeRemaining(900); // 15 minutos completos para operaciones nuevas
         setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
 
         // Marcar que ahora hay una operación activa
