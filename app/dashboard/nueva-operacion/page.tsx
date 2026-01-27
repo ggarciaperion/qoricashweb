@@ -2116,7 +2116,7 @@ export default function NuevaOperacionPage() {
                   Volver
                 </button>
                 <button
-                  onClick={handleCancelOperation}
+                  onClick={() => handleCancelOperation()}
                   disabled={isCancelling || !cancelReason.trim()}
                   className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
