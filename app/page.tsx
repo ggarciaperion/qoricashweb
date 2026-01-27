@@ -23,7 +23,9 @@ import {
   LogOut,
   User as UserIcon,
   ChevronDown,
-  HelpCircle
+  HelpCircle,
+  Menu,
+  X
 } from 'lucide-react';
 
 export default function Home() {
@@ -32,6 +34,7 @@ export default function Home() {
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
 
@@ -182,7 +185,97 @@ export default function Home() {
                 </>
               )}
             </div>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 text-gray-700 hover:text-primary-600 transition"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden border-t border-gray-200 py-4 space-y-3">
+              <Link
+                href="/sobre-nosotros"
+                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Nosotros
+              </Link>
+              <a
+                href="#como-funciona"
+                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Cómo Funciona
+              </a>
+              <Link
+                href="/dashboard/promociones"
+                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Promociones
+              </Link>
+
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/perfil"
+                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Mi perfil
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Mi Dashboard
+                  </Link>
+                  <a
+                    href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Ayuda
+                  </a>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition rounded-lg"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Iniciar Sesión
+                  </Link>
+                  <Link
+                    href="/crear-cuenta"
+                    className="block mx-4 bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Regístrate
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </nav>
       </header>
 
