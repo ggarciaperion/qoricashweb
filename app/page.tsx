@@ -93,13 +93,13 @@ export default function Home() {
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
         <nav className="w-full px-6 sm:px-8 lg:px-12">
           <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto" />
-              <span className="text-3xl font-display font-bold text-gray-900">
+            <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity">
+              <img src="/logo-principal.png" alt="QoriCash" className="h-10 sm:h-14 md:h-16 w-auto" />
+              <span className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-gray-900">
                 QoriCash
               </span>
             </Link>
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-8">
               <Link href="/sobre-nosotros" className="text-gray-700 hover:text-primary-600 transition">
                 Nosotros
               </Link>
@@ -187,7 +187,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-16 pb-0 px-6 sm:px-8 lg:px-12 relative overflow-hidden">
+      <section className="pt-20 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
@@ -195,17 +195,17 @@ export default function Home() {
         </div>
 
         <div className="w-full relative">
-          <div className="grid lg:grid-cols-12 gap-3 items-center relative">
+          <div className="grid lg:grid-cols-12 gap-3 md:gap-6 items-center relative">
             {/* Left Column: Text Content */}
-            <div className="lg:col-span-4 space-y-4 relative z-10 lg:pr-4">
-              <h1 className="text-5xl lg:text-6xl font-display font-bold leading-tight">
+            <div className="lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
                   dólares
                 </span>{' '}
                 al mejor precio
               </h1>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                 Compra y vende dólares de forma segura, rápida y con los mejores tipos de cambio del mercado peruano.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
@@ -250,13 +250,12 @@ export default function Home() {
             </div>
 
             {/* Center: Hero Image (Overlapping to the left) */}
-            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20">
-              <div className="relative" style={{ width: '750px', height: '650px' }}>
+            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
+              <div className="relative w-full max-w-[600px] h-auto">
                 <img
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
-                  className="w-full h-full object-contain drop-shadow-2xl relative z-10 animate-float"
-                  style={{ maxWidth: '600px', maxHeight: '580px' }}
+                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
                 />
               </div>
             </div>
@@ -499,7 +498,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-20 lg:gap-32 relative max-w-7xl mx-auto px-4">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-12 md:gap-16 lg:gap-24 relative max-w-7xl mx-auto px-4">
             {[
               {
                 step: '01',
@@ -535,7 +534,7 @@ export default function Home() {
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
 
                   {/* Main circle */}
-                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-64 h-64 border-2 border-white/60 group-hover:border-primary-300/60">
+                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
                     {/* Animated gradient border on hover */}
                     <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
                       <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
