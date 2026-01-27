@@ -395,7 +395,7 @@ export default function Home() {
                 size: { width: 128, height: 128, className: 'w-32 h-32' }
               },
               {
-                image: 'Transferencia Rápida.png',
+                image: 'Transferencia-Rapida.png',
                 title: 'Transferencia Rápida',
                 description: 'Recibe tu dinero en minutos, sin complicaciones',
                 gradient: 'from-primary-500 to-primary-600',
