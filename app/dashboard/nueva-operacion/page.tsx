@@ -179,24 +179,19 @@ export default function NuevaOperacionPage() {
       console.log('[Nueva Operación] Operación cargada:', operation);
 
       // Calculate time remaining (15 minutes from creation)
-      // IMPORTANTE: El backend devuelve fechas en formato ISO pero sin timezone
-      // Necesitamos parsearla correctamente
+      // IMPORTANTE: El backend devuelve fechas en hora de Perú (UTC-5) sin timezone
+      // NO añadir 'Z' para que se interprete como hora local
       let createdAt: Date;
+      const dateString = operation.fecha_creacion || operation.created_at;
 
-      if (operation.fecha_creacion) {
-        // Si la fecha viene sin 'Z' al final, añadirla para que se interprete como UTC
-        const dateStr = operation.fecha_creacion.endsWith('Z')
-          ? operation.fecha_creacion
-          : operation.fecha_creacion + 'Z';
-        createdAt = new Date(dateStr);
-      } else if (operation.created_at) {
-        const dateStr = operation.created_at.endsWith('Z')
-          ? operation.created_at
-          : operation.created_at + 'Z';
-        createdAt = new Date(dateStr);
-      } else {
+      if (!dateString) {
         console.error('[Nueva Operación] No se encontró fecha de creación en la operación');
         createdAt = new Date();
+      } else {
+        // Parsear como hora local (Perú) sin añadir 'Z'
+        // Si tiene 'Z', quitarla porque la fecha ya está en hora de Perú
+        const cleanDateStr = dateString.endsWith('Z') ? dateString.slice(0, -1) : dateString;
+        createdAt = new Date(cleanDateStr);
       }
 
       const now = new Date();
@@ -205,9 +200,11 @@ export default function NuevaOperacionPage() {
       const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
 
       console.log('[Nueva Operación] Cálculo tiempo:', {
-        fecha_raw: operation.fecha_creacion || operation.created_at,
-        createdAt: createdAt.toISOString(),
-        now: now.toISOString(),
+        fecha_raw: dateString,
+        createdAt: createdAt.toString(),
+        createdAtISO: createdAt.toISOString(),
+        now: now.toString(),
+        nowISO: now.toISOString(),
         elapsedSeconds,
         remaining,
         remainingMinutes: Math.floor(remaining / 60),
