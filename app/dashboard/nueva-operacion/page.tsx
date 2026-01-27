@@ -649,6 +649,11 @@ export default function NuevaOperacionPage() {
   const handleCancelOperation = async (reason?: string) => {
     const motivo = reason || cancelReason;
 
+    console.log('[Cancel Operation] Iniciando cancelación:', {
+      motivo,
+      operationId: createdOperation?.id
+    });
+
     if (!motivo.trim()) {
       setError('Por favor, indica el motivo de la cancelación');
       return;
@@ -663,18 +668,29 @@ export default function NuevaOperacionPage() {
     setError(null);
 
     try {
+      console.log('[Cancel Operation] Llamando a API...');
       const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
+      console.log('[Cancel Operation] Respuesta:', response);
 
       if (response.success) {
+        // Cerrar modal primero
+        setIsCancelModalOpen(false);
         // Redirigir al dashboard
+        console.log('[Cancel Operation] Cancelación exitosa, redirigiendo...');
         router.push('/dashboard');
       } else {
+        console.error('[Cancel Operation] Error en respuesta:', response.message);
         setError(response.message || 'Error al cancelar la operación');
         setIsCancelling(false);
       }
     } catch (error: any) {
-      console.error('Error cancelling operation:', error);
-      setError(error.response?.data?.message || 'Error al cancelar la operación');
+      console.error('[Cancel Operation] Error en catch:', error);
+      console.error('[Cancel Operation] Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      setError(error.response?.data?.message || error.message || 'Error al cancelar la operación');
       setIsCancelling(false);
     }
   };
