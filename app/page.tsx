@@ -622,61 +622,99 @@ export default function Home() {
               }
             ].map((step, index) => (
               <div key={index} className="relative animate-step-fade-in flex items-center justify-center" style={{ animationDelay: step.delay }}>
-                <div className="group cursor-pointer relative">
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
+                <div className="group cursor-pointer relative w-full">
+                  {/* Mobile: Card Layout (visible on small screens) */}
+                  <div className="md:hidden">
+                    <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-lg border-2 border-white/60 p-6 h-full">
+                      {/* Step number badge */}
+                      <div className="inline-block mb-3">
+                        <span className="text-xs font-bold bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full">
+                          Paso {step.step}
+                        </span>
+                      </div>
 
-                  {/* Main circle */}
-                  <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
-                    {/* Animated gradient border on hover */}
-                    <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
-                      <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
-                    </div>
-
-                    {/* Floating particles decoration */}
-                    <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
-                    <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
-
-                    {/* Default state: Image and Title */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
-                      {/* Image icon */}
-                      <div className="mb-2 transform">
-                        <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
-                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
-                        </div>
+                      {/* Icon */}
+                      <div className="w-20 h-20 mx-auto mb-4">
+                        <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">
+                      <h3 className="text-lg font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent mb-3">
                         {step.title}
                       </h3>
-                    </div>
 
-                    {/* Hover state: Full description overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
-                      <div className="text-center space-y-2 max-w-[200px]">
-                        {/* Icon on hover (smaller) */}
-                        <div className="w-16 h-16 mx-auto mb-1 transform transition-transform duration-500">
-                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
+                      {/* Divider */}
+                      <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-3"></div>
+
+                      {/* Description */}
+                      <p className="text-sm text-gray-700 leading-snug text-center font-medium mb-2">
+                        {step.description}
+                      </p>
+
+                      {/* Detailed description */}
+                      <p className="text-xs text-primary-600 leading-snug text-center">
+                        {step.detailedDescription}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Desktop: Circle Layout with Hover (hidden on small screens) */}
+                  <div className="hidden md:block">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
+
+                    {/* Main circle */}
+                    <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-56 h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
+                      {/* Animated gradient border on hover */}
+                      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
+                        <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
+                      </div>
+
+                      {/* Floating particles decoration */}
+                      <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
+                      <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
+
+                      {/* Default state: Image and Title */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
+                        {/* Image icon */}
+                        <div className="mb-2 transform">
+                          <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
+                            <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
+                          </div>
                         </div>
 
-                        {/* Title on hover */}
-                        <h3 className="text-base font-bold text-primary-600 mb-1">
+                        {/* Title */}
+                        <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">
                           {step.title}
                         </h3>
+                      </div>
 
-                        {/* Divider */}
-                        <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
+                      {/* Hover state: Full description overlay */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
+                        <div className="text-center space-y-2 max-w-[200px]">
+                          {/* Icon on hover (smaller) */}
+                          <div className="w-16 h-16 mx-auto mb-1 transform transition-transform duration-500">
+                            <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
+                          </div>
 
-                        {/* Description */}
-                        <p className="text-sm text-gray-700 leading-snug px-2 font-medium">
-                          {step.description}
-                        </p>
+                          {/* Title on hover */}
+                          <h3 className="text-base font-bold text-primary-600 mb-1">
+                            {step.title}
+                          </h3>
 
-                        {/* Detailed description */}
-                        <p className="text-xs text-primary-600 leading-snug px-3 mt-1">
-                          {step.detailedDescription}
-                        </p>
+                          {/* Divider */}
+                          <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
+
+                          {/* Description */}
+                          <p className="text-sm text-gray-700 leading-snug px-2 font-medium">
+                            {step.description}
+                          </p>
+
+                          {/* Detailed description */}
+                          <p className="text-xs text-primary-600 leading-snug px-3 mt-1">
+                            {step.detailedDescription}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
