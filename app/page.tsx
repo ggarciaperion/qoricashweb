@@ -345,10 +345,14 @@ export default function Home() {
             {/* Center: Hero Image (Overlapping to the left) */}
             <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
               <div className="relative w-full max-w-[600px] h-auto">
-                <img
+                <Image
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
+                  width={1080}
+                  height={1350}
                   className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
+                  priority
+                  sizes="(max-width: 1024px) 300px, 500px"
                 />
               </div>
             </div>
