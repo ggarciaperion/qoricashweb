@@ -290,7 +290,7 @@ export default function Home() {
         <div className="w-full relative">
           <div className="grid lg:grid-cols-12 gap-3 md:gap-6 items-center relative">
             {/* Left Column: Text Content */}
-            <div className="lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
+            <div className="lg:col-span-4 space-y-3 md:space-y-4 relative z-20 lg:pr-4">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
                 Cambia{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
@@ -342,15 +342,14 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Center: Hero Image (Overlapping to the left) */}
-            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
-              <div className="relative w-full max-w-[600px] h-auto">
-                <img
-                  src="/hero-visual.png"
-                  alt="QoriCash Exchange"
-                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
-                />
-              </div>
+            {/* Center: Hero Image (overlapping into text column) */}
+            <div className="lg:col-span-4 hidden md:block relative min-h-[500px] z-10">
+              <img
+                src="/hero-visual2.png"
+                alt="QoriCash Exchange"
+                className="absolute top-1/2 -translate-y-1/2 h-auto w-auto object-contain animate-float"
+                style={{ right: 0, maxWidth: 'none', maxHeight: '650px' }}
+              />
             </div>
 
             {/* Right Column: Calculator (More Width) */}
