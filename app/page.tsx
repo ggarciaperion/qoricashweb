@@ -867,15 +867,15 @@ export default function Home() {
             },
             {
               q: '¿Cuáles son las comisiones?',
-              a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales. Ganamos la diferencia entre el tipo de cambio de compra y venta, que siempre verás antes de confirmar tu operación.'
+              a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales.'
             },
             {
               q: '¿Cuál es el monto mínimo para operar?',
-              a: 'Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos directamente por WhatsApp para coordinar condiciones especiales.'
+              a: <span>Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold underline underline-offset-2 hover:text-green-700">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span>
             },
             {
               q: '¿Con qué bancos trabajan?',
-              a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Caja de Piura. Puedes enviar y recibir desde cualquiera de ellos.'
+              a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Pichincha. Puedes enviar y recibir desde cualquiera de ellos.'
             },
             {
               q: '¿Cómo se determina el tipo de cambio?',
