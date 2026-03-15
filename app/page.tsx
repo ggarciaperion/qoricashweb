@@ -25,7 +25,10 @@ import {
   ChevronDown,
   HelpCircle,
   Menu,
-  X
+  X,
+  Gift,
+  Share2,
+  Coins
 } from 'lucide-react';
 
 export default function Home() {
@@ -747,6 +750,84 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
+      {/* Referidos */}
+      <section id="referidos" className="py-16 bg-gradient-to-br from-primary-50 via-white to-primary-50">
+        <div className="w-full px-6 sm:px-8 lg:px-12 max-w-5xl mx-auto">
+
+          <div className="text-center mb-12">
+            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Programa de referidos</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
+              Comparte y gana con cada amigo
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm sm:text-base">
+              Invita a tus amigos a QoriCash. Por cada operación que completen, acumulas <strong className="text-primary">pips</strong> que puedes canjear por descuentos reales en tus cambios.
+            </p>
+          </div>
+
+          {/* Pasos */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {[
+              {
+                icon: Share2,
+                step: '01',
+                title: 'Comparte tu código',
+                desc: 'Después de registrarte recibes tu código único. Compártelo con amigos, familia o clientes.'
+              },
+              {
+                icon: UserPlus,
+                step: '02',
+                title: 'Tu amigo se registra',
+                desc: 'Ingresa tu código al crear su cuenta. Sin costo, sin condiciones ocultas.'
+              },
+              {
+                icon: Coins,
+                step: '03',
+                title: 'Ganas pips',
+                desc: 'Cada vez que tu referido complete una operación, acumulas 15 pips automáticamente.'
+              }
+            ].map((item, i) => (
+              <div key={i} className="relative bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-primary" />
+                </div>
+                <span className="text-xs font-bold text-primary-400 tracking-widest mb-1">PASO {item.step}</span>
+                <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                {i < 2 && (
+                  <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                    <ArrowRight className="w-6 h-6 text-primary-300" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Reward callout */}
+          <div className="bg-white rounded-2xl border-2 border-primary-200 p-6 max-w-sm mx-auto text-center mb-10 shadow-md">
+            <div className="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-3">
+              <Gift className="w-7 h-7 text-primary" />
+            </div>
+            <div className="text-4xl font-display font-bold text-primary mb-1">30 pips</div>
+            <div className="text-sm text-gray-600 mb-3">= cupón de descuento para tu próxima operación</div>
+            <div className="text-xs text-gray-400 bg-gray-50 rounded-lg px-3 py-2">
+              15 pips por cada operación completada · Sin límite de referidos
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center">
+            <Link
+              href={isAuthenticated ? "/dashboard/promociones" : "/crear-cuenta"}
+              className="inline-flex items-center gap-2 bg-primary text-secondary px-8 py-4 rounded-full font-bold text-sm hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
+            >
+              {isAuthenticated ? 'Ver mi código de referido' : 'Crear cuenta y empezar a ganar'}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
       <section className="py-12 bg-gradient-to-r from-secondary to-secondary-700">
         <div className="w-full px-6 sm:px-8 lg:px-12 text-center">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
