@@ -330,13 +330,10 @@ export default function Home() {
                   <div className="text-2xl font-bold text-primary">S/ 0</div>
                   <div className="text-xs text-gray-600">Comisiones ocultas</div>
                 </div>
-                <AnimatedStat
-                  value={24}
-                  suffix="/7"
-                  label="Disponible siempre"
-                  decimals={0}
-                  duration={2500}
-                />
+                <div>
+                  <div className="text-2xl font-bold text-primary">L–V 9–6</div>
+                  <div className="text-xs text-gray-600">Sáb 9–1pm · Atención real</div>
+                </div>
               </div>
             </div>
 
