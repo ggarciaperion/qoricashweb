@@ -37,6 +37,7 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     // TODO: Fetch real rates from API
@@ -761,6 +762,70 @@ export default function Home() {
             {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
           </Link>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-16 bg-white">
+        <div className="w-full px-6 sm:px-8 lg:px-12 max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Preguntas frecuentes</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">
+              Todo lo que necesitas saber
+            </h2>
+          </div>
+
+          {[
+            {
+              q: '¿Cuánto tiempo tarda mi operación?',
+              a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.'
+            },
+            {
+              q: '¿Es seguro cambiar dólares con QoriCash?',
+              a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.'
+            },
+            {
+              q: '¿Cuáles son las comisiones?',
+              a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales. Ganamos la diferencia entre el tipo de cambio de compra y venta, que siempre verás antes de confirmar tu operación.'
+            },
+            {
+              q: '¿Cuál es el monto mínimo para operar?',
+              a: 'Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos directamente por WhatsApp para coordinar condiciones especiales.'
+            },
+            {
+              q: '¿Con qué bancos trabajan?',
+              a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Caja de Piura. Puedes enviar y recibir desde cualquiera de ellos.'
+            },
+            {
+              q: '¿Cómo se determina el tipo de cambio?',
+              a: 'Nuestros traders actualizan las tasas en tiempo real durante el horario de atención, siguiendo el mercado interbancario peruano. Siempre verás el tipo de cambio exacto antes de confirmar.'
+            },
+            {
+              q: '¿Qué documentos necesito para registrarme?',
+              a: 'Solo tu DNI (o CE para extranjeros, RUC para empresas), un correo electrónico y tu número de celular. La verificación de identidad se hace una sola vez antes de tu primera operación.'
+            },
+            {
+              q: '¿Puedo operar si estoy en provincia?',
+              a: 'Sí. QoriCash es 100% digital, por lo que puedes operar desde cualquier lugar del Perú siempre que tengas acceso a la banca online de tu banco para realizar la transferencia.'
+            },
+          ].map((item, i) => (
+            <div key={i} className="border-b border-gray-200 last:border-0">
+              <button
+                className="w-full flex items-center justify-between py-5 text-left gap-4"
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              >
+                <span className="font-semibold text-gray-900 text-sm sm:text-base">{item.q}</span>
+                <ChevronDown
+                  className={`flex-shrink-0 w-5 h-5 text-primary transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {openFaq === i && (
+                <p className="pb-5 text-gray-600 text-sm leading-relaxed">
+                  {item.a}
+                </p>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
