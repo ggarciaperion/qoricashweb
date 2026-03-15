@@ -320,23 +320,21 @@ export default function Home() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
                 <AnimatedStat
-                  value={10}
-                  suffix="k+"
-                  label="Clientes"
-                  duration={2500}
+                  value={15}
+                  prefix="< "
+                  suffix=" min"
+                  label="Tiempo de operación"
+                  duration={2000}
                 />
+                <div>
+                  <div className="text-2xl font-bold text-primary">S/ 0</div>
+                  <div className="text-xs text-gray-600">Comisiones ocultas</div>
+                </div>
                 <AnimatedStat
-                  value={50}
-                  prefix="$"
-                  suffix="M+"
-                  label="Cambiados"
-                  duration={2500}
-                />
-                <AnimatedStat
-                  value={4.9}
-                  suffix="/5"
-                  label="Calificación"
-                  decimals={1}
+                  value={24}
+                  suffix="/7"
+                  label="Disponible siempre"
+                  decimals={0}
                   duration={2500}
                 />
               </div>
