@@ -292,14 +292,14 @@ export default function Home() {
             {/* Left Column: Text Content */}
             <div className="lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                Cambia{' '}
+                El cambio de{' '}
                 <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
                   dólares
                 </span>{' '}
-                al mejor precio
+                que siempre quisiste tener
               </h1>
               <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                Compra y vende dólares de forma segura, rápida y con los mejores tipos de cambio del mercado peruano.
+                Personas y empresas cambian millones de soles con QoriCash. Rápido, seguro y sin sorpresas.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
