@@ -342,21 +342,21 @@ export default function Home() {
             </div>
 
             {/* Center: Hero Image */}
-            <div className="lg:col-span-4 flex items-end justify-center relative z-20 hidden md:flex">
-              <div className="relative w-full max-w-[720px] h-auto">
+            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
+              <div className="relative w-full max-w-[600px] h-auto">
                 <Image
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
                   width={1080}
                   height={1350}
-                  className="w-full h-auto object-contain relative z-10 animate-float"
+                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
                   priority
-                  sizes="(max-width: 1024px) 400px, 720px"
+                  sizes="(max-width: 1024px) 300px, 500px"
                 />
               </div>
             </div>
 
-            {/* Right Column: Calculator (More Width) */}
+            {/* Right Column: Calculator */}
             <div className="lg:col-span-4 relative z-30">
               <div className="w-full bg-transparent p-6 pt-4">
                 <Calculator
@@ -365,7 +365,6 @@ export default function Home() {
                     venta: parseFloat(sellRate)
                   }}
                 />
-
                 <div className="flex justify-center">
                   <button
                     onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
