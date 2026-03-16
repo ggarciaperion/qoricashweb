@@ -343,7 +343,7 @@ export default function Home() {
 
             {/* Center: Hero Image */}
             <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
-              <div className="relative w-full max-w-[600px] h-auto">
+              <div className="relative w-full max-w-[380px] h-auto">
                 <Image
                   src="/hero-visual.png"
                   alt="QoriCash Exchange"
