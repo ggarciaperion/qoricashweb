@@ -23,7 +23,7 @@ export interface User {
   departamento?: string;
   full_address?: string; // Dirección completa calculada por el backend
 
-  role: 'Cliente' | 'Trader' | 'Middle Office' | 'Master' | 'Plataforma';
+  role: 'Cliente' | 'Trader' | 'Middle Office' | 'Master' | 'Plataforma' | 'Operador';
   estado: 'Activo' | 'Inactivo' | 'Suspendido';
   origen?: 'Lima' | 'Provincia';
   fecha_registro: string;

@@ -27,7 +27,7 @@ import {
 // Types & helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ALLOWED_ROLES = ['Master', 'Middle Office', 'Trader'];
+const ALLOWED_ROLES = ['Master', 'Operador'];
 
 interface AperturaState {
   confirmed: boolean;

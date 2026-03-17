@@ -223,7 +223,7 @@ export default function DashboardPage() {
                       <TrendingUp className="w-5 h-5 mr-3" />
                       Mi Dashboard
                     </Link>
-                    {(['Master', 'Middle Office', 'Trader'] as const).includes(user?.role as any) && (
+                    {(['Master', 'Operador'] as const).includes(user?.role as any) && (
                       <Link
                         href="/dashboard/posicion"
                         className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
