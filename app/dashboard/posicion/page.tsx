@@ -30,6 +30,11 @@ import {
   Check,
   Scale,
   ArrowRight,
+  X,
+  ChevronRight,
+  Flag,
+  Loader2,
+  Moon,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -44,6 +49,21 @@ interface AperturaState {
   operatorId: number;
   timestamp: string;
   date: string;
+}
+
+interface CierreState {
+  confirmed: boolean;
+  operatorName: string;
+  operatorId: number;
+  timestamp: string;
+  date: string;
+  summary: {
+    utilidad: number;
+    totalOps: number;
+    posicionFinal: number;
+    etiqueta: string;
+    pendientes: number;
+  };
 }
 
 function getTodayPeru(): string {
@@ -67,6 +87,24 @@ function loadApertura(date: string): AperturaState | null {
 
 function saveApertura(state: AperturaState) {
   localStorage.setItem(getAperturaKey(state.date), JSON.stringify(state));
+}
+
+function getCierreKey(date: string) {
+  return `qoricash-cierre-${date}`;
+}
+
+function loadCierre(date: string): CierreState | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(getCierreKey(date));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveCierre(state: CierreState) {
+  localStorage.setItem(getCierreKey(state.date), JSON.stringify(state));
 }
 
 function getSemaforo(diferencia_usd: number) {
@@ -192,6 +230,16 @@ export default function PosicionPage() {
   // Sprint 3: export / copy state
   const [copied, setCopied] = useState(false);
 
+  // Sprint 4: cierre del día
+  const [cierre, setCierre] = useState<CierreState | null>(null);
+  const [isConfirmingCierre, setIsConfirmingCierre] = useState(false);
+  const [showCierreModal, setShowCierreModal] = useState(false);
+
+  // Sprint 4: detalle de operación
+  const [selectedOp, setSelectedOp] = useState<(OperationRow & { opType: 'Compra' | 'Venta' }) | null>(null);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusNote, setStatusNote] = useState('');
+
   // Operations table filters
   const [tabOps, setTabOps] = useState<TabOps>('todas');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
@@ -222,10 +270,10 @@ export default function PosicionPage() {
     }
   }, [isAuthenticated, user]);
 
-  // Load apertura state
+  // Load apertura + cierre state
   useEffect(() => {
-    const state = loadApertura(fecha);
-    setApertura(state);
+    setApertura(loadApertura(fecha));
+    setCierre(loadCierre(fecha));
   }, [fecha]);
 
   // Load data
@@ -308,6 +356,51 @@ export default function PosicionPage() {
       alert(err?.response?.data?.error || 'Error al actualizar saldo');
     } finally {
       setIsSavingBalance(false);
+    }
+  };
+
+  // ── Sprint 4: Confirmar cierre ──
+  const handleConfirmCierre = () => {
+    if (!user || !posicion) return;
+    setIsConfirmingCierre(true);
+    setTimeout(() => {
+      const pendientes = allOps.filter((o) => o.status === 'Pendiente' || o.status === 'En proceso').length;
+      const state: CierreState = {
+        confirmed: true,
+        operatorName: user.full_name || `${user.nombres} ${user.apellidos}`,
+        operatorId: user.id,
+        timestamp: new Date().toISOString(),
+        date: fecha,
+        summary: {
+          utilidad: posicion.utilidad_pen,
+          totalOps: posicion.total_operaciones,
+          posicionFinal: posicion.diferencia_usd,
+          etiqueta: posicion.etiqueta_diferencia,
+          pendientes,
+        },
+      };
+      saveCierre(state);
+      setCierre(state);
+      setIsConfirmingCierre(false);
+      setShowCierreModal(false);
+    }, 600);
+  };
+
+  // ── Sprint 4: Cambio de estado de operación ──
+  const handleUpdateStatus = async (
+    newStatus: 'Pendiente' | 'En proceso' | 'Completada' | 'Cancelado'
+  ) => {
+    if (!selectedOp) return;
+    setIsUpdatingStatus(true);
+    try {
+      await positionApi.updateOperationStatus(selectedOp.id, newStatus, statusNote || undefined);
+      setSelectedOp(null);
+      setStatusNote('');
+      await loadData();
+    } catch (err: any) {
+      alert(err?.response?.data?.message || 'Error al actualizar estado');
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -411,6 +504,7 @@ export default function PosicionPage() {
     .filter((o) => statusFilter === 'all' || o.status === statusFilter);
 
   const criticalCount = allOps.filter((o) => o.es_critica).length;
+  const pendingCount = allOps.filter((o) => o.status === 'Pendiente' || o.status === 'En proceso').length;
 
   const semaforo = posicion ? getSemaforo(posicion.diferencia_usd) : null;
   const spread =
@@ -436,6 +530,12 @@ export default function PosicionPage() {
               <div className="flex items-center gap-2">
                 <BarChart2 className="w-5 h-5 text-primary-600" />
                 <h1 className="text-base font-bold text-gray-900">Posición del Día</h1>
+                {pendingCount > 0 && (
+                  <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3" />
+                    {pendingCount} pendiente{pendingCount > 1 ? 's' : ''}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -672,6 +772,72 @@ export default function PosicionPage() {
                 </div>
               )}
             </div>
+            {/* ── Cierre del Día ── */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Moon className="w-4 h-4 text-gray-500" />
+                  <h2 className="text-sm font-bold text-gray-800">Cierre del Día</h2>
+                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{fecha}</span>
+                </div>
+              </div>
+
+              {cierre?.confirmed ? (
+                <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Flag className="w-4 h-4 text-indigo-500 shrink-0" />
+                    <span className="text-sm font-bold text-indigo-800">Cierre confirmado</span>
+                    <span className="text-sm text-indigo-700">
+                      por <strong>{cierre.operatorName}</strong> a las <strong>{formatTime(cierre.timestamp)}</strong>
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-xs">
+                    <div className="bg-white/70 rounded-lg px-3 py-2">
+                      <div className="text-indigo-400 font-semibold mb-0.5">Utilidad</div>
+                      <div className={`font-extrabold font-mono ${cierre.summary.utilidad >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                        S/{cierre.summary.utilidad.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="bg-white/70 rounded-lg px-3 py-2">
+                      <div className="text-indigo-400 font-semibold mb-0.5">Operaciones</div>
+                      <div className="font-extrabold text-indigo-800">{cierre.summary.totalOps}</div>
+                    </div>
+                    <div className="bg-white/70 rounded-lg px-3 py-2">
+                      <div className="text-indigo-400 font-semibold mb-0.5">Posición final</div>
+                      <div className="font-extrabold font-mono text-indigo-800">${Math.abs(cierre.summary.posicionFinal).toFixed(2)}</div>
+                    </div>
+                    <div className={`rounded-lg px-3 py-2 ${cierre.summary.pendientes > 0 ? 'bg-yellow-50' : 'bg-white/70'}`}>
+                      <div className="text-indigo-400 font-semibold mb-0.5">Pendientes</div>
+                      <div className={`font-extrabold ${cierre.summary.pendientes > 0 ? 'text-yellow-600' : 'text-green-600'}`}>
+                        {cierre.summary.pendientes}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Moon className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-500 font-medium">
+                        {apertura?.confirmed
+                          ? `Cierre pendiente${pendingCount > 0 ? ` · ${pendingCount} ops sin completar` : ''}`
+                          : 'Confirma la apertura antes de cerrar el día'}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowCierreModal(true)}
+                    disabled={!apertura?.confirmed || !posicion}
+                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Flag className="w-4 h-4" />
+                    Confirmar Cierre
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* ── Subtotales por estado ── */}
             {posicion && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -702,6 +868,7 @@ export default function PosicionPage() {
                   <div className="flex items-center gap-3">
                     <List className="w-4 h-4 text-gray-500" />
                     <h2 className="text-sm font-bold text-gray-800">Operaciones del Día</h2>
+                    <span className="text-xs text-gray-400 hidden sm:inline">Click en una fila para ver detalle</span>
                     {criticalCount > 0 && (
                       <span className="flex items-center gap-1 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
                         <AlertTriangle className="w-3 h-3" />
@@ -771,10 +938,11 @@ export default function PosicionPage() {
                         return (
                           <tr
                             key={`${op.opType}-${op.id}`}
-                            className={`transition ${
+                            onClick={() => setSelectedOp(op)}
+                            className={`cursor-pointer transition ${
                               op.es_critica
-                                ? 'bg-red-50/60 hover:bg-red-50'
-                                : 'hover:bg-gray-50/60'
+                                ? 'bg-red-50/60 hover:bg-red-100'
+                                : 'hover:bg-primary-50/40'
                             }`}
                           >
                             {/* Código */}
@@ -1130,6 +1298,213 @@ export default function PosicionPage() {
         {/* Bottom spacer */}
         <div className="h-4" />
       </main>
+
+      {/* ── Modal: Confirmar Cierre ── */}
+      {showCierreModal && posicion && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Flag className="w-5 h-5 text-indigo-500" />
+                <h3 className="text-base font-bold text-gray-900">Confirmar Cierre del Día</h3>
+              </div>
+              <button onClick={() => setShowCierreModal(false)} className="text-gray-400 hover:text-gray-600 transition">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-500 mb-5">
+              Estás por cerrar el día <strong>{fecha}</strong>. Esto registrará el resumen final.
+            </p>
+
+            {/* Resumen */}
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2 mb-5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Utilidad bruta</span>
+                <span className={`font-bold ${posicion.utilidad_pen >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  S/ {posicion.utilidad_pen.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Total operaciones</span>
+                <span className="font-bold text-gray-800">{posicion.total_operaciones}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Posición neta</span>
+                <span className="font-bold text-gray-800">
+                  ${Math.abs(posicion.diferencia_usd).toFixed(2)} {posicion.etiqueta_diferencia}
+                </span>
+              </div>
+              <div className="flex justify-between border-t border-gray-200 pt-2">
+                <span className="text-gray-500">Ops sin completar</span>
+                <span className={`font-bold ${pendingCount > 0 ? 'text-yellow-600' : 'text-green-600'}`}>
+                  {pendingCount}
+                </span>
+              </div>
+            </div>
+
+            {pendingCount > 0 && (
+              <div className="flex items-start gap-2 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 mb-4 text-xs text-yellow-700">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>Hay <strong>{pendingCount} operaciones</strong> pendientes o en proceso. Puedes cerrar igualmente pero quedará registrado.</span>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCierreModal(false)}
+                className="flex-1 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmCierre}
+                disabled={isConfirmingCierre}
+                className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {isConfirmingCierre ? <Loader2 className="w-4 h-4 animate-spin" /> : <Flag className="w-4 h-4" />}
+                Confirmar Cierre
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: Detalle de Operación ── */}
+      {selectedOp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  {selectedOp.opType === 'Compra'
+                    ? <ArrowDownCircle className="w-4 h-4 text-primary-600" />
+                    : <ArrowUpCircle className="w-4 h-4 text-orange-500" />
+                  }
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                    selectedOp.opType === 'Compra'
+                      ? 'bg-primary-50 text-primary-700'
+                      : 'bg-orange-50 text-orange-700'
+                  }`}>{selectedOp.opType}</span>
+                  <span className="font-mono text-xs text-gray-400">{selectedOp.operation_id}</span>
+                </div>
+                <h3 className="text-base font-bold text-gray-900">{selectedOp.client_name}</h3>
+              </div>
+              <button onClick={() => { setSelectedOp(null); setStatusNote(''); }} className="text-gray-400 hover:text-gray-600 transition">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Datos */}
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2 mb-4 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Monto USD</span>
+                <span className="font-bold font-mono text-gray-800">${selectedOp.amount_usd.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Tipo de cambio</span>
+                <span className="font-bold font-mono text-gray-800">{selectedOp.exchange_rate.toFixed(4)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Monto PEN</span>
+                <span className="font-bold font-mono text-gray-800">S/{selectedOp.amount_pen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between border-t border-gray-200 pt-2">
+                <span className="text-gray-500">Hora</span>
+                <span className="font-medium text-gray-700">{formatTime(selectedOp.created_at)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Tiempo transcurrido</span>
+                <span className={`font-medium ${selectedOp.horas_transcurridas > 24 ? 'text-red-500' : 'text-gray-700'}`}>
+                  {selectedOp.horas_transcurridas < 1
+                    ? `${Math.round(selectedOp.horas_transcurridas * 60)} min`
+                    : `${selectedOp.horas_transcurridas.toFixed(1)} h`}
+                </span>
+              </div>
+              {selectedOp.es_critica && selectedOp.razon_critica && (
+                <div className="flex items-start gap-2 bg-red-50 rounded-lg px-3 py-2 border border-red-200">
+                  <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <span className="text-xs text-red-700 font-medium">{selectedOp.razon_critica}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Estado actual */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Estado actual</span>
+                <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusBadge(selectedOp.status).cls}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${getStatusBadge(selectedOp.status).dot}`} />
+                  {selectedOp.status}
+                </span>
+              </div>
+
+              {/* Nota opcional */}
+              {selectedOp.status !== 'Completada' && selectedOp.status !== 'Cancelado' && (
+                <input
+                  type="text"
+                  value={statusNote}
+                  onChange={(e) => setStatusNote(e.target.value)}
+                  placeholder="Nota opcional (ej: cliente confirmó transferencia)"
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-300 mb-3"
+                />
+              )}
+            </div>
+
+            {/* Botones de cambio de estado */}
+            {selectedOp.status === 'Pendiente' && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleUpdateStatus('En proceso')}
+                  disabled={isUpdatingStatus}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition disabled:opacity-60"
+                >
+                  {isUpdatingStatus ? <Loader2 className="w-4 h-4 animate-spin" /> : <ChevronRight className="w-4 h-4" />}
+                  En Proceso
+                </button>
+                <button
+                  onClick={() => handleUpdateStatus('Completada')}
+                  disabled={isUpdatingStatus}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-60"
+                >
+                  {isUpdatingStatus ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  Completada
+                </button>
+              </div>
+            )}
+            {selectedOp.status === 'En proceso' && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleUpdateStatus('Completada')}
+                  disabled={isUpdatingStatus}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-60"
+                >
+                  {isUpdatingStatus ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  Marcar Completada
+                </button>
+              </div>
+            )}
+            {(selectedOp.status === 'Pendiente' || selectedOp.status === 'En proceso') && (
+              <button
+                onClick={() => handleUpdateStatus('Cancelado')}
+                disabled={isUpdatingStatus}
+                className="w-full mt-2 py-2 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 text-sm font-semibold transition disabled:opacity-60"
+              >
+                Cancelar operación
+              </button>
+            )}
+            {(selectedOp.status === 'Completada' || selectedOp.status === 'Cancelado') && (
+              <button
+                onClick={() => { setSelectedOp(null); setStatusNote(''); }}
+                className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold transition"
+              >
+                Cerrar
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Edit Balance Modal ── */}
       {editingBalance && (

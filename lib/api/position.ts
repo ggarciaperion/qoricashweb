@@ -110,4 +110,16 @@ export const positionApi = {
     });
     return response.data;
   },
+
+  async updateOperationStatus(
+    operationId: number,
+    status: 'Pendiente' | 'En proceso' | 'Completada' | 'Cancelado',
+    notes?: string
+  ) {
+    const response = await apiClient.patch(
+      `/operations/api/update_status/${operationId}`,
+      { status, ...(notes ? { notes } : {}) }
+    );
+    return response.data;
+  },
 };
