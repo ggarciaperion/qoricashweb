@@ -7,6 +7,7 @@ import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
 import { operationsApi } from '@/lib/api/operations';
 import { banksApi } from '@/lib/api/banks';
+import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import type { BankAccount } from '@/lib/types';
 import AddBankAccountModal from '@/components/modals/AddBankAccountModal';
 import {
@@ -901,60 +902,7 @@ export default function NuevaOperacionPage() {
 
     console.log('[getQoricashAccount] Banco cliente (original):', clientBankRaw, '(normalizado):', clientBank, 'Moneda:', currency, 'Tipo operación:', operationType);
 
-    // Cuentas QoriCash — Cuentas Corrientes reales a nombre de QORICASH SAC
-    const qoricashAccounts: any = {
-      'BCP': {
-        '$': {
-          banco: 'BCP',
-          tipo: 'Cuenta Corriente USD',
-          numero: '1917357790119',
-          cci: '00219100735779011959',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-        'S/': {
-          banco: 'BCP',
-          tipo: 'Cuenta Corriente S/',
-          numero: '1937353150041',
-          cci: '00219300735315004118',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-      },
-      'INTERBANK': {
-        '$': {
-          banco: 'Interbank',
-          tipo: 'Cuenta Corriente USD',
-          numero: '200-3007757589',
-          cci: '00320000300775758939',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-        'S/': {
-          banco: 'Interbank',
-          tipo: 'Cuenta Corriente S/',
-          numero: '200-3007757571',
-          cci: '00320000300775757137',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-      },
-      // PICHINCHA y BANBIF: no operamos con estas cuentas — reservado para futura configuración
-    };
-
-    // BBVA, Scotiabank, Pichincha, BanBif, Otros → CCI de Interbank
-    if (['BBVA', 'SCOTIABANK', 'PICHINCHA', 'BANBIF', 'OTROS'].includes(clientBank)) {
-      return {
-        banco: 'Interbank (CCI)',
-        tipo: currency === '$' ? 'Cuenta Corriente USD' : 'Cuenta Corriente S/',
-        cci: currency === '$' ? '00320000300775758939' : '00320000300775757137',
-        titular: 'QoriCash SAC',
-        ruc: '20615113698',
-        useCCI: true,
-      };
-    }
-
-    return qoricashAccounts[clientBank]?.[currency] || null;
+    return getQoricashAccount(clientBank, currency);
   };
 
   const exchangeRates = currentRates
