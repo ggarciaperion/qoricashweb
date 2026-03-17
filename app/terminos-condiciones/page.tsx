@@ -189,8 +189,8 @@ export default function TerminosCondiciones() {
 
                 <h3 className="font-semibold text-gray-900 mt-6">4.3 Tiempos de Procesamiento</h3>
                 <div className="bg-primary-50 rounded-xl p-6 space-y-2">
-                  <p><strong>Transferencias inmediatas:</strong> Menos de 10 minutos (BCP, Interbank, BanBif, Banco Pichincha)</p>
-                  <p><strong>Transferencias interbancarias:</strong> Hasta 2 horas hábiles (BBVA, Scotiabank)</p>
+                  <p><strong>Transferencias inmediatas:</strong> Menos de 10 minutos (BCP, Interbank)</p>
+                  <p><strong>Transferencias interbancarias:</strong> Hasta 2 horas hábiles (BBVA, Scotiabank y otros)</p>
                 </div>
 
                 <div className="bg-red-50 border-l-4 border-red-400 p-4 mt-4">

@@ -81,8 +81,8 @@ export const banksApi = {
     return [
       { value: 'BCP', label: 'BCP', requiresCCI: false },
       { value: 'INTERBANK', label: 'INTERBANK', requiresCCI: false },
-      { value: 'PICHINCHA', label: 'PICHINCHA', requiresCCI: false },
-      { value: 'BANBIF', label: 'BANBIF', requiresCCI: false },
+      { value: 'PICHINCHA', label: 'PICHINCHA (no disponible)', requiresCCI: false, disabled: true },
+      { value: 'BANBIF', label: 'BANBIF (no disponible)', requiresCCI: false, disabled: true },
       { value: 'BBVA', label: 'BBVA', requiresCCI: true },
       { value: 'SCOTIABANK', label: 'SCOTIABANK', requiresCCI: true },
       { value: 'OTROS', label: 'OTROS', requiresCCI: true },

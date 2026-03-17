@@ -222,7 +222,7 @@ export default function AgregarCuentaPage() {
                     {!selectedOrigen ? 'Primero selecciona el origen' : 'Selecciona un banco'}
                   </option>
                   {banksList.map((bank) => (
-                    <option key={bank.value} value={bank.value}>
+                    <option key={bank.value} value={bank.value} disabled={(bank as any).disabled}>
                       {bank.label}
                     </option>
                   ))}

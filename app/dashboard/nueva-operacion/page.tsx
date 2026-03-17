@@ -901,22 +901,22 @@ export default function NuevaOperacionPage() {
 
     console.log('[getQoricashAccount] Banco cliente (original):', clientBankRaw, '(normalizado):', clientBank, 'Moneda:', currency, 'Tipo operación:', operationType);
 
-    // Cuentas QoriCash REALES
+    // Cuentas QoriCash — Cuentas Corrientes reales a nombre de QORICASH SAC
     const qoricashAccounts: any = {
       'BCP': {
         '$': {
           banco: 'BCP',
           tipo: 'Cuenta Corriente USD',
-          numero: '193-2458769-1-25',
-          cci: '00219300245876912501',
+          numero: '1917357790119',
+          cci: '00219100735779011959',
           titular: 'QoriCash SAC',
           ruc: '20615113698'
         },
         'S/': {
           banco: 'BCP',
           tipo: 'Cuenta Corriente S/',
-          numero: '193-2458769-0-84',
-          cci: '00219300245876908425',
+          numero: '1937353150041',
+          cci: '00219300735315004118',
           titular: 'QoriCash SAC',
           ruc: '20615113698'
         },
@@ -925,66 +925,31 @@ export default function NuevaOperacionPage() {
         '$': {
           banco: 'Interbank',
           tipo: 'Cuenta Corriente USD',
-          numero: '200-3001458796',
-          cci: '00320013001458796015',
+          numero: '200-3007757589',
+          cci: '00320000300775758939',
           titular: 'QoriCash SAC',
           ruc: '20615113698'
         },
         'S/': {
           banco: 'Interbank',
           tipo: 'Cuenta Corriente S/',
-          numero: '200-3001458795',
-          cci: '00320013001458795013',
+          numero: '200-3007757571',
+          cci: '00320000300775757137',
           titular: 'QoriCash SAC',
           ruc: '20615113698'
         },
       },
-      'PICHINCHA': {
-        '$': {
-          banco: 'Pichincha',
-          tipo: 'Cuenta Corriente USD',
-          numero: '30025896547',
-          cci: '10103000025896547012',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-        'S/': {
-          banco: 'Pichincha',
-          tipo: 'Cuenta Corriente S/',
-          numero: '30025896548',
-          cci: '10103000025896548010',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-      },
-      'BANBIF': {
-        '$': {
-          banco: 'BanBif',
-          tipo: 'Cuenta Corriente USD',
-          numero: '7002587493621',
-          cci: '03870012587493621058',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-        'S/': {
-          banco: 'BanBif',
-          tipo: 'Cuenta Corriente S/',
-          numero: '7002587493620',
-          cci: '03870012587493620056',
-          titular: 'QoriCash SAC',
-          ruc: '20615113698'
-        },
-      },
+      // PICHINCHA y BANBIF: no operamos con estas cuentas — reservado para futura configuración
     };
 
-    // BBVA, Scotiabank, Otros → Solo CCI de Interbank
-    if (['BBVA', 'SCOTIABANK', 'OTROS'].includes(clientBank)) {
+    // BBVA, Scotiabank, Pichincha, BanBif, Otros → CCI de Interbank
+    if (['BBVA', 'SCOTIABANK', 'PICHINCHA', 'BANBIF', 'OTROS'].includes(clientBank)) {
       return {
         banco: 'Interbank (CCI)',
         tipo: currency === '$' ? 'Cuenta Corriente USD' : 'Cuenta Corriente S/',
-        cci: currency === '$' ? '00320013001458796015' : '00320013001458795013',
+        cci: currency === '$' ? '00320000300775758939' : '00320000300775757137',
         titular: 'QoriCash SAC',
-        ruc: '20202020202',
+        ruc: '20615113698',
         useCCI: true,
       };
     }
