@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store/authStore';
 import { positionApi } from '@/lib/api/position';
-import type { PositionData, BankRow, PositionApiResponse, ReconciliationApiResponse } from '@/lib/api/position';
+import type { PositionData, BankRow, OperationRow } from '@/lib/api/position';
 import {
   RefreshCw,
   AlertTriangle,
@@ -21,6 +21,10 @@ import {
   Unlock,
   BarChart2,
   Activity,
+  Filter,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  List,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,6 +137,22 @@ function formatTime(iso: string) {
   });
 }
 
+type TabOps = 'todas' | 'compras' | 'ventas';
+type StatusFilter = 'all' | 'Pendiente' | 'En proceso' | 'Completada';
+
+function getStatusBadge(status: string) {
+  switch (status) {
+    case 'Pendiente':
+      return { cls: 'bg-yellow-100 text-yellow-800', dot: 'bg-yellow-500' };
+    case 'En proceso':
+      return { cls: 'bg-blue-100 text-blue-800', dot: 'bg-blue-500' };
+    case 'Completada':
+      return { cls: 'bg-green-100 text-green-800', dot: 'bg-green-500' };
+    default:
+      return { cls: 'bg-gray-100 text-gray-700', dot: 'bg-gray-400' };
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -143,11 +163,17 @@ export default function PosicionPage() {
 
   const [fecha, setFecha] = useState(getTodayPeru());
   const [posicion, setPosicion] = useState<PositionData | null>(null);
+  const [compras, setCompras] = useState<OperationRow[]>([]);
+  const [ventas, setVentas] = useState<OperationRow[]>([]);
   const [banks, setBanks] = useState<BankRow[]>([]);
   const [hasCriticalDiscrepancy, setHasCriticalDiscrepancy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Operations table filters
+  const [tabOps, setTabOps] = useState<TabOps>('todas');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
   // Apertura state
   const [apertura, setApertura] = useState<AperturaState | null>(null);
@@ -190,7 +216,11 @@ export default function PosicionPage() {
         positionApi.getPosition(fecha),
         positionApi.getReconciliation(fecha),
       ]);
-      if (posRes.success) setPosicion(posRes.posicion);
+      if (posRes.success) {
+        setPosicion(posRes.posicion);
+        setCompras(posRes.compras);
+        setVentas(posRes.ventas);
+      }
       if (reconRes.success) {
         setBanks(reconRes.banks);
         setHasCriticalDiscrepancy(reconRes.has_critical_discrepancy);
@@ -263,6 +293,18 @@ export default function PosicionPage() {
   if (!isAuthenticated || !user || !ALLOWED_ROLES.includes(user.role)) {
     return null;
   }
+
+  // Filtered operations
+  const allOps = [
+    ...compras.map((o) => ({ ...o, opType: 'Compra' as const })),
+    ...ventas.map((o) => ({ ...o, opType: 'Venta' as const })),
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const filteredOps = allOps
+    .filter((o) => tabOps === 'todas' || (tabOps === 'compras' ? o.opType === 'Compra' : o.opType === 'Venta'))
+    .filter((o) => statusFilter === 'all' || o.status === statusFilter);
+
+  const criticalCount = allOps.filter((o) => o.es_critica).length;
 
   const semaforo = posicion ? getSemaforo(posicion.diferencia_usd) : null;
   const spread =
@@ -503,6 +545,200 @@ export default function PosicionPage() {
                     )}
                     Confirmar Apertura
                   </button>
+                </div>
+              )}
+            </div>
+            {/* ── Subtotales por estado ── */}
+            {posicion && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Compras completadas</div>
+                  <div className="text-base font-extrabold text-green-600">{formatUSD(posicion.compras_completadas_usd)}</div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Compras pendientes</div>
+                  <div className="text-base font-extrabold text-yellow-600">{formatUSD(posicion.compras_pendientes_usd)}</div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Ventas completadas</div>
+                  <div className="text-base font-extrabold text-green-600">{formatUSD(posicion.ventas_completadas_usd)}</div>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Ventas pendientes</div>
+                  <div className="text-base font-extrabold text-yellow-600">{formatUSD(posicion.ventas_pendientes_usd)}</div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Tabla de operaciones ── */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              {/* Header + Filtros */}
+              <div className="px-5 py-4 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <List className="w-4 h-4 text-gray-500" />
+                    <h2 className="text-sm font-bold text-gray-800">Operaciones del Día</h2>
+                    {criticalCount > 0 && (
+                      <span className="flex items-center gap-1 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                        <AlertTriangle className="w-3 h-3" />
+                        {criticalCount} crítica{criticalCount > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {/* Type tabs */}
+                    <div className="flex bg-gray-100 rounded-lg p-0.5 text-xs font-semibold">
+                      {(['todas', 'compras', 'ventas'] as TabOps[]).map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setTabOps(t)}
+                          className={`px-3 py-1.5 rounded-md capitalize transition ${
+                            tabOps === t ? 'bg-white shadow text-gray-800' : 'text-gray-500 hover:text-gray-700'
+                          }`}
+                        >
+                          {t === 'todas' && <List className="w-3 h-3 inline mr-1" />}
+                          {t === 'compras' && <ArrowDownCircle className="w-3 h-3 inline mr-1 text-primary-500" />}
+                          {t === 'ventas' && <ArrowUpCircle className="w-3 h-3 inline mr-1 text-orange-500" />}
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Status filter */}
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <Filter className="w-3.5 h-3.5" />
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+                        className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs font-medium text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-primary-300"
+                      >
+                        <option value="all">Todos los estados</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En proceso">En proceso</option>
+                        <option value="Completada">Completada</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Table */}
+              {filteredOps.length === 0 ? (
+                <div className="text-center py-12 text-gray-400 text-sm">
+                  No hay operaciones para los filtros seleccionados
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-100">
+                        <th className="text-left px-5 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Código</th>
+                        <th className="text-left px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Cliente</th>
+                        <th className="text-center px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Tipo</th>
+                        <th className="text-right px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">USD</th>
+                        <th className="text-right px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">TC</th>
+                        <th className="text-right px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">PEN</th>
+                        <th className="text-center px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Estado</th>
+                        <th className="text-center px-3 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide">Hora</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {filteredOps.map((op) => {
+                        const badge = getStatusBadge(op.status);
+                        return (
+                          <tr
+                            key={`${op.opType}-${op.id}`}
+                            className={`transition ${
+                              op.es_critica
+                                ? 'bg-red-50/60 hover:bg-red-50'
+                                : 'hover:bg-gray-50/60'
+                            }`}
+                          >
+                            {/* Código */}
+                            <td className="px-5 py-3 font-mono text-xs text-gray-500">
+                              <div className="flex items-center gap-1.5">
+                                {op.es_critica && (
+                                  <AlertTriangle className="w-3.5 h-3.5 text-red-500 shrink-0" aria-label={op.razon_critica || 'Crítica'} />
+                                )}
+                                {op.operation_id}
+                              </div>
+                              {op.es_critica && op.razon_critica && (
+                                <div className="text-red-500 text-[10px] mt-0.5">{op.razon_critica}</div>
+                              )}
+                            </td>
+
+                            {/* Cliente */}
+                            <td className="px-3 py-3 text-gray-800 font-medium max-w-[140px] truncate">
+                              {op.client_name}
+                            </td>
+
+                            {/* Tipo */}
+                            <td className="px-3 py-3 text-center">
+                              <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full ${
+                                op.opType === 'Compra'
+                                  ? 'bg-primary-50 text-primary-700'
+                                  : 'bg-orange-50 text-orange-700'
+                              }`}>
+                                {op.opType === 'Compra'
+                                  ? <ArrowDownCircle className="w-3 h-3" />
+                                  : <ArrowUpCircle className="w-3 h-3" />
+                                }
+                                {op.opType}
+                              </span>
+                            </td>
+
+                            {/* USD */}
+                            <td className="px-3 py-3 text-right font-mono font-semibold text-gray-800">
+                              ${op.amount_usd.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                            </td>
+
+                            {/* TC */}
+                            <td className="px-3 py-3 text-right font-mono text-gray-500 text-xs">
+                              {op.exchange_rate.toFixed(4)}
+                            </td>
+
+                            {/* PEN */}
+                            <td className="px-3 py-3 text-right font-mono font-semibold text-gray-700">
+                              S/{op.amount_pen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                            </td>
+
+                            {/* Estado */}
+                            <td className="px-3 py-3 text-center">
+                              <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
+                                {op.status}
+                              </span>
+                            </td>
+
+                            {/* Hora */}
+                            <td className="px-3 py-3 text-center text-xs text-gray-500 whitespace-nowrap">
+                              <div>{formatTime(op.created_at)}</div>
+                              {op.horas_transcurridas > 1 && (
+                                <div className={`text-[10px] font-medium ${op.horas_transcurridas > 24 ? 'text-red-500' : 'text-gray-400'}`}>
+                                  {op.horas_transcurridas.toFixed(0)}h
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    {/* Footer: totals */}
+                    <tfoot>
+                      <tr className="bg-gray-50 border-t border-gray-200">
+                        <td colSpan={3} className="px-5 py-2.5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                          Total ({filteredOps.length} operaciones)
+                        </td>
+                        <td className="px-3 py-2.5 text-right font-mono font-extrabold text-gray-800 text-sm">
+                          ${filteredOps.reduce((s, o) => s + o.amount_usd, 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td />
+                        <td className="px-3 py-2.5 text-right font-mono font-extrabold text-gray-700 text-sm">
+                          S/{filteredOps.reduce((s, o) => s + o.amount_pen, 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td colSpan={2} />
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               )}
             </div>
