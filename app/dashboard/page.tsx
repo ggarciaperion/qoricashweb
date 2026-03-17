@@ -30,6 +30,7 @@ import {
   Image as ImageIcon,
   Calendar,
   Building2,
+  BarChart2,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -222,6 +223,16 @@ export default function DashboardPage() {
                       <TrendingUp className="w-5 h-5 mr-3" />
                       Mi Dashboard
                     </Link>
+                    {(['Master', 'Middle Office', 'Trader'] as const).includes(user?.role as any) && (
+                      <Link
+                        href="/dashboard/posicion"
+                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <BarChart2 className="w-5 h-5 mr-3" />
+                        Posición del Día
+                      </Link>
+                    )}
                     <a
                       href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
                       target="_blank"
