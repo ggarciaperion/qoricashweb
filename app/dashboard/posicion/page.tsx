@@ -25,6 +25,11 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   List,
+  Download,
+  Copy,
+  Check,
+  Scale,
+  ArrowRight,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -137,6 +142,17 @@ function formatTime(iso: string) {
   });
 }
 
+interface MovementsSummary {
+  usd: { inflows: number; outflows: number; net: number };
+  pen: { inflows: number; outflows: number; net: number };
+  completed_operations: number;
+}
+
+interface TotalDifferences {
+  usd: number;
+  pen: number;
+}
+
 type TabOps = 'todas' | 'compras' | 'ventas';
 type StatusFilter = 'all' | 'Pendiente' | 'En proceso' | 'Completada';
 
@@ -166,10 +182,15 @@ export default function PosicionPage() {
   const [compras, setCompras] = useState<OperationRow[]>([]);
   const [ventas, setVentas] = useState<OperationRow[]>([]);
   const [banks, setBanks] = useState<BankRow[]>([]);
+  const [movementsSummary, setMovementsSummary] = useState<MovementsSummary | null>(null);
+  const [totalDifferences, setTotalDifferences] = useState<TotalDifferences | null>(null);
   const [hasCriticalDiscrepancy, setHasCriticalDiscrepancy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Sprint 3: export / copy state
+  const [copied, setCopied] = useState(false);
 
   // Operations table filters
   const [tabOps, setTabOps] = useState<TabOps>('todas');
@@ -223,6 +244,8 @@ export default function PosicionPage() {
       }
       if (reconRes.success) {
         setBanks(reconRes.banks);
+        setMovementsSummary(reconRes.movements_summary);
+        setTotalDifferences(reconRes.total_differences);
         setHasCriticalDiscrepancy(reconRes.has_critical_discrepancy);
       }
       setLastUpdated(new Date());
@@ -288,6 +311,89 @@ export default function PosicionPage() {
     }
   };
 
+  // ── Sprint 3: Export CSV ──
+  const handleExportCSV = () => {
+    if (!posicion) return;
+    const rows: string[][] = [];
+    const fmt = (n: number) => n.toFixed(2);
+
+    rows.push([`POSICIÓN QORICASH — ${fecha}`, '', '', '', '', '', '']);
+    rows.push([`Generado: ${new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })}`, '', '', '', '', '', '']);
+    rows.push([]);
+
+    rows.push(['RESUMEN DE POSICIÓN']);
+    rows.push(['Utilidad bruta (PEN)', `S/ ${fmt(posicion.utilidad_pen)}`]);
+    rows.push(['Total compras USD', `$ ${fmt(posicion.total_compras_usd)}`, 'TC prom', posicion.tc_promedio_compras.toFixed(4)]);
+    rows.push(['Total ventas USD', `$ ${fmt(posicion.total_ventas_usd)}`, 'TC prom', posicion.tc_promedio_ventas.toFixed(4)]);
+    rows.push(['Diferencia neta USD', `$ ${fmt(posicion.diferencia_usd)}`, posicion.etiqueta_diferencia]);
+    rows.push(['Total operaciones', String(posicion.total_operaciones), `${posicion.cantidad_compras} compras / ${posicion.cantidad_ventas} ventas`]);
+    rows.push([]);
+
+    rows.push(['OPERACIONES DEL DÍA']);
+    rows.push(['Código', 'Cliente', 'Tipo', 'USD', 'TC', 'PEN', 'Estado', 'Hora', 'Crítica', 'Razón crítica']);
+    const allOpsExport = [
+      ...compras.map((o) => ({ ...o, opType: 'Compra' })),
+      ...ventas.map((o) => ({ ...o, opType: 'Venta' })),
+    ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    allOpsExport.forEach((op) => {
+      rows.push([
+        op.operation_id,
+        op.client_name,
+        op.opType,
+        fmt(op.amount_usd),
+        op.exchange_rate.toFixed(4),
+        fmt(op.amount_pen),
+        op.status,
+        formatTime(op.created_at),
+        op.es_critica ? 'SÍ' : 'No',
+        op.razon_critica || '',
+      ]);
+    });
+    rows.push([]);
+
+    rows.push(['SALDOS BANCARIOS']);
+    rows.push(['Banco', 'USD Inicial', 'USD Actual', 'Δ USD', 'PEN Inicial', 'PEN Actual', 'Δ PEN', 'Actualizado por', 'Fecha']);
+    banks.forEach((b) => {
+      rows.push([
+        b.bank_name,
+        fmt(b.usd.initial), fmt(b.usd.actual), fmt(b.usd.difference),
+        fmt(b.pen.initial), fmt(b.pen.actual), fmt(b.pen.difference),
+        b.updated_by || '',
+        b.updated_at ? formatDateTime(b.updated_at) : '',
+      ]);
+    });
+
+    const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `posicion-qoricash-${fecha}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ── Sprint 3: Copy summary to clipboard ──
+  const handleCopyResumen = async () => {
+    if (!posicion) return;
+    const fechaFmt = new Date(fecha + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const lines = [
+      `📊 *Posición QoriCash — ${fechaFmt}*`,
+      ``,
+      `💰 Utilidad bruta: S/ ${posicion.utilidad_pen.toFixed(2)}`,
+      `📈 Compras USD: $${posicion.total_compras_usd.toFixed(2)} (TC prom: ${posicion.tc_promedio_compras.toFixed(4)})`,
+      `📉 Ventas USD: $${posicion.total_ventas_usd.toFixed(2)} (TC prom: ${posicion.tc_promedio_ventas.toFixed(4)})`,
+      `↕️ Posición neta: $${Math.abs(posicion.diferencia_usd).toFixed(2)} ${posicion.etiqueta_diferencia}`,
+      `🔄 Operaciones: ${posicion.total_operaciones} (${posicion.cantidad_compras} compras · ${posicion.cantidad_ventas} ventas)`,
+    ];
+    if (movementsSummary) {
+      lines.push(`✅ Completadas: ${movementsSummary.completed_operations} ops`);
+    }
+    await navigator.clipboard.writeText(lines.join('\n'));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   // ── Render helpers ──
 
   if (!isAuthenticated || !user || !ALLOWED_ROLES.includes(user.role)) {
@@ -332,7 +438,7 @@ export default function PosicionPage() {
                 <h1 className="text-base font-bold text-gray-900">Posición del Día</h1>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <input
                 type="date"
                 value={fecha}
@@ -340,12 +446,30 @@ export default function PosicionPage() {
                 className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-300 text-gray-700"
               />
               <button
+                onClick={handleCopyResumen}
+                disabled={!posicion}
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition disabled:opacity-40"
+                title="Copiar resumen al portapapeles"
+              >
+                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                <span className="hidden sm:inline">{copied ? 'Copiado' : 'Copiar'}</span>
+              </button>
+              <button
+                onClick={handleExportCSV}
+                disabled={!posicion}
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition disabled:opacity-40"
+                title="Exportar a CSV"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Exportar</span>
+              </button>
+              <button
                 onClick={loadData}
                 disabled={isLoading}
                 className="flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                Actualizar
+                <span className="hidden sm:inline">Actualizar</span>
               </button>
             </div>
           </div>
@@ -743,6 +867,115 @@ export default function PosicionPage() {
               )}
             </div>
           </>
+        )}
+
+        {/* ── Conciliación ── */}
+        {movementsSummary && totalDifferences && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Resumen de movimientos */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+                <Scale className="w-4 h-4 text-gray-500" />
+                <h2 className="text-sm font-bold text-gray-800">Movimientos del Día</h2>
+                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full ml-1">
+                  {movementsSummary.completed_operations} ops completadas
+                </span>
+              </div>
+              <div className="p-5 space-y-4">
+                {/* USD */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">USD</span>
+                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.usd.net >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      {movementsSummary.usd.net >= 0 ? '+' : ''}${movementsSummary.usd.net.toFixed(2)} neto
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-green-50 rounded-lg px-3 py-2">
+                      <div className="text-green-600 font-semibold mb-0.5">Entradas (Compras)</div>
+                      <div className="font-extrabold text-green-700 font-mono">${movementsSummary.usd.inflows.toFixed(2)}</div>
+                    </div>
+                    <div className="bg-red-50 rounded-lg px-3 py-2">
+                      <div className="text-red-600 font-semibold mb-0.5">Salidas (Ventas)</div>
+                      <div className="font-extrabold text-red-600 font-mono">${movementsSummary.usd.outflows.toFixed(2)}</div>
+                    </div>
+                  </div>
+                </div>
+                {/* PEN */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">PEN</span>
+                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.pen.net >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      {movementsSummary.pen.net >= 0 ? '+' : ''}S/{movementsSummary.pen.net.toFixed(2)} neto
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-green-50 rounded-lg px-3 py-2">
+                      <div className="text-green-600 font-semibold mb-0.5">Entradas (Ventas)</div>
+                      <div className="font-extrabold text-green-700 font-mono">S/{movementsSummary.pen.inflows.toFixed(2)}</div>
+                    </div>
+                    <div className="bg-red-50 rounded-lg px-3 py-2">
+                      <div className="text-red-600 font-semibold mb-0.5">Salidas (Compras)</div>
+                      <div className="font-extrabold text-red-600 font-mono">S/{movementsSummary.pen.outflows.toFixed(2)}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Diferencias totales */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+                <ArrowRight className="w-4 h-4 text-gray-500" />
+                <h2 className="text-sm font-bold text-gray-800">Conciliación Global</h2>
+                {hasCriticalDiscrepancy ? (
+                  <span className="flex items-center gap-1 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                    <AlertTriangle className="w-3 h-3" /> Descuadre crítico
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                    <CheckCircle2 className="w-3 h-3" /> Cuadrado
+                  </span>
+                )}
+              </div>
+              <div className="p-5 space-y-3">
+                <p className="text-xs text-gray-500">
+                  Diferencia entre saldo actual y saldo esperado (inicial + movimientos completados)
+                </p>
+                {/* USD diff */}
+                <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${
+                  Math.abs(totalDifferences.usd) > 100 ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
+                }`}>
+                  <div>
+                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-0.5">Diferencia USD</div>
+                    <div className="text-xs text-gray-500">Actual vs Esperado</div>
+                  </div>
+                  <div className={`text-xl font-extrabold font-mono ${
+                    Math.abs(totalDifferences.usd) > 100 ? 'text-red-600' : 'text-green-600'
+                  }`}>
+                    {totalDifferences.usd >= 0 ? '+' : ''}${totalDifferences.usd.toFixed(2)}
+                  </div>
+                </div>
+                {/* PEN diff */}
+                <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${
+                  Math.abs(totalDifferences.pen) > 300 ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
+                }`}>
+                  <div>
+                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-0.5">Diferencia PEN</div>
+                    <div className="text-xs text-gray-500">Actual vs Esperado</div>
+                  </div>
+                  <div className={`text-xl font-extrabold font-mono ${
+                    Math.abs(totalDifferences.pen) > 300 ? 'text-red-600' : 'text-green-600'
+                  }`}>
+                    {totalDifferences.pen >= 0 ? '+' : ''}S/{totalDifferences.pen.toFixed(2)}
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400">
+                  Umbral crítico: USD &gt; $100 · PEN &gt; S/300
+                </p>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* ── Saldos Bancarios con Audit Trail ── */}
