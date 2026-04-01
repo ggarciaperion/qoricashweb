@@ -754,7 +754,7 @@ export default function CrearCuentaPage() {
                     className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
                   <span className="ml-3 text-sm text-gray-700">
-                    Acepto los <a href="#" className="text-primary font-medium hover:underline">Términos y Condiciones</a> *
+                    Acepto los <a href="/terminos-condiciones" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Términos y Condiciones</a> *
                   </span>
                 </label>
 
@@ -766,7 +766,7 @@ export default function CrearCuentaPage() {
                     className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                   />
                   <span className="ml-3 text-sm text-gray-700">
-                    Acepto la <a href="#" className="text-primary font-medium hover:underline">Política de Privacidad</a> *
+                    Acepto la <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Política de Privacidad</a> *
                   </span>
                 </label>
 
