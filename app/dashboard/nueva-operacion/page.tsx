@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
@@ -39,7 +39,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
-export default function NuevaOperacionPage() {
+function NuevaOperacionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, user, refreshUser } = useAuthStore();
@@ -2538,5 +2538,13 @@ export default function NuevaOperacionPage() {
         accountContext={accountContext || undefined}
       />
     </div>
+  );
+}
+
+export default function NuevaOperacionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div></div>}>
+      <NuevaOperacionContent />
+    </Suspense>
   );
 }
