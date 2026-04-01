@@ -15,6 +15,8 @@ import {
   RefreshCw,
   ArrowRight,
   CheckCircle,
+  CheckCircle2,
+  XCircle,
   AlertCircle,
   CreditCard,
   Plus,
@@ -83,6 +85,13 @@ function NuevaOperacionContent() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
+  const [cancelSuccess, setCancelSuccess] = useState(false);
+
+  // Processing overlays
+  const [showCreatingOverlay, setShowCreatingOverlay] = useState(false);
+  const [showCreatingSuccess, setShowCreatingSuccess] = useState(false);
+  const [showCancelOverlay, setShowCancelOverlay] = useState(false);
+  const [showCancelOverlaySuccess, setShowCancelOverlaySuccess] = useState(false);
 
   // Confirm operation state
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -518,14 +527,12 @@ function NuevaOperacionContent() {
     setError(null);
     setIsSubmitting(true);
     setIsConfirmModalOpen(false);
+    setShowCreatingOverlay(true);
+    setShowCreatingSuccess(false);
+    const startTime = Date.now();
 
     try {
-      // Determinar qué cuenta enviar: la cuenta donde el cliente RECIBIRÁ el pago
-      // Para Compra: recibe soles (selectedDestinationAccount)
-      // Para Venta: recibe dólares (selectedDestinationAccount)
       const accountIdToSend = selectedDestinationAccount!;
-
-      // Convertir el ID de BD a índice del array bankAccounts
       const accountIndex = bankAccounts.findIndex(acc => acc.id === accountIdToSend);
 
       console.log('[Nueva Operación] Enviando operación:', {
@@ -537,6 +544,7 @@ function NuevaOperacionContent() {
       });
 
       if (accountIndex === -1) {
+        setShowCreatingOverlay(false);
         setError('Cuenta bancaria no encontrada');
         setIsSubmitting(false);
         return;
@@ -547,8 +555,7 @@ function NuevaOperacionContent() {
         tipo: tipo.toLowerCase() as 'compra' | 'venta',
         monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
         monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
-        banco_cuenta_id: accountIndex,  // Enviar índice del array, no el ID de BD
-        // CRÍTICO: Enviar código de referido solo si fue validado exitosamente
+        banco_cuenta_id: accountIndex,
         ...(codeValidation?.isValid && referralCode ? { referral_code: referralCode } : {})
       });
 
@@ -557,7 +564,6 @@ function NuevaOperacionContent() {
       if (response.success && response.data) {
         console.log('[Nueva Operación] Operación creada:', response.data.operation);
 
-        // Format date on client side to avoid hydration mismatch
         const operation = response.data.operation;
         const formattedDateString = operation.created_at
           ? new Date(operation.created_at).toLocaleString('es-PE', {
@@ -569,32 +575,37 @@ function NuevaOperacionContent() {
             })
           : 'Ahora';
 
-        // Para operaciones recién creadas, iniciar con 15 minutos completos
-        // La latencia de red es mínima (< 1 segundo) y evita problemas de zona horaria
-        console.log('[Nueva Operación] Operación recién creada, iniciando timer en 15 minutos');
-
         setFormattedDate(formattedDateString);
         setCreatedOperation(operation);
-        setTimeRemaining(900); // 15 minutos completos para operaciones nuevas
-        setCurrentStep(2); // Avanzar inmediatamente al paso 2: Transfiere
-
-        // Marcar que ahora hay una operación activa
+        setTimeRemaining(900);
         setHasActiveOperation(true);
         setActiveOperationMessage(
           `Tienes una operación en estado "Pendiente" (${operation.codigo_operacion || operation.operation_id}). Debes completarla o cancelarla antes de crear una nueva.`
         );
-
-        // Clear referral code after successful operation creation
         setReferralCode('');
         setCodeValidation(null);
         setAppliedDiscount(0);
         setShowCouponField(false);
-        clearReferral(); // Clear from persistent storage
+        clearReferral();
+
+        // Mostrar éxito en overlay mínimo 2.2s después del inicio
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2200 - elapsed);
+        setTimeout(() => {
+          setShowCreatingSuccess(true);
+          setTimeout(() => {
+            setShowCreatingOverlay(false);
+            setShowCreatingSuccess(false);
+            setCurrentStep(2);
+          }, 2000);
+        }, remaining);
       } else {
+        setShowCreatingOverlay(false);
         setError(response.message || 'Error al crear la operación');
       }
     } catch (error: any) {
       console.error('Error creating operation:', error);
+      setShowCreatingOverlay(false);
       setError(error.response?.data?.message || 'Error al crear la operación');
     } finally {
       setIsSubmitting(false);
@@ -650,11 +661,6 @@ function NuevaOperacionContent() {
   const handleCancelOperation = async (reason?: string) => {
     const motivo = reason || cancelReason;
 
-    console.log('[Cancel Operation] Iniciando cancelación:', {
-      motivo,
-      operationId: createdOperation?.id
-    });
-
     if (!motivo.trim()) {
       setError('Por favor, indica el motivo de la cancelación');
       return;
@@ -665,34 +671,35 @@ function NuevaOperacionContent() {
       return;
     }
 
-    setIsCancelling(true);
+    // Cerrar modal de confirmación y mostrar overlay de procesamiento
+    setIsCancelModalOpen(false);
     setError(null);
+    setShowCancelOverlay(true);
+    setShowCancelOverlaySuccess(false);
+    const startTime = Date.now();
 
     try {
-      console.log('[Cancel Operation] Llamando a API...');
       const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
-      console.log('[Cancel Operation] Respuesta:', response);
 
       if (response.success) {
-        // Cerrar modal primero
-        setIsCancelModalOpen(false);
-        // Redirigir al dashboard
-        console.log('[Cancel Operation] Cancelación exitosa, redirigiendo...');
-        router.push('/dashboard');
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2200 - elapsed);
+        setTimeout(() => {
+          setShowCancelOverlaySuccess(true);
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 2500);
+        }, remaining);
       } else {
-        console.error('[Cancel Operation] Error en respuesta:', response.message);
+        setShowCancelOverlay(false);
         setError(response.message || 'Error al cancelar la operación');
-        setIsCancelling(false);
+        setIsCancelModalOpen(true);
       }
     } catch (error: any) {
-      console.error('[Cancel Operation] Error en catch:', error);
-      console.error('[Cancel Operation] Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
+      console.error('[Cancel Operation] Error:', error);
+      setShowCancelOverlay(false);
       setError(error.response?.data?.message || error.message || 'Error al cancelar la operación');
-      setIsCancelling(false);
+      setIsCancelModalOpen(true);
     }
   };
 
@@ -2537,6 +2544,54 @@ function NuevaOperacionContent() {
         operationType={tipo}
         accountContext={accountContext || undefined}
       />
+
+      {/* ── Overlay: Creando operación ── */}
+      {showCreatingOverlay && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
+            {!showCreatingSuccess ? (
+              <>
+                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-5" />
+                <p className="text-lg font-bold text-gray-900">Creando operación...</p>
+                <p className="text-sm text-gray-500 mt-1">Estamos procesando tu solicitud</p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce-once">
+                  <CheckCircle2 className="w-9 h-9 text-green-600" />
+                </div>
+                <p className="text-lg font-bold text-gray-900 mb-1">¡Operación generada!</p>
+                <p className="text-sm text-gray-500">Ya puedes realizar la transferencia</p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Overlay: Cancelando operación ── */}
+      {showCancelOverlay && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
+            {!showCancelOverlaySuccess ? (
+              <>
+                <div className="w-16 h-16 border-4 border-red-200 border-t-red-500 rounded-full animate-spin mx-auto mb-5" />
+                <p className="text-lg font-bold text-gray-900">Procesando cancelación...</p>
+                <p className="text-sm text-gray-500 mt-1">Un momento, por favor</p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                  <XCircle className="w-9 h-9 text-red-500" />
+                </div>
+                <p className="text-lg font-bold text-gray-900 mb-1">Operación cancelada</p>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Recuerda que cancelar operaciones de forma recurrente puede afectar tu historial.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

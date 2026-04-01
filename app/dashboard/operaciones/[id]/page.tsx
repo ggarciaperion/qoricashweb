@@ -35,6 +35,10 @@ export default function OperacionDetallesPage() {
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
+  const [showCancelProcessing, setShowCancelProcessing] = useState(false);
+  const [showCancelSuccess, setShowCancelSuccess] = useState(false);
 
   const operationId = params.id ? parseInt(params.id as string) : null;
 
@@ -112,28 +116,32 @@ export default function OperacionDetallesPage() {
   };
 
   const handleCancelOperation = async () => {
-    if (!operationId) return;
+    if (!operationId || !cancelReason.trim()) return;
 
-    // window.confirm puede bloquear el event loop en Safari/WebViews
-    // Se mantiene por ahora pero se recomienda reemplazar por un modal propio en el futuro
-    const confirmed = window.confirm(
-      '¿Estás seguro de que quieres cancelar esta operación?'
-    );
-
-    if (!confirmed) return;
+    setIsCancelModalOpen(false);
+    setShowCancelProcessing(true);
+    setShowCancelSuccess(false);
+    const startTime = Date.now();
 
     try {
-      const response = await operationsApi.cancelOperation(operationId);
+      const response = await operationsApi.cancelOperation(operationId, cancelReason);
 
       if (response.success) {
-        // Navegar al dashboard en lugar de recargar la operación cancelada
-        // para evitar excepciones de rendering con estado inconsistente
-        router.push('/dashboard');
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2200 - elapsed);
+        setTimeout(() => {
+          setShowCancelSuccess(true);
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 2500);
+        }, remaining);
       } else {
+        setShowCancelProcessing(false);
         setError(response.message || 'Error al cancelar la operación');
       }
     } catch (error: any) {
       console.error('Error canceling operation:', error);
+      setShowCancelProcessing(false);
       setError(error.response?.data?.message || 'Error al cancelar la operación');
     }
   };
@@ -453,7 +461,7 @@ export default function OperacionDetallesPage() {
         {operation.estado === 'pendiente' && (
           <div className="flex gap-4">
             <button
-              onClick={handleCancelOperation}
+              onClick={() => setIsCancelModalOpen(true)}
               className="flex-1 bg-white text-red-600 border-2 border-red-200 py-3 rounded-xl font-bold hover:bg-red-50 transition"
             >
               Cancelar Operación
@@ -461,6 +469,82 @@ export default function OperacionDetallesPage() {
           </div>
         )}
       </main>
+
+      {/* ── Modal: Confirmar cancelación ── */}
+      {isCancelModalOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Cancelar Operación</h3>
+              <button
+                onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-4">
+              ¿Estás seguro que deseas cancelar esta operación? Esta acción no se puede deshacer.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Motivo de cancelación *
+              </label>
+              <textarea
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Ej: No puedo realizar la transferencia en este momento"
+                className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none text-sm"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }}
+                className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition text-sm"
+              >
+                Volver
+              </button>
+              <button
+                onClick={handleCancelOperation}
+                disabled={!cancelReason.trim()}
+                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
+              >
+                <XCircle className="w-4 h-4" />
+                Confirmar cancelación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Overlay: Procesando cancelación ── */}
+      {showCancelProcessing && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
+            {!showCancelSuccess ? (
+              <>
+                <div className="w-16 h-16 border-4 border-red-200 border-t-red-500 rounded-full animate-spin mx-auto mb-5" />
+                <p className="text-lg font-bold text-gray-900">Procesando cancelación...</p>
+                <p className="text-sm text-gray-500 mt-1">Un momento, por favor</p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                  <XCircle className="w-9 h-9 text-red-500" />
+                </div>
+                <p className="text-lg font-bold text-gray-900 mb-1">Operación cancelada</p>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Recuerda que cancelar operaciones de forma recurrente puede afectar tu historial.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
