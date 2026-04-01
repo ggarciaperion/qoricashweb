@@ -849,7 +849,7 @@ function NuevaOperacionContent() {
     return 'OTROS';
   };
 
-  const getQoricashAccount = () => {
+  const resolveQoricashAccount = () => {
     if (!createdOperation) {
       console.log('[getQoricashAccount] No hay operación creada');
       return null;
@@ -1235,7 +1235,7 @@ function NuevaOperacionContent() {
                       const destAccount = createdOperation.destination_account || '';
 
                       // Obtener cuenta QoriCash
-                      const qoricashAccount = getQoricashAccount();
+                      const qoricashAccount = resolveQoricashAccount();
 
                       console.log('[Transfer Instructions] Debug:', {
                         operationType,
