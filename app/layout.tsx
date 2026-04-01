@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   authors: [{ name: "QoriCash" }],
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png",    type: "image/png" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64",  type: "image/x-icon" },
+      { url: "/icon.png",    sizes: "512x512",                   type: "image/png" },
     ],
-    apple: { url: "/icon.png", type: "image/png" },
-    shortcut: "/favicon.ico",
+    apple:   { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    shortcut: "/icon.png",
   },
   openGraph: {
     title: "QoriCash - Casa de Cambio Online",
