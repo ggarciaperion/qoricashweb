@@ -24,10 +24,19 @@ export const metadata: Metadata = {
   description: "Cambia dólares de forma segura y rápida con QoriCash. Los mejores tipos de cambio del mercado. Transferencias inmediatas a tu cuenta bancaria.",
   keywords: "casa de cambio, cambio de dólares, tipo de cambio, compra venta dólares, peru",
   authors: [{ name: "QoriCash" }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png",    type: "image/png" },
+    ],
+    apple: { url: "/icon.png", type: "image/png" },
+    shortcut: "/favicon.ico",
+  },
   openGraph: {
     title: "QoriCash - Casa de Cambio Online",
     description: "Los mejores tipos de cambio del mercado peruano",
     type: "website",
+    images: [{ url: "/logo-principal.png" }],
   },
 };
 
