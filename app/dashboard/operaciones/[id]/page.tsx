@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { operationsApi } from '@/lib/api/operations';
+import { formatSafeDate } from '@/lib/utils/date';
 import type { Operation } from '@/lib/types';
 import {
   ArrowLeft,
@@ -113,6 +114,8 @@ export default function OperacionDetallesPage() {
   const handleCancelOperation = async () => {
     if (!operationId) return;
 
+    // window.confirm puede bloquear el event loop en Safari/WebViews
+    // Se mantiene por ahora pero se recomienda reemplazar por un modal propio en el futuro
     const confirmed = window.confirm(
       '¿Estás seguro de que quieres cancelar esta operación?'
     );
@@ -123,7 +126,9 @@ export default function OperacionDetallesPage() {
       const response = await operationsApi.cancelOperation(operationId);
 
       if (response.success) {
-        await loadOperation(); // Reload to get updated status
+        // Navegar al dashboard en lugar de recargar la operación cancelada
+        // para evitar excepciones de rendering con estado inconsistente
+        router.push('/dashboard');
       } else {
         setError(response.message || 'Error al cancelar la operación');
       }
@@ -175,15 +180,8 @@ export default function OperacionDetallesPage() {
     );
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-PE', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const formatDate = (dateString: string | null | undefined) => {
+    return formatSafeDate(dateString);
   };
 
   if (isLoading) {
@@ -286,7 +284,7 @@ export default function OperacionDetallesPage() {
                   {operation.tipo === 'compra' ? 'Compra de Dólares' : 'Venta de Dólares'}
                 </h3>
                 <p className="text-gray-600">
-                  Tipo de cambio: S/ {operation.tipo_cambio.toFixed(3)}
+                  Tipo de cambio: S/ {operation.tipo_cambio?.toFixed(3) ?? '—'}
                 </p>
               </div>
             </div>
@@ -301,7 +299,7 @@ export default function OperacionDetallesPage() {
               <DollarSign className="w-5 h-5 text-green-600" />
             </div>
             <p className="text-3xl font-bold text-green-900">
-              S/ {operation.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+              S/ {operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}
             </p>
           </div>
 
@@ -311,7 +309,7 @@ export default function OperacionDetallesPage() {
               <DollarSign className="w-5 h-5 text-blue-600" />
             </div>
             <p className="text-3xl font-bold text-blue-900">
-              $ {operation.monto_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              $ {operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}
             </p>
           </div>
         </div>

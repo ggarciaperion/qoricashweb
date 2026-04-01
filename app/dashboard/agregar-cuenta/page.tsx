@@ -213,7 +213,7 @@ export default function AgregarCuentaPage() {
                 <select
                   {...register('bank_name')}
                   id="bank_name"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                  className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.bank_name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   disabled={isSubmitting || !selectedOrigen}
@@ -245,7 +245,7 @@ export default function AgregarCuentaPage() {
                   <select
                     {...register('account_type')}
                     id="account_type"
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                       errors.account_type ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     disabled={isSubmitting}
@@ -270,7 +270,7 @@ export default function AgregarCuentaPage() {
                   <select
                     {...register('currency')}
                     id="currency"
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                       errors.currency ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     disabled={isSubmitting}
