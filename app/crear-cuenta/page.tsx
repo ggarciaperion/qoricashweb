@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, User, Building2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ChevronRight, User, Building2, CheckCircle2, AlertCircle, Search, Loader2 } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
 
 type TipoPersona = 'natural' | 'juridica';
@@ -62,6 +62,11 @@ export default function CrearCuentaPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
+  // Estado lookup RENIEC / SUNAT
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const [lookupMsg, setLookupMsg] = useState<{ type: 'success' | 'error' | 'warning'; text: string } | null>(null);
+  const [lookupLocked, setLookupLocked] = useState(false); // campos bloqueados tras autocompletar
+
   // Cargar departamentos
   useEffect(() => {
     setDepartamentos(getDepartamentos());
@@ -119,8 +124,95 @@ export default function CrearCuentaPage() {
       value = validateAndUppercaseAddress(value);
     }
 
+    // Si cambia el número de documento, resetear lookup
+    if (field === 'dni') {
+      setLookupMsg(null);
+      setLookupLocked(false);
+    }
+
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
+  };
+
+  // ── Consulta RENIEC (DNI) / SUNAT (RUC) ─────────────────────────────────
+  const handleLookup = async () => {
+    setLookupMsg(null);
+    setLookupLocked(false);
+
+    const docNum = formData.dni.trim();
+    const isRuc  = tipoPersona === 'juridica';
+    const isDni  = formData.tipoDocumento === 'DNI';
+    const expectedLen = formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11;
+
+    if (docNum.length !== expectedLen) {
+      setLookupMsg({ type: 'warning', text: `Ingresa los ${expectedLen} dígitos del ${formData.tipoDocumento} antes de buscar.` });
+      return;
+    }
+
+    setLookupLoading(true);
+    try {
+      if (isRuc) {
+        // Consulta SUNAT
+        const res  = await fetch(`/api/lookup/ruc?numero=${encodeURIComponent(docNum)}`);
+        const data = await res.json();
+
+        if (!data.success) {
+          setLookupMsg({ type: 'error', text: data.message || 'No se encontró el RUC en SUNAT.' });
+          return;
+        }
+
+        setFormData(prev => ({
+          ...prev,
+          razonSocial:     data.razon_social || prev.razonSocial,
+          direccion:       data.direccion    || prev.direccion,
+          departamento:    data.departamento || prev.departamento,
+          provincia:       data.provincia    || prev.provincia,
+          distrito:        data.distrito     || prev.distrito,
+        }));
+
+        const estado = data.estado || '';
+        const condicion = data.condicion || '';
+        const esActivo = estado.includes('ACTIVO');
+
+        setLookupMsg({
+          type: esActivo ? 'success' : 'warning',
+          text: `✓ ${data.razon_social}${estado ? ` — Estado: ${estado}` : ''}${condicion ? ` · ${condicion}` : ''}`,
+        });
+        setLookupLocked(true);
+
+      } else {
+        // Consulta RENIEC (DNI o CE — CE no tiene RENIEC público, solo DNI)
+        if (!isDni) {
+          setLookupMsg({ type: 'warning', text: 'La búsqueda automática solo está disponible para DNI.' });
+          return;
+        }
+
+        const res  = await fetch(`/api/lookup/dni?numero=${encodeURIComponent(docNum)}`);
+        const data = await res.json();
+
+        if (!data.success) {
+          setLookupMsg({ type: 'error', text: data.message || 'No se encontró el DNI en RENIEC.' });
+          return;
+        }
+
+        setFormData(prev => ({
+          ...prev,
+          nombres:         data.nombres          || prev.nombres,
+          apellidoPaterno: data.apellido_paterno  || prev.apellidoPaterno,
+          apellidoMaterno: data.apellido_materno  || prev.apellidoMaterno,
+        }));
+
+        setLookupMsg({
+          type: 'success',
+          text: `✓ ${data.apellido_paterno} ${data.apellido_materno}, ${data.nombres} — datos obtenidos de RENIEC.`,
+        });
+        setLookupLocked(true);
+      }
+    } catch {
+      setLookupMsg({ type: 'error', text: 'No se pudo conectar con el servicio. Ingresa los datos manualmente.' });
+    } finally {
+      setLookupLoading(false);
+    }
   };
 
   const validarPaso1 = () => {
@@ -389,31 +481,65 @@ export default function CrearCuentaPage() {
                 </div>
               )}
 
-              {/* Número de documento */}
+              {/* Número de documento + botón búsqueda */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {formData.tipoDocumento} *
                 </label>
-                <input
-                  type="text"
-                  value={formData.dni}
-                  onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
-                  maxLength={formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11}
-                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder={formData.tipoDocumento === 'DNI' ? '12345678' : formData.tipoDocumento === 'CE' ? '123456789' : '20123456789'}
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.dni}
+                    onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
+                    maxLength={formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11}
+                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    placeholder={formData.tipoDocumento === 'DNI' ? '12345678' : formData.tipoDocumento === 'CE' ? '123456789' : '20123456789'}
+                  />
+                  {/* Solo mostrar lupa para DNI (RENIEC) y RUC (SUNAT) */}
+                  {(formData.tipoDocumento === 'DNI' || tipoPersona === 'juridica') && (
+                    <button
+                      type="button"
+                      onClick={handleLookup}
+                      disabled={lookupLoading}
+                      title={tipoPersona === 'juridica' ? 'Buscar en SUNAT' : 'Buscar en RENIEC'}
+                      className="flex items-center gap-1.5 px-4 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition disabled:opacity-60 whitespace-nowrap text-sm"
+                    >
+                      {lookupLoading
+                        ? <Loader2 className="w-4 h-4 animate-spin" />
+                        : <Search className="w-4 h-4" />
+                      }
+                      {tipoPersona === 'juridica' ? 'SUNAT' : 'RENIEC'}
+                    </button>
+                  )}
+                </div>
+
+                {/* Feedback del lookup */}
+                {lookupMsg && (
+                  <div className={`mt-2 px-3 py-2 rounded-lg text-sm flex items-start gap-2 ${
+                    lookupMsg.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' :
+                    lookupMsg.type === 'warning' ? 'bg-yellow-50 text-yellow-800 border border-yellow-200' :
+                    'bg-red-50 text-red-800 border border-red-200'
+                  }`}>
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{lookupMsg.text}</span>
+                  </div>
+                )}
               </div>
 
               {/* Campos según tipo de persona */}
               {tipoPersona === 'natural' ? (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Nombres *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombres *
+                      {lookupLocked && <span className="ml-2 text-xs text-green-600 font-normal">✓ obtenido de RENIEC</span>}
+                    </label>
                     <input
                       type="text"
                       value={formData.nombres}
                       onChange={(e) => handleChange('nombres', e.target.value)}
-                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      readOnly={lookupLocked}
+                      className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
                       placeholder="Juan Carlos"
                     />
                   </div>
@@ -425,7 +551,8 @@ export default function CrearCuentaPage() {
                         type="text"
                         value={formData.apellidoPaterno}
                         onChange={(e) => handleChange('apellidoPaterno', e.target.value)}
-                        className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        readOnly={lookupLocked}
+                        className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
                         placeholder="García"
                       />
                     </div>
@@ -436,7 +563,8 @@ export default function CrearCuentaPage() {
                         type="text"
                         value={formData.apellidoMaterno}
                         onChange={(e) => handleChange('apellidoMaterno', e.target.value)}
-                        className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                        readOnly={lookupLocked}
+                        className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
                         placeholder="López"
                       />
                     </div>
@@ -445,12 +573,16 @@ export default function CrearCuentaPage() {
               ) : (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Razón Social *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Razón Social *
+                      {lookupLocked && <span className="ml-2 text-xs text-green-600 font-normal">✓ obtenido de SUNAT</span>}
+                    </label>
                     <input
                       type="text"
                       value={formData.razonSocial}
                       onChange={(e) => handleChange('razonSocial', e.target.value)}
-                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      readOnly={lookupLocked}
+                      className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
                       placeholder="EMPRESA SAC"
                     />
                   </div>
