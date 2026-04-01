@@ -4,7 +4,7 @@
  */
 import { io, Socket } from 'socket.io-client';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
 
 export interface ExchangeRateUpdate {
   compra: number;
@@ -35,13 +35,14 @@ class SocketService {
       console.log('🔌 Connecting to Socket.IO server:', API_BASE_URL);
 
       this.socket = io(API_BASE_URL, {
-        transports: ['websocket', 'polling'],
+        transports: ['polling', 'websocket'], // polling primero para evitar fallos de upgrade WS en proxies
         reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
+        reconnectionDelay: 2000,
+        reconnectionDelayMax: 10000,
         reconnectionAttempts: this.maxReconnectAttempts,
         timeout: 10000,
         autoConnect: true,
+        upgrade: true, // intentar upgrade a WS después de establecer polling
       });
 
       this.setupEventHandlers();

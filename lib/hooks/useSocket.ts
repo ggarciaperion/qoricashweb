@@ -37,10 +37,11 @@ export const useSocket = (options: UseSocketOptions = {}) => {
 
     // Crear conexión Socket.IO
     const socket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'], // polling primero para evitar fallos de upgrade WS en proxies
       reconnection: true,
       reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      reconnectionDelay: 2000,
+      upgrade: true,
     });
 
     socketRef.current = socket;
