@@ -5,6 +5,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/components/AuthProvider";
 import SocketNotifications from "@/components/SocketNotifications";
 import BackgroundDecor from "@/components/BackgroundDecor";
+import CookieBanner from "@/components/CookieBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,6 +60,7 @@ export default function RootLayout({
           <SocketNotifications />
         </AuthProvider>
         <WhatsAppButton />
+        <CookieBanner />
       </body>
     </html>
   );
