@@ -412,33 +412,33 @@ export default function Home() {
                 <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
 
-              <div className="flex flex-row flex-wrap items-start justify-center gap-4 pt-3">
+              <div className="flex flex-row flex-nowrap items-start justify-center gap-2 pt-3 overflow-x-auto">
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
+                  <div className="w-20 h-16 flex items-center justify-center">
                     <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
+                  <div className="w-20 h-16 flex items-center justify-center">
                     <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
+                  <div className="w-20 h-16 flex items-center justify-center">
                     <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-36 h-20 flex items-center justify-center">
+                  <div className="w-24 h-16 flex items-center justify-center">
                     <img src="/Banco Pichincha.png" alt="Banco Pichincha" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="h-20 flex items-center justify-center">
+                  <div className="h-16 flex items-center justify-center">
                     <div className="text-sm font-bold text-gray-800 whitespace-nowrap bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/60 px-4 py-2">Otros bancos</div>
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
