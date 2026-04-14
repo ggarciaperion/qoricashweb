@@ -1132,14 +1132,14 @@ export default function Home() {
                   <Shield className="w-5 h-5 text-primary-400 flex-shrink-0" />
                   <div>
                     <div className="text-white font-bold text-xs">Empresa Registrada</div>
-                    <div className="text-gray-400 text-[11px]">RUC: 20XXXXXXXXX · Lima, Perú</div>
+                    <div className="text-gray-400 text-[11px]">RUC: 20615113698 · Lima, Perú</div>
                   </div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
                   <div>
                     <div className="text-white font-bold text-xs">Regulada SBS</div>
-                    <div className="text-gray-400 text-[11px]">Res. N° XXXXX-2024</div>
+                    <div className="text-gray-400 text-[11px]">Res. N° 00313-2026</div>
                   </div>
                 </div>
               </div>
