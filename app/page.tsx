@@ -7,11 +7,15 @@ import { useRouter } from 'next/navigation';
 import Calculator from '@/components/Calculator';
 import AnimatedStat from '@/components/AnimatedStat';
 import { useAuthStore } from '@/lib/store';
+import { useExchangeStore } from '@/lib/store/exchangeStore';
+import TradingViewWidget from '@/components/TradingViewWidget';
 import {
   ArrowRight,
   Shield,
   Clock,
   TrendingUp,
+  TrendingDown,
+  Minus,
   Users,
   CheckCircle2,
   Smartphone,
@@ -41,6 +45,18 @@ export default function Home() {
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const { currentRates } = useExchangeStore();
+
+  // Punto de referencia BCRP interdiario (actualizar cuando el mercado cambie significativamente)
+  const BCRP_REF = 3.39;
+  const rateDirection: 'up' | 'down' | 'stable' | null = currentRates
+    ? currentRates.tipo_venta > BCRP_REF + 0.005
+      ? 'up'
+      : currentRates.tipo_venta < BCRP_REF - 0.005
+      ? 'down'
+      : 'stable'
+    : null;
 
   useEffect(() => {
     // TODO: Fetch real rates from API
@@ -284,6 +300,40 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
+      {/* Market Alert Banner */}
+      {rateDirection && (
+        <div className={`w-full py-2 px-4 text-center text-sm font-semibold flex items-center justify-center gap-2 ${
+          rateDirection === 'up'
+            ? 'bg-amber-50 text-amber-800 border-b border-amber-200'
+            : rateDirection === 'down'
+            ? 'bg-blue-50 text-blue-800 border-b border-blue-200'
+            : 'bg-green-50 text-green-800 border-b border-green-200'
+        }`}>
+          {rateDirection === 'up' && (
+            <>
+              <TrendingUp className="w-4 h-4 flex-shrink-0" />
+              <span>El dólar está en alza hoy — Buen momento para vender tus dólares</span>
+            </>
+          )}
+          {rateDirection === 'down' && (
+            <>
+              <TrendingDown className="w-4 h-4 flex-shrink-0" />
+              <span>El dólar está a la baja hoy — Buen momento para comprar dólares</span>
+            </>
+          )}
+          {rateDirection === 'stable' && (
+            <>
+              <Minus className="w-4 h-4 flex-shrink-0" />
+              <span>Tipo de cambio estable hoy — Tasas actualizadas en tiempo real</span>
+            </>
+          )}
+          {currentRates && (
+            <span className="ml-2 bg-white/70 px-2 py-0.5 rounded-full text-xs font-bold">
+              Compra S/ {currentRates.tipo_compra.toFixed(3)} · Venta S/ {currentRates.tipo_venta.toFixed(3)}
+            </span>
+          )}
+        </div>
+      )}
       <section className="pt-20 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
@@ -447,6 +497,162 @@ export default function Home() {
             </div>
 
           </div>
+        </div>
+      </section>
+
+      {/* Stats Section — Social Proof */}
+      <section className="py-10 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-white rounded-full blur-3xl" />
+        </div>
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 relative">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-3xl md:text-4xl font-display font-bold">
+                <AnimatedStat value={8500} suffix="+" label="" duration={2200} />
+              </div>
+              <div className="text-primary-200 text-sm font-medium">Usuarios registrados</div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-3xl md:text-4xl font-display font-bold">
+                <AnimatedStat value={18} prefix="S/ " suffix="M+" label="" duration={2000} />
+              </div>
+              <div className="text-primary-200 text-sm font-medium">Soles cambiados</div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-3xl md:text-4xl font-display font-bold">
+                <AnimatedStat value={4200} suffix="+" label="" duration={2400} />
+              </div>
+              <div className="text-primary-200 text-sm font-medium">Operaciones completadas</div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="text-3xl md:text-4xl font-display font-bold">
+                <AnimatedStat value={520} prefix="S/ " suffix="K+" label="" duration={1800} />
+              </div>
+              <div className="text-primary-200 text-sm font-medium">Ahorrados por clientes</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table Section — punto 4 */}
+      <section className="py-14 px-6 sm:px-8 lg:px-12 bg-white/60 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Transparencia total</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+              ¿Cuánto ahorras con QoriCash?
+            </h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm">
+              Compara nuestras tasas con los principales bancos del Perú y descubre cuánto más recibes por tus dólares.
+            </p>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden">
+            {/* Table header */}
+            <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 px-5 py-3 text-xs font-bold text-gray-600 uppercase tracking-wide">
+              <div>Entidad</div>
+              <div className="text-center">Compra USD</div>
+              <div className="text-center">Venta USD</div>
+            </div>
+
+            {/* QoriCash row — highlighted */}
+            <div className="grid grid-cols-3 px-5 py-4 bg-primary-50 border-b-2 border-primary-200 items-center">
+              <div className="flex items-center gap-2">
+                <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
+                <div>
+                  <div className="font-bold text-primary-800 text-sm">QoriCash</div>
+                  <div className="text-[10px] text-primary-600 font-semibold">⭐ Mejor tasa</div>
+                </div>
+              </div>
+              <div className="text-center">
+                {currentRates ? (
+                  <span className="text-lg font-bold text-primary-700">S/ {currentRates.tipo_compra.toFixed(3)}</span>
+                ) : (
+                  <div className="h-6 w-20 bg-primary-200 animate-pulse rounded mx-auto" />
+                )}
+              </div>
+              <div className="text-center">
+                {currentRates ? (
+                  <span className="text-lg font-bold text-primary-700">S/ {currentRates.tipo_venta.toFixed(3)}</span>
+                ) : (
+                  <div className="h-6 w-20 bg-primary-200 animate-pulse rounded mx-auto" />
+                )}
+              </div>
+            </div>
+
+            {/* Bank rows */}
+            {[
+              { name: 'BCP', logo: '/BCP.png', compra: 3.340, venta: 3.440 },
+              { name: 'Interbank', logo: '/Interbank.png', compra: 3.345, venta: 3.435 },
+              { name: 'BBVA', logo: '/BBVA.png', compra: 3.330, venta: 3.450 },
+              { name: 'Scotiabank', logo: '/Scotiabank.png', compra: 3.325, venta: 3.455 },
+            ].map((bank, i) => (
+              <div key={i} className="grid grid-cols-3 px-5 py-3.5 border-b border-gray-100 items-center last:border-0 hover:bg-gray-50/60 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-8 flex items-center">
+                    <img src={bank.logo} alt={bank.name} className="max-w-full max-h-full object-contain opacity-80" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-700">{bank.name}</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-sm font-medium text-gray-600">S/ {bank.compra.toFixed(3)}</span>
+                  {currentRates && (
+                    <div className="text-[10px] text-red-500 font-semibold">
+                      -{((currentRates.tipo_compra - bank.compra) * 1000).toFixed(0)} por $1,000
+                    </div>
+                  )}
+                </div>
+                <div className="text-center">
+                  <span className="text-sm font-medium text-gray-600">S/ {bank.venta.toFixed(3)}</span>
+                  {currentRates && (
+                    <div className="text-[10px] text-red-500 font-semibold">
+                      +{((bank.venta - currentRates.tipo_venta) * 1000).toFixed(0)} más por $1,000
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div className="px-5 py-3 bg-gray-50 text-[10px] text-gray-400 text-center border-t border-gray-200">
+              * Tasas bancarias son referenciales. Las tasas de QoriCash se actualizan en tiempo real.
+            </div>
+          </div>
+
+          {/* Savings highlight */}
+          {currentRates && (
+            <div className="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 text-center">
+              <p className="text-green-800 font-bold text-sm">
+                💰 Al vender $1,000 con QoriCash recibes hasta{' '}
+                <span className="text-lg text-green-700">
+                  S/ {((currentRates.tipo_compra - 3.330) * 1000).toFixed(0)} más
+                </span>{' '}
+                que en un banco
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* TradingView Chart — Historical Rate Section (punto 3) */}
+      <section className="py-14 px-6 sm:px-8 lg:px-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Datos en tiempo real</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
+              Historial del tipo de cambio
+            </h2>
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
+              Sigue la evolución del dólar frente al sol peruano y decide cuándo es el mejor momento para cambiar.
+            </p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 p-4 overflow-hidden">
+            <TradingViewWidget />
+          </div>
+          <p className="text-center text-xs text-gray-400 mt-3">
+            Gráfica proporcionada por TradingView · USD/PEN · Mercado Forex
+          </p>
         </div>
       </section>
 
@@ -918,8 +1124,37 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-            <p>© 2025 QoriCash. Todos los derechos reservados.</p>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-sm">
+            {/* SBS + RUC compliance bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-800">
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                  <Shield className="w-5 h-5 text-primary-400 flex-shrink-0" />
+                  <div>
+                    <div className="text-white font-bold text-xs">Empresa Registrada</div>
+                    <div className="text-gray-400 text-[11px]">RUC: 20XXXXXXXXX · Lima, Perú</div>
+                  </div>
+                </div>
+                <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <div>
+                    <div className="text-white font-bold text-xs">Regulada SBS</div>
+                    <div className="text-gray-400 text-[11px]">Res. N° XXXXX-2024</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 text-gray-500 text-[11px]">
+                <span className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" />
+                  Transacciones cifradas SSL
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5" />
+                  Datos protegidos por ley
+                </span>
+              </div>
+            </div>
+            <p className="text-center text-gray-500">© 2025 QoriCash. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
