@@ -70,23 +70,7 @@ export default function DashboardPage() {
     loadData();
   }, [isAuthenticated]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.user-menu-container')) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    if (isUserMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [isUserMenuOpen]);
+  // El cierre del menú al hacer clic fuera se maneja con un backdrop fixed (ver JSX)
 
   const loadData = async () => {
     if (!user?.dni) {
@@ -190,7 +174,7 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative user-menu-container">
+              <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
@@ -204,57 +188,62 @@ export default function DashboardPage() {
                   <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {/* Dropdown Menu */}
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                    <Link
-                      href="/perfil"
-                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+                  <>
+                    {/* Backdrop: cierra el menú al clicar fuera */}
+                    <div
+                      className="fixed inset-0"
+                      style={{ zIndex: 998 }}
                       onClick={() => setIsUserMenuOpen(false)}
+                    />
+                    {/* Dropdown — encima del backdrop */}
+                    <div
+                      className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
+                      style={{ zIndex: 999 }}
                     >
-                      <User className="w-5 h-5 mr-3" />
-                      Mi perfil
-                    </Link>
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <TrendingUp className="w-5 h-5 mr-3" />
-                      Mi Dashboard
-                    </Link>
-                    {(['Master', 'Operador'] as const).includes(user?.role as any) && (
-                      <Link
-                        href="/dashboard/posicion"
+                      <button
+                        onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
+                        className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+                      >
+                        <User className="w-5 h-5 mr-3" />
+                        Mi perfil
+                      </button>
+                      <button
+                        onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
+                        className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+                      >
+                        <TrendingUp className="w-5 h-5 mr-3" />
+                        Mi Dashboard
+                      </button>
+                      {(['Master', 'Operador'] as const).includes(user?.role as any) && (
+                        <button
+                          onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
+                          className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+                        >
+                          <BarChart2 className="w-5 h-5 mr-3" />
+                          Posición del Día
+                        </button>
+                      )}
+                      <a
+                        href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
-                        <BarChart2 className="w-5 h-5 mr-3" />
-                        Posición del Día
-                      </Link>
-                    )}
-                    <a
-                      href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <HelpCircle className="w-5 h-5 mr-3" />
-                      Ayuda
-                    </a>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        handleLogout();
-                      }}
-                      className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition"
-                    >
-                      <LogOut className="w-5 h-5 mr-3" />
-                      Cerrar Sesión
-                    </button>
-                  </div>
+                        <HelpCircle className="w-5 h-5 mr-3" />
+                        Ayuda
+                      </a>
+                      <div className="border-t border-gray-200 my-1" />
+                      <button
+                        onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
+                        className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
+                      >
+                        <LogOut className="w-5 h-5 mr-3" />
+                        Cerrar Sesión
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
