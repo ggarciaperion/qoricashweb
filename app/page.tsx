@@ -392,14 +392,14 @@ export default function Home() {
 
               <div className="flex flex-row items-center justify-center gap-6 pt-3">
                 <div className="text-center flex flex-col items-center gap-1">
-                  <div className="w-24 h-16 flex items-center justify-center">
-                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-lg" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
                 <div className="text-center flex flex-col items-center gap-1">
-                  <div className="w-24 h-16 flex items-center justify-center">
-                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-md" />
+                  <div className="w-32 h-20 flex items-center justify-center">
+                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-lg" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
