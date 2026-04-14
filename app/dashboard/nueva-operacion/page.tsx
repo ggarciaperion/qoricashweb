@@ -106,6 +106,8 @@ function NuevaOperacionContent() {
   const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
   const [dniFront, setDnifront] = useState<File | null>(null);
   const [dniBack, setDniBack] = useState<File | null>(null);
+  // Flag local: documentos ya enviados en esta sesión (evita que el botón "Subir" reaparezca si el backend aún no actualizó has_complete_documents)
+  const [docsSubmittedThisSession, setDocsSubmittedThisSession] = useState(false);
 
   // Estado de verificación automática de cuenta activada
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
@@ -763,6 +765,9 @@ function NuevaOperacionContent() {
       const data = await response.json();
 
       if (data.success) {
+        // Marcar documentos como enviados en esta sesión (oculta botón "Subir" aunque el backend aún no actualice has_complete_documents)
+        setDocsSubmittedThisSession(true);
+
         // Actualizar el estado del usuario desde el backend
         await refreshUser();
 
@@ -771,9 +776,6 @@ function NuevaOperacionContent() {
         setDniBack(null);
         setRucFicha(null);
         setIsUploadingKYC(false);
-
-        // Mostrar mensaje de éxito
-        alert('Documentos enviados exitosamente. Estamos validando tu información. Nuestro equipo revisará tus documentos y activará tu cuenta en un plazo aproximado de 10 minutos.');
       } else {
         setError(data.message || 'Error al subir documentos');
         setIsUploadingKYC(false);
@@ -1374,7 +1376,7 @@ function NuevaOperacionContent() {
                 /* STEP 1: Form */
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Validación de estado del cliente (KYC) */}
-                  {user?.status === 'Inactivo' && !user?.has_complete_documents && (
+                  {user?.status === 'Inactivo' && !user?.has_complete_documents && !docsSubmittedThisSession && (
                     <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
                       <div className="flex items-start">
                         <AlertCircle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
@@ -1448,7 +1450,7 @@ function NuevaOperacionContent() {
                     </div>
                   )}
 
-                  {user?.status === 'Inactivo' && user?.has_complete_documents && (
+                  {user?.status === 'Inactivo' && (user?.has_complete_documents || docsSubmittedThisSession) && (
                     <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
                       <div className="flex items-start">
                         <Clock className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-0.5" />

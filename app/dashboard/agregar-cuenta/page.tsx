@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Info,
   Landmark,
+  ChevronDown,
 } from 'lucide-react';
 
 const bankAccountSchema = z.object({
@@ -209,11 +210,11 @@ export default function AgregarCuentaPage() {
                 Banco
               </label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
                 <select
                   {...register('bank_name')}
                   id="bank_name"
-                  className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                  className={`w-full appearance-none pl-11 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.bank_name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   disabled={isSubmitting || !selectedOrigen}
@@ -222,11 +223,12 @@ export default function AgregarCuentaPage() {
                     {!selectedOrigen ? 'Primero selecciona el origen' : 'Selecciona un banco'}
                   </option>
                   {banksList.map((bank) => (
-                    <option key={bank.value} value={bank.value} disabled={(bank as any).disabled}>
+                    <option key={bank.value} value={bank.value}>
                       {bank.label}
                     </option>
                   ))}
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
               {errors.bank_name && (
                 <p className="mt-2 text-sm text-red-600">{errors.bank_name.message}</p>
@@ -241,11 +243,11 @@ export default function AgregarCuentaPage() {
                   Tipo de Cuenta
                 </label>
                 <div className="relative">
-                  <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
                   <select
                     {...register('account_type')}
                     id="account_type"
-                    className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    className={`w-full appearance-none pl-11 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                       errors.account_type ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     disabled={isSubmitting}
@@ -254,6 +256,7 @@ export default function AgregarCuentaPage() {
                     <option value="Ahorro">Ahorro</option>
                     <option value="Corriente">Corriente</option>
                   </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.account_type && (
                   <p className="mt-2 text-sm text-red-600">{errors.account_type.message}</p>
@@ -266,11 +269,11 @@ export default function AgregarCuentaPage() {
                   Moneda
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
                   <select
                     {...register('currency')}
                     id="currency"
-                    className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                    className={`w-full appearance-none pl-11 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                       errors.currency ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     disabled={isSubmitting}
@@ -279,6 +282,7 @@ export default function AgregarCuentaPage() {
                     <option value="S/">Soles (S/)</option>
                     <option value="$">Dólares ($)</option>
                   </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
                 {errors.currency && (
                   <p className="mt-2 text-sm text-red-600">{errors.currency.message}</p>

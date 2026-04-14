@@ -73,11 +73,13 @@ export default function Home() {
     };
 
     if (isUserMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      // Usar 'click' (no 'mousedown') para permitir que los links dentro del menú
+      // completen su navegación antes de que el dropdown se cierre
+      document.addEventListener('click', handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [isUserMenuOpen]);
 

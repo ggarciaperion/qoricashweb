@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Info,
   Landmark,
+  ChevronDown,
 } from 'lucide-react';
 
 const bankAccountSchema = z.object({
@@ -186,10 +187,10 @@ export default function AddBankAccountModal({
                 Banco *
               </label>
               <div className="relative">
-                <Landmark className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
                 <select
                   {...register('bank_name')}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                  className="w-full appearance-none pl-11 pr-10 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
                 >
                   <option value="">Selecciona un banco</option>
                   {banksList.map((bank) => (
@@ -198,6 +199,7 @@ export default function AddBankAccountModal({
                     </option>
                   ))}
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
               {errors.bank_name && (
                 <p className="text-red-600 text-sm mt-2">{errors.bank_name.message}</p>
@@ -242,15 +244,16 @@ export default function AddBankAccountModal({
                 Tipo de Cuenta *
               </label>
               <div className="relative">
-                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Landmark className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
                 <select
                   {...register('account_type')}
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                  className="w-full appearance-none pl-11 pr-10 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
                 >
                   <option value="">Selecciona tipo de cuenta</option>
                   <option value="Ahorro">Ahorro</option>
                   <option value="Corriente">Corriente</option>
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
               {errors.account_type && (
                 <p className="text-red-600 text-sm mt-2">{errors.account_type.message}</p>
