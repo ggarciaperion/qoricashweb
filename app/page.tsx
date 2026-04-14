@@ -536,268 +536,252 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Comparison Table Section — punto 4 */}
-      <section className="py-14 px-6 sm:px-8 lg:px-12 bg-white/60 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Transparencia total</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              ¿Cuánto ahorras con QoriCash?
+      {/* ══════════════════════════════════════════════
+          COMPARISON — ¿Cuánto ahorras con QoriCash?
+      ══════════════════════════════════════════════ */}
+      <section className="relative py-20 bg-gray-950 overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-green-500/8 rounded-full blur-3xl" />
+          <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px)', backgroundSize: '56px 56px' }} />
+        </div>
+
+        <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
+              Transparencia total
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+              ¿Cuánto ahorras con{' '}
+              <span className="bg-gradient-to-r from-primary-400 to-green-400 bg-clip-text text-transparent">QoriCash</span>?
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-sm">
-              Compara nuestras tasas con los principales bancos del Perú y descubre cuánto más recibes por tus dólares.
+            <p className="text-gray-400 max-w-xl mx-auto">
+              Comparamos en tiempo real. Decide con información real, no estimaciones.
             </p>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden">
-            {/* Table header */}
-            <div className="grid grid-cols-3 bg-gray-50 border-b border-gray-200 px-5 py-3 text-xs font-bold text-gray-600 uppercase tracking-wide">
-              <div>Entidad</div>
-              <div className="text-center">Compra USD</div>
-              <div className="text-center">Venta USD</div>
-            </div>
-
-            {/* QoriCash row — highlighted */}
-            <div className="grid grid-cols-3 px-5 py-4 bg-primary-50 border-b-2 border-primary-200 items-center">
-              <div className="flex items-center gap-2">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
-                <div>
-                  <div className="font-bold text-primary-800 text-sm">QoriCash</div>
-                  <div className="text-[10px] text-primary-600 font-semibold">⭐ Mejor tasa</div>
+          <div className="grid lg:grid-cols-5 gap-6 items-start">
+            {/* Left — savings card */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="bg-gradient-to-br from-green-500/15 to-primary-500/10 border border-green-500/25 rounded-2xl p-8">
+                <p className="text-green-400 text-sm font-semibold mb-3">Al vender $1,000 dólares</p>
+                <div className="text-6xl md:text-7xl font-display font-bold text-white mb-1">
+                  {currentRates ? `S/ ${((currentRates.tipo_compra - 3.330) * 1000).toFixed(0)}` : '—'}
                 </div>
-              </div>
-              <div className="text-center">
-                {currentRates ? (
-                  <span className="text-lg font-bold text-primary-700">S/ {currentRates.tipo_compra.toFixed(3)}</span>
-                ) : (
-                  <div className="h-6 w-20 bg-primary-200 animate-pulse rounded mx-auto" />
-                )}
-              </div>
-              <div className="text-center">
-                {currentRates ? (
-                  <span className="text-lg font-bold text-primary-700">S/ {currentRates.tipo_venta.toFixed(3)}</span>
-                ) : (
-                  <div className="h-6 w-20 bg-primary-200 animate-pulse rounded mx-auto" />
-                )}
-              </div>
-            </div>
-
-            {/* Bank rows */}
-            {[
-              { name: 'BCP', logo: '/BCP.png', compra: 3.340, venta: 3.440 },
-              { name: 'Interbank', logo: '/Interbank.png', compra: 3.345, venta: 3.435 },
-              { name: 'BBVA', logo: '/BBVA.png', compra: 3.330, venta: 3.450 },
-              { name: 'Scotiabank', logo: '/Scotiabank.png', compra: 3.325, venta: 3.455 },
-            ].map((bank, i) => (
-              <div key={i} className="grid grid-cols-3 px-5 py-3.5 border-b border-gray-100 items-center last:border-0 hover:bg-gray-50/60 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-8 flex items-center">
-                    <img src={bank.logo} alt={bank.name} className="max-w-full max-h-full object-contain opacity-80" />
+                <p className="text-gray-400 text-sm mb-8">más de lo que recibirías en un banco</p>
+                <div className="space-y-3 border-t border-white/10 pt-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Con QoriCash recibes</span>
+                    {currentRates ? <span className="font-bold text-green-400 text-lg">S/ {(currentRates.tipo_compra * 1000).toFixed(2)}</span> : <div className="h-5 w-24 bg-green-900 animate-pulse rounded" />}
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">{bank.name}</span>
-                </div>
-                <div className="text-center">
-                  <span className="text-sm font-medium text-gray-600">S/ {bank.compra.toFixed(3)}</span>
-                  {currentRates && (
-                    <div className="text-[10px] text-red-500 font-semibold">
-                      -{((currentRates.tipo_compra - bank.compra) * 1000).toFixed(0)} por $1,000
-                    </div>
-                  )}
-                </div>
-                <div className="text-center">
-                  <span className="text-sm font-medium text-gray-600">S/ {bank.venta.toFixed(3)}</span>
-                  {currentRates && (
-                    <div className="text-[10px] text-red-500 font-semibold">
-                      +{((bank.venta - currentRates.tipo_venta) * 1000).toFixed(0)} más por $1,000
-                    </div>
-                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Banco promedio</span>
+                    <span className="font-semibold text-gray-500">S/ {(3.330 * 1000).toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
-            ))}
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-[11px] text-gray-500 leading-relaxed">
+                * Tasas bancarias son referenciales. Las de QoriCash se actualizan en tiempo real durante el horario de atención.
+              </div>
+            </div>
 
-            <div className="px-5 py-3 bg-gray-50 text-[10px] text-gray-400 text-center border-t border-gray-200">
-              * Tasas bancarias son referenciales. Las tasas de QoriCash se actualizan en tiempo real.
+            {/* Right — comparison rows */}
+            <div className="lg:col-span-3 space-y-2.5">
+              {/* Header */}
+              <div className="grid grid-cols-3 px-5 pb-2 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <div>Entidad</div>
+                <div className="text-center">Compra</div>
+                <div className="text-center">Venta</div>
+              </div>
+
+              {/* QoriCash */}
+              <div className="relative bg-gradient-to-r from-primary-500/20 to-green-500/10 border-2 border-primary-500/40 rounded-2xl px-5 py-4 overflow-hidden">
+                <div className="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-bl-xl tracking-wide">MEJOR TASA ⭐</div>
+                <div className="grid grid-cols-3 items-center">
+                  <div className="flex items-center gap-2.5">
+                    <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
+                    <span className="font-bold text-white text-sm">QoriCash</span>
+                  </div>
+                  <div className="text-center">
+                    {currentRates ? <div className="text-xl font-bold text-green-400">S/ {currentRates.tipo_compra.toFixed(3)}</div> : <div className="h-7 w-20 bg-primary-900 animate-pulse rounded mx-auto" />}
+                  </div>
+                  <div className="text-center">
+                    {currentRates ? <div className="text-xl font-bold text-green-400">S/ {currentRates.tipo_venta.toFixed(3)}</div> : <div className="h-7 w-20 bg-primary-900 animate-pulse rounded mx-auto" />}
+                  </div>
+                </div>
+              </div>
+
+              {/* Banks */}
+              {[
+                { name: 'BCP', logo: '/BCP.png', compra: 3.340, venta: 3.440 },
+                { name: 'Interbank', logo: '/Interbank.png', compra: 3.345, venta: 3.435 },
+                { name: 'BBVA', logo: '/BBVA.png', compra: 3.330, venta: 3.450 },
+                { name: 'Scotiabank', logo: '/Scotiabank.png', compra: 3.325, venta: 3.455 },
+              ].map((bank, i) => (
+                <div key={i} className="grid grid-cols-3 bg-gray-900 border border-gray-800 rounded-xl px-5 py-3.5 items-center hover:border-gray-700 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-7 flex items-center">
+                      <img src={bank.logo} alt={bank.name} className="max-w-full max-h-full object-contain opacity-50 grayscale group-hover:opacity-70 transition-opacity" />
+                    </div>
+                    <span className="text-gray-400 text-sm font-medium">{bank.name}</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-gray-400">S/ {bank.compra.toFixed(3)}</div>
+                    {currentRates && <div className="text-[10px] text-red-400 font-medium">-{((currentRates.tipo_compra - bank.compra) * 1000).toFixed(0)} por $1k</div>}
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-gray-400">S/ {bank.venta.toFixed(3)}</div>
+                    {currentRates && <div className="text-[10px] text-red-400 font-medium">+{((bank.venta - currentRates.tipo_venta) * 1000).toFixed(0)} por $1k</div>}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Savings highlight */}
-          {currentRates && (
-            <div className="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 text-center">
-              <p className="text-green-800 font-bold text-sm">
-                💰 Al vender $1,000 con QoriCash recibes hasta{' '}
-                <span className="text-lg text-green-700">
-                  S/ {((currentRates.tipo_compra - 3.330) * 1000).toFixed(0)} más
-                </span>{' '}
-                que en un banco
-              </p>
-            </div>
-          )}
         </div>
       </section>
 
-      {/* TradingView Chart — Historical Rate Section (punto 3) */}
-      <section className="py-14 px-6 sm:px-8 lg:px-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Datos en tiempo real</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              Historial del tipo de cambio
+      {/* ══════════════════════════════════════════
+          TRADINGVIEW — Historial tipo de cambio
+      ══════════════════════════════════════════ */}
+      <section className="relative py-20 bg-gray-900 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-0 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2" />
+          <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-500/8 rounded-full blur-3xl -translate-y-1/2" />
+        </div>
+        <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid lg:grid-cols-5 gap-10 items-center">
+            {/* Left info */}
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-400/10 border border-blue-400/20 px-4 py-2 rounded-full mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  Mercado en vivo
+                </span>
+                <h2 className="text-4xl md:text-5xl font-display font-bold text-white mt-4 mb-4">
+                  El dólar,<br />
+                  <span className="bg-gradient-to-r from-blue-400 to-primary-400 bg-clip-text text-transparent">al instante</span>
+                </h2>
+                <p className="text-gray-400 leading-relaxed">
+                  Sigue la evolución del dólar frente al sol peruano y decide el mejor momento para cambiar.
+                </p>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { icon: '📈', label: 'Datos en tiempo real', desc: 'Mercado Forex · USD/PEN' },
+                  { icon: '🕐', label: 'Múltiples rangos', desc: '1 día · 1 mes · 1 año · Todo' },
+                  { icon: '🔒', label: 'Fuente verificada', desc: 'TradingView · OANDA · FX_IDC' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-gray-800/60 border border-gray-700/50 rounded-xl p-4">
+                    <span className="text-xl">{item.icon}</span>
+                    <div>
+                      <div className="text-white text-sm font-semibold">{item.label}</div>
+                      <div className="text-gray-500 text-xs">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Right chart */}
+            <div className="lg:col-span-3">
+              <div className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl">
+                <div className="px-5 py-3 border-b border-gray-700 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-white text-sm font-bold">USD / PEN</span>
+                    {currentRates && <span className="text-gray-400 text-xs ml-1">S/ {currentRates.tipo_venta.toFixed(3)}</span>}
+                  </div>
+                  <span className="text-gray-500 text-xs">TradingView</span>
+                </div>
+                <div className="p-2">
+                  <TradingViewWidget />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          FEATURES — ¿Por qué elegir QoriCash?
+      ══════════════════════════════════════ */}
+      <section id="servicios" className="relative py-20 bg-white overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-200 to-transparent" />
+          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-60" />
+        </div>
+        <div className="relative w-full px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+              Nuestras ventajas
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+              ¿Por qué elegir{' '}
+              <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">QoriCash</span>?
             </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
-              Sigue la evolución del dólar frente al sol peruano y decide cuándo es el mejor momento para cambiar.
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+              La plataforma de cambio de divisas más confiable del Perú
             </p>
           </div>
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 p-4 overflow-hidden">
-            <TradingViewWidget />
-          </div>
-          <p className="text-center text-xs text-gray-400 mt-3">
-            Gráfica proporcionada por TradingView · USD/PEN · Mercado Forex
-          </p>
-        </div>
-      </section>
 
-      {/* Features Section */}
-      <section id="servicios" className="py-12 bg-white/60 backdrop-blur-sm">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16 relative">
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent mb-6"></div>
-
-            <div className="inline-block relative pt-8">
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-400/20 via-primary-500/20 to-primary-400/20 blur-3xl"></div>
-
-              <h2 className="text-5xl md:text-6xl font-display font-bold mb-4 relative">
-                <span className="text-gray-900">¿Por qué elegir </span>
-                <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-secondary bg-clip-text text-transparent">
-                  QoriCash
-                </span>
-                <span className="text-gray-900">?</span>
-              </h2>
-            </div>
-
-            {/* Subtitle with icon */}
-            <div className="flex items-center justify-center gap-3 mt-6">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary-400"></div>
-              <p className="text-xl text-gray-600 max-w-2xl">
-                Te ofrecemos la mejor experiencia en cambio de divisas con seguridad garantizada
-              </p>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary-400"></div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {[
-              {
-                image: 'Seguro y Confiable.png',
-                title: 'Seguro y Confiable',
-                description: 'Plataforma certificada con los más altos estándares de seguridad',
-                gradient: 'from-blue-500 to-blue-600',
-                delay: '0s',
-                size: { width: 128, height: 128, className: 'w-32 h-32' }
-              },
-              {
-                image: 'Transferencia-Rapida.png',
-                title: 'Transferencia Rápida',
-                description: 'Recibe tu dinero en minutos, sin complicaciones',
-                gradient: 'from-primary-500 to-primary-600',
-                delay: '0.1s',
-                size: { width: 128, height: 128, className: 'w-32 h-32' }
-              },
-              {
-                image: 'Mejor Tipo de Cambio.png',
-                title: 'Mejor Tipo de Cambio',
-                description: 'Tasas competitivas actualizadas en tiempo real',
-                gradient: 'from-green-500 to-green-600',
-                delay: '0.2s',
-                size: { width: 128, height: 128, className: 'w-32 h-32' }
-              },
-              {
-                image: 'Protegido.png',
-                title: '100% Protegido',
-                description: 'Tus datos y transacciones completamente cifrados',
-                gradient: 'from-purple-500 to-purple-600',
-                delay: '0.3s',
-                size: { width: 128, height: 128, className: 'w-32 h-32' }
-              }
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="group relative animate-step-fade-in"
-                style={{ animationDelay: feature.delay }}
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-10 blur-xl transition-all duration-500"></div>
-
-                {/* Main card */}
-                <div className="relative bg-white/60 backdrop-blur-md rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 border-2 border-white/60 group-hover:border-primary-300/60 overflow-hidden h-full flex flex-col">
-                  {/* Background decoration */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary-100/40 to-transparent rounded-full -translate-y-16 translate-x-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                  {/* Illustration container */}
-                  <div className="relative mb-6 flex items-center justify-center">
-                    <div className={`relative ${feature.size.className} transform group-hover:scale-110 transition-all duration-500`}>
-                      <Image
-                        src={`/${feature.image}`}
-                        alt={feature.title}
-                        width={feature.size.width}
-                        height={feature.size.height}
-                        className="w-full h-full object-contain drop-shadow-lg"
-                        priority={index < 2}
-                      />
+              { image: 'Seguro y Confiable.png', title: 'Seguro y Confiable', description: 'Registro SBS Res. N° 00313-2026. Verificación KYC y cifrado de extremo a extremo.', accent: 'blue', delay: '0s' },
+              { image: 'Transferencia-Rapida.png', title: 'En menos de 15 min', description: 'Operaciones completadas en menos de 15 minutos. Inmediato a BCP e Interbank.', accent: 'primary', delay: '0.1s' },
+              { image: 'Mejor Tipo de Cambio.png', title: 'Mejor Tipo de Cambio', description: 'Tasas actualizadas en tiempo real. Siempre por encima de los bancos.', accent: 'green', delay: '0.2s' },
+              { image: 'Protegido.png', title: '100% Digital', description: 'Sin papeleos, sin colas. Opera desde tu celular o computadora en todo Perú.', accent: 'purple', delay: '0.3s' },
+            ].map((feature, index) => {
+              const accents: Record<string, { ring: string; bg: string; text: string; bar: string }> = {
+                blue: { ring: 'hover:ring-blue-200', bg: 'bg-blue-50', text: 'text-blue-600', bar: 'from-blue-400 to-blue-600' },
+                primary: { ring: 'hover:ring-primary-200', bg: 'bg-primary-50', text: 'text-primary-600', bar: 'from-primary-400 to-primary-600' },
+                green: { ring: 'hover:ring-green-200', bg: 'bg-green-50', text: 'text-green-600', bar: 'from-green-400 to-green-600' },
+                purple: { ring: 'hover:ring-purple-200', bg: 'bg-purple-50', text: 'text-purple-600', bar: 'from-purple-400 to-purple-600' },
+              };
+              const a = accents[feature.accent];
+              return (
+                <div key={index} className={`group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl border border-gray-100 hover:border-transparent ring-2 ring-transparent ${a.ring} transition-all duration-500 overflow-hidden flex flex-col animate-step-fade-in`} style={{ animationDelay: feature.delay }}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${a.bg} to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className="relative z-10">
+                    <div className={`w-16 h-16 ${a.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                      <Image src={`/${feature.image}`} alt={feature.title} width={40} height={40} className="w-10 h-10 object-contain drop-shadow" priority={index < 2} />
                     </div>
-
-                    {/* Floating particles */}
-                    <div className="absolute -top-2 -right-2 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
-                    <div className="absolute -bottom-2 -left-2 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
+                    <h3 className={`text-lg font-bold text-gray-900 mb-3 group-hover:${a.text} transition-colors duration-300`}>{feature.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
                   </div>
-
-                  {/* Content */}
-                  <div className="relative z-10 flex-1 flex flex-col">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-primary-600 transition-colors duration-500">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed text-sm text-center group-hover:text-gray-700 transition-colors duration-500">
-                      {feature.description}
-                    </p>
-                  </div>
-
-                  {/* Bottom accent line */}
-                  <div className="absolute bottom-0 left-0 w-0 h-1.5 bg-gradient-to-r from-primary-500 to-primary-600 group-hover:w-full transition-all duration-500 rounded-b-3xl"></div>
+                  <div className={`absolute bottom-0 left-0 h-1 w-0 group-hover:w-full bg-gradient-to-r ${a.bar} transition-all duration-500`} />
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="como-funciona" className="py-12 overflow-hidden">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16 relative">
-            {/* Decorative top line */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent"></div>
-
-            <div className="inline-block relative pt-8">
-              {/* Background glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-400/20 via-primary-500/20 to-primary-400/20 blur-3xl"></div>
-
-              <h2 className="text-5xl md:text-6xl font-display font-bold mb-4 relative">
-                <span className="text-gray-900">Cambia en </span>
-                <span className="bg-gradient-to-r from-primary-500 via-primary-600 to-secondary bg-clip-text text-transparent">
-                  3 simples pasos
-                </span>
-              </h2>
-            </div>
-
-            {/* Subtitle with decorative lines */}
-            <div className="flex items-center justify-center gap-3 mt-6">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary-400"></div>
-              <p className="text-xl text-gray-600">
-                Rápido, seguro y sin complicaciones
-              </p>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary-400"></div>
-            </div>
+      {/* ══════════════════════════════════════
+          HOW IT WORKS — Cambia en 3 simples pasos
+      ══════════════════════════════════════ */}
+      <section id="como-funciona" className="relative py-24 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+        {/* Decorative background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-300 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="absolute -top-40 left-1/3 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-50" />
+          <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-emerald-50 rounded-full blur-3xl opacity-60" />
+        </div>
+        <div className="relative w-full px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+              Simple y rápido
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+              Cambia en{' '}
+              <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
+                3 simples pasos
+              </span>
+            </h2>
+            <p className="text-gray-500 text-lg max-w-xl mx-auto">
+              Rápido, seguro y sin complicaciones
+            </p>
           </div>
 
           {/* Mobile: grid de cards */}
@@ -889,272 +873,376 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      {/* Referidos */}
-      <section id="referidos" className="py-16 bg-gradient-to-br from-primary-50 via-white to-primary-50">
-        <div className="w-full px-6 sm:px-8 lg:px-12 max-w-5xl mx-auto">
+      {/* ══════════════════════════════════════
+          REFERIDOS — Comparte y gana
+      ══════════════════════════════════════ */}
+      <section id="referidos" className="relative py-24 overflow-hidden bg-[#080e1a]">
+        {/* Background decoration */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+          <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary-500 rounded-full blur-[120px] opacity-10" />
+          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-emerald-400 rounded-full blur-[120px] opacity-10" />
+          <div className="absolute inset-0 bg-[url('/grid-white.svg')] opacity-[0.03]" />
+        </div>
 
-          <div className="text-center mb-12">
-            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Programa de referidos</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4">
-              Comparte y gana con cada amigo
+        <div className="relative w-full px-6 sm:px-8 lg:px-12">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-6">
+              Programa de referidos
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+              Comparte y gana con{' '}
+              <span className="bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent">
+                cada amigo
+              </span>
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-sm sm:text-base">
-              Invita a tus amigos a QoriCash. Por cada operación que completen, acumulas <strong className="text-primary">pips</strong> que puedes canjear por descuentos reales en tus cambios.
+            <p className="text-gray-400 max-w-xl mx-auto text-lg">
+              Invita a tus amigos a QoriCash. Por cada operación que completen, acumulas <strong className="text-primary-300">pips</strong> que puedes canjear por descuentos reales en tus cambios.
             </p>
           </div>
 
-          {/* Pasos */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="max-w-5xl mx-auto">
+            {/* Steps */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {[
+                {
+                  icon: Share2,
+                  step: '01',
+                  title: 'Comparte tu código',
+                  desc: 'Después de registrarte recibes tu código único. Compártelo con amigos, familia o clientes.',
+                  color: 'from-primary-500 to-primary-600',
+                  glow: 'shadow-primary-500/20',
+                },
+                {
+                  icon: UserPlus,
+                  step: '02',
+                  title: 'Tu amigo se registra',
+                  desc: 'Ingresa tu código al crear su cuenta. Sin costo, sin condiciones ocultas.',
+                  color: 'from-emerald-500 to-emerald-600',
+                  glow: 'shadow-emerald-500/20',
+                },
+                {
+                  icon: Coins,
+                  step: '03',
+                  title: 'Ganas pips',
+                  desc: 'Cada vez que tu referido complete una operación, acumulas 15 pips automáticamente.',
+                  color: 'from-amber-500 to-amber-600',
+                  glow: 'shadow-amber-500/20',
+                }
+              ].map((item, i) => (
+                <div key={i} className="relative group">
+                  {/* Connector arrow (desktop) */}
+                  {i < 2 && (
+                    <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                      <ArrowRight className="w-6 h-6 text-gray-600" />
+                    </div>
+                  )}
+                  <div className={`bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group-hover:bg-white/8 group-hover:border-white/20 transition-all duration-300 shadow-xl ${item.glow}`}>
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 shadow-lg`}>
+                      <item.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <span className="text-xs font-bold text-gray-500 tracking-widest mb-2 uppercase">Paso {item.step}</span>
+                    <h3 className="font-bold text-white text-lg mb-3">{item.title}</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Reward card + CTA */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+              {/* Pip reward card */}
+              <div className="relative bg-gradient-to-br from-primary-600 to-emerald-600 rounded-2xl p-px shadow-2xl shadow-primary-500/20">
+                <div className="bg-gradient-to-br from-[#0d1b2a] to-[#0a1520] rounded-2xl p-8 text-center min-w-[260px]">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/30">
+                    <Gift className="w-7 h-7 text-white" />
+                  </div>
+                  <div className="text-5xl font-display font-bold bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent mb-1">30 pips</div>
+                  <div className="text-sm text-gray-300 mb-4">= cupón de descuento en tu próxima operación</div>
+                  <div className="text-xs text-gray-500 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                    15 pips por operación · Sin límite de referidos
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center md:text-left">
+                <p className="text-gray-300 text-lg font-medium mb-2">¿Listo para empezar?</p>
+                <p className="text-gray-500 text-sm mb-6 max-w-xs">
+                  Regístrate gratis y obtén tu código de referido en menos de 2 minutos.
+                </p>
+                <Link
+                  href={isAuthenticated ? "/dashboard/promociones" : "/crear-cuenta"}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full font-bold text-sm hover:from-primary-400 hover:to-primary-500 transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 group"
+                >
+                  {isAuthenticated ? 'Ver mi código de referido' : 'Crear cuenta y empezar a ganar'}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          CTA — Comienza hoy mismo
+      ══════════════════════════════════════ */}
+      <section className="relative py-28 overflow-hidden bg-white">
+        {/* Background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-emerald-50" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary-100 rounded-full blur-3xl opacity-60" />
+        </div>
+
+        <div className="relative w-full px-6 sm:px-8 lg:px-12 text-center">
+          <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-8">
+            Sin comisiones · Sin colas · 100% digital
+          </span>
+          <h2 className="text-5xl md:text-6xl font-display font-bold text-gray-900 mb-6 leading-tight">
+            Comienza a cambiar{' '}
+            <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">
+              hoy mismo
+            </span>
+          </h2>
+          <p className="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
+            Únete a miles de clientes que confían en QoriCash para sus cambios de divisas. Apertura gratuita, sin requisitos mínimos.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:from-primary-400 hover:to-primary-500 transition-all shadow-xl shadow-primary-500/25 hover:shadow-primary-500/40 group"
+            >
+              {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
+            </Link>
+            <a
+              href="https://wa.me/51926011920?text=Hola%2C%20quiero%20iniciar%20una%20operaci%C3%B3n%20de%20cambio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-10 py-5 rounded-full text-lg font-bold hover:border-primary-300 hover:text-primary-700 transition-all shadow-md hover:shadow-lg group"
+            >
+              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Hablar por WhatsApp
+            </a>
+          </div>
+
+          {/* Trust signals */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-gray-400">
+            {[
+              { icon: Shield, label: 'Regulado SBS' },
+              { icon: Lock, label: 'SSL cifrado' },
+              { icon: CheckCircle2, label: 'Sin comisiones' },
+              { icon: Clock, label: 'En 15 minutos' },
+            ].map((t, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                <t.icon className="w-4 h-4 text-primary-400" />
+                {t.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
+          FAQ — Todo lo que necesitas saber
+      ══════════════════════════════════════ */}
+      <section id="faq" className="relative py-24 bg-slate-50 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        </div>
+
+        <div className="relative w-full px-6 sm:px-8 lg:px-12 max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+              Preguntas frecuentes
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+              Todo lo que necesitas saber
+            </h2>
+            <p className="text-gray-500 text-lg">Resolvemos tus dudas antes de empezar</p>
+          </div>
+
+          <div className="space-y-3">
             {[
               {
-                icon: Share2,
-                step: '01',
-                title: 'Comparte tu código',
-                desc: 'Después de registrarte recibes tu código único. Compártelo con amigos, familia o clientes.'
+                q: '¿Cuánto tiempo tarda mi operación?',
+                a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.'
               },
               {
-                icon: UserPlus,
-                step: '02',
-                title: 'Tu amigo se registra',
-                desc: 'Ingresa tu código al crear su cuenta. Sin costo, sin condiciones ocultas.'
+                q: '¿Es seguro cambiar dólares con QoriCash?',
+                a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.'
               },
               {
-                icon: Coins,
-                step: '03',
-                title: 'Ganas pips',
-                desc: 'Cada vez que tu referido complete una operación, acumulas 15 pips automáticamente.'
-              }
+                q: '¿Cuáles son las comisiones?',
+                a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales.'
+              },
+              {
+                q: '¿Cuál es el monto mínimo para operar?',
+                a: <span>Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold underline underline-offset-2 hover:text-green-700">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span>
+              },
+              {
+                q: '¿Con qué bancos trabajan?',
+                a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Pichincha. Puedes enviar y recibir desde cualquiera de ellos.'
+              },
+              {
+                q: '¿Cómo se determina el tipo de cambio?',
+                a: 'Nuestros traders actualizan las tasas en tiempo real durante el horario de atención, siguiendo el mercado interbancario peruano. Siempre verás el tipo de cambio exacto antes de confirmar.'
+              },
+              {
+                q: '¿Qué documentos necesito para registrarme?',
+                a: 'Solo tu DNI (o CE para extranjeros, RUC para empresas), un correo electrónico y tu número de celular. La verificación de identidad se hace una sola vez antes de tu primera operación.'
+              },
+              {
+                q: '¿Puedo operar si estoy en provincia?',
+                a: 'Sí. QoriCash es 100% digital, por lo que puedes operar desde cualquier lugar del Perú siempre que tengas acceso a la banca online de tu banco para realizar la transferencia.'
+              },
             ].map((item, i) => (
-              <div key={i} className="relative bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center mb-4">
-                  <item.icon className="w-6 h-6 text-primary" />
-                </div>
-                <span className="text-xs font-bold text-primary-400 tracking-widest mb-1">PASO {item.step}</span>
-                <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-                {i < 2 && (
-                  <div className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                    <ArrowRight className="w-6 h-6 text-primary-300" />
+              <div
+                key={i}
+                className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md ${openFaq === i ? 'border-primary-200' : 'border-gray-100 hover:border-gray-200'}`}
+              >
+                <button
+                  className="w-full flex items-center gap-5 px-6 py-5 text-left"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${openFaq === i ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="flex-1 font-semibold text-gray-900 text-sm sm:text-base">{item.q}</span>
+                  <ChevronDown
+                    className={`flex-shrink-0 w-5 h-5 text-primary-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 pl-[72px]">
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {item.a}
+                    </p>
                   </div>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Reward callout */}
-          <div className="bg-white rounded-2xl border-2 border-primary-200 p-6 max-w-sm mx-auto text-center mb-10 shadow-md">
-            <div className="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-3">
-              <Gift className="w-7 h-7 text-primary" />
-            </div>
-            <div className="text-4xl font-display font-bold text-primary mb-1">30 pips</div>
-            <div className="text-sm text-gray-600 mb-3">= cupón de descuento para tu próxima operación</div>
-            <div className="text-xs text-gray-400 bg-gray-50 rounded-lg px-3 py-2">
-              15 pips por cada operación completada · Sin límite de referidos
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="text-center">
-            <Link
-              href={isAuthenticated ? "/dashboard/promociones" : "/crear-cuenta"}
-              className="inline-flex items-center gap-2 bg-primary text-secondary px-8 py-4 rounded-full font-bold text-sm hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
-            >
-              {isAuthenticated ? 'Ver mi código de referido' : 'Crear cuenta y empezar a ganar'}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-            </Link>
-          </div>
-
         </div>
       </section>
 
-      <section className="py-12 bg-gradient-to-r from-secondary to-secondary-700">
-        <div className="w-full px-6 sm:px-8 lg:px-12 text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
-            Comienza a cambiar hoy mismo
-          </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            Únete a miles de clientes que confían en QoriCash para sus cambios de divisas
-          </p>
-          <Link
-            href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}
-            className="inline-flex items-center bg-primary text-secondary px-10 py-5 rounded-full text-lg font-bold hover:bg-primary-600 transition shadow-xl hover:shadow-2xl group"
-          >
-            {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
-            <ArrowRight className="ml-2 group-hover:translate-x-1 transition" />
-          </Link>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" className="py-16 bg-white">
-        <div className="w-full px-6 sm:px-8 lg:px-12 max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-xs font-semibold tracking-widest text-primary uppercase mb-3">Preguntas frecuentes</span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900">
-              Todo lo que necesitas saber
-            </h2>
-          </div>
-
-          {[
-            {
-              q: '¿Cuánto tiempo tarda mi operación?',
-              a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.'
-            },
-            {
-              q: '¿Es seguro cambiar dólares con QoriCash?',
-              a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.'
-            },
-            {
-              q: '¿Cuáles son las comisiones?',
-              a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales.'
-            },
-            {
-              q: '¿Cuál es el monto mínimo para operar?',
-              a: <span>Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold underline underline-offset-2 hover:text-green-700">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span>
-            },
-            {
-              q: '¿Con qué bancos trabajan?',
-              a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Pichincha. Puedes enviar y recibir desde cualquiera de ellos.'
-            },
-            {
-              q: '¿Cómo se determina el tipo de cambio?',
-              a: 'Nuestros traders actualizan las tasas en tiempo real durante el horario de atención, siguiendo el mercado interbancario peruano. Siempre verás el tipo de cambio exacto antes de confirmar.'
-            },
-            {
-              q: '¿Qué documentos necesito para registrarme?',
-              a: 'Solo tu DNI (o CE para extranjeros, RUC para empresas), un correo electrónico y tu número de celular. La verificación de identidad se hace una sola vez antes de tu primera operación.'
-            },
-            {
-              q: '¿Puedo operar si estoy en provincia?',
-              a: 'Sí. QoriCash es 100% digital, por lo que puedes operar desde cualquier lugar del Perú siempre que tengas acceso a la banca online de tu banco para realizar la transferencia.'
-            },
-          ].map((item, i) => (
-            <div key={i} className="border-b border-gray-200 last:border-0">
-              <button
-                className="w-full flex items-center justify-between py-5 text-left gap-4"
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
-                <span className="font-semibold text-gray-900 text-sm sm:text-base">{item.q}</span>
-                <ChevronDown
-                  className={`flex-shrink-0 w-5 h-5 text-primary transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
-                />
-              </button>
-              {openFaq === i && (
-                <p className="pb-5 text-gray-600 text-sm leading-relaxed">
-                  {item.a}
-                </p>
-              )}
+      {/* ══════════════════════════════════════
+          FOOTER
+      ══════════════════════════════════════ */}
+      <footer className="bg-[#080e1a] text-gray-400">
+        {/* Top compliance bar */}
+        <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-12">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
+                <div>
+                  <div className="text-white font-bold text-[11px] leading-tight">Empresa Registrada</div>
+                  <div className="text-gray-500 text-[10px]">RUC: 20615113698 · Lima, Perú</div>
+                </div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div>
+                  <div className="text-white font-bold text-[11px] leading-tight">Regulada SBS</div>
+                  <div className="text-gray-500 text-[10px]">Res. N° 00313-2026</div>
+                </div>
+              </div>
             </div>
-          ))}
+            <div className="flex items-center gap-5 text-[11px] text-gray-600">
+              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
+              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
+            </div>
+          </div>
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="grid md:grid-cols-4 gap-8">
+        {/* Main footer content */}
+        <div className="w-full px-6 sm:px-8 lg:px-12 py-14">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
+            {/* Brand */}
             <div>
-              <Link href="/" className="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity w-fit">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto" />
-                <span className="text-2xl font-display font-bold text-white">
-                  QoriCash
-                </span>
+              <Link href="/" className="flex items-center gap-3 mb-5 hover:opacity-80 transition-opacity w-fit">
+                <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
+                <span className="text-2xl font-display font-bold text-white">QoriCash</span>
               </Link>
-              <p className="text-sm">
+              <p className="text-sm text-gray-500 leading-relaxed">
                 Casa de cambio online líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.
               </p>
             </div>
+
+            {/* Servicios */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Servicios</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/servicios#compra" className="hover:text-white transition">Compra de dólares</Link></li>
-                <li><Link href="/servicios#venta" className="hover:text-white transition">Venta de dólares</Link></li>
-                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition">Tipo de cambio</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/sobre-nosotros" className="hover:text-white transition">Sobre nosotros</Link></li>
-                <li><Link href="/terminos-condiciones" className="hover:text-white transition">Términos y condiciones</Link></li>
-                <li><Link href="/politica-privacidad" className="hover:text-white transition">Política de privacidad</Link></li>
-                <li><Link href="/politica-cookies" className="hover:text-white transition">Política de cookies</Link></li>
-                <li><Link href="/libro-reclamaciones" className="hover:text-white transition">Libro de reclamaciones</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Contacto</h4>
+              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Servicios</h4>
               <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-2">
+                <li><Link href="/servicios#compra" className="hover:text-white transition-colors">Compra de dólares</Link></li>
+                <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
+                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
+              </ul>
+            </div>
+
+            {/* Empresa */}
+            <div>
+              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Empresa</h4>
+              <ul className="space-y-3 text-sm">
+                <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link></li>
+                <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors">Términos y condiciones</Link></li>
+                <li><Link href="/politica-privacidad" className="hover:text-white transition-colors">Política de privacidad</Link></li>
+                <li><Link href="/politica-cookies" className="hover:text-white transition-colors">Política de cookies</Link></li>
+                <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de reclamaciones</Link></li>
+              </ul>
+            </div>
+
+            {/* Contacto */}
+            <div>
+              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Contacto</h4>
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <a href="mailto:info@qoricash.pe" className="hover:text-white transition">
-                    info@qoricash.pe
-                  </a>
+                  <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                   </svg>
-                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
-                    926 011 920
-                  </a>
+                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">926 011 920</a>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition leading-relaxed">
-                    Av. Brasil N° 2790, Int. 504<br />
-                    Lima – Lima – Pueblo Libre
+                  <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors leading-relaxed">
+                    Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre
                   </a>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div className="leading-relaxed">
-                    <div>Lunes a viernes: 9:00 a.m. – 6:00 p.m.</div>
-                    <div>Sábados: 9:00 a.m. – 1:00 p.m.</div>
+                    <div>Lun – Vie: 9:00 a.m. – 6:00 p.m.</div>
+                    <div>Sáb: 9:00 a.m. – 1:00 p.m.</div>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-sm">
-            {/* SBS + RUC compliance bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-800">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-primary-400 flex-shrink-0" />
-                  <div>
-                    <div className="text-white font-bold text-xs">Empresa Registrada</div>
-                    <div className="text-gray-400 text-[11px]">RUC: 20615113698 · Lima, Perú</div>
-                  </div>
-                </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                  <div>
-                    <div className="text-white font-bold text-xs">Regulada SBS</div>
-                    <div className="text-gray-400 text-[11px]">Res. N° 00313-2026</div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-gray-500 text-[11px]">
-                <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5" />
-                  Transacciones cifradas SSL
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5" />
-                  Datos protegidos por ley
-                </span>
-              </div>
+
+          {/* Bottom bar */}
+          <div className="max-w-7xl mx-auto border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+            <p>© 2025 QoriCash. Todos los derechos reservados.</p>
+            <div className="flex items-center gap-4">
+              <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
+              <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
+              <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
             </div>
-            <p className="text-center text-gray-500">© 2025 QoriCash. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
