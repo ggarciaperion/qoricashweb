@@ -594,155 +594,89 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-12 md:gap-16 lg:gap-24 relative max-w-7xl mx-auto px-4">
+          {/* Mobile: grid de cards */}
+          <div className="grid sm:grid-cols-2 gap-8 md:hidden max-w-2xl mx-auto px-4">
             {[
-              {
-                step: '01',
-                title: 'Regístrate',
-                description: 'Regístrate en 2 minutos con tu DNI, CE o RUC',
-                detailedDescription: 'Proceso rápido y 100% digital. Solo necesitas tu DNI y datos básicos.',
-                image: '/registro.png',
-                delay: '0s',
-                gradient: 'from-primary-500 to-primary-600'
-              },
-              {
-                step: '02',
-                title: 'Cotiza',
-                description: 'Ingresa el monto y confirma el tipo de cambio',
-                detailedDescription: 'Tipo de cambio en tiempo real, sin sorpresas ni comisiones ocultas.',
-                image: '/cotiza.png',
-                delay: '0.2s',
-                gradient: 'from-blue-500 to-primary-500'
-              },
-              {
-                step: '03',
-                title: 'Recibe',
-                description: 'Tu dinero llega en 10 minutos a tu cuenta',
-                detailedDescription: 'Transferencias inmediatas a todos los bancos principales del Perú.',
-                image: '/transfiere.png',
-                delay: '0.4s',
-                gradient: 'from-primary-600 to-secondary'
-              }
+              { step: '01', title: 'Regístrate', description: 'Regístrate en 2 minutos con tu DNI, CE o RUC', detailedDescription: 'Proceso rápido y 100% digital. Solo necesitas tu DNI y datos básicos.', image: '/registro.png', delay: '0s' },
+              { step: '02', title: 'Cotiza', description: 'Ingresa el monto y confirma el tipo de cambio', detailedDescription: 'Tipo de cambio en tiempo real, sin sorpresas ni comisiones ocultas.', image: '/cotiza.png', delay: '0.2s' },
+              { step: '03', title: 'Recibe', description: 'Tu dinero llega en 10 minutos a tu cuenta', detailedDescription: 'Transferencias inmediatas a todos los bancos principales del Perú.', image: '/transfiere.png', delay: '0.4s' },
             ].map((step, index) => (
-              <div key={index} className="relative animate-step-fade-in flex items-center justify-center" style={{ animationDelay: step.delay }}>
-                <div className="group cursor-pointer relative w-full">
-                  {/* Mobile: Card Layout (visible on small screens) */}
-                  <div className="md:hidden">
-                    <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-lg border-2 border-white/60 p-6 h-full">
-                      {/* Step number badge */}
-                      <div className="inline-block mb-3">
-                        <span className="text-xs font-bold bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full">
-                          Paso {step.step}
-                        </span>
-                      </div>
-
-                      {/* Icon */}
-                      <div className="w-20 h-20 mx-auto mb-4">
-                        <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-lg font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent mb-3">
-                        {step.title}
-                      </h3>
-
-                      {/* Divider */}
-                      <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-3"></div>
-
-                      {/* Description */}
-                      <p className="text-sm text-gray-700 leading-snug text-center font-medium mb-2">
-                        {step.description}
-                      </p>
-
-                      {/* Detailed description */}
-                      <p className="text-xs text-primary-600 leading-snug text-center">
-                        {step.detailedDescription}
-                      </p>
-                    </div>
+              <div key={index} className="animate-step-fade-in" style={{ animationDelay: step.delay }}>
+                <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-lg border-2 border-white/60 p-6 h-full">
+                  <div className="inline-block mb-3">
+                    <span className="text-xs font-bold bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full">Paso {step.step}</span>
                   </div>
+                  <div className="w-20 h-20 mx-auto mb-4">
+                    <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
+                  </div>
+                  <h3 className="text-lg font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent mb-3">{step.title}</h3>
+                  <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-3"></div>
+                  <p className="text-sm text-gray-700 leading-snug text-center font-medium mb-2">{step.description}</p>
+                  <p className="text-xs text-primary-600 leading-snug text-center">{step.detailedDescription}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-                  {/* Desktop: Circle Layout with Hover (hidden on small screens) */}
-                  <div className="hidden md:block">
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
+          {/* Desktop: flex con conectores inline — los bordes del conector tocan exactamente los bordes de los círculos */}
+          <div className="hidden md:flex items-center justify-center max-w-6xl mx-auto px-4">
+            {[
+              { step: '01', title: 'Regístrate', description: 'Regístrate en 2 minutos con tu DNI, CE o RUC', detailedDescription: 'Proceso rápido y 100% digital. Solo necesitas tu DNI y datos básicos.', image: '/registro.png', delay: '0s' },
+              { step: '02', title: 'Cotiza', description: 'Ingresa el monto y confirma el tipo de cambio', detailedDescription: 'Tipo de cambio en tiempo real, sin sorpresas ni comisiones ocultas.', image: '/cotiza.png', delay: '0.2s' },
+              { step: '03', title: 'Recibe', description: 'Tu dinero llega en 10 minutos a tu cuenta', detailedDescription: 'Transferencias inmediatas a todos los bancos principales del Perú.', image: '/transfiere.png', delay: '0.4s' },
+            ].map((step, index) => (
+              <div key={index} className={`flex items-center ${index < 2 ? 'flex-1' : 'shrink-0'}`}>
 
-                    {/* Main circle */}
-                    <div className="relative bg-white/60 backdrop-blur-md rounded-full aspect-square shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-56 h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
-                      {/* Animated gradient border on hover */}
-                      <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
-                        <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
-                      </div>
-
-                      {/* Floating particles decoration */}
-                      <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
-                      <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
-
-                      {/* Default state: Image and Title */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
-                        {/* Image icon */}
-                        <div className="mb-2 transform">
-                          <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
-                            <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
-                          </div>
+                {/* Círculo */}
+                <div className="group cursor-pointer relative shrink-0 animate-step-fade-in" style={{ animationDelay: step.delay }}>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
+                  <div className="relative bg-white/60 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-56 h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
+                    <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
+                      <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
+                    </div>
+                    <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
+                    <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
+                    {/* Estado normal */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
+                      <div className="mb-2">
+                        <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
+                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
                         </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">
-                          {step.title}
-                        </h3>
                       </div>
-
-                      {/* Hover state: Full description overlay */}
-                      <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
-                        <div className="text-center space-y-2 max-w-[200px]">
-                          {/* Icon on hover (smaller) */}
-                          <div className="w-16 h-16 mx-auto mb-1 transform transition-transform duration-500">
-                            <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
-                          </div>
-
-                          {/* Title on hover */}
-                          <h3 className="text-base font-bold text-primary-600 mb-1">
-                            {step.title}
-                          </h3>
-
-                          {/* Divider */}
-                          <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
-
-                          {/* Description */}
-                          <p className="text-sm text-gray-700 leading-snug px-2 font-medium">
-                            {step.description}
-                          </p>
-
-                          {/* Detailed description */}
-                          <p className="text-xs text-primary-600 leading-snug px-3 mt-1">
-                            {step.detailedDescription}
-                          </p>
+                      <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">{step.title}</h3>
+                    </div>
+                    {/* Estado hover */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
+                      <div className="text-center space-y-2 max-w-[200px]">
+                        <div className="w-16 h-16 mx-auto mb-1">
+                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
                         </div>
+                        <h3 className="text-base font-bold text-primary-600 mb-1">{step.title}</h3>
+                        <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
+                        <p className="text-sm text-gray-700 leading-snug px-2 font-medium">{step.description}</p>
+                        <p className="text-xs text-primary-600 leading-snug px-3 mt-1">{step.detailedDescription}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Enhanced animated connector between steps */}
+                {/* Conector: flex-1 → ocupa exactamente el espacio entre bordes de círculos */}
                 {index < 2 && (
-                  <div className="hidden lg:block absolute z-10" style={{ left: 'calc(50% + 128px)', right: 'calc(-100% - 128px + 50%)', top: '50%' }}>
-                    {/* Glow line */}
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full h-1 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-300 opacity-30 blur-sm"></div>
-                    </div>
-                    {/* Dashed line */}
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t-2 border-dashed border-primary-400"></div>
-                    </div>
-                    {/* Moving dot with trail — sequential: dot 1 first, dot 2 after */}
-                    <div className={`absolute top-1/2 left-0 -translate-y-1/2 ${index === 0 ? 'animate-dot-seq-1' : 'animate-dot-seq-2'}`}>
+                  <div className="relative flex-1 self-center" style={{ height: '2px' }}>
+                    {/* Glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-300 opacity-40 blur-sm" />
+                    {/* Línea punteada */}
+                    <div className="absolute inset-0 border-t-2 border-dashed border-primary-400" />
+                    {/* Punto animado — left:0% = borde izquierdo del conector = borde del círculo izquierdo */}
+                    <div className={`absolute top-0 -translate-y-1/2 -translate-x-1/2 ${index === 0 ? 'animate-dot-seq-1' : 'animate-dot-seq-2'}`}>
                       <div className="relative">
-                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg"></div>
-                        <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary-400 animate-ping"></div>
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg" />
+                        <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary-400 animate-ping" />
                       </div>
                     </div>
                   </div>
                 )}
+
               </div>
             ))}
           </div>
