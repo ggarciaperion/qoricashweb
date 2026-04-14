@@ -17,7 +17,7 @@ export default function TradingViewWidget() {
     script.async = true;
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
     script.textContent = JSON.stringify({
-      symbols: [['FX_IDC:USDPEN|1D|USD']],
+      symbols: [['OANDA:USDPEN|1D|USD/PEN']],
       chartOnly: false,
       width: '100%',
       height: 340,

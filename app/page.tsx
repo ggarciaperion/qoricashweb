@@ -528,9 +528,9 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center gap-1">
               <div className="text-3xl md:text-4xl font-display font-bold">
-                <AnimatedStat value={520} prefix="S/ " suffix="K+" label="" duration={1800} />
+                <AnimatedStat value={4.8} decimals={1} suffix="★" label="" duration={1500} />
               </div>
-              <div className="text-primary-200 text-sm font-medium">Ahorrados por clientes</div>
+              <div className="text-primary-200 text-sm font-medium">Satisfacción de clientes</div>
             </div>
           </div>
         </div>
