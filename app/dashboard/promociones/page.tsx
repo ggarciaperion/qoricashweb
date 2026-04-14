@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -125,17 +126,17 @@ export default function PromocionesPage() {
         </div>
       </div>
 
-      {/* Dropdown outside header to escape backdrop-blur-md stacking context */}
-      {isUserMenuOpen && (
+      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
+      {isUserMenuOpen && createPortal(
         <>
           <div
             className="fixed inset-0"
-            style={{ zIndex: 9998 }}
+            style={{ zIndex: 99998 }}
             onClick={() => setIsUserMenuOpen(false)}
           />
           <div
             className="fixed right-4 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-            style={{ zIndex: 9999, top: '64px' }}
+            style={{ zIndex: 99999, top: '64px' }}
           >
             <button
               onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
@@ -177,7 +178,8 @@ export default function PromocionesPage() {
               Cerrar Sesión
             </button>
           </div>
-        </>
+        </>,
+        document.body
       )}
 
       {/* Content */}

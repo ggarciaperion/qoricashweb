@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -188,68 +189,69 @@ export default function DashboardPage() {
                   <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {isUserMenuOpen && (
-                  <>
-                    {/* Backdrop: cierra el menú al clicar fuera */}
-                    <div
-                      className="fixed inset-0"
-                      style={{ zIndex: 998 }}
-                      onClick={() => setIsUserMenuOpen(false)}
-                    />
-                    {/* Dropdown — encima del backdrop */}
-                    <div
-                      className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-                      style={{ zIndex: 999 }}
-                    >
-                      <button
-                        onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
-                        className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-                      >
-                        <User className="w-5 h-5 mr-3" />
-                        Mi perfil
-                      </button>
-                      <button
-                        onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
-                        className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-                      >
-                        <TrendingUp className="w-5 h-5 mr-3" />
-                        Mi Dashboard
-                      </button>
-                      {(['Master', 'Operador'] as const).includes(user?.role as any) && (
-                        <button
-                          onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
-                          className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-                        >
-                          <BarChart2 className="w-5 h-5 mr-3" />
-                          Posición del Día
-                        </button>
-                      )}
-                      <a
-                        href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <HelpCircle className="w-5 h-5 mr-3" />
-                        Ayuda
-                      </a>
-                      <div className="border-t border-gray-200 my-1" />
-                      <button
-                        onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
-                        className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
-                      >
-                        <LogOut className="w-5 h-5 mr-3" />
-                        Cerrar Sesión
-                      </button>
-                    </div>
-                  </>
-                )}
               </div>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
+      {isUserMenuOpen && createPortal(
+        <>
+          <div
+            className="fixed inset-0"
+            style={{ zIndex: 99998 }}
+            onClick={() => setIsUserMenuOpen(false)}
+          />
+          <div
+            className="fixed right-4 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
+            style={{ zIndex: 99999, top: '64px' }}
+          >
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
+              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+            >
+              <User className="w-5 h-5 mr-3" />
+              Mi perfil
+            </button>
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
+              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+            >
+              <TrendingUp className="w-5 h-5 mr-3" />
+              Mi Dashboard
+            </button>
+            {(['Master', 'Operador'] as const).includes(user?.role as any) && (
+              <button
+                onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
+                className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
+              >
+                <BarChart2 className="w-5 h-5 mr-3" />
+                Posición del Día
+              </button>
+            )}
+            <a
+              href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
+              onClick={() => setIsUserMenuOpen(false)}
+            >
+              <HelpCircle className="w-5 h-5 mr-3" />
+              Ayuda
+            </a>
+            <div className="border-t border-gray-200 my-1" />
+            <button
+              onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
+              className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Cerrar Sesión
+            </button>
+          </div>
+        </>,
+        document.body
+      )}
 
       {/* Decorative background elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">

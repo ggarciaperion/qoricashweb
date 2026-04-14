@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -241,17 +242,17 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Dropdown outside header to escape backdrop-blur-md stacking context */}
-      {isUserMenuOpen && (
+      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
+      {isUserMenuOpen && createPortal(
         <>
           <div
             className="fixed inset-0"
-            style={{ zIndex: 9998 }}
+            style={{ zIndex: 99998 }}
             onClick={() => setIsUserMenuOpen(false)}
           />
           <div
             className="fixed right-8 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-            style={{ zIndex: 9999, top: '80px' }}
+            style={{ zIndex: 99999, top: '80px' }}
           >
             <button
               onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
@@ -286,7 +287,8 @@ export default function Home() {
               Cerrar Sesión
             </button>
           </div>
-        </>
+        </>,
+        document.body
       )}
 
       {/* Hero Section */}
