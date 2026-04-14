@@ -160,17 +160,30 @@ body {
   animation: arrow-pulse 2s ease-in-out infinite;
 }
 
-@keyframes dot-travel {
-  0% {
-    left: 0%;
-  }
-  100% {
-    left: 100%;
-  }
+/* Dot 1: travels first (0%→30%), hidden rest of cycle */
+@keyframes dot-seq-1 {
+  0%   { left: 0%;   opacity: 1; }
+  30%  { left: 100%; opacity: 1; }
+  31%  { left: 0%;   opacity: 0; }
+  100% { left: 0%;   opacity: 0; }
 }
 
-.animate-dot-travel {
-  animation: dot-travel 3s ease-in-out infinite;
+/* Dot 2: waits (0%→37%), then travels (37%→67%), hidden rest of cycle */
+@keyframes dot-seq-2 {
+  0%   { left: 0%;   opacity: 0; }
+  36%  { left: 0%;   opacity: 0; }
+  37%  { left: 0%;   opacity: 1; }
+  67%  { left: 100%; opacity: 1; }
+  68%  { left: 0%;   opacity: 0; }
+  100% { left: 0%;   opacity: 0; }
+}
+
+.animate-dot-seq-1 {
+  animation: dot-seq-1 8s ease-in-out infinite;
+}
+
+.animate-dot-seq-2 {
+  animation: dot-seq-2 8s ease-in-out infinite;
 }
 
 /* ===================================

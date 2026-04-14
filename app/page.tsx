@@ -734,8 +734,8 @@ export default function Home() {
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t-2 border-dashed border-primary-400"></div>
                     </div>
-                    {/* Moving dot with trail */}
-                    <div className="absolute top-1/2 left-0 -translate-y-1/2 animate-dot-travel" style={{ animationDelay: `${index * 0.5}s` }}>
+                    {/* Moving dot with trail — sequential: dot 1 first, dot 2 after */}
+                    <div className={`absolute top-1/2 left-0 -translate-y-1/2 ${index === 0 ? 'animate-dot-seq-1' : 'animate-dot-seq-2'}`}>
                       <div className="relative">
                         <div className="w-4 h-4 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg"></div>
                         <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary-400 animate-ping"></div>
