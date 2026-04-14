@@ -103,59 +103,6 @@ export default function PromocionesPage() {
                     <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {isUserMenuOpen && (
-                    <>
-                      <div
-                        className="fixed inset-0"
-                        style={{ zIndex: 998 }}
-                        onClick={() => setIsUserMenuOpen(false)}
-                      />
-                      <div
-                        className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-                        style={{ zIndex: 999 }}
-                      >
-                        <button
-                          onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
-                          className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-                        >
-                          <User className="w-5 h-5 mr-3" />
-                          Mi Perfil
-                        </button>
-                        <button
-                          onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
-                          className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-                        >
-                          <TrendingUp className="w-5 h-5 mr-3" />
-                          Dashboard
-                        </button>
-                        <button
-                          onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/promociones'); }}
-                          className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-                        >
-                          <Gift className="w-5 h-5 mr-3" />
-                          Promociones
-                        </button>
-                        <a
-                          href="https://wa.me/51960826862"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <HelpCircle className="w-5 h-5 mr-3" />
-                          Soporte
-                        </a>
-                        <div className="border-t border-gray-200 my-2" />
-                        <button
-                          onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
-                          className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
-                        >
-                          <LogOut className="w-5 h-5 mr-3" />
-                          Cerrar Sesión
-                        </button>
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
             ) : (
@@ -177,6 +124,61 @@ export default function PromocionesPage() {
           </div>
         </div>
       </div>
+
+      {/* Dropdown outside header to escape backdrop-blur-md stacking context */}
+      {isUserMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0"
+            style={{ zIndex: 9998 }}
+            onClick={() => setIsUserMenuOpen(false)}
+          />
+          <div
+            className="fixed right-4 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
+            style={{ zIndex: 9999, top: '64px' }}
+          >
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
+              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
+            >
+              <User className="w-5 h-5 mr-3" />
+              Mi Perfil
+            </button>
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
+              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
+            >
+              <TrendingUp className="w-5 h-5 mr-3" />
+              Dashboard
+            </button>
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/promociones'); }}
+              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
+            >
+              <Gift className="w-5 h-5 mr-3" />
+              Promociones
+            </button>
+            <a
+              href="https://wa.me/51960826862"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition"
+              onClick={() => setIsUserMenuOpen(false)}
+            >
+              <HelpCircle className="w-5 h-5 mr-3" />
+              Soporte
+            </a>
+            <div className="border-t border-gray-200 my-2" />
+            <button
+              onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
+              className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
+            >
+              <LogOut className="w-5 h-5 mr-3" />
+              Cerrar Sesión
+            </button>
+          </div>
+        </>
+      )}
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
