@@ -30,12 +30,11 @@ export default function Calculator({
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Usar tipos de cambio en tiempo real del store
-  const exchangeRates: ExchangeRates = liveRates
-    ? {
-        compra: liveRates.tipo_compra,
-        venta: liveRates.tipo_venta
-      }
-    : initialRates || { compra: 3.750, venta: 3.770 };
+  // liveRates === null significa que aún están cargando — nunca mostrar valores fallback
+  const ratesReady = liveRates !== null && liveRates !== undefined;
+  const exchangeRates: ExchangeRates = ratesReady
+    ? { compra: liveRates!.tipo_compra, venta: liveRates!.tipo_venta }
+    : initialRates ?? { compra: 0, venta: 0 };
 
   // Inicializar conexión a tipos de cambio en tiempo real
   useEffect(() => {
@@ -133,7 +132,11 @@ export default function Calculator({
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Compra</div>
-          <div className="text-base font-bold">S/ {exchangeRates.compra.toFixed(3)}</div>
+          {ratesReady ? (
+            <div className="text-base font-bold">S/ {exchangeRates.compra.toFixed(3)}</div>
+          ) : (
+            <div className="h-5 w-16 rounded bg-current opacity-20 animate-pulse mx-auto mt-0.5" />
+          )}
         </button>
         <button
           onClick={() => setOperationType('Venta')}
@@ -144,7 +147,11 @@ export default function Calculator({
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Venta</div>
-          <div className="text-base font-bold">S/ {exchangeRates.venta.toFixed(3)}</div>
+          {ratesReady ? (
+            <div className="text-base font-bold">S/ {exchangeRates.venta.toFixed(3)}</div>
+          ) : (
+            <div className="h-5 w-16 rounded bg-current opacity-20 animate-pulse mx-auto mt-0.5" />
+          )}
         </button>
       </div>
 
@@ -244,7 +251,11 @@ export default function Calculator({
             <span>💰</span>
             Ahorro: S/ {calculateSavings()}
           </span>
-          <span className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-gray-800 border border-white/60">TC: {currentRate.toFixed(3)}</span>
+          {ratesReady ? (
+            <span className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-gray-800 border border-white/60">TC: {currentRate.toFixed(3)}</span>
+          ) : (
+            <div className="h-6 w-20 rounded-lg bg-gray-200 animate-pulse" />
+          )}
         </div>
 
         {/* Checkbox Cupón Promocional */}
