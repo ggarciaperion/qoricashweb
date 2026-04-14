@@ -382,69 +382,70 @@ export default function Home() {
 
       {/* Banks Strip */}
       <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
-        <div ref={banksSectionRef} className={`max-w-7xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
-          <div className="grid md:grid-cols-[1fr_2fr] gap-6">
-            {/* Contenedor 1 - Transferencias inmediatas */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
-              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
+        <div ref={banksSectionRef} className={`max-w-5xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
+          <div className="grid md:grid-cols-2 gap-5 items-stretch">
+
+            {/* Contenedor 1 - Transferencias Inmediatas */}
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 px-6 pt-10 pb-6 hover:shadow-2xl transition-all flex flex-col">
+              <div className="absolute -top-3 left-5 bg-gradient-to-r from-green-50 to-emerald-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-green-200">
                 <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
-
-              <div className="flex flex-row items-center justify-center gap-8 pt-4">
-                <div className="text-center flex flex-col items-center gap-2">
-                  <div className="w-44 h-28 flex items-center justify-center">
-                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-lg" />
+              <div className="flex flex-row items-center justify-center gap-6 flex-1">
+                <div className="flex flex-col items-center gap-2 flex-1">
+                  <div className="w-full h-20 flex items-center justify-center">
+                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
+                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
                 </div>
-                <div className="text-center flex flex-col items-center gap-2">
-                  <div className="w-44 h-28 flex items-center justify-center">
-                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-lg" />
+                <div className="w-px h-14 bg-gray-200 self-center shrink-0" />
+                <div className="flex flex-col items-center gap-2 flex-1">
+                  <div className="w-full h-20 flex items-center justify-center">
+                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
+                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
                 </div>
               </div>
             </div>
 
-            {/* Contenedor 2 - Transferencias Interbancarias */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
-              <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-blue-200">
+            {/* Contenedor 2 - Interbancarias */}
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 px-6 pt-10 pb-6 hover:shadow-2xl transition-all flex flex-col">
+              <div className="absolute -top-3 left-5 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-blue-200">
                 <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
-
-              <div className="flex flex-row flex-nowrap items-start justify-center gap-2 pt-3 overflow-x-auto">
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-20 h-16 flex items-center justify-center">
+              <div className="grid grid-cols-5 gap-3 flex-1">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-20 flex items-center justify-center">
                     <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-20 h-16 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-20 flex items-center justify-center">
                     <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-20 h-16 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-20 flex items-center justify-center">
                     <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-24 h-16 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-20 flex items-center justify-center">
                     <img src="/Banco Pichincha.png" alt="Banco Pichincha" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="h-16 flex items-center justify-center">
-                    <div className="text-sm font-bold text-gray-800 whitespace-nowrap bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-white/60 px-4 py-2">Otros bancos</div>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-full h-20 flex items-center justify-center">
+                    <div className="text-xs font-bold text-gray-600 text-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 leading-snug">Otros<br/>bancos</div>
                   </div>
-                  <div className="text-xs font-semibold text-gray-700 bg-yellow-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Solo Lima</div>
+                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
