@@ -383,7 +383,7 @@ export default function Home() {
       {/* Banks Strip */}
       <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
         <div ref={banksSectionRef} className={`max-w-7xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-[1fr_2fr] gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
             <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-4 px-5 hover:shadow-2xl transition-all">
               <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
