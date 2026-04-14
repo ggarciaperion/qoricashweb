@@ -385,20 +385,20 @@ export default function Home() {
         <div ref={banksSectionRef} className={`max-w-7xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Contenedor 1 - Transferencias inmediatas */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-6 px-6 hover:shadow-2xl transition-all">
+            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 py-4 px-5 hover:shadow-2xl transition-all">
               <div className="absolute -top-2.5 left-6 bg-gradient-to-r from-green-50 to-primary-50 backdrop-blur-sm px-3 py-1 rounded-full shadow-md border border-green-200">
                 <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
 
-              <div className="flex flex-row flex-wrap items-start justify-center gap-4 pt-3">
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
+              <div className="flex flex-row items-center justify-center gap-6 pt-3">
+                <div className="text-center flex flex-col items-center gap-1">
+                  <div className="w-24 h-16 flex items-center justify-center">
                     <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
                 </div>
-                <div className="text-center flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-32 h-20 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center gap-1">
+                  <div className="w-24 h-16 flex items-center justify-center">
                     <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <div className="text-xs font-semibold text-gray-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-full whitespace-nowrap">Todo el Perú</div>
