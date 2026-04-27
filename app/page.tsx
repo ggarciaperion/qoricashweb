@@ -451,7 +451,7 @@ export default function Home() {
                   <div className="w-full h-20 flex items-center justify-center">
                     <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
-                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
+                  <span className="text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-3 py-0.5 rounded-full">Solo Lima</span>
                 </div>
               </div>
             </div>
