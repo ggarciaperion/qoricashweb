@@ -432,7 +432,7 @@ export default function Home() {
               <div className="absolute -top-3 left-5 bg-gradient-to-r from-green-50 to-emerald-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-green-200">
                 <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
               </div>
-              <div className="flex flex-row items-center justify-center gap-6 flex-1">
+              <div className="flex flex-row items-center justify-center gap-4 flex-1">
                 <div className="flex flex-col items-center gap-2 flex-1">
                   <div className="w-full h-20 flex items-center justify-center">
                     <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
@@ -446,6 +446,13 @@ export default function Home() {
                   </div>
                   <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
                 </div>
+                <div className="w-px h-14 bg-gray-200 self-center shrink-0" />
+                <div className="flex flex-col items-center gap-2 flex-1">
+                  <div className="w-full h-20 flex items-center justify-center">
+                    <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
+                  </div>
+                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
+                </div>
               </div>
             </div>
 
@@ -454,7 +461,7 @@ export default function Home() {
               <div className="absolute -top-3 left-5 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-blue-200">
                 <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
               </div>
-              <div className="grid grid-cols-5 gap-3 flex-1">
+              <div className="grid grid-cols-4 gap-3 flex-1">
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-full h-20 flex items-center justify-center">
                     <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain drop-shadow-md" />
@@ -464,12 +471,6 @@ export default function Home() {
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-full h-20 flex items-center justify-center">
                     <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
                   </div>
                   <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
                 </div>
