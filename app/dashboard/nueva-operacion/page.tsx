@@ -10,6 +10,7 @@ import { banksApi } from '@/lib/api/banks';
 import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import type { BankAccount } from '@/lib/types';
 import AddBankAccountModal from '@/components/modals/AddBankAccountModal';
+import OffHoursModal from '@/components/modals/OffHoursModal';
 import {
   ArrowLeft,
   RefreshCw,
@@ -121,6 +122,56 @@ function NuevaOperacionContent() {
   // Estado para operación activa
   const [hasActiveOperation, setHasActiveOperation] = useState(false);
   const [activeOperationMessage, setActiveOperationMessage] = useState('');
+
+  // Estado fuera de horario
+  const [isOffHoursModalOpen, setIsOffHoursModalOpen] = useState(false);
+  const [pendingSubmitEvent, setPendingSubmitEvent] = useState<React.FormEvent | null>(null);
+
+  const isWithinBusinessHours = (): boolean => {
+    const now = new Date();
+    // Hora de Lima (UTC-5)
+    const lima = new Date(now.toLocaleString('en-US', { timeZone: 'America/Lima' }));
+    const day = lima.getDay(); // 0=Dom, 1=Lun, ..., 6=Sáb
+    const hour = lima.getHours();
+    const minute = lima.getMinutes();
+    const time = hour * 60 + minute;
+
+    if (day >= 1 && day <= 5) {
+      // Lunes a Viernes: 9:00 - 18:00
+      return time >= 9 * 60 && time < 18 * 60;
+    }
+    if (day === 6) {
+      // Sábado: 9:00 - 13:00
+      return time >= 9 * 60 && time < 13 * 60;
+    }
+    return false; // Domingo
+  };
+
+  const getNextBusinessDay = (): string => {
+    const now = new Date();
+    const lima = new Date(now.toLocaleString('en-US', { timeZone: 'America/Lima' }));
+    const day = lima.getDay();
+
+    let daysToAdd = 1;
+    if (day === 5) daysToAdd = 3; // Viernes -> Lunes
+    if (day === 6) daysToAdd = 2; // Sábado -> Lunes
+    if (day === 0) daysToAdd = 1; // Domingo -> Lunes
+
+    // Si es día hábil pero ya pasó el horario, el siguiente día hábil es mañana (o lunes si es viernes)
+    if (day >= 1 && day <= 4) {
+      daysToAdd = 1;
+    }
+
+    const next = new Date(lima);
+    next.setDate(lima.getDate() + daysToAdd);
+
+    return next.toLocaleDateString('es-PE', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      timeZone: 'America/Lima',
+    });
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -490,6 +541,19 @@ function NuevaOperacionContent() {
       setError(activeOperationMessage);
       return;
     }
+
+    // Verificar horario de atención
+    if (!isWithinBusinessHours()) {
+      setPendingSubmitEvent(e);
+      setIsOffHoursModalOpen(true);
+      return;
+    }
+
+    await processSubmit();
+  };
+
+  const processSubmit = async () => {
+    setError(null);
 
     if (!amountInput || parseFloat(amountInput) <= 0) {
       setError('Ingresa un monto válido');
@@ -2545,6 +2609,21 @@ function NuevaOperacionContent() {
         dni={user?.dni || ''}
         operationType={tipo}
         accountContext={accountContext || undefined}
+      />
+
+      {/* Off Hours Modal */}
+      <OffHoursModal
+        isOpen={isOffHoursModalOpen}
+        nextBusinessDay={getNextBusinessDay()}
+        onConfirm={async () => {
+          setIsOffHoursModalOpen(false);
+          setPendingSubmitEvent(null);
+          await processSubmit();
+        }}
+        onCancel={() => {
+          setIsOffHoursModalOpen(false);
+          setPendingSubmitEvent(null);
+        }}
       />
 
       {/* ── Overlay: Creando operación ── */}
