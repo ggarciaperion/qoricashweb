@@ -743,20 +743,20 @@ export default function DashboardPage() {
                 </p>
                 <div className="grid grid-cols-1 gap-3">
                   {/* Comprobante del Cliente */}
-                  {selectedOperation.comprobante_cliente && (
+                  {selectedOperation.payment_proof_url && (
                     <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
                       <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Cliente</p>
                       <div className="flex items-center gap-3">
                         <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
                           <img
-                            src={selectedOperation.comprobante_cliente}
+                            src={selectedOperation.payment_proof_url}
                             alt="Comprobante Cliente"
                             className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                            onClick={() => window.open(selectedOperation.comprobante_cliente, '_blank')}
+                            onClick={() => window.open(selectedOperation.payment_proof_url, '_blank')}
                           />
                         </div>
                         <a
-                          href={selectedOperation.comprobante_cliente}
+                          href={selectedOperation.payment_proof_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
@@ -768,58 +768,100 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  {/* Comprobante del Operador */}
-                  {selectedOperation.comprobante_operador && (
-                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                      <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
-                      <div className="flex items-center gap-3">
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
-                          <img
-                            src={selectedOperation.comprobante_operador}
-                            alt="Comprobante Operador"
-                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                            onClick={() => window.open(selectedOperation.comprobante_operador, '_blank')}
-                          />
+                  {/* Comprobantes del Operador (pueden ser múltiples) */}
+                  {Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.length > 0
+                    ? selectedOperation.operator_proofs.map((proof: { comprobante_url: string; comentario?: string }, idx: number) =>
+                        proof.comprobante_url ? (
+                          <div key={idx} className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                            <p className="text-xs text-gray-600 mb-2 font-medium">
+                              Comprobante Operador{selectedOperation.operator_proofs.length > 1 ? ` ${idx + 1}` : ''}
+                            </p>
+                            <div className="flex items-center gap-3">
+                              <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
+                                <img
+                                  src={proof.comprobante_url}
+                                  alt="Comprobante Operador"
+                                  className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
+                                  onClick={() => window.open(proof.comprobante_url, '_blank')}
+                                />
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <a
+                                  href={proof.comprobante_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
+                                >
+                                  <ImageIcon className="w-3 h-3" />
+                                  Ver documento completo
+                                </a>
+                                {proof.comentario && (
+                                  <p className="text-xs text-gray-500">{proof.comentario}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ) : null
+                      )
+                    : selectedOperation.operator_proof_url && (
+                        <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                          <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
+                          <div className="flex items-center gap-3">
+                            <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
+                              <img
+                                src={selectedOperation.operator_proof_url}
+                                alt="Comprobante Operador"
+                                className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
+                                onClick={() => window.open(selectedOperation.operator_proof_url, '_blank')}
+                              />
+                            </div>
+                            <a
+                              href={selectedOperation.operator_proof_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
+                            >
+                              <ImageIcon className="w-3 h-3" />
+                              Ver documento completo
+                            </a>
+                          </div>
                         </div>
-                        <a
-                          href={selectedOperation.comprobante_operador}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                        >
-                          <ImageIcon className="w-3 h-3" />
-                          Ver documento completo
-                        </a>
-                      </div>
-                    </div>
-                  )}
+                      )
+                  }
 
-                  {/* Boleta/Factura */}
-                  {selectedOperation.boleta_factura && (
-                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                      <p className="text-xs text-gray-600 mb-2 font-medium">
-                        {user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
-                      </p>
-                      <div className="flex items-center gap-3">
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
-                          <img
-                            src={selectedOperation.boleta_factura}
-                            alt={user?.document_type === 'RUC' ? 'Factura' : 'Boleta'}
-                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                            onClick={() => window.open(selectedOperation.boleta_factura, '_blank')}
-                          />
+                  {/* Boleta/Factura electrónica */}
+                  {Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.length > 0 &&
+                    selectedOperation.invoices.map((invoice: { invoice_type: string; invoice_number: string; nubefact_enlace_pdf: string; status: string }, idx: number) =>
+                      invoice.nubefact_enlace_pdf ? (
+                        <div key={idx} className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
+                          <p className="text-xs text-gray-600 mb-2 font-medium">
+                            {invoice.invoice_type === '01' ? 'Factura' : 'Boleta'}{invoice.invoice_number ? ` ${invoice.invoice_number}` : ''}
+                          </p>
+                          <div className="flex items-center gap-3">
+                            <div className="w-20 h-20 bg-red-50 border border-red-200/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <FileText className="w-8 h-8 text-red-400" />
+                            </div>
+                            <a
+                              href={invoice.nubefact_enlace_pdf}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
+                            >
+                              <FileText className="w-3 h-3" />
+                              Ver PDF
+                            </a>
+                          </div>
                         </div>
-                        <a
-                          href={selectedOperation.boleta_factura}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                        >
-                          <ImageIcon className="w-3 h-3" />
-                          Ver documento completo
-                        </a>
-                      </div>
-                    </div>
+                      ) : null
+                    )
+                  }
+
+                  {/* Mensaje si no hay documentos aún */}
+                  {!selectedOperation.payment_proof_url &&
+                   !(Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.some((p: { comprobante_url: string }) => p.comprobante_url)) &&
+                   !selectedOperation.operator_proof_url &&
+                   !(Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.some((i: { nubefact_enlace_pdf: string }) => i.nubefact_enlace_pdf)) && (
+                    <p className="text-xs text-gray-400 text-center py-2">No hay documentos disponibles</p>
                   )}
                 </div>
               </div>
