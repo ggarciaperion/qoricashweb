@@ -50,8 +50,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased relative">
-        {/* Cinta de mercado en tiempo real */}
+        {/* Cinta de mercado — fixed justo debajo del header (top-20 = 80px) */}
         <MarketTicker />
+        {/* Spacer que reserva el espacio del ticker en el flujo del DOM */}
+        <div style={{ height: '30px' }} />
         {/* Decoración de fondo sutil y profesional */}
         <BackgroundDecor />
 
