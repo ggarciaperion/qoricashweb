@@ -23,27 +23,32 @@ function formatValue(item: TickerItem): string {
   return `${item.prefix}${v.toFixed(2)}${item.suffix}`;
 }
 
+function Arrow({ isUp, isDown }: { isUp: boolean; isDown: boolean }) {
+  if (isUp)   return <span style={{ fontSize: 9, lineHeight: 1 }} className="text-emerald-400 font-bold">▲</span>;
+  if (isDown) return <span style={{ fontSize: 9, lineHeight: 1 }} className="text-red-400 font-bold">▼</span>;
+  return       <span style={{ fontSize: 9, lineHeight: 1 }} className="text-white/30">▬</span>;
+}
+
 function TickerItem({ item }: { item: TickerItem }) {
   const chg = item.chg;
-  const isUp = chg !== null && chg > 0;
-  const isDown = chg !== null && chg < 0;
+  const isUp   = chg !== null ? chg > 0  : false;
+  const isDown = chg !== null ? chg < 0  : false;
+  const hasChg = chg !== null;
+
+  const valueColor = isUp ? 'text-emerald-400' : isDown ? 'text-red-400' : 'text-white';
 
   return (
-    <span className="inline-flex items-center gap-2 px-5 border-r border-white/10 whitespace-nowrap">
-      <span className="text-white/50 text-[10px] uppercase tracking-widest font-medium">
+    <span className="inline-flex items-center gap-1.5 px-4 border-r border-white/10 whitespace-nowrap">
+      <Arrow isUp={isUp} isDown={isDown} />
+      <span className="text-white/45 text-[10px] uppercase tracking-widest font-medium">
         {item.label}
       </span>
-      <span className="text-white text-[11px] font-semibold tabular-nums">
+      <span className={`${valueColor} text-[11px] font-bold tabular-nums`}>
         {formatValue(item)}
       </span>
-      {chg !== null && (
-        <span
-          className={`text-[10px] font-semibold tabular-nums ${
-            isUp ? 'text-emerald-400' : isDown ? 'text-red-400' : 'text-white/40'
-          }`}
-        >
-          {isUp ? '▲' : isDown ? '▼' : ''}
-          {Math.abs(chg).toFixed(2)}%
+      {hasChg && (
+        <span className={`text-[10px] font-medium tabular-nums ${isUp ? 'text-emerald-400/80' : isDown ? 'text-red-400/80' : 'text-white/30'}`}>
+          {isUp ? '+' : ''}{chg!.toFixed(2)}%
         </span>
       )}
     </span>
