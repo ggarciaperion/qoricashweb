@@ -6,6 +6,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import SocketNotifications from "@/components/SocketNotifications";
 import BackgroundDecor from "@/components/BackgroundDecor";
 import CookieBanner from "@/components/CookieBanner";
+import MarketTicker from "@/components/MarketTicker";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,9 +50,11 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased relative">
+        {/* Cinta de mercado en tiempo real */}
+        <MarketTicker />
         {/* Decoración de fondo sutil y profesional */}
         <BackgroundDecor />
-        
+
         <AuthProvider>
           <div className="relative z-10">
             {children}
