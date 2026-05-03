@@ -6,7 +6,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import SocketNotifications from "@/components/SocketNotifications";
 import BackgroundDecor from "@/components/BackgroundDecor";
 import CookieBanner from "@/components/CookieBanner";
-import MarketTicker from "@/components/MarketTicker";
+import HomeOnlyTicker from "@/components/HomeOnlyTicker";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,10 +50,8 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased relative">
-        {/* Cinta de mercado — fixed justo debajo del header (top-20 = 80px) */}
-        <MarketTicker />
-        {/* Spacer que reserva el espacio del ticker en el flujo del DOM */}
-        <div style={{ height: '30px' }} />
+        {/* Cinta de mercado — solo visible en la página de inicio */}
+        <HomeOnlyTicker />
         {/* Decoración de fondo sutil y profesional */}
         <BackgroundDecor />
 
