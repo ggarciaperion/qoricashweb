@@ -98,13 +98,6 @@ export default function MarketTicker() {
           <TickerItem key={`${item.key}-${i}`} item={item} />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes ticker-scroll {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </div>
   );
 }

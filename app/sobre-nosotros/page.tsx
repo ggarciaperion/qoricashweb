@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Shield, Zap, Users, Award, CheckCircle, MapPin, Building2, Phone, Mail } from 'lucide-react';
 

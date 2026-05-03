@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/components/AuthProvider";
@@ -51,7 +52,9 @@ export default function RootLayout({
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased relative">
         {/* Cinta de mercado — solo visible en la página de inicio */}
-        <HomeOnlyTicker />
+        <Suspense fallback={null}>
+          <HomeOnlyTicker />
+        </Suspense>
         {/* Decoración de fondo sutil y profesional */}
         <BackgroundDecor />
 
