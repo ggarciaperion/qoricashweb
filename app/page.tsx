@@ -292,40 +292,6 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      {/* Market Alert Banner */}
-      {rateDirection && (
-        <div className={`w-full py-2 px-4 text-center text-sm font-semibold flex items-center justify-center gap-2 ${
-          rateDirection === 'up'
-            ? 'bg-amber-50 text-amber-800 border-b border-amber-200'
-            : rateDirection === 'down'
-            ? 'bg-blue-50 text-blue-800 border-b border-blue-200'
-            : 'bg-green-50 text-green-800 border-b border-green-200'
-        }`}>
-          {rateDirection === 'up' && (
-            <>
-              <TrendingUp className="w-4 h-4 flex-shrink-0" />
-              <span>El dólar está en alza hoy — Buen momento para vender tus dólares</span>
-            </>
-          )}
-          {rateDirection === 'down' && (
-            <>
-              <TrendingDown className="w-4 h-4 flex-shrink-0" />
-              <span>El dólar está a la baja hoy — Buen momento para comprar dólares</span>
-            </>
-          )}
-          {rateDirection === 'stable' && (
-            <>
-              <Minus className="w-4 h-4 flex-shrink-0" />
-              <span>Tipo de cambio estable hoy — Tasas actualizadas en tiempo real</span>
-            </>
-          )}
-          {currentRates && (
-            <span className="ml-2 bg-white/70 px-2 py-0.5 rounded-full text-xs font-bold">
-              Compra S/ {currentRates.tipo_compra.toFixed(3)} · Venta S/ {currentRates.tipo_venta.toFixed(3)}
-            </span>
-          )}
-        </div>
-      )}
       <section className="pt-4 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
