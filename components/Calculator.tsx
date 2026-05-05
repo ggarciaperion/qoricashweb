@@ -106,9 +106,9 @@ export default function Calculator({
   };
 
   return (
-    <div className="w-full bg-transparent p-6 pt-4">
+    <div className="w-full bg-transparent p-3 pt-2 md:p-6 md:pt-4">
       {/* Header con indicadores */}
-      <div className="flex items-center justify-between mb-3 px-1">
+      <div className="flex items-center justify-between mb-2 md:mb-3 px-1">
         <p className="text-xs text-gray-600 font-semibold">
           Tipos de cambio en tiempo real
         </p>
@@ -122,7 +122,7 @@ export default function Calculator({
       </div>
 
       {/* Tabs de Compra/Venta */}
-      <div className="grid grid-cols-2 gap-2 mb-6 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner">
+      <div className="grid grid-cols-2 gap-2 mb-3 md:mb-6 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner">
         <button
           onClick={() => setOperationType('Compra')}
           className={`py-3 px-4 font-bold text-sm rounded-lg transition-all ${

@@ -326,7 +326,7 @@ export default function Home() {
           )}
         </div>
       )}
-      <section className="pt-20 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
+      <section className="pt-4 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
@@ -334,73 +334,11 @@ export default function Home() {
         </div>
 
         <div className="w-full relative">
-          <div className="grid lg:grid-cols-12 gap-3 md:gap-6 items-center relative">
-            {/* Left Column: Text Content */}
-            <div className="lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                El cambio de{' '}
-                <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
-                  dólares
-                </span>{' '}
-                que siempre quisiste tener
-              </h1>
-              <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                Personas y empresas cambian millones de soles con QoriCash. Rápido, seguro y sin sorpresas.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta')}
-                  className="inline-flex items-center justify-center bg-primary text-white px-6 py-3 rounded-full text-base font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
-                >
-                  Empezar Ahora
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
-                </button>
-                <Link
-                  href="#como-funciona"
-                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-3 rounded-full text-base font-semibold hover:bg-primary-50 transition"
-                >
-                  Ver cómo funciona
-                </Link>
-              </div>
+          <div className="grid lg:grid-cols-12 gap-2 md:gap-6 items-center relative">
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-                <AnimatedStat
-                  value={15}
-                  prefix="< "
-                  suffix=" min"
-                  label="Tiempo de operación"
-                  duration={2000}
-                />
-                <div>
-                  <div className="text-2xl font-bold text-primary">S/ 0</div>
-                  <div className="text-xs text-gray-600">Comisiones ocultas</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-primary">L–V 9–6</div>
-                  <div className="text-xs text-gray-600">Sáb 9–1pm · Atención real</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Center: Hero Image */}
-            <div className="lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
-              <div className="relative w-full max-w-[380px] h-auto">
-                <Image
-                  src="/hero-visual.png"
-                  alt="QoriCash Exchange"
-                  width={1080}
-                  height={1350}
-                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
-                  priority
-                  sizes="(max-width: 1024px) 300px, 500px"
-                />
-              </div>
-            </div>
-
-            {/* Right Column: Calculator */}
-            <div className="lg:col-span-4 relative z-30">
-              <div className="w-full bg-transparent p-6 pt-4">
+            {/* Right Column: Calculator — primero en mobile */}
+            <div className="order-1 lg:order-3 lg:col-span-4 relative z-30">
+              <div className="w-full bg-transparent px-0 py-2 md:p-6 md:pt-4">
                 <Calculator
                   initialRates={{
                     compra: parseFloat(buyRate),
@@ -418,6 +356,70 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Left Column: Text Content — segundo en mobile */}
+            <div className="order-2 lg:order-1 lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
+                El cambio de{' '}
+                <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
+                  dólares
+                </span>{' '}
+                que siempre quisiste tener
+              </h1>
+              <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
+                Personas y empresas cambian millones de soles con QoriCash. Rápido, seguro y sin sorpresas.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <button
+                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta')}
+                  className="inline-flex items-center justify-center bg-primary text-white px-6 py-2.5 md:py-3 rounded-full text-sm md:text-base font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
+                >
+                  Empezar Ahora
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
+                </button>
+                <Link
+                  href="#como-funciona"
+                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-2.5 md:py-3 rounded-full text-sm md:text-base font-semibold hover:bg-primary-50 transition"
+                >
+                  Ver cómo funciona
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 md:gap-4 pt-3 md:pt-4 border-t border-gray-200">
+                <AnimatedStat
+                  value={15}
+                  prefix="< "
+                  suffix=" min"
+                  label="Tiempo de operación"
+                  duration={2000}
+                />
+                <div>
+                  <div className="text-xl md:text-2xl font-bold text-primary">S/ 0</div>
+                  <div className="text-[11px] md:text-xs text-gray-600">Comisiones ocultas</div>
+                </div>
+                <div>
+                  <div className="text-xl md:text-2xl font-bold text-primary">L–V 9–6</div>
+                  <div className="text-[11px] md:text-xs text-gray-600">Sáb 9–1pm · Atención real</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Center: Hero Image — solo desktop */}
+            <div className="order-3 lg:order-2 lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
+              <div className="relative w-full max-w-[380px] h-auto">
+                <Image
+                  src="/hero-visual.png"
+                  alt="QoriCash Exchange"
+                  width={1080}
+                  height={1350}
+                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
+                  priority
+                  sizes="(max-width: 1024px) 300px, 500px"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
