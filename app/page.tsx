@@ -201,7 +201,7 @@ export default function Home() {
                     Mi Dashboard
                   </Link>
                   <a
-                    href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                    href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
@@ -269,7 +269,7 @@ export default function Home() {
               Mi Dashboard
             </button>
             <a
-              href="https://wa.me/51906237356?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+              href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"

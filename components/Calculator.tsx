@@ -275,7 +275,7 @@ export default function Calculator({
 
           {/* Enlace Tasa Preferencial WhatsApp */}
           <a
-            href="https://wa.me/51906237356?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
+            href="https://wa.me/51926011920?text=Hola%2C%20quiero%20mi%20tasa%20preferencial%20para%20una%20operaci%C3%B3n%20de%20cambio%20mayor%20a%20USD%203%2C000."
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 cursor-pointer group hover:bg-white/40 p-2.5 rounded-lg transition-all text-sm font-semibold text-gray-800 group-hover:text-primary-700"
