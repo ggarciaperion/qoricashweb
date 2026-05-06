@@ -64,23 +64,24 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
             {/* Exchange Rates */}
             {currentRates && (
-              <div className="hidden md:flex items-center space-x-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <div className="relative flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                      <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
-                    </div>
-                    <span className="text-xs font-medium text-gray-500">En vivo</span>
+              <div className="flex items-center gap-2 text-sm">
+                {/* Live dot */}
+                <div className="hidden sm:flex items-center gap-1.5 mr-1">
+                  <div className="relative flex items-center">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
                   </div>
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-green-50 rounded-lg">
-                    <span className="text-gray-600">Compra:</span>
-                    <span className="font-bold text-green-600">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 rounded-lg">
-                    <span className="text-gray-600">Venta:</span>
-                    <span className="font-bold text-blue-600">S/ {currentRates.tipo_venta?.toFixed(3)}</span>
-                  </div>
+                  <span className="text-xs font-medium text-gray-400">En vivo</span>
+                </div>
+                {/* Compra */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-100 rounded-lg">
+                  <span className="hidden md:inline text-gray-500 text-xs">Compra</span>
+                  <span className="font-bold text-green-600 text-sm">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
+                </div>
+                {/* Venta */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-50 border border-blue-100 rounded-lg">
+                  <span className="hidden md:inline text-gray-500 text-xs">Venta</span>
+                  <span className="font-bold text-blue-600 text-sm">S/ {currentRates.tipo_venta?.toFixed(3)}</span>
                 </div>
               </div>
             )}
@@ -103,7 +104,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
                 {/* Dropdown Menu */}
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-dropdown">
                     <Link
                       href="/perfil"
                       className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition"

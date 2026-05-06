@@ -23,6 +23,7 @@ import {
   Plus,
   Lock,
   CheckCircle,
+  AlertCircle,
   Calendar
 } from 'lucide-react';
 
@@ -197,8 +198,20 @@ export default function PerfilPage() {
 
         {/* Message Alert */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
-            {message.text}
+          <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 shadow-sm animate-in fade-in duration-300 ${
+            message.type === 'success'
+              ? 'bg-green-50/80 border-green-200/60 text-green-800'
+              : 'bg-red-50/80 border-red-200/60 text-red-800'
+          }`}>
+            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+              message.type === 'success' ? 'bg-green-100' : 'bg-red-100'
+            }`}>
+              {message.type === 'success'
+                ? <CheckCircle className="w-5 h-5 text-green-600" />
+                : <AlertCircle className="w-5 h-5 text-red-600" />
+              }
+            </div>
+            <p className="text-sm font-medium pt-1">{message.text}</p>
           </div>
         )}
 
@@ -326,7 +339,7 @@ export default function PerfilPage() {
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-50 transition"
+                    className="px-4 py-2 text-primary-600 border-2 border-primary-500 rounded-xl font-semibold hover:bg-primary-50 hover:shadow-sm transition"
                   >
                     Editar
                   </button>
@@ -373,7 +386,7 @@ export default function PerfilPage() {
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center justify-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center px-6 py-3 btn-primary-gradient text-white rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     <Save className="w-5 h-5 mr-2" />
                     {isSaving ? 'Guardando...' : 'Guardar Cambios'}
@@ -409,7 +422,7 @@ export default function PerfilPage() {
                 </div>
                 <button
                   onClick={() => setIsChangePasswordModalOpen(true)}
-                  className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+                  className="flex items-center px-4 py-2 btn-primary-gradient text-white rounded-xl font-semibold transition"
                 >
                   <Lock className="w-4 h-4 mr-2" />
                   Cambiar Contraseña
@@ -464,7 +477,7 @@ export default function PerfilPage() {
                 </h3>
                 <button
                   onClick={() => setIsAddAccountModalOpen(true)}
-                  className="flex items-center px-4 py-2 text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition"
+                  className="flex items-center px-4 py-2 btn-primary-gradient text-white rounded-xl font-semibold transition"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Agregar Cuenta
@@ -525,7 +538,7 @@ export default function PerfilPage() {
                   </p>
                   <button
                     onClick={() => setIsAddAccountModalOpen(true)}
-                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+                    className="inline-flex items-center px-4 py-2 btn-primary-gradient text-white rounded-xl font-semibold transition"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Agregar Cuenta Bancaria

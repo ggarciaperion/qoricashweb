@@ -280,7 +280,7 @@ export default function Calculator({
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 cursor-pointer group hover:bg-white/40 p-2.5 rounded-lg transition-all text-sm font-semibold text-gray-800 group-hover:text-primary-700"
           >
-            <Gift className="w-4 h-4 text-white" />
+            <Gift className="w-4 h-4 text-primary-600" />
             <span>Tasa preferencial desde $3,000</span>
           </a>
         </div>
@@ -293,7 +293,7 @@ export default function Calculator({
           disabled={!amountInput || !amountOutput}
           className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-md ${
             amountInput && amountOutput
-              ? 'bg-success hover:bg-success-600 hover:shadow-lg'
+              ? 'btn-primary-gradient'
               : 'bg-gray-300 cursor-not-allowed'
           }`}
         >

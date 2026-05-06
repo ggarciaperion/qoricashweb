@@ -65,16 +65,25 @@ export default function NotificationToast({ notification, onClose }: Notificatio
     info: 'text-blue-900',
   };
 
+  const duration = notification.duration || 8000;
+
+  const progressColors = {
+    success: 'bg-green-500',
+    error: 'bg-red-500',
+    warning: 'bg-yellow-500',
+    info: 'bg-blue-500',
+  };
+
   return (
     <div className="fixed top-4 right-4 z-50">
       <div
         className={`
           ${colors[notification.type]}
           ${isExiting ? 'animate-slide-out-right' : 'animate-slide-in-right'}
-          border-2 rounded-xl shadow-2xl p-4 max-w-md min-w-[320px]
+          border-2 rounded-xl shadow-2xl overflow-hidden max-w-md min-w-[320px]
         `}
       >
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 p-4">
           {/* Icon */}
           <div className="flex-shrink-0 mt-0.5">
             {icons[notification.type]}
@@ -98,39 +107,15 @@ export default function NotificationToast({ notification, onClose }: Notificatio
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Progress bar */}
+        {!isExiting && (
+          <div
+            className={`toast-progress-bar ${progressColors[notification.type]}`}
+            style={{ animationDuration: `${duration}ms` }}
+          />
+        )}
       </div>
-
-      <style jsx>{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes slide-out-right {
-          from {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          to {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slide-in-right 0.3s ease-out forwards;
-        }
-
-        .animate-slide-out-right {
-          animation: slide-out-right 0.3s ease-in forwards;
-        }
-      `}</style>
     </div>
   );
 }
