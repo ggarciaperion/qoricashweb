@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, User, Building2, CheckCircle2, AlertCircle, Search, Loader2 } from 'lucide-react';
+import { ChevronRight, User, Building2, CheckCircle2, AlertCircle, Search, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
 
 type TipoPersona = 'natural' | 'juridica';
@@ -61,6 +61,23 @@ export default function CrearCuentaPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Password strength
+  const getPasswordStrength = (pwd: string) => {
+    if (!pwd) return { score: 0, label: '', color: '' };
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    if (score <= 1) return { score, label: 'Débil', color: 'bg-red-500' };
+    if (score <= 3) return { score, label: 'Media', color: 'bg-yellow-500' };
+    return { score, label: 'Fuerte', color: 'bg-green-500' };
+  };
+  const pwdStrength = getPasswordStrength(formData.password);
 
   // Estado lookup RENIEC / SUNAT
   const [lookupLoading, setLookupLoading] = useState(false);
@@ -358,14 +375,14 @@ export default function CrearCuentaPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-10 w-auto" />
-              <span className="text-2xl font-bold text-gray-900">QoriCash</span>
+              <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
+              <span className="text-xl font-bold text-gray-900">QoriCash</span>
             </Link>
-            <a href="/login" className="text-sm text-gray-600 hover:text-primary transition">
+            <a href="/login" className="text-sm text-gray-500 hover:text-primary transition">
               ¿Ya tienes cuenta? <span className="font-semibold text-primary">Inicia sesión</span>
             </a>
           </div>
@@ -380,17 +397,28 @@ export default function CrearCuentaPage() {
           <p className="text-base text-gray-600">Únete a QoriCash en 3 simples pasos</p>
         </div>
 
-        {/* Indicador de pasos */}
+        {/* Indicador de pasos mejorado */}
         <div className="flex items-center justify-center mb-6">
-          {[1, 2, 3].map((num) => (
+          {[
+            { num: 1, label: 'Identidad' },
+            { num: 2, label: 'Contacto' },
+            { num: 3, label: 'Seguridad' },
+          ].map(({ num, label }) => (
             <div key={num} className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition ${
-                paso >= num ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
-              }`}>
-                {num}
+              <div className="flex flex-col items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                  paso > num
+                    ? 'bg-primary text-white shadow-md shadow-primary/30'
+                    : paso === num
+                      ? 'bg-primary text-white step-circle-active shadow-md shadow-primary/30'
+                      : 'bg-gray-100 text-gray-400'
+                }`}>
+                  {paso > num ? <CheckCircle2 className="w-5 h-5" /> : num}
+                </div>
+                <span className={`text-xs mt-1.5 font-semibold transition-colors ${paso >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</span>
               </div>
               {num < 3 && (
-                <div className={`w-20 h-1 mx-2 transition ${
+                <div className={`w-16 sm:w-20 h-1 mx-2 mb-5 rounded-full transition-all duration-500 ${
                   paso > num ? 'bg-primary' : 'bg-gray-200'
                 }`} />
               )}
@@ -725,24 +753,68 @@ export default function CrearCuentaPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña *</label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="Mínimo 8 caracteres"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    placeholder="Mínimo 8 caracteres"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {/* Password strength indicator */}
+                {formData.password && (
+                  <div className="mt-2">
+                    <div className="flex gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className={`strength-bar flex-1 ${i <= pwdStrength.score ? pwdStrength.color : 'bg-gray-200'}`}
+                        />
+                      ))}
+                    </div>
+                    <p className={`text-xs font-medium ${pwdStrength.score <= 1 ? 'text-red-500' : pwdStrength.score <= 3 ? 'text-yellow-600' : 'text-green-600'}`}>
+                      Contraseña {pwdStrength.label}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Contraseña *</label>
-                <input
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="Repite tu contraseña"
-                />
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                    className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    placeholder="Repite tu contraseña"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition"
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                  <p className="mt-1.5 text-xs text-red-500 font-medium">Las contraseñas no coinciden</p>
+                )}
+                {formData.confirmPassword && formData.password === formData.confirmPassword && (
+                  <p className="mt-1.5 text-xs text-green-600 font-medium flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Contraseñas coinciden
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3 pt-4">

@@ -153,10 +153,13 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50/20 via-white to-gold-50/20 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando dashboard...</p>
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-t-primary-500 animate-spin"></div>
+          </div>
+          <p className="text-gray-500 font-medium">Cargando dashboard...</p>
         </div>
       </div>
     );
@@ -373,58 +376,41 @@ export default function DashboardPage() {
 
         {/* Stats cards */}
         {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Total Operaciones</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.total_operations}</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <DollarSign className="w-7 h-7 text-white" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Total en Soles</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">
-                    S/ {stats.total_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <ArrowUpRight className="w-7 h-7 text-white" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Total en Dólares</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">
-                    $ {stats.total_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <ArrowDownRight className="w-7 h-7 text-white" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            {[
+              {
+                label: 'Total Operaciones', value: stats.total_operations,
+                icon: DollarSign, grad: 'from-primary-400 to-primary-600',
+                accent: 'border-t-primary-400', shadow: 'shadow-primary-100',
+              },
+              {
+                label: 'Total en Soles', value: `S/ ${stats.total_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`,
+                icon: ArrowUpRight, grad: 'from-emerald-400 to-emerald-600',
+                accent: 'border-t-emerald-400', shadow: 'shadow-emerald-100',
+              },
+              {
+                label: 'Total en Dólares', value: `$ ${stats.total_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+                icon: ArrowDownRight, grad: 'from-blue-400 to-blue-600',
+                accent: 'border-t-blue-400', shadow: 'shadow-blue-100',
+              },
+              {
+                label: 'Pendientes', value: stats.pending_operations,
+                icon: Clock, grad: 'from-amber-400 to-amber-600',
+                accent: 'border-t-amber-400', shadow: 'shadow-amber-100',
+              },
+            ].map(({ label, value, icon: Icon, grad, accent, shadow }, i) => (
+              <div key={i} className={`bg-white/70 backdrop-blur-md rounded-2xl shadow-lg ${shadow} p-6 border border-white/70 border-t-4 ${accent} card-hover`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">{label}</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+                  </div>
+                  <div className={`w-12 h-12 bg-gradient-to-br ${grad} rounded-xl flex items-center justify-center shadow-md`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Pendientes</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.pending_operations}</p>
-                </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Clock className="w-7 h-7 text-white" />
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         )}
 
@@ -435,7 +421,7 @@ export default function DashboardPage() {
               <h3 className="text-xl font-bold text-gray-900">Mis Operaciones</h3>
               <button
                 onClick={() => router.push('/dashboard/nueva-operacion')}
-                className="inline-flex items-center bg-gradient-to-r from-primary to-primary-600 text-secondary px-6 py-3 rounded-xl font-bold hover:from-primary-600 hover:to-primary-700 transition-all shadow-md hover:shadow-lg group"
+                className="inline-flex items-center btn-primary-gradient text-white px-6 py-3 rounded-xl font-bold group"
               >
                 <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                 Nueva Operación

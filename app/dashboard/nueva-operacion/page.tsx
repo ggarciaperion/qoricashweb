@@ -1117,99 +1117,37 @@ function NuevaOperacionContent() {
                 </p>
               </div>
 
-              {/* Progress Stepper - Compact */}
+              {/* Progress Stepper */}
               <div className="mb-6">
-                <style jsx>{`
-                  @keyframes fillProgress {
-                    0% {
-                      width: 0%;
-                    }
-                    100% {
-                      width: 100%;
-                    }
-                  }
-
-                  .animated-line {
-                    position: relative;
-                    background: #e5e7eb; /* Gray base */
-                    overflow: hidden;
-                  }
-
-                  .animated-line::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    height: 100%;
-                    width: 0%;
-                    background: linear-gradient(
-                      90deg,
-                      #16a34a 0%,
-                      #22c55e 50%,
-                      #4ade80 100%
-                    );
-                    animation: fillProgress 3s ease-in-out infinite;
-                    border-radius: inherit;
-                    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
-                  }
-                `}</style>
-                <div className="flex items-center justify-between max-w-xl mx-auto">
-                  {/* Step 1: Cotiza */}
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-1.5 transition-all ${
-                      currentStep >= 1
-                        ? 'bg-gradient-to-br from-secondary to-secondary-700 shadow-md'
-                        : 'bg-gray-100 border-2 border-gray-300'
-                    }`}>
-                      <Calculator className={`w-5 h-5 ${currentStep >= 1 ? 'text-white' : 'text-gray-400'}`} />
+                <div className="flex items-center justify-between max-w-sm mx-auto">
+                  {[
+                    { num: 1, icon: Calculator, label: 'Cotiza' },
+                    { num: 2, icon: Send, label: 'Transfiere' },
+                    { num: 3, icon: Wallet, label: 'Recibe' },
+                  ].map(({ num, icon: Icon, label }, idx) => (
+                    <div key={num} className="flex items-center flex-1 last:flex-none">
+                      <div className="flex flex-col items-center">
+                        <div className={`w-11 h-11 rounded-full flex items-center justify-center mb-1.5 transition-all duration-300 ${
+                          currentStep > num
+                            ? 'bg-gradient-to-br from-primary-500 to-primary-600 shadow-md shadow-primary-200'
+                            : currentStep === num
+                            ? 'bg-gradient-to-br from-primary-500 to-primary-600 shadow-md shadow-primary-200 step-circle-active'
+                            : 'bg-gray-100 border-2 border-gray-200'
+                        }`}>
+                          {currentStep > num
+                            ? <CheckCircle className="w-5 h-5 text-white" />
+                            : <Icon className={`w-5 h-5 ${currentStep >= num ? 'text-white' : 'text-gray-400'}`} />
+                          }
+                        </div>
+                        <p className={`text-[11px] font-semibold ${currentStep >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</p>
+                      </div>
+                      {idx < 2 && (
+                        <div className={`flex-1 h-1.5 mx-2 mb-4 rounded-full transition-all duration-500 ${
+                          currentStep > num ? 'bg-gradient-to-r from-primary-400 to-primary-500' : 'bg-gray-200'
+                        }`} />
+                      )}
                     </div>
-                    <p className={`text-xs font-bold ${currentStep >= 1 ? 'text-secondary' : 'text-gray-400'}`}>01</p>
-                    <p className={`text-xs font-semibold ${currentStep >= 1 ? 'text-gray-900' : 'text-gray-500'}`}>Cotiza</p>
-                  </div>
-
-                  {/* Line 1→2 - Línea más gruesa y visible */}
-                  <div className={`flex-1 h-2 mx-3 rounded-full transition-all ${
-                    currentStep > 1
-                      ? 'bg-green-500 shadow-sm'
-                      : currentStep === 1
-                      ? 'animated-line'
-                      : 'bg-gray-200'
-                  }`}></div>
-
-                  {/* Step 2: Transfiere */}
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-1.5 transition-all ${
-                      currentStep >= 2
-                        ? 'bg-gradient-to-br from-secondary to-secondary-700 shadow-md'
-                        : 'bg-gray-100 border-2 border-gray-300'
-                    }`}>
-                      <Send className={`w-5 h-5 ${currentStep >= 2 ? 'text-white' : 'text-gray-400'}`} />
-                    </div>
-                    <p className={`text-xs font-bold ${currentStep >= 2 ? 'text-secondary' : 'text-gray-400'}`}>02</p>
-                    <p className={`text-xs font-semibold ${currentStep >= 2 ? 'text-gray-900' : 'text-gray-500'}`}>Transfiere</p>
-                  </div>
-
-                  {/* Line 2→3 - Línea más gruesa y visible */}
-                  <div className={`flex-1 h-2 mx-3 rounded-full transition-all ${
-                    currentStep > 2
-                      ? 'bg-green-500 shadow-sm'
-                      : currentStep === 2
-                      ? 'animated-line'
-                      : 'bg-gray-200'
-                  }`}></div>
-
-                  {/* Step 3: Recibe */}
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-1.5 transition-all ${
-                      currentStep >= 3
-                        ? 'bg-gradient-to-br from-secondary to-secondary-700 shadow-md'
-                        : 'bg-gray-100 border-2 border-gray-300'
-                    }`}>
-                      <Wallet className={`w-5 h-5 ${currentStep >= 3 ? 'text-white' : 'text-gray-400'}`} />
-                    </div>
-                    <p className={`text-xs font-bold ${currentStep >= 3 ? 'text-secondary' : 'text-gray-400'}`}>03</p>
-                    <p className={`text-xs font-semibold ${currentStep >= 3 ? 'text-gray-900' : 'text-gray-500'}`}>Recibe</p>
-                  </div>
+                  ))}
                 </div>
               </div>
 

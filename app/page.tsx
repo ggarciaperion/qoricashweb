@@ -44,6 +44,7 @@ export default function Home() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
+  const [navScrolled, setNavScrolled] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -90,6 +91,31 @@ export default function Home() {
     };
   }, []);
 
+  // Navbar shadow on scroll
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll reveal — Intersection Observer
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const handleLogout = async () => {
     await logout();
     router.push('/');
@@ -98,7 +124,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Header */}
-      <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+      <header className={`fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`}>
         <nav className="w-full px-6 sm:px-8 lg:px-12">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity">
@@ -462,7 +488,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section — Social Proof */}
-      <section className="py-10 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden">
+      <section className="py-10 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden reveal">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-1/4 w-64 h-64 bg-white rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-white rounded-full blur-3xl" />
@@ -500,7 +526,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════
           COMPARISON — ¿Cuánto ahorras con QoriCash?
       ══════════════════════════════════════════════ */}
-      <section className="relative py-20 bg-gray-950 overflow-hidden">
+      <section className="relative py-20 bg-gray-950 overflow-hidden reveal">
         {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl" />
@@ -606,7 +632,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════
           TRADINGVIEW — Historial tipo de cambio
       ══════════════════════════════════════════ */}
-      <section className="relative py-20 bg-gray-900 overflow-hidden">
+      <section className="relative py-20 bg-gray-900 overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-0 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2" />
           <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-500/8 rounded-full blur-3xl -translate-y-1/2" />
@@ -667,7 +693,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FEATURES — ¿Por qué elegir QoriCash?
       ══════════════════════════════════════ */}
-      <section id="servicios" className="relative py-20 bg-white overflow-hidden">
+      <section id="servicios" className="relative py-20 bg-white overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-200 to-transparent" />
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-60" />
@@ -721,7 +747,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HOW IT WORKS — Cambia en 3 simples pasos
       ══════════════════════════════════════ */}
-      <section id="como-funciona" className="relative py-24 overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+      <section id="como-funciona" className="relative py-24 overflow-hidden bg-gradient-to-b from-slate-50 to-white reveal">
         {/* Decorative background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-300 to-transparent" />
@@ -837,7 +863,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           REFERIDOS — Comparte y gana
       ══════════════════════════════════════ */}
-      <section id="referidos" className="relative py-24 overflow-hidden bg-[#080e1a]">
+      <section id="referidos" className="relative py-24 overflow-hidden bg-[#080e1a] reveal">
         {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
@@ -949,7 +975,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           CTA — Comienza hoy mismo
       ══════════════════════════════════════ */}
-      <section className="relative py-28 overflow-hidden bg-white">
+      <section className="relative py-28 overflow-hidden bg-white reveal">
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
@@ -1011,7 +1037,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FAQ — Todo lo que necesitas saber
       ══════════════════════════════════════ */}
-      <section id="faq" className="relative py-24 bg-slate-50 overflow-hidden">
+      <section id="faq" className="relative py-24 bg-slate-50 overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />

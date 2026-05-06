@@ -140,8 +140,9 @@ export default function LoginPage() {
     <main className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gold-100 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gold-100 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-40"></div>
       </div>
 
       <div className="relative w-full max-w-md">
@@ -155,7 +156,7 @@ export default function LoginPage() {
         </Link>
 
         {/* Login card */}
-        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 sm:p-10 border-2 border-white/60">
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/80 ring-1 ring-gray-100/50">
           {/* Logo and title */}
           <div className="text-center mb-8">
             <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
@@ -278,7 +279,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center bg-primary text-secondary py-3 px-4 rounded-xl font-bold hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+              className="w-full flex items-center justify-center btn-primary-gradient text-white py-3.5 px-4 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
             >
               {isLoading ? (
                 <>
@@ -308,9 +309,9 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <Link
               href="/crear-cuenta"
-              className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 transition"
+              className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 hover:shadow-md transition-all duration-200"
             >
-              Regístrate aquí
+              Crear cuenta gratis
             </Link>
           </div>
         </div>
