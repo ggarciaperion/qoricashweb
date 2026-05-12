@@ -501,37 +501,22 @@ export default function Home() {
       </section>
 
       {/* Stats Section — Social Proof */}
-      <section className="py-10 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 relative overflow-hidden reveal">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-64 h-64 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-white rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
-            <div className="flex flex-col items-center gap-1">
-              <div className="text-3xl md:text-4xl font-display font-bold">
-                <AnimatedStat value={8500} suffix="+" label="" duration={2200} />
+      <section className="py-10 bg-secondary border-y border-white/5 relative overflow-hidden reveal">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 rounded-2xl overflow-hidden">
+            {[
+              { value: 8500, suffix: '+', label: 'Usuarios registrados', prefix: '' },
+              { value: 18, prefix: 'S/ ', suffix: 'M+', label: 'Soles cambiados' },
+              { value: 4200, suffix: '+', label: 'Operaciones completadas', prefix: '' },
+              { value: 4.8, decimals: 1, suffix: '★', label: 'Satisfacción', prefix: '' },
+            ].map((stat, i) => (
+              <div key={i} className={`flex flex-col items-center gap-1 py-8 px-4 bg-secondary text-center animate-fade-up stagger-${i + 1}`}>
+                <div className="text-2xl md:text-3xl font-display font-bold text-primary-400 animate-number-glow">
+                  <AnimatedStat value={stat.value} prefix={stat.prefix || ''} suffix={stat.suffix} label="" duration={2000 + i * 200} decimals={stat.decimals} />
+                </div>
+                <div className="text-gray-500 text-xs font-medium tracking-wide uppercase">{stat.label}</div>
               </div>
-              <div className="text-primary-200 text-sm font-medium">Usuarios registrados</div>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="text-3xl md:text-4xl font-display font-bold">
-                <AnimatedStat value={18} prefix="S/ " suffix="M+" label="" duration={2000} />
-              </div>
-              <div className="text-primary-200 text-sm font-medium">Soles cambiados</div>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="text-3xl md:text-4xl font-display font-bold">
-                <AnimatedStat value={4200} suffix="+" label="" duration={2400} />
-              </div>
-              <div className="text-primary-200 text-sm font-medium">Operaciones completadas</div>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="text-3xl md:text-4xl font-display font-bold">
-                <AnimatedStat value={4.8} decimals={1} suffix="★" label="" duration={1500} />
-              </div>
-              <div className="text-primary-200 text-sm font-medium">Satisfacción de clientes</div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -539,7 +524,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════
           COMPARISON — ¿Cuánto ahorras con QoriCash?
       ══════════════════════════════════════════════ */}
-      <section className="relative py-20 bg-gray-950 overflow-hidden reveal">
+      <section className="relative py-12 bg-gray-950 overflow-hidden reveal">
         {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl" />
@@ -548,16 +533,16 @@ export default function Home() {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
               Transparencia total
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">
               ¿Cuánto ahorras con{' '}
               <span className="bg-gradient-to-r from-primary-400 to-green-400 bg-clip-text text-transparent">QoriCash</span>?
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
+            <p className="text-gray-400 max-w-xl mx-auto text-sm">
               Comparamos en tiempo real. Decide con información real, no estimaciones.
             </p>
           </div>
@@ -620,7 +605,7 @@ export default function Home() {
                 { name: 'BBVA', logo: '/BBVA.png', compra: 3.330, venta: 3.450 },
                 { name: 'Scotiabank', logo: '/Scotiabank.png', compra: 3.325, venta: 3.455 },
               ].map((bank, i) => (
-                <div key={i} className="grid grid-cols-3 bg-gray-900 border border-gray-800 rounded-xl px-5 py-3.5 items-center hover:border-gray-700 transition-colors group">
+                <div key={i} className="grid grid-cols-3 bg-gray-900 border border-gray-800 rounded-xl px-5 py-3.5 items-center hover:border-gray-700 transition-colors group hover-shimmer">
                   <div className="flex items-center gap-3">
                     <div className="w-14 h-7 flex items-center">
                       <img src={bank.logo} alt={bank.name} className="max-w-full max-h-full object-contain opacity-50 grayscale group-hover:opacity-70 transition-opacity" />
@@ -645,7 +630,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════
           TRADINGVIEW — Historial tipo de cambio
       ══════════════════════════════════════════ */}
-      <section className="relative py-20 bg-gray-900 overflow-hidden reveal">
+      <section className="relative py-12 bg-gray-900 border-t border-gray-700/60 overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-0 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2" />
           <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-500/8 rounded-full blur-3xl -translate-y-1/2" />
@@ -655,15 +640,15 @@ export default function Home() {
             {/* Left info */}
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-400/10 border border-blue-400/20 px-4 py-2 rounded-full mb-6">
+                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-400/10 border border-blue-400/20 px-4 py-2 rounded-full mb-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                   Mercado en vivo
                 </span>
-                <h2 className="text-4xl md:text-5xl font-display font-bold text-white mt-4 mb-4">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-white mt-3 mb-3">
                   El dólar,<br />
                   <span className="bg-gradient-to-r from-blue-400 to-primary-400 bg-clip-text text-transparent">al instante</span>
                 </h2>
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-gray-400 text-sm leading-relaxed">
                   Sigue la evolución del dólar frente al sol peruano y decide el mejor momento para cambiar.
                 </p>
               </div>
@@ -706,56 +691,50 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FEATURES — ¿Por qué elegir QoriCash?
       ══════════════════════════════════════ */}
-      <section id="servicios" className="relative py-20 bg-white overflow-hidden reveal">
+      <section id="servicios" className="relative py-12 bg-white overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-200 to-transparent" />
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-60" />
         </div>
         <div className="relative w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
               Nuestras ventajas
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
               ¿Por qué elegir{' '}
               <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">QoriCash</span>?
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+            <p className="text-gray-500 max-w-2xl mx-auto text-sm">
               La plataforma de cambio de divisas más confiable del Perú
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
             {[
-              { image: 'Seguro y Confiable.png', title: 'Seguro y Confiable', description: 'Registro SBS Res. N° 00313-2026. Verificación KYC y cifrado de extremo a extremo.', accent: 'blue', delay: '0s' },
-              { image: 'Transferencia-Rapida.png', title: 'En menos de 15 min', description: 'Operaciones completadas en menos de 15 minutos. Inmediato a BCP e Interbank.', accent: 'primary', delay: '0.1s' },
-              { image: 'Mejor Tipo de Cambio.png', title: 'Mejor Tipo de Cambio', description: 'Tasas actualizadas en tiempo real. Siempre por encima de los bancos.', accent: 'green', delay: '0.2s' },
-              { image: 'Protegido.png', title: '100% Digital', description: 'Sin papeleos, sin colas. Opera desde tu celular o computadora en todo Perú.', accent: 'purple', delay: '0.3s' },
-            ].map((feature, index) => {
-              const accents: Record<string, { ring: string; bg: string; text: string; bar: string }> = {
-                blue: { ring: 'hover:ring-blue-200', bg: 'bg-blue-50', text: 'text-blue-600', bar: 'from-blue-400 to-blue-600' },
-                primary: { ring: 'hover:ring-primary-200', bg: 'bg-primary-50', text: 'text-primary-600', bar: 'from-primary-400 to-primary-600' },
-                green: { ring: 'hover:ring-green-200', bg: 'bg-green-50', text: 'text-green-600', bar: 'from-green-400 to-green-600' },
-                purple: { ring: 'hover:ring-purple-200', bg: 'bg-purple-50', text: 'text-purple-600', bar: 'from-purple-400 to-purple-600' },
-              };
-              const a = accents[feature.accent];
-              return (
-                <div key={index} className={`group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl border border-gray-100 hover:border-transparent ring-2 ring-transparent ${a.ring} transition-all duration-500 overflow-hidden flex flex-col animate-step-fade-in`} style={{ animationDelay: feature.delay }}>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${a.bg} to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  <div className="relative z-10">
-                    <div className={`w-16 h-16 ${a.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
-                      <Image src={`/${feature.image}`} alt={feature.title} width={40} height={40} className="w-10 h-10 object-contain drop-shadow" priority={index < 2} />
-                    </div>
-                    <h3 className={`text-lg font-bold text-gray-900 mb-3 group-hover:${a.text} transition-colors duration-300`}>{feature.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
-                  </div>
-                  <div className={`absolute bottom-0 left-0 h-1 w-0 group-hover:w-full bg-gradient-to-r ${a.bar} transition-all duration-500`} />
+              { image: 'Seguro y Confiable.png', title: 'Seguro y Confiable', description: 'Registro SBS Res. N° 00313-2026. Verificación KYC y cifrado de extremo a extremo.', accent: 'text-blue-600', bar: 'from-blue-400 to-blue-600' },
+              { image: 'Transferencia-Rapida.png', title: 'En menos de 15 min', description: 'Operaciones completadas en menos de 15 minutos. Inmediato a BCP e Interbank.', accent: 'text-primary-600', bar: 'from-primary-400 to-primary-600' },
+              { image: 'Mejor Tipo de Cambio.png', title: 'Mejor Tipo de Cambio', description: 'Tasas actualizadas en tiempo real. Siempre por encima de los bancos.', accent: 'text-green-600', bar: 'from-green-400 to-green-600' },
+              { image: 'Protegido.png', title: '100% Digital', description: 'Sin papeleos, sin colas. Opera desde tu celular o computadora en todo Perú.', accent: 'text-violet-600', bar: 'from-violet-400 to-violet-600' },
+            ].map((feature, index) => (
+              <div key={index} className={`group relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden card-lift animate-fade-up stagger-${index + 1}`}>
+                {/* Imagen decorativa de fondo */}
+                <div className="absolute -right-4 -bottom-4 w-32 h-32 opacity-40 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none">
+                  <Image src={`/${feature.image}`} alt="" width={128} height={128} className="w-full h-full object-contain" />
                 </div>
-              );
-            })}
+                {/* Número badge */}
+                <span className={`text-xs font-bold tracking-widest ${feature.accent} mb-4 block`}>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors duration-200 leading-snug">{feature.title}</h3>
+                <p className="text-gray-400 text-xs leading-relaxed flex-1">{feature.description}</p>
+                <div className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${feature.bar} transition-all duration-500`} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
 
       {/* ══════════════════════════════════════════════
           ANÁLISIS DE MERCADO — Noticias destacadas
@@ -775,8 +754,8 @@ export default function Home() {
                 <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight flex items-center gap-3 flex-wrap">
                   Noticias que mueven{' '}
                   <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">el tipo de cambio</span>
-                  <span className="inline-flex items-center gap-1.5 bg-red-500 text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span className="inline-flex items-center gap-2 text-red-500 text-sm font-bold tracking-widest uppercase">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
                     Live
                   </span>
                 </h2>
@@ -796,15 +775,20 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-4 max-w-7xl mx-auto">
               {noticiasHome.map((n) => {
                 const catColors: Record<string, { bg: string; text: string; border: string }> = {
+                  Nacional:       { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+                  Internacional:  { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
+                  Economía:       { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+                  Tecnología:     { bg: 'bg-violet-50',  text: 'text-violet-700',  border: 'border-violet-200'  },
+                  Misceláneos:    { bg: 'bg-slate-100',  text: 'text-slate-600',   border: 'border-slate-200'   },
                   'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-                  'Mercado Forex':    { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
-                  'Internacional':    { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
-                  'Análisis':         { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+                  'Mercado Forex':    { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+                  Análisis:           { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
                 };
-                const color = catColors[n.categoria] ?? catColors['Análisis'];
+                const color = catColors[n.categoria] ?? catColors['Economía'];
                 return (
-                  <div
+                  <Link
                     key={n.id}
+                    href={`/noticias/${n.id}`}
                     className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-primary-300 transition-all duration-300 flex"
                   >
                     {n.imagen && (
@@ -833,12 +817,12 @@ export default function Home() {
                       </p>
                       <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
                         <span className="text-[10px] text-gray-400">Fuente: <span className="font-medium text-gray-500">{n.fuente}</span></span>
-                        <Link href="/noticias" className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        <span className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold group-hover:text-primary-700 transition-colors">
                           Leer más <ArrowRight className="w-3 h-3" />
-                        </Link>
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -849,7 +833,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HOW IT WORKS — Cambia en 3 simples pasos
       ══════════════════════════════════════ */}
-      <section id="como-funciona" className="relative py-24 overflow-hidden bg-gradient-to-b from-slate-50 to-white reveal">
+      <section id="como-funciona" className="relative py-14 overflow-hidden bg-gradient-to-b from-slate-50 to-white reveal">
         {/* Decorative background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-300 to-transparent" />
@@ -858,17 +842,17 @@ export default function Home() {
           <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-emerald-50 rounded-full blur-3xl opacity-60" />
         </div>
         <div className="relative w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
               Simple y rápido
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
               Cambia en{' '}
               <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
                 3 simples pasos
               </span>
             </h2>
-            <p className="text-gray-500 text-lg max-w-xl mx-auto">
+            <p className="text-gray-500 text-sm max-w-xl mx-auto">
               Rápido, seguro y sin complicaciones
             </p>
           </div>
@@ -965,7 +949,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           REFERIDOS — Comparte y gana
       ══════════════════════════════════════ */}
-      <section id="referidos" className="relative py-24 overflow-hidden bg-[#080e1a] reveal">
+      <section id="referidos" className="relative py-14 overflow-hidden bg-[#080e1a] reveal">
         {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
@@ -976,17 +960,17 @@ export default function Home() {
 
         <div className="relative w-full px-6 sm:px-8 lg:px-12">
           {/* Header */}
-          <div className="text-center mb-16">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-3">
               Programa de referidos
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">
               Comparte y gana con{' '}
               <span className="bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent">
                 cada amigo
               </span>
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto text-lg">
+            <p className="text-gray-400 max-w-xl mx-auto text-sm">
               Invita a tus amigos a QoriCash. Por cada operación que completen, acumulas <strong className="text-primary-300">pips</strong> que puedes canjear por descuentos reales en tus cambios.
             </p>
           </div>
@@ -1063,7 +1047,7 @@ export default function Home() {
                 </p>
                 <Link
                   href={isAuthenticated ? "/dashboard/promociones" : "/crear-cuenta"}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full font-bold text-sm hover:from-primary-400 hover:to-primary-500 transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 group"
+                  className="inline-flex items-center gap-2 btn-primary-gradient text-white px-7 py-3.5 rounded-full font-bold text-sm group"
                 >
                   {isAuthenticated ? 'Ver mi código de referido' : 'Crear cuenta y empezar a ganar'}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
@@ -1077,7 +1061,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           CTA — Comienza hoy mismo
       ══════════════════════════════════════ */}
-      <section className="relative py-28 overflow-hidden bg-white reveal">
+      <section className="relative py-12 overflow-hidden bg-white reveal">
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
@@ -1086,22 +1070,22 @@ export default function Home() {
         </div>
 
         <div className="relative w-full px-6 sm:px-8 lg:px-12 text-center">
-          <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-8">
+          <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-4">
             Sin comisiones · Sin colas · 100% digital
           </span>
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-gray-900 mb-6 leading-tight">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4 leading-tight">
             Comienza a cambiar{' '}
             <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">
               hoy mismo
             </span>
           </h2>
-          <p className="text-xl text-gray-500 mb-10 max-w-2xl mx-auto">
+          <p className="text-base text-gray-500 mb-6 max-w-2xl mx-auto">
             Únete a miles de clientes que confían en QoriCash para sus cambios de divisas. Apertura gratuita, sin requisitos mínimos.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:from-primary-400 hover:to-primary-500 transition-all shadow-xl shadow-primary-500/25 hover:shadow-primary-500/40 group"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full font-bold hover:from-primary-400 hover:to-primary-500 transition-all shadow-xl shadow-primary-500/25 hover:shadow-primary-500/40 group"
             >
               {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
@@ -1110,7 +1094,7 @@ export default function Home() {
               href="https://wa.me/51926011920?text=Hola%2C%20quiero%20iniciar%20una%20operaci%C3%B3n%20de%20cambio"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-10 py-5 rounded-full text-lg font-bold hover:border-primary-300 hover:text-primary-700 transition-all shadow-md hover:shadow-lg group"
+              className="inline-flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-full font-bold hover:border-primary-300 hover:text-primary-700 transition-all shadow-md hover:shadow-lg group"
             >
               <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -1120,7 +1104,7 @@ export default function Home() {
           </div>
 
           {/* Trust signals */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-gray-400">
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-gray-400">
             {[
               { icon: Shield, label: 'Regulado SBS' },
               { icon: Lock, label: 'SSL cifrado' },
@@ -1139,21 +1123,21 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FAQ — Todo lo que necesitas saber
       ══════════════════════════════════════ */}
-      <section id="faq" className="relative py-24 bg-slate-50 overflow-hidden reveal">
+      <section id="faq" className="relative py-14 bg-slate-50 overflow-hidden reveal">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
         </div>
 
         <div className="relative w-full px-6 sm:px-8 lg:px-12 max-w-4xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-6">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
               Preguntas frecuentes
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
               Todo lo que necesitas saber
             </h2>
-            <p className="text-gray-500 text-lg">Resolvemos tus dudas antes de empezar</p>
+            <p className="text-gray-500 text-sm">Resolvemos tus dudas antes de empezar</p>
           </div>
 
           <div className="space-y-3">
@@ -1207,13 +1191,15 @@ export default function Home() {
                     className={`flex-shrink-0 w-5 h-5 text-primary-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
                   />
                 </button>
-                {openFaq === i && (
-                  <div className="px-6 pb-5 pl-[72px]">
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {item.a}
-                    </p>
+                <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
+                  <div>
+                    <div className="px-6 pb-5 pl-[72px]">
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {item.a}
+                      </p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
