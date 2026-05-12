@@ -772,9 +772,13 @@ export default function Home() {
                   <TrendingUp className="w-3.5 h-3.5" />
                   Análisis de Mercado
                 </span>
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight">
+                <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight flex items-center gap-3 flex-wrap">
                   Noticias que mueven{' '}
                   <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">el tipo de cambio</span>
+                  <span className="inline-flex items-center gap-1.5 bg-red-500 text-white text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    Live
+                  </span>
                 </h2>
                 <p className="mt-1.5 text-gray-500 text-sm max-w-lg">
                   Seguimos los eventos económicos globales y su impacto directo en el PEN/USD.
