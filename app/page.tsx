@@ -47,6 +47,16 @@ export default function Home() {
   const [navScrolled, setNavScrolled] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [noticiasHome, setNoticiasHome] = useState<Array<{
+    id: string; titulo: string; descripcion: string; categoria: string; fuente: string; fecha: string; destacada: boolean; imagen?: string;
+  }>>([]);
+
+  useEffect(() => {
+    fetch('/api/noticias')
+      .then((r) => r.json())
+      .then((data) => setNoticiasHome(data.filter((n: { destacada: boolean }) => n.destacada).slice(0, 2)))
+      .catch(() => {});
+  }, []);
 
   const { currentRates } = useExchangeStore();
 
@@ -140,6 +150,9 @@ export default function Home() {
               <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">
                 Cómo Funciona
               </a>
+              <Link href="/noticias" className="text-gray-700 hover:text-primary-600 transition">
+                Noticias
+              </Link>
               <Link href="/dashboard/promociones" className="text-gray-700 hover:text-primary-600 transition">
                 Promociones
               </Link>
@@ -744,6 +757,91 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════════
+          ANÁLISIS DE MERCADO — Noticias destacadas
+      ══════════════════════════════════════════════ */}
+      {noticiasHome.length > 0 && (
+        <section className="relative py-14 bg-slate-50 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+
+          <div className="relative w-full px-6 sm:px-8 lg:px-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+              <div>
+                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-600 uppercase bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full mb-3">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  Análisis de Mercado
+                </span>
+                <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight">
+                  Noticias que mueven{' '}
+                  <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">el tipo de cambio</span>
+                </h2>
+                <p className="mt-1.5 text-gray-500 text-sm max-w-lg">
+                  Seguimos los eventos económicos globales y su impacto directo en el PEN/USD.
+                </p>
+              </div>
+              <Link
+                href="/noticias"
+                className="flex-shrink-0 inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-primary-400 text-gray-700 hover:text-primary-600 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm"
+              >
+                Ver todas
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4 max-w-7xl mx-auto">
+              {noticiasHome.map((n) => {
+                const catColors: Record<string, { bg: string; text: string; border: string }> = {
+                  'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+                  'Mercado Forex':    { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
+                  'Internacional':    { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
+                  'Análisis':         { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+                };
+                const color = catColors[n.categoria] ?? catColors['Análisis'];
+                return (
+                  <div
+                    key={n.id}
+                    className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-primary-300 transition-all duration-300 flex"
+                  >
+                    {n.imagen && (
+                      <div className="relative w-36 flex-shrink-0 overflow-hidden">
+                        <img
+                          src={n.imagen}
+                          alt={n.titulo}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      </div>
+                    )}
+                    <div className="p-4 flex flex-col flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className={`inline-flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full border ${color.bg} ${color.text} ${color.border} flex-shrink-0`}>
+                          {n.categoria}
+                        </span>
+                        <span className="text-[10px] text-gray-400 flex-shrink-0">
+                          {new Date(n.fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-display font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-600 transition-colors line-clamp-2">
+                        {n.titulo}
+                      </h3>
+                      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">
+                        {n.descripcion}
+                      </p>
+                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
+                        <span className="text-[10px] text-gray-400">Fuente: <span className="font-medium text-gray-500">{n.fuente}</span></span>
+                        <Link href="/noticias" className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                          Leer más <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ══════════════════════════════════════
           HOW IT WORKS — Cambia en 3 simples pasos
       ══════════════════════════════════════ */}
@@ -1117,6 +1215,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* ══════════════════════════════════════
           FOOTER
