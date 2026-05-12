@@ -14,10 +14,11 @@ export interface Noticia {
 }
 
 export const CATEGORIAS = [
-  'Economía Peruana',
-  'Mercado Forex',
+  'Nacional',
   'Internacional',
-  'Análisis',
+  'Economía',
+  'Tecnología',
+  'Misceláneos',
 ] as const;
 
 const REDIS_KEY = 'qoricash:noticias';

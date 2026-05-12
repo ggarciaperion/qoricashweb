@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { CATEGORIAS, type Noticia } from '@/lib/noticias';
 import { Plus, Trash2, Lock, TrendingUp, CheckCircle2, AlertCircle, Star, StarOff } from 'lucide-react';
 
-const CATEGORIA_OPTIONS = ['Economía Peruana', 'Mercado Forex', 'Internacional', 'Análisis'];
+const CATEGORIA_OPTIONS = ['Nacional', 'Internacional', 'Economía', 'Tecnología', 'Misceláneos'];
 
 export default function AdminNoticiasPage() {
   const [secret, setSecret] = useState('');

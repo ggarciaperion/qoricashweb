@@ -11,9 +11,14 @@ export const metadata = {
 };
 
 const CATEGORIA_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  Nacional:       { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  Internacional:  { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
+  Economía:       { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+  Tecnología:     { bg: 'bg-violet-50',  text: 'text-violet-700',  border: 'border-violet-200'  },
+  Misceláneos:    { bg: 'bg-slate-50',   text: 'text-slate-600',   border: 'border-slate-200'   },
+  // legacy fallbacks
   'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-  'Mercado Forex':    { bg: 'bg-green-50',   text: 'text-green-700',   border: 'border-green-200'   },
-  Internacional:      { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
+  'Mercado Forex':    { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
   Análisis:           { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
 };
 
