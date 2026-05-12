@@ -23,9 +23,8 @@ const parser  = new Parser({
 
 const RSS_FEEDS = [
   // ── Nacional — solo Gestión (fuente oficial QoriCash) ─────────────────────
-  { url: 'https://gestion.pe/arcio/rss/',              source: 'Gestión', hint: 'Nacional'   },
-  { url: 'https://gestion.pe/economia/arcio/rss/',     source: 'Gestión', hint: 'Economía'   },
-  { url: 'https://gestion.pe/tecnologia/arcio/rss/',   source: 'Gestión', hint: 'Tecnología' },
+  // El RSS general de Gestión cubre todas las secciones; Claude clasifica la categoría correcta
+  { url: 'https://gestion.pe/arcio/rss/', source: 'Gestión', hint: 'Nacional' },
 
   // ── Internacional ─────────────────────────────────────────────────────────
   { url: 'https://feeds.bbci.co.uk/news/business/rss.xml',            source: 'BBC',       hint: 'Internacional' },
