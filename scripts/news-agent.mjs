@@ -22,9 +22,8 @@ const parser  = new Parser({
 });
 
 const RSS_FEEDS = [
-  // ── Nacional ──────────────────────────────────────────────────────────────
+  // ── Nacional — solo Gestión (fuente oficial QoriCash) ─────────────────────
   { url: 'https://gestion.pe/arcio/rss/',     source: 'Gestión',     hint: 'Nacional'       },
-  { url: 'https://elcomercio.pe/arcio/rss/',  source: 'El Comercio', hint: 'Nacional'       },
 
   // ── Internacional ─────────────────────────────────────────────────────────
   { url: 'https://feeds.bbci.co.uk/news/business/rss.xml',            source: 'BBC',       hint: 'Internacional' },
