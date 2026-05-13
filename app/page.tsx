@@ -815,8 +815,7 @@ export default function Home() {
                       <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">
                         {n.descripcion}
                       </p>
-                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
-                        <span className="text-[10px] text-gray-400">Fuente: <span className="font-medium text-gray-500">{n.fuente}</span></span>
+                      <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-100">
                         <span className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold group-hover:text-primary-700 transition-colors">
                           Leer más <ArrowRight className="w-3 h-3" />
                         </span>
