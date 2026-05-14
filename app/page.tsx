@@ -35,6 +35,8 @@ import {
   Share2,
   Coins
 } from 'lucide-react';
+import AlertaTCModal from '@/components/AlertaTCModal';
+import AlertaTCBanner from '@/components/AlertaTCBanner';
 
 export default function Home() {
   const router = useRouter();
@@ -57,6 +59,22 @@ export default function Home() {
       .then((data) => setNoticiasHome(data.filter((n: { destacada: boolean }) => n.destacada).slice(0, 2)))
       .catch(() => {});
   }, []);
+
+  // Check TC alerts whenever rates update
+  const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
+  useEffect(() => {
+    if (!currentRates) return;
+    const compra = currentRates.tipo_compra;
+    const venta = currentRates.tipo_venta;
+    const prev = prevRatesRef.current;
+    if (prev && prev.compra === compra && prev.venta === venta) return;
+    prevRatesRef.current = { compra, venta };
+    fetch('/api/alertas/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ compra, venta }),
+    }).catch(() => {});
+  }, [currentRates]);
 
   const { currentRates } = useExchangeStore();
 
@@ -158,20 +176,29 @@ export default function Home() {
               </Link>
 
               {isAuthenticated ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
-                  >
-                    <UserIcon className="w-5 h-5" />
-                    <span className="font-medium">
-                      {user?.document_type === 'RUC'
-                        ? user?.razon_social || user?.nombres
-                        : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                <div className="flex items-center gap-3">
+                  {user && (
+                    <AlertaTCModal
+                      user={user}
+                      currentCompra={currentRates?.tipo_compra}
+                      currentVenta={currentRates?.tipo_venta}
+                    />
+                  )}
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
+                    >
+                      <UserIcon className="w-5 h-5" />
+                      <span className="font-medium">
+                        {user?.document_type === 'RUC'
+                          ? user?.razon_social || user?.nombres
+                          : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
 
+                  </div>
                 </div>
               ) : (
                 <>
@@ -828,6 +855,11 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      {/* ══════════════════════════════════════
+          ALERTAS DE TIPO DE CAMBIO
+      ══════════════════════════════════════ */}
+      {!isAuthenticated && <AlertaTCBanner />}
 
       {/* ══════════════════════════════════════
           HOW IT WORKS — Cambia en 3 simples pasos
