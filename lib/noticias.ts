@@ -245,7 +245,7 @@ Para el tipo de cambio peruano, un petróleo más barato significa: menor inflac
     fuente: 'TradingView / Reuters',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1547004623-b6dd5b7b8226?w=800&q=80',
+    imagen: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
   },
   {
     id: 'f012',
@@ -285,7 +285,7 @@ Para los operadores de divisas en Perú, el mercado argentino es un termómetro 
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://www.infobae.com/resizer/v2/KOHQ4DUZF5FMFGKB72BJQKJOVM.jpeg',
+    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&q=80',
   },
   {
     id: 'f014',
@@ -304,7 +304,7 @@ Desde la perspectiva cambiaria, una economía argentina débil en actividad pero
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://www.infobae.com/resizer/v2/3NOE6EAJ45AVVJ4SOGRUXBAXMA.png',
+    imagen: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
   },
   {
     id: 'f015',
@@ -323,7 +323,7 @@ Si Argentina consolida una inflación mensual del 2% o menos, ese efecto de cont
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://www.infobae.com/resizer/v2/ZXX6R2MSNFDPBMZPEJHMFODBFI.JPG',
+    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
   },
 ];
 
