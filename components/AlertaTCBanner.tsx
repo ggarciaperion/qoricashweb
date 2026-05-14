@@ -333,6 +333,32 @@ export default function AlertaTCBanner() {
                 <div className="bg-white/[0.04] rounded-xl border border-white/8 px-4 py-5 space-y-4">
                   <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Configura tu alerta</p>
 
+                  {/* ¿Compra o vende dólares? */}
+                  <div>
+                    <p className="text-[10px] text-gray-500 font-semibold mb-2">¿Qué operación realizas?</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([
+                        { val: 'venta',  label: 'Yo compro dólares',  sub: 'Te interesa el TC Venta',  icon: '💵' },
+                        { val: 'compra', label: 'Yo vendo dólares',   sub: 'Te interesa el TC Compra', icon: '🏦' },
+                      ] as const).map(({ val, label, sub, icon }) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, moneda: val }))}
+                          className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 transition-all duration-200 text-center ${
+                            form.moneda === val
+                              ? 'bg-primary-500/15 border-primary-500/60 text-white'
+                              : 'bg-transparent border-white/8 text-gray-500 hover:border-white/20 hover:text-gray-300'
+                          }`}
+                        >
+                          <span className="text-lg leading-none">{icon}</span>
+                          <span className="text-xs font-bold leading-tight">{label}</span>
+                          <span className={`text-[10px] font-medium ${form.moneda === val ? 'text-primary-400' : 'text-gray-600'}`}>{sub}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Toggle condición */}
                   <div className="grid grid-cols-2 gap-2">
                     {([
@@ -391,7 +417,7 @@ export default function AlertaTCBanner() {
                         ? <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
                         : <TrendingDown className="w-3.5 h-3.5 flex-shrink-0" />}
                       <span>
-                        Te avisamos cuando el TC esté{' '}
+                        Te avisamos cuando el TC {form.moneda === 'venta' ? 'Venta' : 'Compra'} esté{' '}
                         {form.tipo === 'sobre' ? 'por encima de' : 'por debajo de'}{' '}
                         <strong>S/ {parseFloat(form.valor).toFixed(4)}</strong>
                       </span>
