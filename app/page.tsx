@@ -151,7 +151,7 @@ export default function Home() {
     setLoggingOut(true);
     await new Promise((r) => setTimeout(r, 1100));
     await logout();
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (
