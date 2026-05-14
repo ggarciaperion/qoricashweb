@@ -136,7 +136,7 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
       {/* Modal backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 pt-20 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-28 bg-black/60 backdrop-blur-sm overflow-y-auto"
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
           <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -162,7 +162,7 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
               </button>
             </div>
 
-            <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
+            <div className="p-5 space-y-5 max-h-[80vh] overflow-y-auto">
 
               {/* Current TC display */}
               {(currentCompra || currentVenta) && (
