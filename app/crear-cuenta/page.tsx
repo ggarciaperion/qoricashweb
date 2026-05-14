@@ -89,22 +89,23 @@ export default function CrearCuentaPage() {
     setDepartamentos(getDepartamentos());
   }, []);
 
-  // Actualizar provincias
+  // Cargar opciones de provincias cuando cambia el departamento (sin resetear valores)
   useEffect(() => {
     if (formData.departamento) {
       setProvincias(getProvincias(formData.departamento));
-      setFormData(prev => ({ ...prev, provincia: '', distrito: '' }));
-      setDistritos([]);
+    } else {
+      setProvincias([]);
     }
   }, [formData.departamento]);
 
-  // Actualizar distritos
+  // Cargar opciones de distritos cuando cambia provincia o departamento (sin resetear valores)
   useEffect(() => {
     if (formData.departamento && formData.provincia) {
       setDistritos(getDistritos(formData.departamento, formData.provincia));
-      setFormData(prev => ({ ...prev, distrito: '' }));
+    } else {
+      setDistritos([]);
     }
-  }, [formData.provincia]);
+  }, [formData.provincia, formData.departamento]);
 
   // Scroll a error
   useEffect(() => {
@@ -147,8 +148,27 @@ export default function CrearCuentaPage() {
       setLookupLocked(false);
     }
 
+    // Cascada de resets para campos de ubicación (solo cuando el usuario cambia manualmente)
+    if (field === 'departamento') {
+      setFormData(prev => ({ ...prev, departamento: value, provincia: '', distrito: '' }));
+      setError('');
+      return;
+    }
+    if (field === 'provincia') {
+      setFormData(prev => ({ ...prev, provincia: value, distrito: '' }));
+      setError('');
+      return;
+    }
+
     setFormData(prev => ({ ...prev, [field]: value }));
     setError('');
+  };
+
+  // Normalizar valor de SUNAT (mayúsculas) al formato exacto del ubigeo.ts (title case)
+  const normalizeToUbigeo = (value: string, options: string[]): string => {
+    if (!value) return '';
+    const upper = value.toUpperCase().trim();
+    return options.find(opt => opt.toUpperCase() === upper) || '';
   };
 
   // ── Consulta RENIEC (DNI) / SUNAT (RUC) ─────────────────────────────────
@@ -178,13 +198,21 @@ export default function CrearCuentaPage() {
           return;
         }
 
+        // Normalizar valores de SUNAT (devueltos en MAYÚSCULAS) al formato del ubigeo.ts
+        const allDepts = getDepartamentos();
+        const dept = normalizeToUbigeo(data.departamento || '', allDepts);
+        const provs = dept ? getProvincias(dept) : [];
+        const prov  = normalizeToUbigeo(data.provincia  || '', provs);
+        const dists = dept && prov ? getDistritos(dept, prov) : [];
+        const dist  = normalizeToUbigeo(data.distrito   || '', dists);
+
         setFormData(prev => ({
           ...prev,
-          razonSocial:     data.razon_social || prev.razonSocial,
-          direccion:       data.direccion    || prev.direccion,
-          departamento:    data.departamento || prev.departamento,
-          provincia:       data.provincia    || prev.provincia,
-          distrito:        data.distrito     || prev.distrito,
+          razonSocial:  data.razon_social || prev.razonSocial,
+          direccion:    data.direccion    || prev.direccion,
+          departamento: dept,
+          provincia:    prov,
+          distrito:     dist,
         }));
 
         const estado = data.estado || '';
