@@ -30,24 +30,24 @@ const FALLBACK_NOTICIAS: Noticia[] = [
   // ── DESTACADAS (portada + página de noticias) ──────────────────────────────
   {
     id: 'f001',
-    titulo: "Petroperú recibe 'salvavidas' de US$ 2,000 millones: el Gobierno aprueba financiamiento histórico sin afectar deuda pública",
+    titulo: 'Suiza apostará fuerte por el oro peruano: el acuerdo que se cerrará con el Minem este lunes',
     descripcion:
-      'El Ejecutivo aprobó un crédito de hasta US$ 2,000 millones para Petroperú mediante un fideicomiso administrado por ProInversión con banca privada internacional. Los primeros US$ 500 millones estarán disponibles en dos semanas. El mecanismo no constituye deuda pública y tiene plazo de pago de 7 años.',
-    contenido: `El Gobierno peruano aprobó un financiamiento de hasta US$ 2,000 millones para Petroperú a través de un fideicomiso administrado por ProInversión con banca privada internacional. Los primeros US$ 500 millones estarán disponibles en las próximas dos semanas; el monto total se habilitará en 8 a 10 semanas.
+      'El próximo lunes se formalizará un memorando de entendimiento entre la Embajada Suiza y el Ministerio de Energía y Minas para promover la minería artesanal y de pequeña escala de oro. La Swiss Better Gold Association agrupa a 29 empresas suizas interesadas en adquirir más oro peruano con asistencia técnica y trazabilidad.',
+    contenido: `El próximo lunes se formalizará un memorando de entendimiento entre la Embajada Suiza y el Ministerio de Energía y Minas (Minem) para desarrollar un Programa de Promoción de la Minería Artesanal y de Pequeña Escala (Mape) de oro, según adelantó Paul Garnier, embajador de Suiza en Perú.
 
-El mecanismo no constituye deuda pública ni afecta los límites de endeudamiento del país, y los recursos solo pueden destinarse a la compra de crudo y abastecimiento de combustibles. El plazo de devolución es de 7 años sin pagos iniciales obligatorios.
+El acuerdo contempla tres componentes: un fondo para soluciones innovadoras, diálogo político y gestión de conocimiento. La Swiss Better Gold Association agrupa a 29 empresas suizas interesadas en adquirir más oro peruano de la Mape con asistencia técnica garantizada.
 
-Carlos Herrera Descalzi, ex titular del Minem, señala que la refinería de Talara podría generar márgenes de US$ 40 por barril en condiciones actuales —comparado con US$ 10 en normalidad— permitiendo flujos de hasta US$ 1,400 millones anuales si procesa 100,000 barriles diarios. Sin embargo, el ex ministro de Economía Luis Miguel Castilla cuestiona si los ingresos de la empresa serán suficientes para honrar el crédito.
+El programa incluye un fondo concursable activo hasta 2028 con tres convocatorias, financiado por la Secretaría de Estado para Asuntos Económicos (SECO) de Suiza, requiriendo al menos 25% en aportes privados. Las importaciones suizas de oro peruano se han mantenido estables entre USD 2.4 y 2.5 millones anuales.
 
-Petroperú abastece hasta el 85% del suministro de combustibles en la sierra y selva del país. Sin apoyo, su colapso habría generado inflación regional crítica y desabastecimiento en zonas vulnerables.`,
-    analisis: `El acceso a financiamiento externo de gran escala sin impacto en el Tesoro Público es una señal positiva para la estabilidad fiscal peruana. Menos presión sobre el gasto público contribuye a mantener la confianza de los mercados en el sol y a contener presiones cambiarias en el corto plazo.
+Garnier enfatiza que Suiza busca establecer "un mercado garantizado de más alto nivel" y planea colaborar con plantas de procesamiento de oro para asegurar calidad y trazabilidad. También adelantó negociaciones futuras sobre minerales críticos con gobiernos entrantes.`,
+    analisis: `Suiza es el principal centro de refinación y comercialización de oro del mundo: procesa más del 70% del oro global. Un acuerdo formal con el Minem para adquirir oro peruano Mape abre un canal de exportación directo hacia el mercado premium europeo, lo que se traduce en mayor ingreso de divisas al país.
 
-Desde la perspectiva forex, una mayor estabilidad fiscal reduce la prima de riesgo país, lo que puede fortalecer al PEN frente al dólar. Sin embargo, el riesgo operativo de Petroperú sigue siendo un factor a monitorear: cualquier deterioro en su situación financiera podría generar presión alcista sobre el tipo de cambio. Para quienes operan divisas, este es un escenario donde la gestión política y la operatividad de la empresa marcarán la dirección del PEN en los próximos meses.`,
+Para el mercado cambiario peruano, más exportaciones de oro significan mayor oferta de dólares, lo que genera presión apreciadora sobre el sol. En un contexto donde el cobre ya está en máximos históricos y el oro también cotiza en niveles elevados, Perú se posiciona como un destino minero de primer orden. Este acuerdo refuerza la narrativa de estabilidad y atractivo de inversión, factores que sostienen al PEN frente al dólar en el mediano plazo.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://gestion.pe/resizer/v2/JQSMZ3GWWBDWNEKLHGYO7MEPLA.jpg?auth=f04bd12558d2caae66cce3c9e1754ff9ae7ca350101878dc51b3413ff91a6acf&width=1200&height=675&quality=75&smart=true',
+    imagen: 'https://gestion.pe/resizer/v2/PBSVSHEX3JGIFBVQF4RJP76HGY.png?auth=351adca5a5a5b42c8d9280bc43b5783bbb6be0903453d6289cce4c5b221a6320&width=1200&height=675&quality=75&smart=true',
   },
   {
     id: 'f002',
