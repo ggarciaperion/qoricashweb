@@ -823,8 +823,9 @@ export default function CrearCuentaPage() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                    onPaste={(e) => e.preventDefault()}
                     className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                    placeholder="Repite tu contraseña"
+                    placeholder="Escribe tu contraseña (no pegues)"
                   />
                   <button
                     type="button"
