@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Bell, BellOff, Plus, Trash2, X, TrendingUp, TrendingDown, Zap, CheckCircle2 } from 'lucide-react';
 import type { AlertaTC } from '@/lib/alertas';
 import type { User } from '@/lib/types';
@@ -133,10 +134,10 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
         )}
       </button>
 
-      {/* Modal backdrop */}
-      {open && (
+      {/* Modal backdrop — renderizado via Portal para escapar del stacking context de la navbar */}
+      {open && createPortal(
         <div
-          className="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-28 bg-black/60 backdrop-blur-sm overflow-y-auto"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
           <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -402,7 +403,8 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
