@@ -119,7 +119,7 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number) {
   const resend = new Resend(apiKey);
 
   await resend.emails.send({
-    from: 'QoriCash Alertas <alertas@qoricash.pe>',
+    from: 'QoriCash <info@qoricash.pe>',
     to: alerta.email,
     subject: `⚡ Alerta TC: el dólar (${label}) está ${condicion} S/ ${alerta.valor.toFixed(3)}`,
     html,

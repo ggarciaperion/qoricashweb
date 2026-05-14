@@ -2,7 +2,7 @@ import { Redis } from '@upstash/redis';
 
 export interface AlertaTC {
   id: string;
-  userId: number;
+  userId?: number;               // undefined for prospectos (non-registered users)
   email: string;
   nombre: string;
   tipo: 'sobre' | 'bajo';        // 'sobre' = when TC goes above, 'bajo' = when TC goes below
@@ -11,6 +11,7 @@ export interface AlertaTC {
   activa: boolean;
   notificada: boolean;
   fecha: string;
+  esProspecto?: boolean;          // true = user was not registered when creating the alert
 }
 
 const REDIS_KEY = 'qoricash:alertas';

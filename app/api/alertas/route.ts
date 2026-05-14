@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { userId, email, nombre, tipo, valor, moneda } = body;
 
-    if (!userId || !email || !tipo || !valor || !moneda) {
+    if (!email || !nombre || !tipo || !valor || !moneda) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
     }
     if (!['sobre', 'bajo'].includes(tipo)) {
@@ -23,7 +23,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'moneda debe ser "compra" o "venta"' }, { status: 400 });
     }
 
-    const alerta = await addAlerta({ userId, email, nombre, tipo, valor: Number(valor), moneda });
+    const esProspecto = !userId;
+    const alerta = await addAlerta({
+      userId: userId ? Number(userId) : undefined,
+      email,
+      nombre,
+      tipo,
+      valor: Number(valor),
+      moneda,
+      esProspecto,
+    });
     return NextResponse.json(alerta, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'Error al crear alerta' }, { status: 500 });

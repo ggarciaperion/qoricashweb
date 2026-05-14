@@ -107,6 +107,22 @@ export default {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         display: ['var(--font-poppins)', 'system-ui', 'sans-serif'],
       },
+      keyframes: {
+        'ping-once': {
+          '0%':   { opacity: '1', transform: 'scale(1)' },
+          '50%':  { opacity: '0.6', transform: 'scale(1.4)' },
+          '100%': { opacity: '0', transform: 'scale(1.8)' },
+        },
+        'flash-in': {
+          '0%':   { opacity: '0', transform: 'scale(0.85)' },
+          '60%':  { opacity: '1', transform: 'scale(1.05)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'ping-once': 'ping-once 0.6s ease-out forwards',
+        'flash-in':  'flash-in 0.35s ease-out forwards',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',

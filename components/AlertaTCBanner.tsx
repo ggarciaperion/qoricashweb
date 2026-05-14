@@ -2,163 +2,468 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, TrendingUp, TrendingDown, ArrowRight, Mail } from 'lucide-react';
+import { Bell, TrendingUp, TrendingDown, ArrowRight, Zap, CheckCircle, Mail, Smartphone, X } from 'lucide-react';
 
 const EJEMPLOS = [
-  { tipo: 'sobre', moneda: 'venta', valor: '3.420', label: 'Avísame cuando el dólar (venta) suba a S/ 3.420' },
-  { tipo: 'bajo',  moneda: 'compra', valor: '3.390', label: 'Avísame cuando el dólar (compra) baje a S/ 3.390' },
-  { tipo: 'sobre', moneda: 'venta', valor: '3.450', label: 'Avísame cuando el dólar (venta) supere S/ 3.450' },
-  { tipo: 'bajo',  moneda: 'venta', valor: '3.400', label: 'Avísame cuando el dólar (venta) caiga a S/ 3.400' },
+  { tipo: 'sobre', valor: '3.420', moneda: 'Venta', emoji: '📈', accion: 'subir a' },
+  { tipo: 'bajo',  valor: '3.390', moneda: 'Compra', emoji: '📉', accion: 'bajar a' },
+  { tipo: 'sobre', valor: '3.450', moneda: 'Venta', emoji: '🚀', accion: 'superar' },
+  { tipo: 'bajo',  valor: '3.400', moneda: 'Venta', emoji: '⚡', accion: 'caer a' },
 ];
+
+type ProspectoForm = { nombre: string; email: string; tipo: 'sobre' | 'bajo'; moneda: 'compra' | 'venta'; valor: string };
 
 export default function AlertaTCBanner() {
   const [active, setActive] = useState(0);
+  const [notifVisible, setNotifVisible] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [form, setForm] = useState<ProspectoForm>({ nombre: '', email: '', tipo: 'sobre', moneda: 'venta', valor: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
-    const t = setInterval(() => setActive((i) => (i + 1) % EJEMPLOS.length), 3000);
+    const t = setInterval(() => {
+      setNotifVisible(false);
+      setTimeout(() => {
+        setActive((i) => (i + 1) % EJEMPLOS.length);
+        setNotifVisible(true);
+      }, 400);
+    }, 3200);
     return () => clearInterval(t);
   }, []);
+
+  function openModal() {
+    setForm({ nombre: '', email: '', tipo: 'sobre', moneda: 'venta', valor: '' });
+    setDone(false);
+    setFormError('');
+    setModalOpen(true);
+  }
+
+  function closeModal() {
+    setModalOpen(false);
+  }
+
+  async function handleProspecto(e: React.FormEvent) {
+    e.preventDefault();
+    const val = parseFloat(form.valor);
+    if (!form.nombre.trim() || !form.email.trim()) { setFormError('Completa tu nombre y email.'); return; }
+    if (!form.email.includes('@')) { setFormError('Ingresa un email válido.'); return; }
+    if (!val || val < 1 || val > 10) { setFormError('Ingresa un TC válido (ej: 3.410).'); return; }
+    setSubmitting(true);
+    setFormError('');
+    try {
+      const res = await fetch('/api/alertas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: form.nombre.trim(), email: form.email.trim(), tipo: form.tipo, moneda: form.moneda, valor: val }),
+      });
+      if (!res.ok) throw new Error();
+      setDone(true);
+    } catch {
+      setFormError('Error al crear la alerta. Intenta nuevamente.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   const ej = EJEMPLOS[active];
 
   return (
-    <section className="relative py-14 bg-gradient-to-br from-[#0D1B2A] via-[#0f2235] to-[#0D1B2A] overflow-hidden reveal">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-[0.035]"
+    <>
+    <section className="relative overflow-hidden bg-[#060e1a]">
+
+      {/* ── Ambient glows ── */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-900/20 rounded-full blur-[140px] pointer-events-none" />
+
+      {/* ── Grid overlay ── */}
+      <div className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.4) 1px, transparent 0)',
-          backgroundSize: '32px 32px',
+          backgroundImage: 'linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
         }}
       />
-      <div className="absolute top-0 left-1/3 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-primary-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+      {/* ── Separador superior ── */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
-          {/* Left: copy */}
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+
+        {/* ── HERO ── */}
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
+
+          {/* Texto */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-500/30 rounded-full px-3 py-1 mb-5">
-              <Bell className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-amber-300 text-xs font-bold tracking-widest uppercase">Nuevo · Alertas de TC</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 rounded-full px-4 py-1.5 mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+              </span>
+              <span className="text-amber-300 text-xs font-bold tracking-[0.15em] uppercase">Nueva función · Alertas de TC</span>
             </div>
 
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-white leading-tight mb-4">
-              El dólar cambia{' '}
-              <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
-                a cada momento.
-              </span>
+            {/* Headline */}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-black text-white leading-[1.1] mb-5">
+              El dólar no espera.
               <br />
-              Tú te enteras primero.
+              <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
+                Tú tampoco deberías.
+              </span>
             </h2>
 
-            <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">
-              Crea alertas personalizadas y recibe un <strong className="text-gray-300">correo instantáneo</strong> cuando
-              el tipo de cambio llegue al nivel que tú eliges. Sin revisar apps, sin perderte el momento exacto.
+            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-lg">
+              El tipo de cambio puede moverse <strong className="text-gray-200">varios céntimos en minutos</strong>.
+              Con las alertas de QoriCash, eres el primero en saberlo —
+              sin estar pegado a la pantalla todo el día.
             </p>
 
-            <ul className="space-y-2.5 mb-8">
+            {/* Beneficios */}
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {[
-                'Alertas al alza y a la baja',
-                'Notificación por email en segundos',
-                'Configúralas en menos de 30 segundos',
-                'Gratis para todos los clientes registrados',
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2.5 text-sm text-gray-300">
-                  <span className="w-4 h-4 rounded-full bg-primary-500/20 border border-primary-500/40 flex items-center justify-center flex-shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary-400" />
-                  </span>
-                  {item}
-                </li>
+                { icon: Zap,         text: 'Notificación en segundos' },
+                { icon: Bell,        text: 'Alertas al alza y a la baja' },
+                { icon: CheckCircle, text: 'Gratis para clientes' },
+                { icon: Smartphone,  text: 'Al correo, sin apps extra' },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-3.5 h-3.5 text-primary-400" />
+                  </div>
+                  <span className="text-sm text-gray-300">{text}</span>
+                </div>
               ))}
-            </ul>
+            </div>
 
+            {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/crear-cuenta"
-                className="inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-bold px-6 py-3 rounded-full transition-all duration-200 shadow-lg hover:shadow-primary-500/30 text-sm"
+              <button
+                onClick={openModal}
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-black px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-amber-500/25 hover:shadow-amber-400/40 text-sm"
               >
-                Crear cuenta gratis
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                <Bell className="w-4 h-4" />
+                Activar mis alertas gratis
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-semibold px-6 py-3 rounded-full transition-all duration-200 border border-white/20 text-sm"
+                className="inline-flex items-center justify-center gap-2 bg-white/6 hover:bg-white/10 text-white font-semibold px-7 py-3.5 rounded-full transition-all duration-200 border border-white/15 text-sm"
               >
                 Ya tengo cuenta
               </Link>
             </div>
+
+            {/* Social proof */}
+            <p className="mt-5 text-gray-600 text-xs flex items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+              Sin tarjeta de crédito · Se configura en 30 segundos
+            </p>
           </div>
 
-          {/* Right: animated demo card */}
+          {/* Demo card */}
           <div className="flex justify-center lg:justify-end">
-            <div className="w-full max-w-sm">
+            <div className="relative w-full max-w-[340px]">
+              <div className="absolute -inset-4 bg-gradient-to-br from-amber-500/20 to-primary-500/10 rounded-3xl blur-2xl" />
+              <div className="relative bg-white/[0.05] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
 
-              {/* Mock phone card */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-5 shadow-2xl">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-[#0D1B2A] to-[#0f2235] px-5 py-4 flex items-center justify-between border-b border-white/8">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center">
                       <Bell className="w-4 h-4 text-amber-400" />
                     </div>
                     <div>
-                      <p className="text-white text-xs font-bold">Alerta de TC</p>
-                      <p className="text-gray-500 text-[10px]">QoriCash</p>
+                      <p className="text-white text-xs font-bold">Alertas TC · QoriCash</p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-emerald-400 text-[10px] font-semibold">Monitoreando en vivo</span>
+                      </div>
                     </div>
                   </div>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-bold text-gray-500 bg-white/5 px-2 py-1 rounded-full">ACTIVA</span>
                 </div>
 
-                {/* Animated example */}
-                <div
-                  key={active}
-                  className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-xl p-4 mb-4 transition-all duration-500"
-                >
-                  <div className="flex items-start gap-2.5">
-                    {ej.tipo === 'sobre' ? (
-                      <TrendingUp className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                    ) : (
-                      <TrendingDown className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                    )}
-                    <p className="text-amber-200 text-xs leading-relaxed font-medium">{ej.label}</p>
+                {/* TC simulado */}
+                <div className="px-5 py-4 border-b border-white/5">
+                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2">Tipo de cambio actual</p>
+                  <div className="flex items-end gap-6">
+                    <div>
+                      <p className="text-[10px] text-gray-500 mb-0.5">Compra</p>
+                      <p className="text-2xl font-black text-white">3.395</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-gray-500 mb-0.5">Venta</p>
+                      <p className="text-2xl font-black text-white">3.415</p>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1 text-emerald-400">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="text-xs font-bold">+0.005</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Dot indicators */}
-                <div className="flex items-center justify-center gap-1.5 mb-4">
-                  {EJEMPLOS.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActive(i)}
-                      className={`rounded-full transition-all duration-300 ${
-                        i === active ? 'w-4 h-1.5 bg-amber-400' : 'w-1.5 h-1.5 bg-white/20'
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                {/* Mock email notification */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-primary-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Mail className="w-3.5 h-3.5 text-primary-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-white text-[11px] font-semibold truncate">alertas@qoricash.pe</p>
-                    <p className="text-gray-400 text-[10px] leading-relaxed mt-0.5">
-                      ⚡ ¡Tu alerta se activó! TC Venta = S/ {ej.valor}
+                {/* Alerta animada */}
+                <div className="px-5 py-4">
+                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2.5">Tu alerta configurada</p>
+                  <div
+                    className={`rounded-xl border p-3.5 mb-3 transition-all duration-500 ${
+                      ej.tipo === 'sobre' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-blue-500/8 border-blue-500/20'
+                    } ${notifVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      {ej.tipo === 'sobre'
+                        ? <TrendingUp className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                        : <TrendingDown className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />}
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-amber-400' : 'text-blue-400'}`}>
+                        {ej.tipo === 'sobre' ? 'Alerta al alza' : 'Alerta a la baja'}
+                      </span>
+                    </div>
+                    <p className="text-white text-xs font-semibold">
+                      {ej.emoji} Avísame cuando TC {ej.moneda} {ej.accion}{' '}
+                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-amber-300' : 'text-blue-300'}`}>
+                        S/ {ej.valor}
+                      </span>
                     </p>
                   </div>
-                  <span className="flex-shrink-0 text-[9px] text-gray-500">ahora</span>
+
+                  <div className="flex justify-center gap-1.5 mb-3">
+                    {EJEMPLOS.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActive(i)}
+                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-amber-400' : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30'}`}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="bg-white/5 border border-white/8 rounded-xl p-3 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-white text-[11px] font-bold">info@qoricash.pe</p>
+                      <p className="text-gray-400 text-[10px] truncate">
+                        ⚡ ¡Alerta activada! TC {ej.moneda} llegó a S/ {ej.valor}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <span className="text-[9px] text-gray-600">ahora</span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <p className="text-center text-gray-600 text-[11px] mt-3">
-                Disponible para todos los clientes de QoriCash
-              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Separador inferior */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
     </section>
+
+    {/* ── Modal prospecto ── */}
+    {modalOpen && (
+      <div
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+      >
+        <div className="w-full max-w-lg bg-[#0b1420] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+
+          {/* Header */}
+          <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #112238 100%)' }}>
+            <div className="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-primary-500/10 blur-2xl pointer-events-none" />
+            <div className="relative flex items-center gap-3">
+              <div className="relative w-9 h-9 rounded-xl bg-primary-500/15 border border-primary-500/25 flex items-center justify-center flex-shrink-0">
+                <Bell className="w-[18px] h-[18px] text-primary-400" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-400">
+                  <span className="absolute inset-0 rounded-full bg-primary-400 animate-ping opacity-75" />
+                </span>
+              </div>
+              <div>
+                <p className="text-white font-extrabold text-sm leading-tight">Recibe el aviso sin registrarte</p>
+                <p className="text-primary-400/70 text-[10px] font-medium mt-0.5">Sin contraseña · Solo tu email · 100% gratis</p>
+              </div>
+            </div>
+            <button onClick={closeModal} className="relative text-gray-500 hover:text-white transition-colors p-1">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="px-6 py-6">
+            {done ? (
+              /* ── Éxito ── */
+              <div className="flex flex-col items-center gap-4 py-6 text-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full bg-primary-500/15 border border-primary-500/40 flex items-center justify-center">
+                    <CheckCircle className="w-8 h-8 text-primary-400" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-white font-black text-xl mb-1">¡Alerta activa!</p>
+                  <p className="text-gray-400 text-sm">
+                    Te escribiremos a <strong className="text-primary-400">{form.email}</strong> en el momento exacto.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2 mt-1">
+                  <Link
+                    href="/crear-cuenta"
+                    className="group inline-flex items-center justify-center gap-2 bg-primary-500/15 hover:bg-primary-500/25 border border-primary-500/30 text-primary-300 text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
+                  >
+                    Gestionar todas mis alertas
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                  <button
+                    onClick={closeModal}
+                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm text-gray-500 hover:text-gray-300 transition-colors"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleProspecto} className="space-y-4">
+
+                {/* Configurador de alerta */}
+                <div className="bg-white/[0.04] rounded-xl border border-white/8 px-4 py-5 space-y-4">
+                  <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Configura tu alerta</p>
+
+                  {/* Toggle condición */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { val: 'sobre', label: 'Por encima de', icon: TrendingUp,  activeClass: 'bg-primary-500 border-primary-500 text-white shadow-lg shadow-primary-500/30' },
+                      { val: 'bajo',  label: 'Por debajo de', icon: TrendingDown, activeClass: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30' },
+                    ] as const).map(({ val, label, icon: Icon, activeClass }) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, tipo: val }))}
+                        className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                          form.tipo === val ? activeClass : 'bg-transparent border-white/10 text-gray-500 hover:border-white/20 hover:text-gray-300'
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Input TC centrado y prominente */}
+                  <div className="flex flex-col items-center gap-1.5">
+                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Tipo de cambio</p>
+                    <div className={`relative flex items-center rounded-2xl border-2 transition-all duration-200 ${
+                      form.tipo === 'sobre'
+                        ? 'border-primary-500/40 focus-within:border-primary-500 bg-primary-500/5'
+                        : 'border-red-500/40 focus-within:border-red-500 bg-red-500/5'
+                    }`}>
+                      <span className="pl-5 pr-1 text-gray-400 text-xl font-black pointer-events-none select-none">S/</span>
+                      <input
+                        type="number"
+                        step="0.0001"
+                        min="1"
+                        max="10"
+                        placeholder="3.4100"
+                        value={form.valor}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          const parts = raw.split('.');
+                          if (parts[1] && parts[1].length > 4) return;
+                          setForm((f) => ({ ...f, valor: raw }));
+                        }}
+                        className="w-36 bg-transparent pr-5 py-3.5 text-3xl font-black text-white placeholder-gray-700 focus:outline-none text-center tracking-tight"
+                        required
+                      />
+                    </div>
+                    <p className="text-[10px] text-gray-700">Máximo 4 decimales · ej: 3.4150</p>
+                  </div>
+
+                  {/* Preview dinámico */}
+                  {form.valor && parseFloat(form.valor) > 0 && (
+                    <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
+                      form.tipo === 'sobre' ? 'bg-primary-500/10 text-primary-300' : 'bg-red-500/10 text-red-300'
+                    }`}>
+                      {form.tipo === 'sobre'
+                        ? <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
+                        : <TrendingDown className="w-3.5 h-3.5 flex-shrink-0" />}
+                      <span>
+                        Te avisamos cuando el TC esté{' '}
+                        {form.tipo === 'sobre' ? 'por encima de' : 'por debajo de'}{' '}
+                        <strong>S/ {parseFloat(form.valor).toFixed(4)}</strong>
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Nombre + Email */}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Nombre o empresa"
+                    value={form.nombre}
+                    onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 focus:border-primary-500/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none transition-all focus:bg-white/[0.07]"
+                    required
+                  />
+                  <input
+                    type="email"
+                    placeholder="tu@email.com"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 focus:border-primary-500/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none transition-all focus:bg-white/[0.07]"
+                    required
+                  />
+                </div>
+
+                {formError && (
+                  <p className="text-xs text-red-400 font-medium flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-red-400 flex-shrink-0" />
+                    {formError}
+                  </p>
+                )}
+
+                {/* CTA */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="relative w-full overflow-hidden flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-extrabold text-white transition-all duration-300 disabled:opacity-50 group"
+                  style={{
+                    background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
+                    boxShadow: submitting ? 'none' : '0 4px 24px rgba(34,197,94,0.35)',
+                  }}
+                >
+                  <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+                  {submitting ? (
+                    <>
+                      <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      Activando alerta...
+                    </>
+                  ) : (
+                    <>
+                      <Bell className="w-4 h-4" />
+                      Activar alerta gratis
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </>
+                  )}
+                </button>
+
+                <p className="text-center text-[11px] text-gray-600">
+                  ¿Ya tienes cuenta?{' '}
+                  <Link href="/login" className="text-primary-500 hover:text-primary-400 transition-colors font-semibold" onClick={closeModal}>
+                    Inicia sesión
+                  </Link>
+                  {' '}para gestionar todas tus alertas
+                </p>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
