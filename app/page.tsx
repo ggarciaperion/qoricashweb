@@ -60,6 +60,8 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
+  const { currentRates } = useExchangeStore();
+
   // Check TC alerts whenever rates update
   const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
   useEffect(() => {
@@ -75,8 +77,6 @@ export default function Home() {
       body: JSON.stringify({ compra, venta }),
     }).catch(() => {});
   }, [currentRates]);
-
-  const { currentRates } = useExchangeStore();
 
   // Punto de referencia BCRP interdiario (actualizar cuando el mercado cambie significativamente)
   const BCRP_REF = 3.39;
