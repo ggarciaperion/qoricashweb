@@ -118,10 +118,27 @@ export default {
           '60%':  { opacity: '1', transform: 'scale(1.05)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
+        'fade-in': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'logo-exit': {
+          '0%':   { opacity: '0', transform: 'scale(0.7)' },
+          '40%':  { opacity: '1', transform: 'scale(1.05)' },
+          '70%':  { opacity: '1', transform: 'scale(1)' },
+          '100%': { opacity: '0.4', transform: 'scale(0.95)' },
+        },
+        'slide-up-fade': {
+          '0%':   { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
-        'ping-once': 'ping-once 0.6s ease-out forwards',
-        'flash-in':  'flash-in 0.35s ease-out forwards',
+        'ping-once':     'ping-once 0.6s ease-out forwards',
+        'flash-in':      'flash-in 0.35s ease-out forwards',
+        'fade-in':       'fade-in 0.3s ease-out forwards',
+        'logo-exit':     'logo-exit 1s ease-in-out forwards',
+        'slide-up-fade': 'slide-up-fade 0.4s ease-out 0.2s both',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

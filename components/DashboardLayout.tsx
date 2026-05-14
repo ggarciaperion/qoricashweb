@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -23,6 +24,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, logout } = useAuthStore();
   const { currentRates } = useExchangeStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,12 +43,38 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     };
   }, [isUserMenuOpen]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    setIsUserMenuOpen(false);
+    setLoggingOut(true);
+    await new Promise((r) => setTimeout(r, 1100));
     logout();
     router.push('/login');
   };
 
   return (
+    <>
+    {loggingOut && createPortal(
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
+        <div className="flex flex-col items-center gap-5">
+          <img
+            src="/logo-principal.png"
+            alt="QoriCash"
+            className="h-16 w-auto animate-logo-exit"
+          />
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">
+              Cerrando sesión...
+            </p>
+            <div className="flex gap-1.5 animate-slide-up-fade">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-bounce [animation-delay:300ms]" />
+            </div>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )}
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
@@ -141,10 +169,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     </a>
                     <div className="border-t border-gray-200 my-2"></div>
                     <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        handleLogout();
-                      }}
+                      onClick={handleLogout}
                       className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition"
                     >
                       <LogOut className="w-5 h-5 mr-3" />
@@ -161,5 +186,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <main>{children}</main>
     </div>
+    </>
   );
 }
