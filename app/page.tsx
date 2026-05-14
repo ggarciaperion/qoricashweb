@@ -45,6 +45,7 @@ export default function Home() {
   const [sellRate, setSellRate] = useState('3.770');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
@@ -145,11 +146,34 @@ export default function Home() {
   }, []);
 
   const handleLogout = async () => {
+    setIsUserMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    setLoggingOut(true);
+    await new Promise((r) => setTimeout(r, 1100));
     await logout();
     router.push('/');
   };
 
   return (
+    <>
+    {loggingOut && createPortal(
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
+        <div className="flex flex-col items-center gap-5">
+          <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto animate-logo-exit" />
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">
+              Cerrando sesión...
+            </p>
+            <div className="flex gap-1.5 animate-slide-up-fade">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-bounce [animation-delay:300ms]" />
+            </div>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )}
     <main className="min-h-screen">
       {/* Header */}
       <header className={`fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`}>
@@ -276,10 +300,7 @@ export default function Home() {
                     Ayuda
                   </a>
                   <button
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      handleLogout();
-                    }}
+                    onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition rounded-lg"
                   >
                     Cerrar Sesión
@@ -346,7 +367,7 @@ export default function Home() {
             </a>
             <div className="border-t border-gray-200 my-1" />
             <button
-              onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
+              onClick={handleLogout}
               className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
             >
               <LogOut className="w-5 h-5 mr-3" />
@@ -1354,5 +1375,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
+    </>
   );
 }
