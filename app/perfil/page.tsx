@@ -218,29 +218,29 @@ export default function PerfilPage() {
         {/* Profile Card */}
         <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 overflow-hidden">
           {/* Header Section */}
-          <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-r from-primary-500 to-primary-600 px-4 sm:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               {/* User Info */}
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 bg-white rounded-full flex items-center justify-center shrink-0">
                   {isRUC ? (
-                    <Building2 className="w-10 h-10 text-primary-600" />
+                    <Building2 className="w-7 h-7 sm:w-10 sm:h-10 text-primary-600" />
                   ) : (
-                    <UserCircle className="w-10 h-10 text-primary-600" />
+                    <UserCircle className="w-7 h-7 sm:w-10 sm:h-10 text-primary-600" />
                   )}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-lg sm:text-2xl font-bold text-white leading-tight">
                     {isRUC ? user.razon_social : user.apellidos ? `${user.nombres} ${user.apellidos}` : user.nombres}
                   </h2>
-                  <p className="text-primary-100">
+                  <p className="text-primary-100 text-sm">
                     {user.document_type} - {user.dni}
                   </p>
                 </div>
               </div>
 
               {/* Account Status */}
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <div className="flex items-center justify-end gap-2 mb-2">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 rounded-full">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -262,7 +262,7 @@ export default function PerfilPage() {
           </div>
 
           {/* Information Section */}
-          <div className="p-8">
+          <div className="p-4 sm:p-8">
             {/* Read-only Information */}
             <div className="mb-8">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">

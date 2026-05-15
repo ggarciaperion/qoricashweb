@@ -6,6 +6,7 @@ import { useAuthStore } from '@/lib/store';
 import { operationsApi } from '@/lib/api/operations';
 import { formatSafeDate } from '@/lib/utils/date';
 import type { Operation } from '@/lib/types';
+import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import {
   ArrowLeft,
   DollarSign,
@@ -146,6 +147,27 @@ export default function OperacionDetallesPage() {
     }
   };
 
+  const normalizeBankName = (bankName: string): string => {
+    if (!bankName) return 'OTROS';
+    const n = bankName.toUpperCase().trim();
+    if (n.includes('BCP') || n.includes('CRÉDITO') || n.includes('CREDITO')) return 'BCP';
+    if (n.includes('INTERBANK')) return 'INTERBANK';
+    if (n.includes('PICHINCHA')) return 'PICHINCHA';
+    if (n.includes('BANBIF') || n.includes('BAN BIF')) return 'BANBIF';
+    if (n.includes('BBVA')) return 'BBVA';
+    if (n.includes('SCOTIABANK')) return 'SCOTIABANK';
+    return 'OTROS';
+  };
+
+  const getDestinationAccount = () => {
+    if (!operation) return null;
+    const bankRaw = operation.source_bank_name || operation.banco_cliente || '';
+    const clientBank = normalizeBankName(bankRaw);
+    // compra = client sends USD to QoriCash; venta = client sends S/ to QoriCash
+    const currency = operation.tipo === 'compra' ? '$' : 'S/';
+    return getQoricashAccount(clientBank, currency);
+  };
+
   const getStatusBadge = (estado: string) => {
     const badges = {
       pendiente: {
@@ -245,8 +267,8 @@ export default function OperacionDetallesPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page title */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-3xl font-display font-bold text-gray-900">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-gray-900">
               Operación #{operation.id}
             </h1>
             {getStatusBadge(operation.estado)}
@@ -345,6 +367,69 @@ export default function OperacionDetallesPage() {
             </div>
           </div>
         </div>
+
+        {/* QoriCash destination account — only for pending operations */}
+        {operation.estado === 'pendiente' && (() => {
+          const qcAccount = getDestinationAccount();
+          if (!qcAccount) return null;
+          return (
+            <div className="bg-amber-50 rounded-2xl shadow-lg p-6 mb-6 border-2 border-amber-300">
+              <h3 className="text-lg font-bold text-amber-900 mb-1 flex items-center">
+                <Building2 className="w-5 h-5 mr-2 text-amber-700" />
+                Transfiere a esta cuenta de QoriCash
+              </h3>
+              <p className="text-sm text-amber-700 mb-4">
+                Realiza tu transferencia a la siguiente cuenta para procesar tu operación.
+              </p>
+              <div className="bg-white rounded-xl p-4 space-y-3 border border-amber-200">
+                <div className="flex items-start">
+                  <CreditCard className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">Banco</p>
+                    <p className="font-bold text-gray-900">{qcAccount.banco}</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">Tipo de cuenta</p>
+                    <p className="font-bold text-gray-900">{qcAccount.tipo}</p>
+                  </div>
+                </div>
+                {!qcAccount.useCCI && qcAccount.numero && (
+                  <div className="flex items-start">
+                    <CreditCard className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-gray-500">Número de cuenta</p>
+                      <p className="font-bold text-gray-900 font-mono">{qcAccount.numero}</p>
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-start">
+                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">CCI (Código de Cuenta Interbancario)</p>
+                    <p className="font-bold text-gray-900 font-mono">{qcAccount.cci}</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <User className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">Titular</p>
+                    <p className="font-bold text-gray-900">{qcAccount.titular}</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs text-gray-500">RUC</p>
+                    <p className="font-bold text-gray-900">{qcAccount.ruc}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Timeline */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">

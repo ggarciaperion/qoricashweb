@@ -1032,9 +1032,20 @@ function NuevaOperacionContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      {/* Botón flotante WhatsApp - solo móvil */}
+      <a
+        href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="lg:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 bg-green-500 text-white px-4 py-3 rounded-full shadow-xl hover:bg-green-600 transition"
+      >
+        <MessageCircle className="w-5 h-5" />
+        <span className="text-sm font-semibold">WhatsApp</span>
+      </a>
+
       {/* Header compacto */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <button
             onClick={() => router.push('/dashboard')}
             className="inline-flex items-center text-gray-600 hover:text-gray-900 transition text-sm"
@@ -1058,10 +1069,10 @@ function NuevaOperacionContent() {
       </header>
 
       {/* Main Layout: Sidebar + Content */}
-      <div className="max-w-[1400px] mx-auto px-6 py-6">
-        <div className="grid grid-cols-12 gap-6">
-          {/* Sidebar izquierdo - Información de QoriCash */}
-          <div className="col-span-12 lg:col-span-3">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        <div className="grid grid-cols-12 gap-4 sm:gap-6">
+          {/* Sidebar izquierdo - Información de QoriCash (oculto en móvil) */}
+          <div className="hidden lg:block lg:col-span-3">
             <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-6 sticky top-6">
               <div className="text-center mb-6">
                 <div className="w-24 h-24 mx-auto mb-3 relative">
@@ -1187,16 +1198,16 @@ function NuevaOperacionContent() {
               {currentStep === 2 && createdOperation ? (
                 <div className="space-y-4">
                   {/* Operation ID and Timer */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-secondary to-secondary-700 rounded-xl text-white">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-gradient-to-r from-secondary to-secondary-700 rounded-xl text-white">
                     <div>
                       <p className="text-xs opacity-90 mb-1">ID de Operación</p>
-                      <p className="text-2xl font-bold">{createdOperation.codigo_operacion}</p>
+                      <p className="text-xl sm:text-2xl font-bold">{createdOperation.codigo_operacion}</p>
                     </div>
-                    <div className="flex items-center gap-3 bg-white/20 rounded-lg px-4 py-2 backdrop-blur-sm">
+                    <div className="flex items-center gap-3 bg-white/20 rounded-lg px-4 py-2 backdrop-blur-sm w-full sm:w-auto justify-between sm:justify-start">
                       <Timer className={`w-6 h-6 ${timeRemaining < 300 ? 'animate-pulse' : ''}`} />
                       <div className="text-right">
                         <p className="text-xs opacity-90">Tiempo restante</p>
-                        <p className={`text-2xl font-bold ${timeRemaining < 300 ? 'text-yellow-300' : ''}`}>
+                        <p className={`text-xl sm:text-2xl font-bold ${timeRemaining < 300 ? 'text-yellow-300' : ''}`}>
                           {formatTime(timeRemaining)}
                         </p>
                       </div>

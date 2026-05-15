@@ -184,7 +184,7 @@ export default function DashboardPage() {
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
                 >
                   <User className="w-5 h-5" />
-                  <span className="font-medium">
+                  <span className="font-medium truncate max-w-[130px] sm:max-w-none">
                     {user?.document_type === 'RUC'
                       ? user?.razon_social || user?.nombres
                       : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
@@ -465,16 +465,17 @@ export default function DashboardPage() {
                 // Si la operación está pendiente, redirigir a nueva-operacion para continuar
                 const handleOperationClick = () => {
                   if (operation.estado.toLowerCase() === 'pendiente') {
-                    const opId = operation.codigo_operacion;
-                    console.log('Redirigiendo a operación pendiente:', {
-                      codigo_operacion: operation.codigo_operacion,
-                      id: operation.id,
-                      estado: operation.estado,
-                      operation
-                    });
+                    // Operaciones creadas por trader: ir al detalle sin contador regresivo
+                    if (operation.origen && operation.origen !== 'web') {
+                      router.push(`/dashboard/operaciones/${operation.id}`);
+                      return;
+                    }
 
+                    // Operaciones web: continuar en nueva-operacion con contador regresivo
+                    const opId = operation.codigo_operacion;
                     if (!opId) {
                       console.error('Error: codigo_operacion no está disponible en la operación');
+                      router.push(`/dashboard/operaciones/${operation.id}`);
                       return;
                     }
 
@@ -489,12 +490,12 @@ export default function DashboardPage() {
                 return (
                 <div
                   key={operation.id}
-                  className="px-6 py-4 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
+                  className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
                   onClick={handleOperationClick}
                 >
-                  <div className="flex items-center justify-between gap-4">
-                    {/* Badges and Type */}
-                    <div className="flex items-center gap-2">
+                  {/* Fila 1: badges + fecha (siempre visible) */}
+                  <div className="flex items-center justify-between gap-2 mb-2 sm:mb-0">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg">
                         {operation.codigo_operacion}
                       </span>
@@ -509,34 +510,38 @@ export default function DashboardPage() {
                       </span>
                       {getStatusBadge(operation.estado)}
                     </div>
-
-                    {/* Amounts */}
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-xs text-gray-500">Dólares</p>
-                        <p className="text-base font-bold text-gray-900">
-                          $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                        </p>
-                      </div>
-                      <div className="text-right min-w-[100px]">
-                        <p className="text-xs text-gray-500">T.C.</p>
-                        <p className="text-base font-bold text-gray-900">
-                          S/ {(operation.tipo_cambio ?? 0).toFixed(3)}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-500">Soles</p>
-                        <p className="text-base font-bold text-gray-900">
-                          S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+                    {/* Fecha: visible en todos los tamaños */}
+                    <div className="text-right shrink-0">
+                      <p className="text-xs text-gray-500 sm:hidden">
+                        {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
+                      </p>
+                      <div className="hidden sm:block text-right">
+                        <p className="text-xs text-gray-500">Fecha</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
                         </p>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Date */}
-                    <div className="text-right min-w-[90px]">
-                      <p className="text-xs text-gray-500">Fecha</p>
-                      <p className="text-sm font-medium text-gray-900">
-                        {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
+                  {/* Fila 2: montos */}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6">
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-gray-500">Dólares</p>
+                      <p className="text-sm sm:text-base font-bold text-gray-900">
+                        $ {(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-gray-500">T.C.</p>
+                      <p className="text-sm sm:text-base font-bold text-gray-900">
+                        S/ {(operation.tipo_cambio ?? 0).toFixed(3)}
+                      </p>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs text-gray-500">Soles</p>
+                      <p className="text-sm sm:text-base font-bold text-gray-900">
+                        S/ {(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}
                       </p>
                     </div>
                   </div>
