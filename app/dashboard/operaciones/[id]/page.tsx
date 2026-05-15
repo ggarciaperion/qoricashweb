@@ -311,7 +311,7 @@ export default function OperacionDetallesPage() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900">
-                  {operation.tipo === 'compra' ? 'Compra de Dólares' : 'Venta de Dólares'}
+                  {operation.tipo === 'compra' ? 'QoriCash compra tus dólares' : 'QoriCash te vende dólares'}
                 </h3>
                 <p className="text-gray-600">
                   Tipo de cambio: S/ {operation.tipo_cambio?.toFixed(3) ?? '—'}
@@ -323,23 +323,29 @@ export default function OperacionDetallesPage() {
 
         {/* Amount details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+          {/* Usted paga */}
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 border border-red-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-green-800">Monto en Soles</span>
-              <DollarSign className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-semibold text-red-800">Usted paga</span>
+              <DollarSign className="w-5 h-5 text-red-600" />
             </div>
-            <p className="text-3xl font-bold text-green-900">
-              S/ {operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}
+            <p className="text-3xl font-bold text-red-900">
+              {operation.tipo === 'compra'
+                ? `$ ${operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}`
+                : `S/ ${operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}`}
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+          {/* Usted recibe */}
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-blue-800">Monto en Dólares</span>
-              <DollarSign className="w-5 h-5 text-blue-600" />
+              <span className="text-sm font-semibold text-green-800">Usted recibe</span>
+              <DollarSign className="w-5 h-5 text-green-600" />
             </div>
-            <p className="text-3xl font-bold text-blue-900">
-              $ {operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}
+            <p className="text-3xl font-bold text-green-900">
+              {operation.tipo === 'compra'
+                ? `S/ ${operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}`
+                : `$ ${operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}`}
             </p>
           </div>
         </div>

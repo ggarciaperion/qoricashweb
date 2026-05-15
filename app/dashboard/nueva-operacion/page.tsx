@@ -1584,7 +1584,7 @@ function NuevaOperacionContent() {
                       >
                         <TrendingDown className="w-4 h-4" />
                         <div className="text-left">
-                          <div className="text-sm font-bold">Compra</div>
+                          <div className="text-sm font-bold">QoriCash Compra</div>
                           {appliedDiscount > 0 ? (
                             <div className="flex flex-col gap-0.5">
                               <div className="text-xs opacity-60 line-through">
@@ -1614,7 +1614,7 @@ function NuevaOperacionContent() {
                       >
                         <TrendingUp className="w-4 h-4" />
                         <div className="text-left">
-                          <div className="text-sm font-bold">Venta</div>
+                          <div className="text-sm font-bold">QoriCash Vende</div>
                           {appliedDiscount > 0 ? (
                             <div className="flex flex-col gap-0.5">
                               <div className="text-xs opacity-60 line-through">
@@ -1742,7 +1742,7 @@ function NuevaOperacionContent() {
                       <div className="grid grid-cols-2 gap-3 mb-2">
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">
-                            {tipo === 'Compra' ? 'Entregas' : 'Pagas'}
+                            Usted paga
                           </label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">
@@ -1760,7 +1760,7 @@ function NuevaOperacionContent() {
                           </div>
                         </div>
                         <div>
-                          <label className="block text-xs text-gray-600 mb-1">Recibes</label>
+                          <label className="block text-xs text-gray-600 mb-1">Usted recibe</label>
                           <div className="relative">
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">
                               {outputCurrency === 'USD' ? '$' : 'S/'}
@@ -1783,9 +1783,9 @@ function NuevaOperacionContent() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-sm font-semibold text-gray-900">
-                        3. Cuenta de cargo
+                        3. Su cuenta de origen
                         <span className="text-xs font-normal text-gray-600 ml-2">
-                          ({tipo === 'Compra' ? 'Cuenta en dólares' : 'Cuenta en soles'})
+                          (desde donde usted paga)
                         </span>
                       </label>
                       <button
@@ -1842,9 +1842,9 @@ function NuevaOperacionContent() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-sm font-semibold text-gray-900">
-                        4. Cuenta de destino
+                        4. Su cuenta de destino
                         <span className="text-xs font-normal text-gray-600 ml-2">
-                          ({tipo === 'Compra' ? 'Cuenta en soles' : 'Cuenta en dólares'})
+                          (donde usted recibe)
                         </span>
                       </label>
                       <button
@@ -2128,7 +2128,8 @@ function NuevaOperacionContent() {
             <div className="space-y-4">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-gray-700 text-center mb-4">
-                  ¿Está seguro que desea crear la operación <strong>{tipo}</strong> por{' '}
+                  ¿Está seguro que desea crear la operación{' '}
+                  <strong>{tipo === 'Compra' ? 'QoriCash Compra' : 'QoriCash Vende'}</strong> por{' '}
                   <strong>
                     {tipo === 'Compra'
                       ? `${parseFloat(amountInput).toFixed(2)} USD`
@@ -2140,19 +2141,23 @@ function NuevaOperacionContent() {
 
                 <div className="bg-white rounded-lg p-3 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tipo:</span>
-                    <span className="font-semibold text-gray-900">{tipo}</span>
+                    <span className="text-gray-600">Operación:</span>
+                    <span className="font-semibold text-gray-900">{tipo === 'Compra' ? 'QoriCash Compra' : 'QoriCash Vende'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Monto en dólares:</span>
+                    <span className="text-gray-600">Usted paga:</span>
                     <span className="font-semibold text-gray-900">
-                      $ {tipo === 'Compra' ? parseFloat(amountInput).toFixed(2) : parseFloat(amountOutput).toFixed(2)}
+                      {tipo === 'Compra'
+                        ? `$ ${parseFloat(amountInput).toFixed(2)}`
+                        : `S/ ${parseFloat(amountInput).toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Monto en soles:</span>
+                    <span className="text-gray-600">Usted recibe:</span>
                     <span className="font-semibold text-gray-900">
-                      S/ {tipo === 'Compra' ? parseFloat(amountOutput).toFixed(2) : parseFloat(amountInput).toFixed(2)}
+                      {tipo === 'Compra'
+                        ? `S/ ${parseFloat(amountOutput).toFixed(2)}`
+                        : `$ ${parseFloat(amountOutput).toFixed(2)}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
