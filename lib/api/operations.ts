@@ -39,10 +39,11 @@ export const operationsApi = {
    */
   async uploadProof(operationId: number, file: File): Promise<ApiResponse> {
     const formData = new FormData();
-    formData.append('comprobante', file);
+    formData.append('operation_id', String(operationId));
+    formData.append('files', file);
 
     const response = await apiClient.post<ApiResponse>(
-      `/api/operations/${operationId}/upload-proof`,
+      '/api/web/submit-proof',
       formData
     );
     return response.data;
