@@ -84,7 +84,7 @@ export default function MarketTicker() {
   return (
     <div
       className="w-full overflow-hidden bg-[#0a1628] border-b border-white/10"
-      style={{ position: 'fixed', top: '80px', left: 0, right: 0, height: '30px', zIndex: 40 }}
+      style={{ position: 'fixed', top: '90px', left: 0, right: 0, height: '30px', zIndex: 40 }}
       aria-hidden="true"
     >
       <div

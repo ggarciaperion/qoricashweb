@@ -9,7 +9,7 @@ export default function HomeOnlyTicker() {
   return (
     <>
       <MarketTicker />
-      <div style={{ height: '30px' }} />
+      <div style={{ height: '40px' }} />
     </>
   );
 }

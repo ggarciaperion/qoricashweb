@@ -267,6 +267,13 @@ export default function Home() {
                 Cómo Funciona
               </a>
               <Link
+                href="/noticias"
+                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Noticias
+              </Link>
+              <Link
                 href="/dashboard/promociones"
                 className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
                 onClick={() => setIsMobileMenuOpen(false)}
