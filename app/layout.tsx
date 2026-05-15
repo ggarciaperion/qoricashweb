@@ -51,15 +51,15 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans antialiased relative">
-        {/* Cinta de mercado — solo visible en la página de inicio */}
-        <Suspense fallback={null}>
-          <HomeOnlyTicker />
-        </Suspense>
         {/* Decoración de fondo sutil y profesional */}
         <BackgroundDecor />
 
         <AuthProvider>
           <div className="relative z-10">
+            {/* Cinta de mercado — solo visible en la página de inicio */}
+            <Suspense fallback={null}>
+              <HomeOnlyTicker />
+            </Suspense>
             {children}
           </div>
           {/* Notificaciones en tiempo real (KYC, operaciones, etc.) */}
