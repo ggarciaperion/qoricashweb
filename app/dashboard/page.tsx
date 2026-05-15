@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
+import { useOperationEventStore } from '@/lib/store/operationEventStore';
 import { operationsApi } from '@/lib/api/operations';
 import type { Operation, ClientStats } from '@/lib/types';
 import {
@@ -58,6 +59,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { currentRates, fetchRates, isConnected } = useExchangeStore();
+  const { lastEvent } = useOperationEventStore();
 
   const [operations, setOperations]               = useState<Operation[]>([]);
   const [stats, setStats]                         = useState<ClientStats | null>(null);
@@ -93,6 +95,12 @@ export default function DashboardPage() {
   }, [isAuthenticated]);
 
   useEffect(() => { setCurrentPage(1); }, [activeTab]);
+
+  // Refrescar lista cuando llega un evento realtime de operación
+  useEffect(() => {
+    if (!lastEvent || !isAuthenticated) return;
+    loadData();
+  }, [lastEvent]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadData = async () => {
     if (!user?.dni) return;

@@ -74,16 +74,30 @@ export default function SocketNotifications() {
       });
     },
 
-    // Evento: Operación actualizada
+    // Evento: Operación actualizada para el cliente web
     onOperationUpdated: (data) => {
-      console.log('🔄 [Socket] Operación actualizada:', data);
+      // Solo mostrar toast si viene del evento cliente (tiene status_key)
+      if (!data.status_key) return;
 
-      // Opcional: Mostrar notificación si el estado cambió
       if (data.status === 'Completada') {
         setNotification({
-          title: '✅ Operación Completada',
-          message: `Tu operación ${data.operation_id} ha sido completada exitosamente.`,
+          title: '✅ ¡Operación completada!',
+          message: `Tu operación ${data.operation_id} ha sido acreditada exitosamente.`,
           type: 'success',
+          duration: 10000,
+        });
+      } else if (data.status === 'En proceso') {
+        setNotification({
+          title: '⏳ Operación en proceso',
+          message: `Tu operación ${data.operation_id} está siendo verificada.`,
+          type: 'info',
+          duration: 6000,
+        });
+      } else if (data.status === 'Cancelada') {
+        setNotification({
+          title: '❌ Operación cancelada',
+          message: `Tu operación ${data.operation_id} fue cancelada.`,
+          type: 'warning',
           duration: 8000,
         });
       }

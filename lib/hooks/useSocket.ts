@@ -1,10 +1,12 @@
+'use client';
 /**
- * Hook para conexión Socket.IO en tiempo real
- * Escucha notificaciones del backend cuando Middle Office aprueba KYC
+ * Hook para conexión Socket.IO en tiempo real.
+ * Maneja KYC, expiración y actualizaciones de operaciones para el cliente web.
  */
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/lib/store';
+import { useOperationEventStore } from '@/lib/store/operationEventStore';
 
 interface SocketMessage {
   type: string;
@@ -24,20 +26,15 @@ interface UseSocketOptions {
 export const useSocket = (options: UseSocketOptions = {}) => {
   const socketRef = useRef<Socket | null>(null);
   const { user } = useAuthStore();
+  const { setLastEvent } = useOperationEventStore();
 
   useEffect(() => {
-    // Solo conectar si el usuario está autenticado
-    if (!user?.dni) {
-      return;
-    }
+    if (!user?.dni) return;
 
     const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
 
-    console.log('🔌 [Socket.IO] Conectando al servidor:', SOCKET_URL);
-
-    // Crear conexión Socket.IO
     const socket = io(SOCKET_URL, {
-      transports: ['polling', 'websocket'], // polling primero para evitar fallos de upgrade WS en proxies
+      transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 2000,
@@ -46,58 +43,58 @@ export const useSocket = (options: UseSocketOptions = {}) => {
 
     socketRef.current = socket;
 
-    // Eventos de conexión
     socket.on('connect', () => {
-      console.log('✅ [Socket.IO] Conectado con ID:', socket.id);
-
-      // Unirse al room específico del cliente (IGUAL QUE APP MÓVIL)
       socket.emit('join_client_room', { dni: user.dni });
-      console.log(`📍 [Socket.IO] Evento 'join_client_room' emitido para DNI: ${user.dni}`);
     });
 
-    // Confirmación de que el servidor nos unió al room
     socket.on('joined_room', (data) => {
-      console.log('✅ [Socket.IO] Confirmación del servidor - Unido al room:', data);
+      console.log('[Socket] Room unido:', data.room);
     });
 
     socket.on('disconnect', (reason) => {
-      console.log('🔌 [Socket.IO] Desconectado:', reason);
+      console.log('[Socket] Desconectado:', reason);
     });
 
     socket.on('connect_error', (error) => {
-      console.error('❌ [Socket.IO] Error de conexión:', error);
+      console.error('[Socket] Error de conexión:', error.message);
     });
 
-    // Evento: Documentos aprobados (KYC)
+    // KYC aprobado
     socket.on('documents_approved', (data: SocketMessage) => {
-      console.log('✅ [Socket.IO] Documentos aprobados recibido:', data);
-      if (options.onDocumentsApproved) {
-        options.onDocumentsApproved(data);
-      }
+      options.onDocumentsApproved?.(data);
     });
 
-    // Evento: Operación expirada
+    // Operación expirada
     socket.on('operation_expired', (data: SocketMessage) => {
-      console.log('⏱️ [Socket.IO] Operación expirada recibido:', data);
-      if (options.onOperationExpired) {
-        options.onOperationExpired(data);
-      }
+      options.onOperationExpired?.(data);
     });
 
-    // Evento: Operación actualizada
+    // Actualización de operación para staff (compatibilidad)
     socket.on('operacion_actualizada', (data: any) => {
-      console.log('🔄 [Socket.IO] Operación actualizada recibido:', data);
-      if (options.onOperationUpdated) {
-        options.onOperationUpdated(data);
-      }
+      options.onOperationUpdated?.(data);
     });
 
-    // Cleanup al desmontar
+    // Actualización de operación para el CLIENTE WEB (nuevo evento)
+    socket.on('operacion_cliente_actualizada', (data: any) => {
+      // Actualizar store global — cualquier componente puede reaccionar
+      setLastEvent({
+        id:           data.id,
+        operation_id: data.operation_id,
+        status:       data.status,
+        status_key:   data.status_key,
+        old_status:   data.old_status ?? null,
+        amount_usd:   data.amount_usd ?? 0,
+        amount_pen:   data.amount_pen ?? 0,
+        exchange_rate: data.exchange_rate ?? 0,
+        updated_at:   data.updated_at ?? null,
+      });
+      options.onOperationUpdated?.(data);
+    });
+
     return () => {
-      console.log('🔌 [Socket.IO] Desconectando...');
       socket.disconnect();
     };
-  }, [user?.dni, options]);
+  }, [user?.dni]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return socketRef.current;
 };

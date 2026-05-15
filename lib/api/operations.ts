@@ -37,10 +37,11 @@ export const operationsApi = {
   /**
    * Upload proof of payment (comprobante)
    */
-  async uploadProof(operationId: number, file: File): Promise<ApiResponse> {
+  async uploadProof(operationId: number, file: File, voucherCode?: string): Promise<ApiResponse> {
     const formData = new FormData();
     formData.append('operation_id', String(operationId));
     formData.append('files', file);
+    if (voucherCode) formData.append('voucher_code', voucherCode);
 
     // Use native fetch so browser sets multipart/form-data boundary automatically.
     // Axios instance default Content-Type: application/json breaks FormData parsing.

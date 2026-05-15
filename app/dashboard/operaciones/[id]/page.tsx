@@ -1,36 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
+import { useOperationEventStore } from '@/lib/store/operationEventStore';
 import { operationsApi } from '@/lib/api/operations';
 import { formatSafeDate } from '@/lib/utils/date';
 import type { Operation } from '@/lib/types';
 import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import {
   ArrowLeft,
-  DollarSign,
   TrendingUp,
   TrendingDown,
-  Clock,
   CheckCircle2,
   XCircle,
-  Building2,
-  CreditCard,
-  Calendar,
-  User,
-  FileText,
   Upload,
   Download,
   AlertCircle,
   RefreshCw,
   Copy,
+  Sparkles,
 } from 'lucide-react';
 
 export default function OperacionDetallesPage() {
   const router = useRouter();
   const params = useParams();
   const { isAuthenticated, user } = useAuthStore();
+  const { lastEvent } = useOperationEventStore();
 
   const [operation, setOperation] = useState<Operation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,10 +34,13 @@ export default function OperacionDetallesPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [voucherCode, setVoucherCode] = useState('');
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [showCancelProcessing, setShowCancelProcessing] = useState(false);
   const [showCancelSuccess, setShowCancelSuccess] = useState(false);
+  const [showCompletedCelebration, setShowCompletedCelebration] = useState(false);
+  const lastEventRef = useRef<typeof lastEvent>(null);
 
   const operationId = params.id ? parseInt(params.id as string) : null;
 
@@ -50,11 +49,29 @@ export default function OperacionDetallesPage() {
       router.push('/login');
       return;
     }
-
-    if (operationId) {
-      loadOperation();
-    }
+    if (operationId) loadOperation();
   }, [isAuthenticated, operationId]);
+
+  // Reaccionar a eventos realtime de la operación actual
+  useEffect(() => {
+    if (!lastEvent || !operation) return;
+    // Evitar reprocesar el mismo evento
+    if (lastEventRef.current?.timestamp === lastEvent.timestamp) return;
+    lastEventRef.current = lastEvent;
+
+    // Solo reaccionar si el evento es de esta operación
+    const matchById = lastEvent.id === operation.id;
+    const matchByCode = lastEvent.operation_id === operation.codigo_operacion;
+    if (!matchById && !matchByCode) return;
+
+    // Recargar la operación desde el backend
+    loadOperation();
+
+    // Mostrar celebración si se completó
+    if (lastEvent.status === 'Completada') {
+      setShowCompletedCelebration(true);
+    }
+  }, [lastEvent]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadOperation = async () => {
     if (!operationId) return;
@@ -83,13 +100,11 @@ export default function OperacionDetallesPage() {
 
     const file = e.target.files[0];
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('El archivo no puede superar los 5MB');
       return;
     }
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
       setError('Solo se permiten archivos JPG, PNG o PDF');
@@ -100,12 +115,12 @@ export default function OperacionDetallesPage() {
     setError(null);
 
     try {
-      const response = await operationsApi.uploadProof(operationId, file);
+      const response = await operationsApi.uploadProof(operationId, file, voucherCode.trim());
 
       if (response.success) {
         setUploadSuccess(true);
-        await loadOperation(); // Reload to get updated comprobante_url
-
+        setVoucherCode('');
+        await loadOperation();
         setTimeout(() => setUploadSuccess(false), 3000);
       } else {
         setError(response.message || 'Error al subir el comprobante');
@@ -363,13 +378,36 @@ export default function OperacionDetallesPage() {
               <Upload className="w-3.5 h-3.5 text-gray-400" />
               <span className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">Subir comprobante</span>
             </div>
-            <div className="p-4">
-              <p className="text-gray-400 text-xs mb-3 leading-relaxed">Adjunta tu voucher de transferencia. Formatos: JPG, PNG o PDF · máx. 5 MB</p>
+            <div className="p-4 space-y-3">
+              {/* Código de operación / voucher */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                  Código de operación bancaria <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={voucherCode}
+                  onChange={(e) => setVoucherCode(e.target.value)}
+                  placeholder="Ej: 123456789 o CCI-OP-2024..."
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-100 transition"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">Número de operación que aparece en tu voucher bancario.</p>
+              </div>
+
+              <p className="text-gray-400 text-xs leading-relaxed">Adjunta tu voucher de transferencia. Formatos: JPG, PNG o PDF · máx. 5 MB</p>
               <label className="block cursor-pointer">
-                <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onChange={handleFileUpload} disabled={isUploading} className="hidden" />
-                <div className={`border-2 border-dashed rounded-xl py-7 text-center transition-all ${isUploading ? 'border-primary-400 bg-primary-50' : 'border-gray-200 hover:border-primary-400 hover:bg-primary-50'}`}>
+                <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onChange={handleFileUpload} disabled={isUploading || !voucherCode.trim()} className="hidden" />
+                <div className={`border-2 border-dashed rounded-xl py-7 text-center transition-all ${
+                  isUploading
+                    ? 'border-primary-400 bg-primary-50'
+                    : !voucherCode.trim()
+                    ? 'border-gray-100 bg-gray-50 cursor-not-allowed'
+                    : 'border-gray-200 hover:border-primary-400 hover:bg-primary-50 cursor-pointer'
+                }`}>
                   {isUploading
                     ? <><RefreshCw className="w-7 h-7 text-primary-400 animate-spin mx-auto mb-2" /><p className="text-sm text-gray-500 font-medium">Subiendo...</p></>
+                    : !voucherCode.trim()
+                    ? <><Upload className="w-7 h-7 text-gray-200 mx-auto mb-2" /><p className="text-sm text-gray-300">Ingresa el código primero</p></>
                     : <><Upload className="w-7 h-7 text-gray-300 mx-auto mb-2" /><p className="text-sm font-semibold text-gray-600">Toca para adjuntar</p></>}
                 </div>
               </label>
@@ -483,6 +521,44 @@ export default function OperacionDetallesPage() {
                 <XCircle className="w-4 h-4" /> Cancelar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Celebration: Operación Completada ── */}
+      {showCompletedCelebration && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4"
+             style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0.6) 100%)' }}>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center animate-[scale-in_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
+            {/* Animated success ring */}
+            <div className="relative w-24 h-24 mx-auto mb-6">
+              <div className="absolute inset-0 rounded-full bg-emerald-100 animate-ping opacity-40" />
+              <div className="relative w-24 h-24 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-200">
+                <CheckCircle2 className="w-12 h-12 text-white" />
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">Acreditado</p>
+              <Sparkles className="w-4 h-4 text-amber-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Listo!</h2>
+            <p className="text-gray-500 text-sm leading-relaxed mb-1">Tu operación fue completada exitosamente.</p>
+            <p className="text-gray-400 text-xs mb-7">El dinero ya fue acreditado en tu cuenta.</p>
+            <div className="bg-emerald-50 rounded-2xl px-6 py-4 mb-6 border border-emerald-100">
+              <p className="text-emerald-700 font-bold text-xl font-mono">
+                {operation?.tipo === 'compra'
+                  ? `S/ ${(operation?.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
+                  : `$ ${(operation?.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+              </p>
+              <p className="text-emerald-500 text-xs mt-1">recibido</p>
+            </div>
+            <button
+              onClick={() => setShowCompletedCelebration(false)}
+              className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition text-sm"
+            >
+              Ver detalle
+            </button>
           </div>
         </div>
       )}
