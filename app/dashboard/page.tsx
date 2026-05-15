@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -9,7 +9,6 @@ import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { operationsApi } from '@/lib/api/operations';
 import type { Operation, ClientStats } from '@/lib/types';
 import {
-  DollarSign,
   TrendingUp,
   TrendingDown,
   Clock,
@@ -19,8 +18,6 @@ import {
   LogOut,
   User,
   RefreshCw,
-  ArrowUpRight,
-  ArrowDownRight,
   Gift,
   Copy,
   Share2,
@@ -29,82 +26,93 @@ import {
   X,
   FileText,
   Image as ImageIcon,
-  Calendar,
   Building2,
   BarChart2,
+  Activity,
+  Zap,
+  ArrowRight,
+  DollarSign,
+  Layers,
 } from 'lucide-react';
+
+/* ─── helpers ────────────────────────────────────────────────────── */
+const fmt$ = (n: number) =>
+  n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtS = (n: number) =>
+  n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtDate = (s: string) =>
+  new Date(s).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: '2-digit' });
+const fmtTime = (s: string) =>
+  new Date(s).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+
+/* ─── status config ──────────────────────────────────────────────── */
+const STATUS: Record<string, { label: string; dot: string; pill: string }> = {
+  pendiente:  { label: 'Pendiente',   dot: 'bg-amber-400 animate-pulse', pill: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
+  en_proceso: { label: 'En proceso',  dot: 'bg-blue-400 animate-pulse',  pill: 'bg-blue-500/10 text-blue-400 border-blue-500/20'   },
+  completado: { label: 'Completado',  dot: 'bg-emerald-400',             pill: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+  cancelado:  { label: 'Cancelado',   dot: 'bg-slate-500',               pill: 'bg-slate-500/10 text-slate-400 border-slate-500/20' },
+  rechazado:  { label: 'Rechazado',   dot: 'bg-rose-500',                pill: 'bg-rose-500/10 text-rose-400 border-rose-500/20'   },
+};
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { currentRates, fetchRates, isConnected } = useExchangeStore();
 
-  const [operations, setOperations] = useState<Operation[]>([]);
-  const [stats, setStats] = useState<ClientStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'todas' | 'pendientes' | 'completadas'>('todas');
-  const [copiedCode, setCopiedCode] = useState(false);
+  const [operations, setOperations]         = useState<Operation[]>([]);
+  const [stats, setStats]                   = useState<ClientStats | null>(null);
+  const [isLoading, setIsLoading]           = useState(true);
+  const [activeTab, setActiveTab]           = useState<'todas' | 'pendientes' | 'completadas'>('todas');
+  const [copiedCode, setCopiedCode]         = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedOperation, setSelectedOperation] = useState<any>(null);
   const [isOperationModalOpen, setIsOperationModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage]       = useState(1);
   const operationsPerPage = 10;
 
+  /* tick animation for live rates */
+  const [rateTick, setRateTick] = useState<'up' | 'down' | null>(null);
+  const prevRates = useRef(currentRates);
   useEffect(() => {
-    // Fetch exchange rates
+    if (!currentRates || !prevRates.current) { prevRates.current = currentRates; return; }
+    const dir = currentRates.tipo_venta > prevRates.current.tipo_venta ? 'up' : 'down';
+    setRateTick(dir);
+    const t = setTimeout(() => setRateTick(null), 800);
+    prevRates.current = currentRates;
+    return () => clearTimeout(t);
+  }, [currentRates]);
+
+  useEffect(() => {
     fetchRates();
-
-    // Start rate subscription
-    const unsubscribe = useExchangeStore.getState().startRateSubscription();
-
-    return () => {
-      unsubscribe();
-    };
+    const unsub = useExchangeStore.getState().startRateSubscription();
+    return () => unsub();
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-
+    if (!isAuthenticated) { router.push('/login'); return; }
     loadData();
   }, [isAuthenticated]);
 
-  // El cierre del menú al hacer clic fuera se maneja con un backdrop fixed (ver JSX)
+  useEffect(() => { setCurrentPage(1); }, [activeTab]);
 
   const loadData = async () => {
-    if (!user?.dni) {
-      console.error('No user DNI available');
-      return;
-    }
-
+    if (!user?.dni) return;
     setIsLoading(true);
     try {
-      // Load operations and stats with user DNI
-      const [opsResponse, statsResponse] = await Promise.all([
+      const [opsRes, statsRes] = await Promise.all([
         operationsApi.getMyOperations(user.dni),
         operationsApi.getStats(user.dni),
       ]);
-
-      if (opsResponse.success && opsResponse.data) {
-        setOperations(opsResponse.data);
-      }
-
-      if (statsResponse.success && statsResponse.data) {
-        setStats(statsResponse.data);
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
+      if (opsRes.success && opsRes.data)     setOperations(opsRes.data);
+      if (statsRes.success && statsRes.data) setStats(statsRes.data);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    router.push('/');
-  };
+  const handleLogout = async () => { await logout(); router.push('/'); };
 
   const copyReferralCode = () => {
     if (user?.referral_code) {
@@ -114,762 +122,629 @@ export default function DashboardPage() {
     }
   };
 
-  const filteredOperations = operations.filter((op) => {
-    if (activeTab === 'pendientes') return op.estado === 'pendiente' || op.estado === 'en_proceso';
+  const filtered = operations.filter((op) => {
+    if (activeTab === 'pendientes')  return op.estado === 'pendiente' || op.estado === 'en_proceso';
     if (activeTab === 'completadas') return op.estado === 'completado';
     return true;
   });
+  const totalPages = Math.ceil(filtered.length / operationsPerPage);
+  const paginated  = filtered.slice((currentPage - 1) * operationsPerPage, currentPage * operationsPerPage);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredOperations.length / operationsPerPage);
-  const startIndex = (currentPage - 1) * operationsPerPage;
-  const endIndex = startIndex + operationsPerPage;
-  const paginatedOperations = filteredOperations.slice(startIndex, endIndex);
-
-  // Reset to page 1 when changing tabs
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [activeTab]);
-
-  const getStatusBadge = (estado: string) => {
-    const badges = {
-      pendiente: { color: 'bg-yellow-100 text-yellow-800', icon: Clock, label: 'Pendiente' },
-      en_proceso: { color: 'bg-blue-100 text-blue-800', icon: RefreshCw, label: 'En Proceso' },
-      completado: { color: 'bg-green-100 text-green-800', icon: CheckCircle2, label: 'Completado' },
-      cancelado: { color: 'bg-gray-100 text-gray-800', icon: XCircle, label: 'Cancelado' },
-      rechazado: { color: 'bg-red-100 text-red-800', icon: XCircle, label: 'Rechazado' },
-    };
-
-    const badge = badges[estado as keyof typeof badges] || badges.pendiente;
-    const Icon = badge.icon;
-
-    return (
-      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${badge.color}`}>
-        <Icon className="w-3 h-3 mr-1" />
-        {badge.label}
-      </span>
-    );
+  const handleOpClick = (op: Operation) => {
+    if (op.estado === 'pendiente') {
+      if (op.origen && op.origen !== 'web') {
+        router.push(`/dashboard/operaciones/${op.id}`);
+        return;
+      }
+      if (!op.codigo_operacion) { router.push(`/dashboard/operaciones/${op.id}`); return; }
+      router.push(`/dashboard/nueva-operacion?operation_id=${op.codigo_operacion}`);
+    } else {
+      setSelectedOperation(op);
+      setIsOperationModalOpen(true);
+    }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50/20 via-white to-gold-50/20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative w-16 h-16 mx-auto mb-4">
-            <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
-            <div className="absolute inset-0 rounded-full border-4 border-t-primary-500 animate-spin"></div>
+  const displayName =
+    user?.document_type === 'RUC'
+      ? user?.razon_social || user?.nombres
+      : user?.apellidos
+        ? `${user?.nombres} ${user?.apellidos}`
+        : user?.nombres;
+
+  /* ── Loading ──────────────────────────────────────────────────── */
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#070C14] flex items-center justify-center">
+      <div className="text-center">
+        <div className="relative w-12 h-12 mx-auto mb-4">
+          <div className="absolute inset-0 rounded-full border border-amber-500/20" />
+          <div className="absolute inset-0 rounded-full border border-t-amber-400 animate-spin" />
+        </div>
+        <p className="text-slate-500 text-sm font-medium tracking-wide">Conectando...</p>
+      </div>
+    </div>
+  );
+
+  /* ══════════════════════════════════════════════════════════════ */
+  return (
+    <div className="min-h-screen bg-[#070C14] text-white">
+
+      {/* ── TICKER STRIP ─────────────────────────────────────────── */}
+      <div className="bg-[#0A1020] border-b border-white/5 py-1.5 px-4 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
+          <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
+            {currentRates && (
+              <>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">USD/PEN</span>
+                  <span className={`text-[11px] font-mono font-bold transition-colors duration-300 ${rateTick === 'up' ? 'text-emerald-400' : rateTick === 'down' ? 'text-rose-400' : 'text-slate-300'}`}>
+                    {currentRates.tipo_venta.toFixed(4)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 shrink-0">
+                  <span className="flex items-center gap-1.5">
+                    <TrendingDown className="w-3 h-3 text-emerald-400" />
+                    <span className="text-slate-500 text-[10px]">COMPRA</span>
+                    <span className="text-emerald-400 text-[11px] font-mono font-bold">{currentRates.tipo_compra.toFixed(4)}</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <TrendingUp className="w-3 h-3 text-blue-400" />
+                    <span className="text-slate-500 text-[10px]">VENTA</span>
+                    <span className="text-blue-400 text-[11px] font-mono font-bold">{currentRates.tipo_venta.toFixed(4)}</span>
+                  </span>
+                </div>
+              </>
+            )}
           </div>
-          <p className="text-gray-500 font-medium">Cargando dashboard...</p>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+            <span className={`text-[10px] font-medium ${isConnected ? 'text-emerald-400' : 'text-slate-500'}`}>
+              {isConnected ? 'EN VIVO' : 'OFFLINE'}
+            </span>
+          </div>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50/30 via-white/50 to-gold-50/30">
-      {/* Header */}
-      <header className="bg-white/60 backdrop-blur-md shadow-sm border-b border-white/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
-                <span className="text-xl font-bold text-gray-900">QoriCash</span>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
-                >
-                  <User className="w-5 h-5" />
-                  <span className="font-medium truncate max-w-[130px] sm:max-w-none">
-                    {user?.document_type === 'RUC'
-                      ? user?.razon_social || user?.nombres
-                      : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
+      {/* ── TOP BAR ──────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-30 bg-[#070C14]/95 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition">
+            <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
+            <span className="text-white font-bold text-base tracking-tight hidden sm:block">QoriCash</span>
+          </Link>
 
+          <div className="relative">
+            <button
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              className="flex items-center gap-2 text-slate-300 hover:text-white transition group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
+                <User className="w-3.5 h-3.5 text-amber-400" />
               </div>
-            </div>
+              <span className="text-sm font-medium max-w-[120px] truncate hidden sm:block">{displayName}</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform text-slate-500 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
+      {/* ── User dropdown portal ──────────────────────────────────── */}
       {isUserMenuOpen && createPortal(
         <>
-          <div
-            className="fixed inset-0"
-            style={{ zIndex: 99998 }}
-            onClick={() => setIsUserMenuOpen(false)}
-          />
-          <div
-            className="fixed right-4 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-            style={{ zIndex: 99999, top: '64px' }}
-          >
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-            >
-              <User className="w-5 h-5 mr-3" />
-              Mi perfil
-            </button>
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-            >
-              <TrendingUp className="w-5 h-5 mr-3" />
-              Mi Dashboard
-            </button>
+          <div className="fixed inset-0" style={{ zIndex: 99998 }} onClick={() => setIsUserMenuOpen(false)} />
+          <div className="fixed right-4 w-52 bg-[#0D1525] border border-white/8 rounded-xl shadow-2xl shadow-black/50 py-1.5 overflow-hidden" style={{ zIndex: 99999, top: '100px' }}>
+            {[
+              { icon: User,     label: 'Mi perfil',         action: () => router.push('/perfil') },
+              { icon: BarChart2, label: 'Mi Dashboard',     action: () => router.push('/dashboard') },
+            ].map(({ icon: Icon, label, action }) => (
+              <button key={label} onClick={() => { setIsUserMenuOpen(false); action(); }}
+                className="flex items-center w-full px-4 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 transition text-sm gap-3">
+                <Icon className="w-4 h-4 text-slate-500" />{label}
+              </button>
+            ))}
             {(['Master', 'Operador'] as const).includes(user?.role as any) && (
-              <button
-                onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
-                className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-              >
-                <BarChart2 className="w-5 h-5 mr-3" />
-                Posición del Día
+              <button onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
+                className="flex items-center w-full px-4 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 transition text-sm gap-3">
+                <BarChart2 className="w-4 h-4 text-slate-500" />Posición del Día
               </button>
             )}
-            <a
-              href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
-              onClick={() => setIsUserMenuOpen(false)}
-            >
-              <HelpCircle className="w-5 h-5 mr-3" />
-              Ayuda
+            <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+              target="_blank" rel="noopener noreferrer" onClick={() => setIsUserMenuOpen(false)}
+              className="flex items-center w-full px-4 py-2.5 text-slate-300 hover:text-white hover:bg-white/5 transition text-sm gap-3">
+              <HelpCircle className="w-4 h-4 text-slate-500" />Ayuda
             </a>
-            <div className="border-t border-gray-200 my-1" />
-            <button
-              onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
-              className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
-            >
-              <LogOut className="w-5 h-5 mr-3" />
-              Cerrar Sesión
+            <div className="border-t border-white/5 my-1" />
+            <button onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
+              className="flex items-center w-full px-4 py-2.5 text-rose-400 hover:text-rose-300 hover:bg-rose-500/5 transition text-sm gap-3">
+              <LogOut className="w-4 h-4" />Cerrar sesión
             </button>
           </div>
         </>,
         document.body
       )}
 
-      {/* Decorative background elements */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-primary-200/40 to-primary-300/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-gold-200/30 to-gold-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/3 right-1/3 w-[400px] h-[400px] bg-gradient-to-br from-blue-200/20 to-blue-300/10 rounded-full blur-3xl"></div>
-      </div>
+      {/* ── MAIN ─────────────────────────────────────────────────── */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-        {/* Welcome section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-display font-bold text-gray-900">
-            Bienvenido, {user?.document_type === 'RUC'
-              ? user?.razon_social || user?.nombres
-              : user?.nombres}!
-          </h2>
-          <p className="text-gray-600 mt-1">Gestiona tus operaciones de cambio de divisas</p>
+        {/* ── WELCOME + STATS ── */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-0.5">Panel de operaciones</p>
+            <h1 className="text-xl font-bold text-white">
+              Hola, <span className="text-amber-400">{user?.nombres?.split(' ')[0]}</span>
+            </h1>
+          </div>
+          <button
+            onClick={() => router.push('/dashboard/nueva-operacion')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#070C14] font-bold text-sm transition-all shadow-lg shadow-amber-500/20 active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            Nueva Operación
+          </button>
         </div>
 
-        {/* Layout horizontal: Tipo de Cambio y Referidos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
-          {/* Exchange rates card */}
-          {currentRates && (
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300 flex flex-col justify-center">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-base font-bold text-gray-900">Tipo de Cambio Actual</h3>
-                <div className={`flex items-center text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-gray-500'}`}>
-                  {isConnected ? (
-                    <div className="relative flex items-center mr-1.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
-                      <div className="absolute w-1.5 h-1.5 rounded-full bg-green-600 animate-ping"></div>
-                    </div>
-                  ) : (
-                    <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></div>
-                  )}
-                  {isConnected ? 'En vivo' : 'Actualizando...'}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gradient-to-br from-green-50/70 to-green-100/70 backdrop-blur-sm rounded-lg p-4 border border-green-200/30">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-green-800">Compra</span>
-                    <TrendingUp className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-green-900">
-                    S/ {currentRates.tipo_compra.toFixed(3)}
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-blue-50/70 to-blue-100/70 backdrop-blur-sm rounded-lg p-4 border border-blue-200/30">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-blue-800">Venta</span>
-                    <TrendingDown className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    S/ {currentRates.tipo_venta.toFixed(3)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Referral Code Card */}
-          {user?.referral_code && (
-            <div className="bg-gradient-to-br from-gold-50/40 via-white/50 to-primary-50/40 backdrop-blur-md rounded-2xl shadow-xl p-6 border border-white/60 hover:shadow-2xl transition-all duration-300">
-              <div className="flex flex-col h-full">
-                <div className="flex items-center gap-2 mb-2">
-                  <Gift className="w-6 h-6 text-gold-600" />
-                  <h3 className="text-base font-bold text-gray-900">¡Invita y Gana!</h3>
-                </div>
-                <p className="text-xs text-gray-700 mb-3">
-                  Comparte tu código con amigos. Ambos recibirán un mejor tipo de cambio.
-                </p>
-                <div className="flex flex-col gap-2 mt-auto">
-                  <div className="bg-white/60 backdrop-blur-sm rounded-xl px-4 py-3 border border-gold-200/40 shadow-sm">
-                    <p className="text-xs text-gray-600 mb-1">Tu código de referido</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-xl font-bold bg-gradient-to-r from-primary-600 to-gold-600 bg-clip-text text-transparent tracking-wider font-mono flex-1">{user.referral_code}</p>
-                      <button
-                        onClick={copyReferralCode}
-                        className="flex items-center justify-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all text-xs font-semibold shadow-sm hover:shadow-md"
-                      >
-                        {copiedCode ? (
-                          <>
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>¡Copiado!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>Copiar</span>
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => {
-                          const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio. 🎁`;
-                          const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                          window.open(url, '_blank');
-                        }}
-                        className="flex items-center justify-center gap-1 px-2.5 py-1.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all text-xs font-semibold shadow-sm hover:shadow-md"
-                      >
-                        <Share2 className="w-3.5 h-3.5" />
-                        <span>Compartir</span>
-                      </button>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => router.push('/dashboard/promociones/codigo-referido')}
-                    className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/60 backdrop-blur-sm text-gray-700 rounded-xl hover:bg-white/80 transition-all text-sm font-semibold border border-gray-200 shadow-sm hover:shadow-md"
-                  >
-                    <Gift className="w-4 h-4" />
-                    <span>Ver detalles</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Stats cards */}
+        {/* ── METRICS ROW ── */}
         {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               {
-                label: 'Total Operaciones', value: stats.total_operations,
-                icon: DollarSign, grad: 'from-primary-400 to-primary-600',
-                accent: 'border-t-primary-400', shadow: 'shadow-primary-100',
+                label: 'Operaciones',
+                value: stats.total_operations.toString(),
+                icon: Layers,
+                color: 'text-amber-400',
+                bg: 'bg-amber-500/8',
+                border: 'border-amber-500/12',
               },
               {
-                label: 'Total en Soles', value: `S/ ${stats.total_soles.toLocaleString('es-PE', { minimumFractionDigits: 2 })}`,
-                icon: ArrowUpRight, grad: 'from-emerald-400 to-emerald-600',
-                accent: 'border-t-emerald-400', shadow: 'shadow-emerald-100',
+                label: 'Vol. USD',
+                value: `$ ${fmt$(stats.total_dolares)}`,
+                icon: DollarSign,
+                color: 'text-emerald-400',
+                bg: 'bg-emerald-500/8',
+                border: 'border-emerald-500/12',
               },
               {
-                label: 'Total en Dólares', value: `$ ${stats.total_dolares.toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
-                icon: ArrowDownRight, grad: 'from-blue-400 to-blue-600',
-                accent: 'border-t-blue-400', shadow: 'shadow-blue-100',
+                label: 'Vol. PEN',
+                value: `S/ ${fmtS(stats.total_soles)}`,
+                icon: Activity,
+                color: 'text-blue-400',
+                bg: 'bg-blue-500/8',
+                border: 'border-blue-500/12',
               },
               {
-                label: 'Pendientes', value: stats.pending_operations,
-                icon: Clock, grad: 'from-amber-400 to-amber-600',
-                accent: 'border-t-amber-400', shadow: 'shadow-amber-100',
+                label: 'Activas',
+                value: stats.pending_operations.toString(),
+                icon: Zap,
+                color: 'text-rose-400',
+                bg: 'bg-rose-500/8',
+                border: 'border-rose-500/12',
               },
-            ].map(({ label, value, icon: Icon, grad, accent, shadow }, i) => (
-              <div key={i} className={`bg-white/70 backdrop-blur-md rounded-2xl shadow-lg ${shadow} p-6 border border-white/70 border-t-4 ${accent} card-hover`}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">{label}</p>
-                    <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
-                  </div>
-                  <div className={`w-12 h-12 bg-gradient-to-br ${grad} rounded-xl flex items-center justify-center shadow-md`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
+            ].map(({ label, value, icon: Icon, color, bg, border }) => (
+              <div key={label} className={`rounded-xl border ${border} ${bg} px-4 py-3.5 flex items-center gap-3`}>
+                <div className={`w-8 h-8 rounded-lg ${bg} border ${border} flex items-center justify-center shrink-0`}>
+                  <Icon className={`w-4 h-4 ${color}`} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">{label}</p>
+                  <p className={`text-base font-bold font-mono ${color} truncate`}>{value}</p>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Operations section */}
-        <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden">
-          <div className="p-6 border-b border-gray-200/50">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h3 className="text-xl font-bold text-gray-900">Mis Operaciones</h3>
-              <button
-                onClick={() => router.push('/dashboard/nueva-operacion')}
-                className="inline-flex items-center btn-primary-gradient text-white px-6 py-3 rounded-xl font-bold group"
-              >
-                <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                Nueva Operación
+        {/* ── EXCHANGE RATE PANEL + REFERRAL (two-col) ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+
+          {/* Rate card */}
+          {currentRates && (
+            <div className="rounded-xl border border-white/8 bg-[#0D1525] p-5">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Tipo de Cambio · USD/PEN</p>
+                <div className={`flex items-center gap-1.5 text-[10px] font-semibold ${isConnected ? 'text-emerald-400' : 'text-slate-500'}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                  {isConnected ? 'EN VIVO' : 'Sin conexión'}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-xl bg-emerald-500/6 border border-emerald-500/12 p-4">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <TrendingDown className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest">QoriCash Compra</span>
+                  </div>
+                  <p className="text-2xl font-bold font-mono text-white">
+                    {currentRates.tipo_compra.toFixed(4)}
+                  </p>
+                  <p className="text-slate-500 text-[10px] mt-1">S/ por cada USD que entrega</p>
+                </div>
+                <div className="rounded-xl bg-blue-500/6 border border-blue-500/12 p-4">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-blue-400 text-[10px] font-bold uppercase tracking-widest">QoriCash Vende</span>
+                  </div>
+                  <p className="text-2xl font-bold font-mono text-white">
+                    {currentRates.tipo_venta.toFixed(4)}
+                  </p>
+                  <p className="text-slate-500 text-[10px] mt-1">S/ por cada USD que recibe</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Referral card */}
+          {user?.referral_code ? (
+            <div className="rounded-xl border border-white/8 bg-[#0D1525] p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Gift className="w-4 h-4 text-amber-400" />
+                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Programa de Referidos</p>
+              </div>
+              <p className="text-slate-400 text-xs mb-4 leading-relaxed">
+                Comparte tu código y ambos obtendrán un mejor tipo de cambio en su próxima operación.
+              </p>
+              <div className="rounded-xl bg-white/3 border border-white/6 px-4 py-3 mb-3">
+                <p className="text-slate-500 text-[10px] mb-1">Tu código exclusivo</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-bold font-mono tracking-widest text-amber-400">{user.referral_code}</span>
+                  <div className="flex gap-2">
+                    <button onClick={copyReferralCode}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${copiedCode ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-white/6 hover:bg-white/10 text-slate-300 border border-white/8'}`}>
+                      {copiedCode ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
+                    </button>
+                    <button onClick={() => {
+                      const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio.`;
+                      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                    }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/6 hover:bg-white/10 text-slate-300 border border-white/8 transition">
+                      <Share2 className="w-3 h-3" />Compartir
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button onClick={() => router.push('/dashboard/promociones/codigo-referido')}
+                className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white border border-white/6 hover:border-white/12 transition">
+                Ver beneficios <ArrowRight className="w-3 h-3" />
               </button>
             </div>
+          ) : (
+            /* placeholder si no hay referral */
+            <div className="rounded-xl border border-white/8 bg-[#0D1525] p-5 flex items-center justify-center">
+              <p className="text-slate-600 text-sm">—</p>
+            </div>
+          )}
+        </div>
 
+        {/* ── OPERATIONS TABLE ── */}
+        <div className="rounded-xl border border-white/8 bg-[#0D1525] overflow-hidden">
+
+          {/* Table header */}
+          <div className="px-5 py-3.5 border-b border-white/6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-amber-400" />
+              <span className="text-white text-sm font-bold">Historial de Operaciones</span>
+              <span className="text-slate-500 text-xs font-mono">({operations.length})</span>
+            </div>
             {/* Tabs */}
-            <div className="flex space-x-4 mt-6 border-b border-gray-200">
-              {[
-                { key: 'todas', label: 'Todas' },
-                { key: 'pendientes', label: 'Pendientes' },
-                { key: 'completadas', label: 'Completadas' },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
-                  className={`pb-3 px-2 font-medium text-sm transition ${
+            <div className="flex items-center gap-1 bg-white/4 rounded-lg p-0.5">
+              {([
+                { key: 'todas',      label: 'Todas' },
+                { key: 'pendientes', label: 'Activas' },
+                { key: 'completadas',label: 'Completadas' },
+              ] as const).map((tab) => (
+                <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition ${
                     activeTab === tab.key
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
+                      ? 'bg-amber-500 text-[#070C14]'
+                      : 'text-slate-400 hover:text-white'
+                  }`}>
                   {tab.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Operations list */}
-          <div className="divide-y divide-gray-200">
-            {filteredOperations.length === 0 ? (
-              <div className="p-12 text-center">
-                <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">No tienes operaciones aún</p>
-                <p className="text-gray-400 text-sm mt-2">
-                  Crea tu primera operación para comenzar
-                </p>
+          {/* Column headers — desktop */}
+          <div className="hidden sm:grid grid-cols-[1fr_120px_120px_80px_120px_100px_90px] px-5 py-2 border-b border-white/4">
+            {['Operación', 'Usted paga', 'Usted recibe', 'T.C.', 'Estado', 'Fecha', ''].map((h) => (
+              <span key={h} className="text-slate-600 text-[10px] uppercase tracking-widest font-bold">{h}</span>
+            ))}
+          </div>
+
+          {/* Rows */}
+          <div className="divide-y divide-white/4">
+            {paginated.length === 0 ? (
+              <div className="py-16 text-center">
+                <div className="w-12 h-12 rounded-xl bg-white/4 border border-white/6 flex items-center justify-center mx-auto mb-3">
+                  <Activity className="w-5 h-5 text-slate-600" />
+                </div>
+                <p className="text-slate-500 text-sm">Sin operaciones</p>
+                <p className="text-slate-600 text-xs mt-1">Crea tu primera operación para comenzar</p>
               </div>
-            ) : (
-              paginatedOperations.map((operation) => {
-                // Si la operación está pendiente, redirigir a nueva-operacion para continuar
-                const handleOperationClick = () => {
-                  if (operation.estado.toLowerCase() === 'pendiente') {
-                    // Operaciones creadas por trader: ir al detalle sin contador regresivo
-                    if (operation.origen && operation.origen !== 'web') {
-                      router.push(`/dashboard/operaciones/${operation.id}`);
-                      return;
-                    }
+            ) : paginated.map((op) => {
+              const sc  = STATUS[op.estado] ?? STATUS.pendiente;
+              const isCompra = op.tipo === 'compra';
+              const paga = isCompra
+                ? `$ ${fmt$(op.monto_dolares ?? 0)}`
+                : `S/ ${fmtS(op.monto_soles ?? 0)}`;
+              const recibe = isCompra
+                ? `S/ ${fmtS(op.monto_soles ?? 0)}`
+                : `$ ${fmt$(op.monto_dolares ?? 0)}`;
 
-                    // Operaciones web: continuar en nueva-operacion con contador regresivo
-                    const opId = operation.codigo_operacion;
-                    if (!opId) {
-                      console.error('Error: codigo_operacion no está disponible en la operación');
-                      router.push(`/dashboard/operaciones/${operation.id}`);
-                      return;
-                    }
-
-                    router.push(`/dashboard/nueva-operacion?operation_id=${opId}`);
-                  } else {
-                    // Abrir modal con detalles completos de la operación
-                    setSelectedOperation(operation);
-                    setIsOperationModalOpen(true);
-                  }
-                };
-
-                return (
-                <div
-                  key={operation.id}
-                  className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-white/50 transition-all duration-200 cursor-pointer border-b border-gray-100/50 last:border-0 group"
-                  onClick={handleOperationClick}
+              return (
+                <div key={op.id}
+                  className="px-5 py-3 hover:bg-white/3 cursor-pointer transition-all group"
+                  onClick={() => handleOpClick(op)}
                 >
-                  {/* Fila 1: badges + fecha (siempre visible) */}
-                  <div className="flex items-center justify-between gap-2 mb-2 sm:mb-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg">
-                        {operation.codigo_operacion}
-                      </span>
-                      <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold shadow-sm ${
-                          operation.tipo === 'compra'
-                            ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'
-                            : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'
-                        }`}
-                      >
-                        {operation.tipo === 'compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
-                      </span>
-                      {getStatusBadge(operation.estado)}
-                    </div>
-                    {/* Fecha: visible en todos los tamaños */}
-                    <div className="text-right shrink-0">
-                      <p className="text-xs text-gray-500 sm:hidden">
-                        {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
-                      </p>
-                      <div className="hidden sm:block text-right">
-                        <p className="text-xs text-gray-500">Fecha</p>
-                        <p className="text-sm font-medium text-gray-900">
-                          {new Date(operation.fecha_creacion).toLocaleDateString('es-PE')}
-                        </p>
+                  {/* Mobile layout */}
+                  <div className="sm:hidden flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${isCompra ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                          {isCompra ? 'QC COMPRA' : 'QC VENDE'}
+                        </span>
+                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-semibold ${sc.pill}`}>
+                          <span className={`w-1 h-1 rounded-full ${sc.dot}`} />{sc.label}
+                        </div>
                       </div>
+                      <p className="text-slate-400 text-[10px] font-mono">{op.codigo_operacion ?? `#${op.id}`}</p>
+                      <div className="flex gap-4 mt-1.5">
+                        <div>
+                          <p className="text-[9px] text-slate-600 uppercase tracking-widest">Paga</p>
+                          <p className="text-sm font-bold font-mono text-rose-400">{paga}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] text-slate-600 uppercase tracking-widest">Recibe</p>
+                          <p className="text-sm font-bold font-mono text-emerald-400">{recibe}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-slate-500 text-[10px]">{fmtDate(op.fecha_creacion)}</p>
+                      <p className="text-slate-600 text-[10px]">{fmtTime(op.fecha_creacion)}</p>
                     </div>
                   </div>
 
-                  {/* Fila 2: montos */}
-                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6">
-                    <div className="text-left sm:text-right">
-                      <p className="text-xs text-gray-500">Usted paga</p>
-                      <p className="text-sm sm:text-base font-bold text-red-700">
-                        {operation.tipo === 'compra'
-                          ? `$ ${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                          : `S/ ${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
-                      </p>
+                  {/* Desktop layout */}
+                  <div className="hidden sm:grid grid-cols-[1fr_120px_120px_80px_120px_100px_90px] items-center">
+                    {/* Operación */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isCompra ? 'bg-emerald-500/10 border border-emerald-500/15' : 'bg-blue-500/10 border border-blue-500/15'}`}>
+                        {isCompra
+                          ? <TrendingDown className="w-3.5 h-3.5 text-emerald-400" />
+                          : <TrendingUp className="w-3.5 h-3.5 text-blue-400" />}
+                      </div>
+                      <div className="min-w-0">
+                        <p className={`text-xs font-bold ${isCompra ? 'text-emerald-400' : 'text-blue-400'}`}>
+                          {isCompra ? 'QoriCash Compra' : 'QoriCash Vende'}
+                        </p>
+                        <p className="text-slate-600 text-[10px] font-mono truncate">{op.codigo_operacion ?? `#${op.id}`}</p>
+                      </div>
                     </div>
-                    <div className="text-left sm:text-right">
-                      <p className="text-xs text-gray-500">T.C.</p>
-                      <p className="text-sm sm:text-base font-bold text-gray-900">
-                        S/ {(operation.tipo_cambio ?? 0).toFixed(3)}
-                      </p>
+                    {/* Paga */}
+                    <p className="text-sm font-bold font-mono text-rose-400">{paga}</p>
+                    {/* Recibe */}
+                    <p className="text-sm font-bold font-mono text-emerald-400">{recibe}</p>
+                    {/* TC */}
+                    <p className="text-xs font-mono text-slate-400">{(op.tipo_cambio ?? 0).toFixed(3)}</p>
+                    {/* Estado */}
+                    <div>
+                      <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[10px] font-semibold ${sc.pill}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+                        {sc.label}
+                      </div>
                     </div>
-                    <div className="text-left sm:text-right">
-                      <p className="text-xs text-gray-500">Usted recibe</p>
-                      <p className="text-sm sm:text-base font-bold text-green-700">
-                        {operation.tipo === 'compra'
-                          ? `S/ ${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
-                          : `$ ${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
-                      </p>
+                    {/* Fecha */}
+                    <div>
+                      <p className="text-xs text-slate-400">{fmtDate(op.fecha_creacion)}</p>
+                      <p className="text-[10px] text-slate-600">{fmtTime(op.fecha_creacion)}</p>
+                    </div>
+                    {/* Arrow */}
+                    <div className="flex justify-end">
+                      <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-300 transition" />
                     </div>
                   </div>
                 </div>
-                );
-              })
-            )}
+              );
+            })}
           </div>
 
           {/* Pagination */}
-          {filteredOperations.length > operationsPerPage && (
-            <div className="p-4 border-t border-gray-200/50 bg-white/30 backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600">
-                  Mostrando {startIndex + 1} - {Math.min(endIndex, filteredOperations.length)} de {filteredOperations.length} operaciones
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-lg font-medium transition ${
-                      currentPage === 1
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-sm'
-                    }`}
-                  >
-                    Anterior
+          {totalPages > 1 && (
+            <div className="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+              <p className="text-slate-500 text-xs">
+                {(currentPage - 1) * operationsPerPage + 1}–{Math.min(currentPage * operationsPerPage, filtered.length)} de {filtered.length}
+              </p>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white bg-white/4 hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                  Anterior
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <button key={p} onClick={() => setCurrentPage(p)}
+                    className={`w-8 h-8 rounded-lg text-xs font-bold transition ${currentPage === p ? 'bg-amber-500 text-[#070C14]' : 'text-slate-400 hover:text-white hover:bg-white/6'}`}>
+                    {p}
                   </button>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`w-10 h-10 rounded-lg font-medium transition ${
-                          currentPage === page
-                            ? 'bg-primary text-white shadow-md'
-                            : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600'
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className={`px-4 py-2 rounded-lg font-medium transition ${
-                      currentPage === totalPages
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-sm'
-                    }`}
-                  >
-                    Siguiente
-                  </button>
-                </div>
+                ))}
+                <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white bg-white/4 hover:bg-white/8 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                  Siguiente
+                </button>
               </div>
             </div>
           )}
         </div>
+
       </main>
 
-      {/* Operation Details Modal */}
+      {/* ── OPERATION DETAIL MODAL ─────────────────────────────────── */}
       {isOperationModalOpen && selectedOperation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setIsOperationModalOpen(false)}>
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-white/60 animate-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-primary/10 via-white/90 to-gold/10 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shrink-0">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          onClick={() => setIsOperationModalOpen(false)}>
+          <div className="bg-[#0D1525] border border-white/8 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={e => e.stopPropagation()}>
+
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-white/6">
               <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-lg ${
-                  selectedOperation.tipo === 'compra' ? 'bg-gradient-to-br from-green-500 to-green-700' : 'bg-gradient-to-br from-blue-500 to-blue-700'
-                }`}>
-                  {selectedOperation.tipo === 'compra' ? (
-                    <ArrowDownRight className={`w-6 h-6 text-white`} />
-                  ) : (
-                    <ArrowUpRight className={`w-6 h-6 text-white`} />
-                  )}
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${selectedOperation.tipo === 'compra' ? 'bg-emerald-500/12 border border-emerald-500/20' : 'bg-blue-500/12 border border-blue-500/20'}`}>
+                  {selectedOperation.tipo === 'compra'
+                    ? <TrendingDown className="w-4 h-4 text-emerald-400" />
+                    : <TrendingUp className="w-4 h-4 text-blue-400" />}
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Detalles de Operación</h2>
-                  <p className="text-xs text-gray-600 font-medium">
+                  <p className={`text-sm font-bold ${selectedOperation.tipo === 'compra' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                    {selectedOperation.tipo === 'compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
+                  </p>
+                  <p className="text-slate-500 text-[10px] font-mono">
                     {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOperationModalOpen(false)}
-                className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100/80 transition-all hover:scale-105"
-              >
-                <X className="w-5 h-5 text-gray-500" />
+              <button onClick={() => setIsOperationModalOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/6 text-slate-500 hover:text-white transition">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-5 space-y-4 overflow-y-auto bg-gradient-to-b from-gray-50/50 to-white/50">
-              {/* Status Badge & Main Info */}
+            <div className="p-5 space-y-3">
+
+              {/* Estado + fecha */}
               <div className="grid grid-cols-2 gap-3">
-                {/* Status */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1.5 font-medium">Estado</p>
-                  <div className="scale-95 origin-left">
-                    {getStatusBadge(selectedOperation.estado)}
-                  </div>
+                <div className="rounded-xl bg-white/3 border border-white/6 p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-widest mb-1.5">Estado</p>
+                  {(() => {
+                    const sc = STATUS[selectedOperation.estado] ?? STATUS.pendiente;
+                    return (
+                      <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-xs font-semibold ${sc.pill}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />{sc.label}
+                      </div>
+                    );
+                  })()}
                 </div>
-
-                {/* Fecha */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/50 shadow-sm">
-                  <p className="text-xs text-gray-600 mb-1.5 font-medium">Fecha de Creación</p>
-                  <p className="text-sm font-bold text-gray-900">
-                    {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', {
-                      dateStyle: 'short',
-                      timeStyle: 'short'
-                    })}
+                <div className="rounded-xl bg-white/3 border border-white/6 p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-widest mb-1.5">Fecha</p>
+                  <p className="text-white text-sm font-semibold">
+                    {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' })}
                   </p>
                 </div>
               </div>
 
-              {/* Montos y TC */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
-                <div className="grid grid-cols-3 gap-4">
-                  {/* Usted paga */}
+              {/* Montos */}
+              <div className="rounded-xl bg-white/3 border border-white/6 p-4">
+                <div className="grid grid-cols-3 gap-3">
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Usted paga</p>
-                    <div className="bg-gradient-to-br from-red-50 to-red-100/80 rounded-lg p-3 border border-red-200/50">
-                      <p className="text-lg font-bold text-red-900">
+                    <p className="text-slate-500 text-[9px] uppercase tracking-widest mb-2">Usted paga</p>
+                    <div className="rounded-lg bg-rose-500/8 border border-rose-500/12 p-2.5">
+                      <p className="text-base font-bold font-mono text-rose-400">
                         {selectedOperation.tipo === 'compra'
-                          ? `$ ${(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                          : `S/ ${(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+                          ? `$ ${fmt$(selectedOperation.monto_dolares ?? 0)}`
+                          : `S/ ${fmtS(selectedOperation.monto_soles ?? 0)}`}
                       </p>
                     </div>
                   </div>
-
-                  {/* Tipo de Cambio */}
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1.5 font-medium">T.C.</p>
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100/80 rounded-lg p-3 border border-purple-200/50">
-                      <p className="text-lg font-bold text-purple-900">
-                        S/ {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
+                    <p className="text-slate-500 text-[9px] uppercase tracking-widest mb-2">T.C.</p>
+                    <div className="rounded-lg bg-amber-500/8 border border-amber-500/12 p-2.5">
+                      <p className="text-base font-bold font-mono text-amber-400">
+                        {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
                       </p>
                     </div>
                   </div>
-
-                  {/* Usted recibe */}
                   <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1.5 font-medium">Usted recibe</p>
-                    <div className="bg-gradient-to-br from-green-50 to-green-100/80 rounded-lg p-3 border border-green-200/50">
-                      <p className="text-lg font-bold text-green-900">
+                    <p className="text-slate-500 text-[9px] uppercase tracking-widest mb-2">Usted recibe</p>
+                    <div className="rounded-lg bg-emerald-500/8 border border-emerald-500/12 p-2.5">
+                      <p className="text-base font-bold font-mono text-emerald-400">
                         {selectedOperation.tipo === 'compra'
-                          ? `S/ ${(selectedOperation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
-                          : `$ ${(selectedOperation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+                          ? `S/ ${fmtS(selectedOperation.monto_soles ?? 0)}`
+                          : `$ ${fmt$(selectedOperation.monto_dolares ?? 0)}`}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Cuentas Bancarias */}
+              {/* Cuentas */}
               {(selectedOperation.source_account || selectedOperation.destination_account) && (
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
-                  <p className="text-sm text-gray-700 mb-3 font-semibold flex items-center gap-2">
-                    <Building2 className="w-4 h-4" />
-                    Cuentas Bancarias
+                <div className="rounded-xl bg-white/3 border border-white/6 p-4 space-y-2">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2">
+                    <Building2 className="w-3.5 h-3.5" />Cuentas bancarias
                   </p>
-                  <div className="grid grid-cols-1 gap-3">
-                    {selectedOperation.source_account && (
-                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                        <p className="text-xs text-gray-500 font-medium mb-1">Cuenta Origen</p>
-                        <p className="text-sm font-bold text-gray-900">{selectedOperation.source_account}</p>
-                        {selectedOperation.source_bank && (
-                          <p className="text-xs text-gray-600 mt-0.5">{selectedOperation.source_bank}</p>
-                        )}
-                      </div>
-                    )}
-                    {selectedOperation.destination_account && (
-                      <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                        <p className="text-xs text-gray-500 font-medium mb-1">Cuenta Destino</p>
-                        <p className="text-sm font-bold text-gray-900">{selectedOperation.destination_account}</p>
-                        {selectedOperation.destination_bank && (
-                          <p className="text-xs text-gray-600 mt-0.5">{selectedOperation.destination_bank}</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  {selectedOperation.source_account && (
+                    <div className="rounded-lg bg-white/3 px-3 py-2">
+                      <p className="text-slate-500 text-[10px] mb-0.5">Cuenta origen</p>
+                      <p className="text-white text-sm font-semibold">{selectedOperation.source_account}</p>
+                      {selectedOperation.source_bank && <p className="text-slate-400 text-xs">{selectedOperation.source_bank}</p>}
+                    </div>
+                  )}
+                  {selectedOperation.destination_account && (
+                    <div className="rounded-lg bg-white/3 px-3 py-2">
+                      <p className="text-slate-500 text-[10px] mb-0.5">Cuenta destino</p>
+                      <p className="text-white text-sm font-semibold">{selectedOperation.destination_account}</p>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Documentos - Solo mostrar si la operación está completada */}
+              {/* Documentos */}
               {selectedOperation.estado?.toLowerCase() === 'completado' && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200/50 shadow-sm">
-                <p className="text-sm text-gray-700 mb-3 font-semibold flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  Documentos
-                </p>
-                <div className="grid grid-cols-1 gap-3">
-                  {/* Comprobante del Cliente */}
+                <div className="rounded-xl bg-white/3 border border-white/6 p-4 space-y-2">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2">
+                    <FileText className="w-3.5 h-3.5" />Documentos
+                  </p>
                   {selectedOperation.payment_proof_url && (
-                    <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                      <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Cliente</p>
+                    <div className="rounded-lg bg-white/3 p-3">
+                      <p className="text-slate-500 text-[10px] mb-2">Comprobante cliente</p>
                       <div className="flex items-center gap-3">
-                        <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
-                          <img
-                            src={selectedOperation.payment_proof_url}
-                            alt="Comprobante Cliente"
-                            className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                            onClick={() => window.open(selectedOperation.payment_proof_url, '_blank')}
-                          />
-                        </div>
-                        <a
-                          href={selectedOperation.payment_proof_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                        >
-                          <ImageIcon className="w-3 h-3" />
-                          Ver documento completo
+                        <img src={selectedOperation.payment_proof_url} alt="Comprobante"
+                          className="w-16 h-16 object-cover rounded-lg border border-white/8 cursor-pointer hover:opacity-80 transition"
+                          onClick={() => window.open(selectedOperation.payment_proof_url, '_blank')} />
+                        <a href={selectedOperation.payment_proof_url} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition">
+                          <ImageIcon className="w-3 h-3" />Ver completo
                         </a>
                       </div>
                     </div>
                   )}
-
-                  {/* Comprobantes del Operador (pueden ser múltiples) */}
-                  {Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.length > 0
-                    ? selectedOperation.operator_proofs.map((proof: { comprobante_url: string; comentario?: string }, idx: number) =>
-                        proof.comprobante_url ? (
-                          <div key={idx} className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                            <p className="text-xs text-gray-600 mb-2 font-medium">
-                              Comprobante Operador{selectedOperation.operator_proofs.length > 1 ? ` ${idx + 1}` : ''}
-                            </p>
-                            <div className="flex items-center gap-3">
-                              <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
-                                <img
-                                  src={proof.comprobante_url}
-                                  alt="Comprobante Operador"
-                                  className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                                  onClick={() => window.open(proof.comprobante_url, '_blank')}
-                                />
-                              </div>
-                              <div className="flex flex-col gap-1">
-                                <a
-                                  href={proof.comprobante_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                                >
-                                  <ImageIcon className="w-3 h-3" />
-                                  Ver documento completo
-                                </a>
-                                {proof.comentario && (
-                                  <p className="text-xs text-gray-500">{proof.comentario}</p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ) : null
-                      )
-                    : selectedOperation.operator_proof_url && (
-                        <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                          <p className="text-xs text-gray-600 mb-2 font-medium">Comprobante Operador</p>
-                          <div className="flex items-center gap-3">
-                            <div className="bg-white rounded-lg overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow flex-shrink-0">
-                              <img
-                                src={selectedOperation.operator_proof_url}
-                                alt="Comprobante Operador"
-                                className="w-20 h-20 object-cover cursor-pointer hover:scale-105 transition-transform duration-200"
-                                onClick={() => window.open(selectedOperation.operator_proof_url, '_blank')}
-                              />
-                            </div>
-                            <a
-                              href={selectedOperation.operator_proof_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                            >
-                              <ImageIcon className="w-3 h-3" />
-                              Ver documento completo
-                            </a>
-                          </div>
+                  {Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.map((proof: any, idx: number) =>
+                    proof.comprobante_url ? (
+                      <div key={idx} className="rounded-lg bg-white/3 p-3">
+                        <p className="text-slate-500 text-[10px] mb-2">Comprobante operador{selectedOperation.operator_proofs.length > 1 ? ` ${idx + 1}` : ''}</p>
+                        <div className="flex items-center gap-3">
+                          <img src={proof.comprobante_url} alt="Comprobante operador"
+                            className="w-16 h-16 object-cover rounded-lg border border-white/8 cursor-pointer hover:opacity-80 transition"
+                            onClick={() => window.open(proof.comprobante_url, '_blank')} />
+                          <a href={proof.comprobante_url} target="_blank" rel="noopener noreferrer"
+                            className="text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition">
+                            <ImageIcon className="w-3 h-3" />Ver completo
+                          </a>
                         </div>
-                      )
-                  }
-
-                  {/* Boleta/Factura electrónica */}
-                  {Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.length > 0 &&
-                    selectedOperation.invoices.map((invoice: { invoice_type: string; invoice_number: string; nubefact_enlace_pdf: string; status: string }, idx: number) =>
-                      invoice.nubefact_enlace_pdf ? (
-                        <div key={idx} className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-3 border border-gray-200/50">
-                          <p className="text-xs text-gray-600 mb-2 font-medium">
-                            {invoice.invoice_type === '01' ? 'Factura' : 'Boleta'}{invoice.invoice_number ? ` ${invoice.invoice_number}` : ''}
-                          </p>
-                          <div className="flex items-center gap-3">
-                            <div className="w-20 h-20 bg-red-50 border border-red-200/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <FileText className="w-8 h-8 text-red-400" />
-                            </div>
-                            <a
-                              href={invoice.nubefact_enlace_pdf}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-                            >
-                              <FileText className="w-3 h-3" />
-                              Ver PDF
-                            </a>
-                          </div>
+                      </div>
+                    ) : null
+                  )}
+                  {Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.map((inv: any, idx: number) =>
+                    inv.nubefact_enlace_pdf ? (
+                      <div key={idx} className="rounded-lg bg-white/3 px-3 py-2 flex items-center justify-between">
+                        <div>
+                          <p className="text-slate-500 text-[10px]">{inv.invoice_type === '01' ? 'Factura' : 'Boleta'}{inv.invoice_number ? ` ${inv.invoice_number}` : ''}</p>
                         </div>
-                      ) : null
-                    )
-                  }
-
-                  {/* Mensaje si no hay documentos aún */}
-                  {!selectedOperation.payment_proof_url &&
-                   !(Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.some((p: { comprobante_url: string }) => p.comprobante_url)) &&
-                   !selectedOperation.operator_proof_url &&
-                   !(Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.some((i: { nubefact_enlace_pdf: string }) => i.nubefact_enlace_pdf)) && (
-                    <p className="text-xs text-gray-400 text-center py-2">No hay documentos disponibles</p>
+                        <a href={inv.nubefact_enlace_pdf} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1">
+                          <FileText className="w-3 h-3" />Ver PDF
+                        </a>
+                      </div>
+                    ) : null
                   )}
                 </div>
-              </div>
               )}
 
+              {/* Ver detalles completos */}
+              <button onClick={() => { setIsOperationModalOpen(false); router.push(`/dashboard/operaciones/${selectedOperation.id}`); }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/8 hover:border-white/16 text-slate-400 hover:text-white text-sm font-semibold transition">
+                Ver detalles completos <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
+
