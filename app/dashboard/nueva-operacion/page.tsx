@@ -709,6 +709,38 @@ function NuevaOperacionContent() {
     }
   }, [currentStep, createdOperation]);
 
+  // Interceptar recarga/cierre cuando hay una operación en curso (Step 2)
+  useEffect(() => {
+    if (currentStep === 2 && createdOperation) {
+      // Marcar operación en curso en sessionStorage para detectar recarga
+      sessionStorage.setItem('qc_op_in_progress', String(createdOperation.id || '1'));
+
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        e.preventDefault();
+        e.returnValue = '';
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    } else {
+      sessionStorage.removeItem('qc_op_in_progress');
+    }
+  }, [currentStep, createdOperation]);
+
+  // Al montar: si la página fue recargada con una operación en curso, ir al dashboard
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const pendingOp = sessionStorage.getItem('qc_op_in_progress');
+      if (pendingOp) {
+        sessionStorage.removeItem('qc_op_in_progress');
+        router.replace('/dashboard');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Format time remaining
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
