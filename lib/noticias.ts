@@ -173,7 +173,7 @@ Adicionalmente, si China crece más rápido gracias a un mejor acceso a tecnolog
     fuente: 'Gestión / Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1569025591289-f2a2a32fdf5a?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&q=80',
   },
   {
     id: 'f008',
