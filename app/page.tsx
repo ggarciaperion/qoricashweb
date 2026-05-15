@@ -249,92 +249,111 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-200 py-4 space-y-3 bg-white pb-4 shadow-lg">
-              <Link
-                href="/sobre-nosotros"
-                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Nosotros
-              </Link>
-              <a
-                href="#como-funciona"
-                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Cómo Funciona
-              </a>
-              <Link
-                href="/noticias"
-                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Noticias
-              </Link>
-              <Link
-                href="/dashboard/promociones"
-                className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Promociones
-              </Link>
-
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    href="/perfil"
-                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Mi perfil
-                  </Link>
-                  <Link
-                    href="/dashboard"
-                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Mi Dashboard
-                  </Link>
-                  <a
-                    href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Ayuda
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition rounded-lg"
-                  >
-                    Cerrar Sesión
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Iniciar Sesión
-                  </Link>
-                  <Link
-                    href="/crear-cuenta"
-                    className="block mx-4 bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Regístrate
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
         </nav>
       </header>
+
+      {/* Mobile Menu Backdrop */}
+      <div
+        className={`lg:hidden fixed inset-0 z-[45] transition-opacity duration-300 ${
+          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ background: 'rgba(15,23,42,0.5)' }}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Menu Panel */}
+      <div
+        className={`lg:hidden fixed left-0 right-0 z-[49] bg-white shadow-2xl rounded-b-3xl overflow-hidden transition-all duration-300 ease-out ${
+          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{
+          top: '80px',
+          maxHeight: isMobileMenuOpen ? '82vh' : '0px',
+          transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
+        }}
+      >
+        <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
+
+          {/* Sección navegación */}
+          <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Menú</p>
+          <div className="space-y-1 mb-4">
+            {[
+              { href: '/sobre-nosotros', label: 'Nosotros',       Icon: Users,        iconCls: 'text-blue-600',   bgCls: 'bg-blue-50'    },
+              { href: '#como-funciona',  label: 'Cómo Funciona',  Icon: CheckCircle2, iconCls: 'text-emerald-600', bgCls: 'bg-emerald-50', isAnchor: true },
+              { href: '/noticias',       label: 'Noticias',       Icon: TrendingUp,   iconCls: 'text-amber-600',  bgCls: 'bg-amber-50'   },
+              { href: '/dashboard/promociones', label: 'Promociones', Icon: Gift,     iconCls: 'text-violet-600', bgCls: 'bg-violet-50'  },
+            ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
+              const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
+              const inner = (
+                <>
+                  <div className={`w-9 h-9 rounded-xl ${bgCls} flex items-center justify-center flex-shrink-0`}>
+                    <Icon className={`w-4 h-4 ${iconCls}`} />
+                  </div>
+                  <span className="font-medium flex-1">{label}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                </>
+              );
+              return isAnchor
+                ? <a key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</a>
+                : <Link key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</Link>;
+            })}
+          </div>
+
+          {/* Sección cuenta */}
+          <div className="border-t border-gray-100 pt-4">
+            {isAuthenticated ? (
+              <>
+                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Mi Cuenta</p>
+                <div className="space-y-1">
+                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <UserIcon className="w-4 h-4 text-gray-600" />
+                    </div>
+                    <span className="font-medium flex-1">Mi perfil</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  </Link>
+                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <Banknote className="w-4 h-4 text-gray-600" />
+                    </div>
+                    <span className="font-medium flex-1">Mi Dashboard</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  </Link>
+                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                      <HelpCircle className="w-4 h-4 text-green-600" />
+                    </div>
+                    <span className="font-medium flex-1">Ayuda</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-green-400 group-hover:translate-x-0.5 transition-all" />
+                  </a>
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                    <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                      <LogOut className="w-4 h-4 text-red-500" />
+                    </div>
+                    <span className="font-medium">Cerrar Sesión</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <Link href="/login" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                    <Lock className="w-4 h-4 text-gray-600" />
+                  </div>
+                  <span className="font-medium flex-1">Iniciar Sesión</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                </Link>
+                <Link href="/crear-cuenta" className="flex items-center gap-3 px-4 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-bold shadow-lg shadow-primary-200 hover:from-primary-700 hover:to-primary-800 transition-all" onClick={() => setIsMobileMenuOpen(false)}>
+                  <UserPlus className="w-4 h-4 flex-shrink-0" />
+                  <span className="flex-1">Regístrate gratis</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </div>
 
       {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
       {isUserMenuOpen && createPortal(
