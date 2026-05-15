@@ -24,6 +24,7 @@ import {
   Download,
   AlertCircle,
   RefreshCw,
+  Copy,
 } from 'lucide-react';
 
 export default function OperacionDetallesPage() {
@@ -35,6 +36,7 @@ export default function OperacionDetallesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
@@ -145,6 +147,12 @@ export default function OperacionDetallesPage() {
       setShowCancelProcessing(false);
       setError(error.response?.data?.message || 'Error al cancelar la operación');
     }
+  };
+
+  const copyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
   };
 
   const normalizeBankName = (bankName: string): string => {
@@ -405,17 +413,41 @@ export default function OperacionDetallesPage() {
                 {!qcAccount.useCCI && qcAccount.numero && (
                   <div className="flex items-start">
                     <CreditCard className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs text-gray-500">Número de cuenta</p>
-                      <p className="font-bold text-gray-900 font-mono">{qcAccount.numero}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-gray-900 font-mono">{qcAccount.numero}</p>
+                        <button
+                          onClick={() => copyToClipboard(qcAccount.numero, 'numero')}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 transition text-xs font-semibold shrink-0"
+                        >
+                          {copiedField === 'numero' ? (
+                            <><CheckCircle2 className="w-3.5 h-3.5" /> Copiado</>
+                          ) : (
+                            <><Copy className="w-3.5 h-3.5" /> Copiar</>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
                 <div className="flex items-start">
                   <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-500">CCI (Código de Cuenta Interbancario)</p>
-                    <p className="font-bold text-gray-900 font-mono">{qcAccount.cci}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-gray-900 font-mono">{qcAccount.cci}</p>
+                      <button
+                        onClick={() => copyToClipboard(qcAccount.cci, 'cci')}
+                        className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 transition text-xs font-semibold shrink-0"
+                      >
+                        {copiedField === 'cci' ? (
+                          <><CheckCircle2 className="w-3.5 h-3.5" /> Copiado</>
+                        ) : (
+                          <><Copy className="w-3.5 h-3.5" /> Copiar</>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start">
