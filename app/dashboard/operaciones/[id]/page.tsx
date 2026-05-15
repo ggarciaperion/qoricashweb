@@ -176,58 +176,27 @@ export default function OperacionDetallesPage() {
     return getQoricashAccount(clientBank, currency);
   };
 
-  const getStatusBadge = (estado: string) => {
-    const badges = {
-      pendiente: {
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-        icon: Clock,
-        label: 'Pendiente',
-      },
-      en_proceso: {
-        color: 'bg-blue-100 text-blue-800 border-blue-200',
-        icon: RefreshCw,
-        label: 'En Proceso',
-      },
-      completado: {
-        color: 'bg-green-100 text-green-800 border-green-200',
-        icon: CheckCircle2,
-        label: 'Completado',
-      },
-      cancelado: {
-        color: 'bg-gray-100 text-gray-800 border-gray-200',
-        icon: XCircle,
-        label: 'Cancelado',
-      },
-      rechazado: {
-        color: 'bg-red-100 text-red-800 border-red-200',
-        icon: XCircle,
-        label: 'Rechazado',
-      },
-    };
-
-    const badge = badges[estado as keyof typeof badges] || badges.pendiente;
-    const Icon = badge.icon;
-
-    return (
-      <div
-        className={`inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold border-2 ${badge.color}`}
-      >
-        <Icon className="w-4 h-4 mr-2" />
-        {badge.label}
-      </div>
-    );
-  };
-
   const formatDate = (dateString: string | null | undefined) => {
     return formatSafeDate(dateString);
   };
 
+  const estado = operation?.estado ?? 'pendiente';
+
+  const STATUS_CFG: Record<string, { label: string; dot: string; text: string; border: string; bg: string }> = {
+    pendiente:   { label: 'Esperando transferencia', dot: 'bg-amber-400 animate-pulse',  text: 'text-amber-400',  border: 'border-amber-500/30',  bg: 'bg-amber-500/10'  },
+    en_proceso:  { label: 'En procesamiento',         dot: 'bg-blue-400 animate-pulse',   text: 'text-blue-400',   border: 'border-blue-500/30',   bg: 'bg-blue-500/10'   },
+    completado:  { label: 'Completado',               dot: 'bg-emerald-400',              text: 'text-emerald-400',border: 'border-emerald-500/30',bg: 'bg-emerald-500/10'},
+    cancelado:   { label: 'Cancelado',                dot: 'bg-slate-500',                text: 'text-slate-400',  border: 'border-slate-500/20',  bg: 'bg-slate-500/10'  },
+    rechazado:   { label: 'Rechazado',                dot: 'bg-red-500',                  text: 'text-red-400',    border: 'border-red-500/30',    bg: 'bg-red-500/10'    },
+  };
+  const sc = STATUS_CFG[estado] ?? STATUS_CFG.pendiente;
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#080f1a] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando operación...</p>
+          <div className="w-11 h-11 border-2 border-primary-500/20 border-t-primary-400 rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-slate-500 text-sm">Cargando operación...</p>
         </div>
       </div>
     );
@@ -235,17 +204,14 @@ export default function OperacionDetallesPage() {
 
   if (error && !operation) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen bg-[#080f1a] flex items-center justify-center p-4">
+        <div className="bg-slate-800/80 border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center">
+          <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-6 h-6 text-red-400" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-2">Error</h2>
-          <p className="text-gray-600 text-center mb-6">{error}</p>
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-600 transition"
-          >
+          <p className="text-white font-semibold mb-1">Error</p>
+          <p className="text-slate-400 text-sm mb-6">{error}</p>
+          <button onClick={() => router.push('/dashboard')} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition text-sm">
             Volver al Dashboard
           </button>
         </div>
@@ -255,389 +221,284 @@ export default function OperacionDetallesPage() {
 
   if (!operation) return null;
 
+  const qcAccount = getDestinationAccount();
+  const transferAmount = operation.tipo === 'compra'
+    ? `$ ${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+    : `S/ ${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
+
+  const timelineSteps = [
+    { label: 'Operación creada',       sub: formatDate(operation.fecha_creacion),                              done: true,  active: false },
+    { label: 'Comprobante recibido',   sub: operation.comprobante_url ? 'Archivo adjunto' : 'Pendiente',       done: !!operation.comprobante_url, active: !operation.comprobante_url && estado === 'pendiente' },
+    { label: 'En procesamiento',       sub: estado === 'en_proceso' || estado === 'completado' ? 'En curso' : 'Pendiente', done: estado === 'en_proceso' || estado === 'completado', active: estado === 'en_proceso' },
+    { label: 'Acreditado en tu cuenta',sub: estado === 'completado' ? formatDate(operation.fecha_actualizacion) : 'Pendiente', done: estado === 'completado', active: false },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="inline-flex items-center text-gray-600 hover:text-gray-900 transition"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              <span className="font-medium">Volver al Dashboard</span>
-            </button>
+    <div className="min-h-screen bg-[#080f1a]">
+
+      {/* ── TOP BAR ── */}
+      <header className="sticky top-0 z-20 bg-[#080f1a]/90 backdrop-blur-md border-b border-white/[0.07]">
+        <div className="max-w-xl mx-auto px-4 h-13 flex items-center justify-between py-3">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1.5 text-slate-400 hover:text-white transition text-sm font-medium">
+            <ArrowLeft className="w-4 h-4" /> Mis operaciones
+          </button>
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold ${sc.bg} ${sc.border} ${sc.text}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
+            {sc.label}
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page title */}
-        <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-gray-900">
-              Operación #{operation.id}
-            </h1>
-            {getStatusBadge(operation.estado)}
-          </div>
-          <p className="text-gray-600">Detalles de tu operación de cambio</p>
-        </div>
+      <main className="max-w-xl mx-auto px-4 py-5 space-y-3">
 
-        {/* Success message */}
-        {uploadSuccess && (
-          <div className="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 flex items-start">
-            <CheckCircle2 className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-            <p className="text-green-800 text-sm">Comprobante subido exitosamente</p>
-          </div>
-        )}
+        {/* ── HERO CARD: Trade identity ── */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/10 p-5">
+          {/* Decorative glow */}
+          <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-20 pointer-events-none ${operation.tipo === 'compra' ? 'bg-emerald-400' : 'bg-blue-400'}`} />
 
-        {/* Error message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start">
-            <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
-            <p className="text-red-800 text-sm">{error}</p>
-          </div>
-        )}
-
-        {/* Operation type card */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                  operation.tipo === 'compra'
-                    ? 'bg-green-100'
-                    : 'bg-blue-100'
-                }`}
-              >
-                {operation.tipo === 'compra' ? (
-                  <TrendingDown className="w-8 h-8 text-green-600" />
-                ) : (
-                  <TrendingUp className="w-8 h-8 text-blue-600" />
-                )}
+          {/* Header row */}
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${operation.tipo === 'compra' ? 'bg-emerald-500/20' : 'bg-blue-500/20'}`}>
+                {operation.tipo === 'compra'
+                  ? <TrendingDown className="w-4 h-4 text-emerald-400" />
+                  : <TrendingUp className="w-4 h-4 text-blue-400" />}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  {operation.tipo === 'compra' ? 'QoriCash compra tus dólares' : 'QoriCash te vende dólares'}
-                </h3>
-                <p className="text-gray-600">
-                  Tipo de cambio: S/ {operation.tipo_cambio?.toFixed(3) ?? '—'}
+                <p className={`text-xs font-bold uppercase tracking-widest ${operation.tipo === 'compra' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                  {operation.tipo === 'compra' ? 'Compra USD' : 'Venta USD'}
+                </p>
+                <p className="text-slate-500 text-[10px] font-mono">{operation.codigo_operacion ?? `#${operation.id}`}</p>
+              </div>
+            </div>
+            <p className="text-slate-600 text-[11px]">{formatDate(operation.fecha_creacion)}</p>
+          </div>
+
+          {/* Trade amounts row */}
+          <div className="flex items-center gap-3">
+            {/* You pay */}
+            <div className="flex-1 min-w-0 bg-red-500/5 border border-red-500/10 rounded-xl p-3">
+              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1">Entregas</p>
+              <p className="text-lg sm:text-xl font-bold font-mono text-red-400 truncate leading-tight">
+                {operation.tipo === 'compra'
+                  ? `$${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                  : `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
+              </p>
+            </div>
+
+            {/* Exchange rate */}
+            <div className="flex flex-col items-center shrink-0">
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-center">
+                <p className="text-[8px] text-amber-500/60 uppercase tracking-widest font-bold">TC</p>
+                <p className="text-base font-bold font-mono text-amber-400 leading-tight">
+                  {(operation.tipo_cambio ?? 0).toFixed(3)}
                 </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Amount details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          {/* Usted paga */}
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 border border-red-200">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-red-800">Usted paga</span>
-              <DollarSign className="w-5 h-5 text-red-600" />
-            </div>
-            <p className="text-3xl font-bold text-red-900">
-              {operation.tipo === 'compra'
-                ? `$ ${operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}`
-                : `S/ ${operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}`}
-            </p>
-          </div>
-
-          {/* Usted recibe */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-green-800">Usted recibe</span>
-              <DollarSign className="w-5 h-5 text-green-600" />
-            </div>
-            <p className="text-3xl font-bold text-green-900">
-              {operation.tipo === 'compra'
-                ? `S/ ${operation.monto_soles?.toLocaleString('es-PE', { minimumFractionDigits: 2 }) ?? '—'}`
-                : `$ ${operation.monto_dolares?.toLocaleString('en-US', { minimumFractionDigits: 2 }) ?? '—'}`}
-            </p>
-          </div>
-        </div>
-
-        {/* Bank account info */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <Building2 className="w-5 h-5 mr-2 text-primary" />
-            Información Bancaria
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <CreditCard className="w-5 h-5 text-gray-400 mr-3" />
-              <div>
-                <p className="text-sm text-gray-600">Banco</p>
-                <p className="font-semibold text-gray-900">{operation.banco_cliente}</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <FileText className="w-5 h-5 text-gray-400 mr-3" />
-              <div>
-                <p className="text-sm text-gray-600">Número de Cuenta</p>
-                <p className="font-semibold text-gray-900">{operation.cuenta_cliente}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* QoriCash destination account — only for pending operations */}
-        {operation.estado === 'pendiente' && (() => {
-          const qcAccount = getDestinationAccount();
-          if (!qcAccount) return null;
-          return (
-            <div className="bg-amber-50 rounded-2xl shadow-lg p-6 mb-6 border-2 border-amber-300">
-              <h3 className="text-lg font-bold text-amber-900 mb-1 flex items-center">
-                <Building2 className="w-5 h-5 mr-2 text-amber-700" />
-                Transfiere a esta cuenta de QoriCash
-              </h3>
-              <p className="text-sm text-amber-700 mb-4">
-                Realiza tu transferencia a la siguiente cuenta para procesar tu operación.
+            {/* You receive */}
+            <div className="flex-1 min-w-0 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3 text-right">
+              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1">Recibes</p>
+              <p className="text-lg sm:text-xl font-bold font-mono text-emerald-400 truncate leading-tight">
+                {operation.tipo === 'compra'
+                  ? `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
+                  : `$${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
               </p>
-              <div className="bg-white rounded-xl p-4 space-y-3 border border-amber-200">
-                <div className="flex items-start">
-                  <CreditCard className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-500">Banco</p>
-                    <p className="font-bold text-gray-900">{qcAccount.banco}</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-500">Tipo de cuenta</p>
-                    <p className="font-bold text-gray-900">{qcAccount.tipo}</p>
-                  </div>
-                </div>
-                {!qcAccount.useCCI && qcAccount.numero && (
-                  <div className="flex items-start">
-                    <CreditCard className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-500">Número de cuenta</p>
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 font-mono">{qcAccount.numero}</p>
-                        <button
-                          onClick={() => copyToClipboard(qcAccount.numero, 'numero')}
-                          className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 transition text-xs font-semibold shrink-0"
-                        >
-                          {copiedField === 'numero' ? (
-                            <><CheckCircle2 className="w-3.5 h-3.5" /> Copiado</>
-                          ) : (
-                            <><Copy className="w-3.5 h-3.5" /> Copiar</>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-start">
-                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-500">CCI (Código de Cuenta Interbancario)</p>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-gray-900 font-mono">{qcAccount.cci}</p>
-                      <button
-                        onClick={() => copyToClipboard(qcAccount.cci, 'cci')}
-                        className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 transition text-xs font-semibold shrink-0"
-                      >
-                        {copiedField === 'cci' ? (
-                          <><CheckCircle2 className="w-3.5 h-3.5" /> Copiado</>
-                        ) : (
-                          <><Copy className="w-3.5 h-3.5" /> Copiar</>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <User className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-500">Titular</p>
-                    <p className="font-bold text-gray-900">{qcAccount.titular}</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <FileText className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs text-gray-500">RUC</p>
-                    <p className="font-bold text-gray-900">{qcAccount.ruc}</p>
-                  </div>
-                </div>
-              </div>
             </div>
-          );
-        })()}
-
-        {/* Timeline */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-primary" />
-            Historial
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-primary" />
-              </div>
-              <div className="ml-4">
-                <p className="font-semibold text-gray-900">Operación creada</p>
-                <p className="text-sm text-gray-600">{formatDate(operation.fecha_creacion)}</p>
-              </div>
-            </div>
-
-            {operation.fecha_actualizacion !== operation.fecha_creacion && (
-              <div className="flex items-start">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <RefreshCw className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-gray-900">Última actualización</p>
-                  <p className="text-sm text-gray-600">
-                    {formatDate(operation.fecha_actualizacion)}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Upload proof section */}
-        {operation.estado === 'pendiente' && !operation.comprobante_url && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <Upload className="w-5 h-5 mr-2 text-primary" />
-              Subir Comprobante de Pago
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Por favor, sube tu comprobante de pago (transferencia o depósito) para que podamos
-              procesar tu operación.
-            </p>
-            <label className="block">
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/jpg,application/pdf"
-                onChange={handleFileUpload}
-                disabled={isUploading}
-                className="hidden"
-              />
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary cursor-pointer transition">
-                {isUploading ? (
-                  <div className="flex flex-col items-center">
-                    <RefreshCw className="w-12 h-12 text-primary animate-spin mb-3" />
-                    <p className="text-gray-600">Subiendo archivo...</p>
+        {/* ── TRANSFER TO QORICASH ── */}
+        {estado === 'pendiente' && qcAccount && (
+          <div className="rounded-2xl border border-amber-500/25 overflow-hidden">
+            <div className="px-4 py-2.5 bg-amber-500/10 border-b border-amber-500/20 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <span className="text-amber-400 text-[10px] font-bold uppercase tracking-widest">Acción requerida · Transfiere aquí</span>
+            </div>
+            <div className="bg-slate-900/60 divide-y divide-white/[0.05]">
+              {[
+                { label: 'Banco',    value: qcAccount.banco,   mono: false },
+                { label: 'Tipo',     value: qcAccount.tipo.replace('Cuenta Corriente ', 'Cta. Cte. '), mono: false },
+                { label: 'Titular',  value: qcAccount.titular, mono: false },
+                { label: 'RUC',      value: qcAccount.ruc,     mono: true  },
+              ].map(({ label, value, mono }) => (
+                <div key={label} className="flex items-center justify-between px-4 py-2.5">
+                  <span className="text-slate-500 text-xs">{label}</span>
+                  <span className={`text-white text-sm font-semibold ${mono ? 'font-mono' : ''}`}>{value}</span>
+                </div>
+              ))}
+              {!qcAccount.useCCI && qcAccount.numero && (
+                <div className="flex items-center justify-between px-4 py-2.5">
+                  <span className="text-slate-500 text-xs">N° Cuenta</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white text-sm font-mono">{qcAccount.numero}</span>
+                    <button onClick={() => copyToClipboard(qcAccount.numero, 'numero')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'numero' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/8 hover:bg-white/15 text-slate-400 hover:text-white'}`}>
+                      {copiedField === 'numero' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
+                    </button>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center">
-                    <Upload className="w-12 h-12 text-gray-400 mb-3" />
-                    <p className="text-gray-900 font-semibold mb-1">
-                      Haz clic para seleccionar un archivo
-                    </p>
-                    <p className="text-sm text-gray-600">JPG, PNG o PDF (máx. 5MB)</p>
-                  </div>
-                )}
-              </div>
-            </label>
-          </div>
-        )}
-
-        {/* Proof uploaded */}
-        {operation.comprobante_url && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <CheckCircle2 className="w-5 h-5 mr-2 text-green-600" />
-              Comprobante de Pago
-            </h3>
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center justify-between">
-              <div className="flex items-center">
-                <FileText className="w-8 h-8 text-green-600 mr-3" />
-                <div>
-                  <p className="font-semibold text-green-900">Comprobante subido</p>
-                  <p className="text-sm text-green-700">Tu comprobante está siendo procesado</p>
+                </div>
+              )}
+              <div className="flex items-center justify-between px-4 py-2.5">
+                <span className="text-slate-500 text-xs">CCI</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-white text-sm font-mono">{qcAccount.cci}</span>
+                  <button onClick={() => copyToClipboard(qcAccount.cci, 'cci')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'cci' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/8 hover:bg-white/15 text-slate-400 hover:text-white'}`}>
+                    {copiedField === 'cci' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
+                  </button>
                 </div>
               </div>
-              <a
-                href={operation.comprobante_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-green-700 hover:text-green-900 font-semibold"
-              >
-                <Download className="w-5 h-5 mr-1" />
-                Ver
-              </a>
+              {/* Exact amount — highlighted */}
+              <div className="flex items-center justify-between px-4 py-3 bg-amber-500/8">
+                <span className="text-amber-400/70 text-xs font-bold uppercase tracking-wider">Monto exacto</span>
+                <span className="text-amber-300 text-base font-bold font-mono">{transferAmount}</span>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Notes */}
-        {operation.notas && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-              <FileText className="w-5 h-5 mr-2 text-primary" />
-              Notas
-            </h3>
-            <p className="text-gray-700">{operation.notas}</p>
+        {/* ── UPLOAD PROOF ── */}
+        {estado === 'pendiente' && !operation.comprobante_url && (
+          <div className="rounded-2xl border border-white/10 bg-slate-800/40 overflow-hidden">
+            <div className="px-4 py-2.5 border-b border-white/[0.07] flex items-center gap-2">
+              <Upload className="w-3.5 h-3.5 text-slate-400" />
+              <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest">Subir comprobante</span>
+            </div>
+            <div className="p-4">
+              <p className="text-slate-500 text-xs mb-3 leading-relaxed">Adjunta tu voucher de transferencia. Formatos: JPG, PNG o PDF · máx. 5 MB</p>
+              <label className="block cursor-pointer">
+                <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onChange={handleFileUpload} disabled={isUploading} className="hidden" />
+                <div className={`border-2 border-dashed rounded-xl py-7 text-center transition-all ${isUploading ? 'border-primary-500/40 bg-primary-500/5' : 'border-white/10 hover:border-primary-500/40 hover:bg-primary-500/5'}`}>
+                  {isUploading
+                    ? <><RefreshCw className="w-7 h-7 text-primary-400 animate-spin mx-auto mb-2" /><p className="text-sm text-slate-400 font-medium">Subiendo...</p></>
+                    : <><Upload className="w-7 h-7 text-slate-600 mx-auto mb-2" /><p className="text-sm font-semibold text-slate-300">Toca para adjuntar</p></>}
+                </div>
+              </label>
+            </div>
           </div>
         )}
 
-        {/* Actions */}
-        {operation.estado === 'pendiente' && (
-          <div className="flex gap-4">
-            <button
-              onClick={() => setIsCancelModalOpen(true)}
-              className="flex-1 bg-white text-red-600 border-2 border-red-200 py-3 rounded-xl font-bold hover:bg-red-50 transition"
-            >
-              Cancelar Operación
-            </button>
+        {/* ── PROOF UPLOADED ── */}
+        {operation.comprobante_url && (
+          <div className="flex items-center justify-between rounded-2xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3.5">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div>
+                <p className="text-emerald-300 text-sm font-semibold">Comprobante enviado</p>
+                <p className="text-emerald-600 text-xs">Verificando transferencia...</p>
+              </div>
+            </div>
+            <a href={operation.comprobante_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-xs font-bold transition">
+              <Download className="w-3.5 h-3.5" /> Ver
+            </a>
           </div>
         )}
+
+        {/* ── YOUR BANK ── */}
+        <div className="rounded-2xl border border-white/10 bg-slate-800/40 overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-white/[0.07] flex items-center gap-2">
+            <CreditCard className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest">Tu cuenta bancaria</span>
+          </div>
+          <div className="divide-y divide-white/[0.05]">
+            <div className="flex items-center justify-between px-4 py-2.5">
+              <span className="text-slate-500 text-xs">Banco</span>
+              <span className="text-white text-sm font-semibold">{operation.banco_cliente || '—'}</span>
+            </div>
+            <div className="flex items-center justify-between px-4 py-2.5">
+              <span className="text-slate-500 text-xs">Número de cuenta</span>
+              <span className="text-white text-sm font-mono">{operation.cuenta_cliente || '—'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── TIMELINE ── */}
+        <div className="rounded-2xl border border-white/10 bg-slate-800/40 px-4 py-4">
+          <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold mb-4">Estado de la operación</p>
+          <div className="space-y-0">
+            {timelineSteps.map((step, i) => (
+              <div key={i} className="flex items-start gap-3 relative">
+                {/* Connector line */}
+                {i < timelineSteps.length - 1 && (
+                  <div className={`absolute left-[11px] top-6 bottom-0 w-0.5 ${step.done ? 'bg-emerald-500/40' : 'bg-white/8'}`} style={{ height: '32px' }} />
+                )}
+                <div className={`w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 z-10 transition-all ${
+                  step.done   ? 'bg-emerald-500 shadow-md shadow-emerald-500/30'
+                  : step.active ? 'bg-blue-500/80 ring-2 ring-blue-500/30'
+                  : 'bg-white/[0.07] border border-white/10'
+                }`}>
+                  {step.done
+                    ? <CheckCircle2 className="w-3 h-3 text-white" />
+                    : step.active
+                    ? <RefreshCw className="w-3 h-3 text-white animate-spin" />
+                    : <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                </div>
+                <div className="pb-5 flex-1">
+                  <p className={`text-sm font-semibold leading-tight ${step.done ? 'text-white' : step.active ? 'text-blue-300' : 'text-slate-600'}`}>{step.label}</p>
+                  <p className="text-[11px] text-slate-600 mt-0.5">{step.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── NOTES ── */}
+        {operation.notas && (
+          <div className="rounded-2xl border border-white/10 bg-slate-800/40 px-4 py-3.5">
+            <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold mb-1.5">Notas del operador</p>
+            <p className="text-slate-300 text-sm leading-relaxed">{operation.notas}</p>
+          </div>
+        )}
+
+        {/* ── CANCEL ACTION ── */}
+        {estado === 'pendiente' && (
+          <button onClick={() => setIsCancelModalOpen(true)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-red-500/15 bg-red-500/5 text-red-500 hover:bg-red-500/10 hover:text-red-400 transition text-sm font-semibold">
+            <XCircle className="w-4 h-4" /> Cancelar operación
+          </button>
+        )}
+
+        {/* Error inline */}
+        {error && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/8 px-4 py-3 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <p className="text-red-300 text-sm">{error}</p>
+          </div>
+        )}
+
       </main>
 
-      {/* ── Modal: Confirmar cancelación ── */}
+      {/* ── Toast: Comprobante subido ── */}
+      {uploadSuccess && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+          <CheckCircle2 className="w-4 h-4" /> Comprobante subido exitosamente
+        </div>
+      )}
+
+      {/* ── Modal: Cancelar ── */}
       {isCancelModalOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/80 flex items-end sm:items-center justify-center z-50 p-4">
+          <div className="bg-[#0f172a] border border-white/10 rounded-2xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Cancelar Operación</h3>
-              <button
-                onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
+              <h3 className="text-white font-bold">Cancelar Operación</h3>
+              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="text-slate-500 hover:text-white transition">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
-
-            <p className="text-sm text-gray-600 mb-4">
-              ¿Estás seguro que deseas cancelar esta operación? Esta acción no se puede deshacer.
-            </p>
-
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Motivo de cancelación *
-              </label>
-              <textarea
-                value={cancelReason}
-                onChange={(e) => setCancelReason(e.target.value)}
-                placeholder="Ej: No puedo realizar la transferencia en este momento"
-                className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none text-sm"
-                rows={3}
-              />
-            </div>
-
+            <p className="text-slate-400 text-sm mb-4 leading-relaxed">Esta acción es irreversible. Describe el motivo para continuar.</p>
+            <textarea
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="Motivo de cancelación..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm resize-none focus:outline-none focus:border-red-500/40 placeholder-slate-700 mb-4"
+              rows={3}
+            />
             <div className="flex gap-3">
-              <button
-                onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition text-sm"
-              >
+              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-sm font-semibold transition">
                 Volver
               </button>
-              <button
-                onClick={handleCancelOperation}
-                disabled={!cancelReason.trim()}
-                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
-              >
-                <XCircle className="w-4 h-4" />
-                Confirmar cancelación
+              <button onClick={handleCancelOperation} disabled={!cancelReason.trim()} className="flex-1 py-3 rounded-xl bg-red-500/80 hover:bg-red-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition flex items-center justify-center gap-2">
+                <XCircle className="w-4 h-4" /> Cancelar
               </button>
             </div>
           </div>
@@ -646,28 +507,26 @@ export default function OperacionDetallesPage() {
 
       {/* ── Overlay: Procesando cancelación ── */}
       {showCancelProcessing && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+          <div className="text-center px-6">
             {!showCancelSuccess ? (
               <>
-                <div className="w-16 h-16 border-4 border-red-200 border-t-red-500 rounded-full animate-spin mx-auto mb-5" />
-                <p className="text-lg font-bold text-gray-900">Procesando cancelación...</p>
-                <p className="text-sm text-gray-500 mt-1">Un momento, por favor</p>
+                <div className="w-12 h-12 border-2 border-red-500/20 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-white font-semibold">Cancelando operación...</p>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <XCircle className="w-9 h-9 text-red-500" />
+                <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <XCircle className="w-7 h-7 text-red-400" />
                 </div>
-                <p className="text-lg font-bold text-gray-900 mb-1">Operación cancelada</p>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Recuerda que cancelar operaciones de forma recurrente puede afectar tu historial.
-                </p>
+                <p className="text-white font-bold text-lg mb-1">Operación cancelada</p>
+                <p className="text-slate-500 text-sm">Redirigiendo...</p>
               </>
             )}
           </div>
         </div>
       )}
+
     </div>
   );
 }
