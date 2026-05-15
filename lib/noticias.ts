@@ -125,7 +125,7 @@ Si el déficit se mantiene en línea con lo proyectado, el riesgo de una depreci
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1526628953301-3cd9ea6a7b0e?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
   },
   {
     id: 'f006',
