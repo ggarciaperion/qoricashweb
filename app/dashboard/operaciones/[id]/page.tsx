@@ -29,7 +29,7 @@ import {
 export default function OperacionDetallesPage() {
   const router = useRouter();
   const params = useParams();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   const [operation, setOperation] = useState<Operation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,7 +61,7 @@ export default function OperacionDetallesPage() {
     setError(null);
 
     try {
-      const response = await operationsApi.getOperation(operationId);
+      const response = await operationsApi.getOperation(operationId, user?.dni || '');
 
       if (response.success && response.data) {
         setOperation(response.data);

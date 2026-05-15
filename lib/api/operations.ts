@@ -19,10 +19,10 @@ export const operationsApi = {
   },
 
   /**
-   * Get operation by ID
+   * Get operation by ID (requires client DNI for auth)
    */
-  async getOperation(id: number): Promise<ApiResponse<Operation>> {
-    const response = await apiClient.get<ApiResponse<Operation>>(`/api/operations/${id}`);
+  async getOperation(id: number, dni: string): Promise<ApiResponse<Operation>> {
+    const response = await apiClient.post<ApiResponse<Operation>>('/api/web/get-operation', { operation_id: id, dni });
     return response.data;
   },
 
