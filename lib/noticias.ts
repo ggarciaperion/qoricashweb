@@ -305,7 +305,7 @@ En términos prácticos para el tipo de cambio peruano, la estabilización argen
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1621981386829-9b458080ee07?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
   },
   {
     id: 'f015',
