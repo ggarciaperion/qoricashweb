@@ -1,4 +1,4 @@
-import { apiClient, ApiResponse } from '../api';
+import { apiClient, ApiResponse, API_BASE_URL } from '../api';
 import type {
   Operation,
   CreateOperationRequest,
@@ -42,11 +42,21 @@ export const operationsApi = {
     formData.append('operation_id', String(operationId));
     formData.append('files', file);
 
-    const response = await apiClient.post<ApiResponse>(
-      '/api/web/submit-proof',
-      formData
-    );
-    return response.data;
+    // Use native fetch so browser sets multipart/form-data boundary automatically.
+    // Axios instance default Content-Type: application/json breaks FormData parsing.
+    const headers: HeadersInit = {};
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('authToken');
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/web/submit-proof`, {
+      method: 'POST',
+      body: formData,
+      headers,
+      credentials: 'include',
+    });
+    return res.json();
   },
 
   /**
