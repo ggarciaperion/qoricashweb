@@ -43,12 +43,7 @@ export const operationsApi = {
 
     const response = await apiClient.post<ApiResponse>(
       `/api/operations/${operationId}/upload-proof`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
     );
     return response.data;
   },

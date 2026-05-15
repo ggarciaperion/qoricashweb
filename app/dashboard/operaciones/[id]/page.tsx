@@ -193,10 +193,10 @@ export default function OperacionDetallesPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#080f1a] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-11 h-11 border-2 border-primary-500/20 border-t-primary-400 rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">Cargando operación...</p>
+          <p className="text-gray-400 text-sm">Cargando operación...</p>
         </div>
       </div>
     );
@@ -204,13 +204,13 @@ export default function OperacionDetallesPage() {
 
   if (error && !operation) {
     return (
-      <div className="min-h-screen bg-[#080f1a] flex items-center justify-center p-4">
-        <div className="bg-slate-800/80 border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center">
-          <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 max-w-sm w-full text-center">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="w-6 h-6 text-red-400" />
           </div>
-          <p className="text-white font-semibold mb-1">Error</p>
-          <p className="text-slate-400 text-sm mb-6">{error}</p>
+          <p className="text-gray-900 font-semibold mb-1">Error</p>
+          <p className="text-gray-500 text-sm mb-6">{error}</p>
           <button onClick={() => router.push('/dashboard')} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition text-sm">
             Volver al Dashboard
           </button>
@@ -234,12 +234,12 @@ export default function OperacionDetallesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#080f1a]">
+    <div className="min-h-screen bg-gray-50">
 
       {/* ── TOP BAR ── */}
-      <header className="sticky top-0 z-20 bg-[#080f1a]/90 backdrop-blur-md border-b border-white/[0.07]">
+      <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-xl mx-auto px-4 h-13 flex items-center justify-between py-3">
-          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1.5 text-slate-400 hover:text-white transition text-sm font-medium">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition text-sm font-medium">
             <ArrowLeft className="w-4 h-4" /> Mis operaciones
           </button>
           <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold ${sc.bg} ${sc.border} ${sc.text}`}>
@@ -252,34 +252,34 @@ export default function OperacionDetallesPage() {
       <main className="max-w-xl mx-auto px-4 py-5 space-y-3">
 
         {/* ── HERO CARD: Trade identity ── */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/10 p-5">
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
           {/* Decorative glow */}
-          <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-20 pointer-events-none ${operation.tipo === 'compra' ? 'bg-emerald-400' : 'bg-blue-400'}`} />
+          <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-10 pointer-events-none ${operation.tipo === 'compra' ? 'bg-emerald-400' : 'bg-blue-400'}`} />
 
           {/* Header row */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${operation.tipo === 'compra' ? 'bg-emerald-500/20' : 'bg-blue-500/20'}`}>
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${operation.tipo === 'compra' ? 'bg-emerald-100' : 'bg-blue-100'}`}>
                 {operation.tipo === 'compra'
-                  ? <TrendingDown className="w-4 h-4 text-emerald-400" />
-                  : <TrendingUp className="w-4 h-4 text-blue-400" />}
+                  ? <TrendingDown className="w-4 h-4 text-emerald-600" />
+                  : <TrendingUp className="w-4 h-4 text-blue-600" />}
               </div>
               <div>
-                <p className={`text-xs font-bold uppercase tracking-widest ${operation.tipo === 'compra' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                <p className={`text-xs font-bold uppercase tracking-widest ${operation.tipo === 'compra' ? 'text-emerald-600' : 'text-blue-600'}`}>
                   {operation.tipo === 'compra' ? 'Compra USD' : 'Venta USD'}
                 </p>
-                <p className="text-slate-500 text-[10px] font-mono">{operation.codigo_operacion ?? `#${operation.id}`}</p>
+                <p className="text-gray-400 text-[10px] font-mono">{operation.codigo_operacion ?? `#${operation.id}`}</p>
               </div>
             </div>
-            <p className="text-slate-600 text-[11px]">{formatDate(operation.fecha_creacion)}</p>
+            <p className="text-gray-400 text-[11px]">{formatDate(operation.fecha_creacion)}</p>
           </div>
 
           {/* Trade amounts row */}
           <div className="flex items-center gap-3">
             {/* You pay */}
-            <div className="flex-1 min-w-0 bg-red-500/5 border border-red-500/10 rounded-xl p-3">
-              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1">Entregas</p>
-              <p className="text-lg sm:text-xl font-bold font-mono text-red-400 truncate leading-tight">
+            <div className="flex-1 min-w-0 bg-red-50 border border-red-100 rounded-xl p-3">
+              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Entregas</p>
+              <p className="text-lg sm:text-xl font-bold font-mono text-red-500 truncate leading-tight">
                 {operation.tipo === 'compra'
                   ? `$${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
                   : `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
@@ -288,18 +288,18 @@ export default function OperacionDetallesPage() {
 
             {/* Exchange rate */}
             <div className="flex flex-col items-center shrink-0">
-              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-center">
-                <p className="text-[8px] text-amber-500/60 uppercase tracking-widest font-bold">TC</p>
-                <p className="text-base font-bold font-mono text-amber-400 leading-tight">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-center">
+                <p className="text-[8px] text-amber-500 uppercase tracking-widest font-bold">TC</p>
+                <p className="text-base font-bold font-mono text-amber-600 leading-tight">
                   {(operation.tipo_cambio ?? 0).toFixed(3)}
                 </p>
               </div>
             </div>
 
             {/* You receive */}
-            <div className="flex-1 min-w-0 bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3 text-right">
-              <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1">Recibes</p>
-              <p className="text-lg sm:text-xl font-bold font-mono text-emerald-400 truncate leading-tight">
+            <div className="flex-1 min-w-0 bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-right">
+              <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold mb-1">Recibes</p>
+              <p className="text-lg sm:text-xl font-bold font-mono text-emerald-600 truncate leading-tight">
                 {operation.tipo === 'compra'
                   ? `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
                   : `$${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
@@ -310,12 +310,12 @@ export default function OperacionDetallesPage() {
 
         {/* ── TRANSFER TO QORICASH ── */}
         {estado === 'pendiente' && qcAccount && (
-          <div className="rounded-2xl border border-amber-500/25 overflow-hidden">
-            <div className="px-4 py-2.5 bg-amber-500/10 border-b border-amber-500/20 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-amber-400 text-[10px] font-bold uppercase tracking-widest">Acción requerida · Transfiere aquí</span>
+          <div className="rounded-2xl border border-amber-200 overflow-hidden shadow-sm">
+            <div className="px-4 py-2.5 bg-amber-50 border-b border-amber-200 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-amber-700 text-[10px] font-bold uppercase tracking-widest">Acción requerida · Transfiere aquí</span>
             </div>
-            <div className="bg-slate-900/60 divide-y divide-white/[0.05]">
+            <div className="bg-white divide-y divide-gray-100">
               {[
                 { label: 'Banco',    value: qcAccount.banco,   mono: false },
                 { label: 'Tipo',     value: qcAccount.tipo.replace('Cuenta Corriente ', 'Cta. Cte. '), mono: false },
@@ -323,34 +323,34 @@ export default function OperacionDetallesPage() {
                 { label: 'RUC',      value: qcAccount.ruc,     mono: true  },
               ].map(({ label, value, mono }) => (
                 <div key={label} className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-slate-500 text-xs">{label}</span>
-                  <span className={`text-white text-sm font-semibold ${mono ? 'font-mono' : ''}`}>{value}</span>
+                  <span className="text-gray-400 text-xs">{label}</span>
+                  <span className={`text-gray-900 text-sm font-semibold ${mono ? 'font-mono' : ''}`}>{value}</span>
                 </div>
               ))}
               {!qcAccount.useCCI && qcAccount.numero && (
                 <div className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-slate-500 text-xs">N° Cuenta</span>
+                  <span className="text-gray-400 text-xs">N° Cuenta</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-white text-sm font-mono">{qcAccount.numero}</span>
-                    <button onClick={() => copyToClipboard(qcAccount.numero, 'numero')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'numero' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/8 hover:bg-white/15 text-slate-400 hover:text-white'}`}>
+                    <span className="text-gray-900 text-sm font-mono">{qcAccount.numero}</span>
+                    <button onClick={() => copyToClipboard(qcAccount.numero, 'numero')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'numero' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-500'}`}>
                       {copiedField === 'numero' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
                     </button>
                   </div>
                 </div>
               )}
               <div className="flex items-center justify-between px-4 py-2.5">
-                <span className="text-slate-500 text-xs">CCI</span>
+                <span className="text-gray-400 text-xs">CCI</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-white text-sm font-mono">{qcAccount.cci}</span>
-                  <button onClick={() => copyToClipboard(qcAccount.cci, 'cci')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'cci' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/8 hover:bg-white/15 text-slate-400 hover:text-white'}`}>
+                  <span className="text-gray-900 text-sm font-mono">{qcAccount.cci}</span>
+                  <button onClick={() => copyToClipboard(qcAccount.cci, 'cci')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'cci' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-500'}`}>
                     {copiedField === 'cci' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
                   </button>
                 </div>
               </div>
               {/* Exact amount — highlighted */}
-              <div className="flex items-center justify-between px-4 py-3 bg-amber-500/8">
-                <span className="text-amber-400/70 text-xs font-bold uppercase tracking-wider">Monto exacto</span>
-                <span className="text-amber-300 text-base font-bold font-mono">{transferAmount}</span>
+              <div className="flex items-center justify-between px-4 py-3 bg-amber-50">
+                <span className="text-amber-700 text-xs font-bold uppercase tracking-wider">Monto exacto</span>
+                <span className="text-amber-700 text-base font-bold font-mono">{transferAmount}</span>
               </div>
             </div>
           </div>
@@ -358,19 +358,19 @@ export default function OperacionDetallesPage() {
 
         {/* ── UPLOAD PROOF ── */}
         {estado === 'pendiente' && !operation.comprobante_url && (
-          <div className="rounded-2xl border border-white/10 bg-slate-800/40 overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-white/[0.07] flex items-center gap-2">
-              <Upload className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest">Subir comprobante</span>
+          <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+            <div className="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2">
+              <Upload className="w-3.5 h-3.5 text-gray-400" />
+              <span className="text-gray-600 text-[10px] font-bold uppercase tracking-widest">Subir comprobante</span>
             </div>
             <div className="p-4">
-              <p className="text-slate-500 text-xs mb-3 leading-relaxed">Adjunta tu voucher de transferencia. Formatos: JPG, PNG o PDF · máx. 5 MB</p>
+              <p className="text-gray-400 text-xs mb-3 leading-relaxed">Adjunta tu voucher de transferencia. Formatos: JPG, PNG o PDF · máx. 5 MB</p>
               <label className="block cursor-pointer">
                 <input type="file" accept="image/jpeg,image/png,image/jpg,application/pdf" onChange={handleFileUpload} disabled={isUploading} className="hidden" />
-                <div className={`border-2 border-dashed rounded-xl py-7 text-center transition-all ${isUploading ? 'border-primary-500/40 bg-primary-500/5' : 'border-white/10 hover:border-primary-500/40 hover:bg-primary-500/5'}`}>
+                <div className={`border-2 border-dashed rounded-xl py-7 text-center transition-all ${isUploading ? 'border-primary-400 bg-primary-50' : 'border-gray-200 hover:border-primary-400 hover:bg-primary-50'}`}>
                   {isUploading
-                    ? <><RefreshCw className="w-7 h-7 text-primary-400 animate-spin mx-auto mb-2" /><p className="text-sm text-slate-400 font-medium">Subiendo...</p></>
-                    : <><Upload className="w-7 h-7 text-slate-600 mx-auto mb-2" /><p className="text-sm font-semibold text-slate-300">Toca para adjuntar</p></>}
+                    ? <><RefreshCw className="w-7 h-7 text-primary-400 animate-spin mx-auto mb-2" /><p className="text-sm text-gray-500 font-medium">Subiendo...</p></>
+                    : <><Upload className="w-7 h-7 text-gray-300 mx-auto mb-2" /><p className="text-sm font-semibold text-gray-600">Toca para adjuntar</p></>}
                 </div>
               </label>
             </div>
@@ -379,64 +379,46 @@ export default function OperacionDetallesPage() {
 
         {/* ── PROOF UPLOADED ── */}
         {operation.comprobante_url && (
-          <div className="flex items-center justify-between rounded-2xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3.5">
+          <div className="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-emerald-300 text-sm font-semibold">Comprobante enviado</p>
-                <p className="text-emerald-600 text-xs">Verificando transferencia...</p>
+                <p className="text-emerald-700 text-sm font-semibold">Comprobante enviado</p>
+                <p className="text-emerald-500 text-xs">Verificando transferencia...</p>
               </div>
             </div>
-            <a href={operation.comprobante_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-xs font-bold transition">
+            <a href={operation.comprobante_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 text-xs font-bold transition">
               <Download className="w-3.5 h-3.5" /> Ver
             </a>
           </div>
         )}
 
-        {/* ── YOUR BANK ── */}
-        <div className="rounded-2xl border border-white/10 bg-slate-800/40 overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-white/[0.07] flex items-center gap-2">
-            <CreditCard className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest">Tu cuenta bancaria</span>
-          </div>
-          <div className="divide-y divide-white/[0.05]">
-            <div className="flex items-center justify-between px-4 py-2.5">
-              <span className="text-slate-500 text-xs">Banco</span>
-              <span className="text-white text-sm font-semibold">{operation.banco_cliente || '—'}</span>
-            </div>
-            <div className="flex items-center justify-between px-4 py-2.5">
-              <span className="text-slate-500 text-xs">Número de cuenta</span>
-              <span className="text-white text-sm font-mono">{operation.cuenta_cliente || '—'}</span>
-            </div>
-          </div>
-        </div>
-
         {/* ── TIMELINE ── */}
-        <div className="rounded-2xl border border-white/10 bg-slate-800/40 px-4 py-4">
-          <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold mb-4">Estado de la operación</p>
+        <div className="rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-sm">
+          <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-4">Estado de la operación</p>
           <div className="space-y-0">
             {timelineSteps.map((step, i) => (
               <div key={i} className="flex items-start gap-3 relative">
                 {/* Connector line */}
                 {i < timelineSteps.length - 1 && (
-                  <div className={`absolute left-[11px] top-6 bottom-0 w-0.5 ${step.done ? 'bg-emerald-500/40' : 'bg-white/8'}`} style={{ height: '32px' }} />
+                  <div className={`absolute left-[11px] top-6 bottom-0 w-0.5 ${step.done ? 'bg-emerald-300' : 'bg-gray-200'}`} style={{ height: '32px' }} />
                 )}
                 <div className={`w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 z-10 transition-all ${
-                  step.done   ? 'bg-emerald-500 shadow-md shadow-emerald-500/30'
-                  : step.active ? 'bg-blue-500/80 ring-2 ring-blue-500/30'
-                  : 'bg-white/[0.07] border border-white/10'
+                  step.done   ? 'bg-emerald-500 shadow-md shadow-emerald-200'
+                  : step.active ? 'bg-blue-500 ring-2 ring-blue-200'
+                  : 'bg-gray-100 border border-gray-200'
                 }`}>
                   {step.done
                     ? <CheckCircle2 className="w-3 h-3 text-white" />
                     : step.active
                     ? <RefreshCw className="w-3 h-3 text-white animate-spin" />
-                    : <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                    : <div className="w-1.5 h-1.5 rounded-full bg-gray-300" />}
                 </div>
                 <div className="pb-5 flex-1">
-                  <p className={`text-sm font-semibold leading-tight ${step.done ? 'text-white' : step.active ? 'text-blue-300' : 'text-slate-600'}`}>{step.label}</p>
-                  <p className="text-[11px] text-slate-600 mt-0.5">{step.sub}</p>
+                  <p className={`text-sm font-semibold leading-tight ${step.done ? 'text-gray-900' : step.active ? 'text-blue-600' : 'text-gray-300'}`}>{step.label}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">{step.sub}</p>
                 </div>
               </div>
             ))}
@@ -445,24 +427,24 @@ export default function OperacionDetallesPage() {
 
         {/* ── NOTES ── */}
         {operation.notas && (
-          <div className="rounded-2xl border border-white/10 bg-slate-800/40 px-4 py-3.5">
-            <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold mb-1.5">Notas del operador</p>
-            <p className="text-slate-300 text-sm leading-relaxed">{operation.notas}</p>
+          <div className="rounded-2xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm">
+            <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1.5">Notas del operador</p>
+            <p className="text-gray-700 text-sm leading-relaxed">{operation.notas}</p>
           </div>
         )}
 
         {/* ── CANCEL ACTION ── */}
         {estado === 'pendiente' && (
-          <button onClick={() => setIsCancelModalOpen(true)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-red-500/15 bg-red-500/5 text-red-500 hover:bg-red-500/10 hover:text-red-400 transition text-sm font-semibold">
+          <button onClick={() => setIsCancelModalOpen(true)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition text-sm font-semibold">
             <XCircle className="w-4 h-4" /> Cancelar operación
           </button>
         )}
 
         {/* Error inline */}
         {error && (
-          <div className="rounded-xl border border-red-500/20 bg-red-500/8 px-4 py-3 flex items-center gap-2">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <p className="text-red-300 text-sm">{error}</p>
+            <p className="text-red-600 text-sm">{error}</p>
           </div>
         )}
 
@@ -477,27 +459,27 @@ export default function OperacionDetallesPage() {
 
       {/* ── Modal: Cancelar ── */}
       {isCancelModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-end sm:items-center justify-center z-50 p-4">
-          <div className="bg-[#0f172a] border border-white/10 rounded-2xl w-full max-w-md p-6">
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-4">
+          <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold">Cancelar Operación</h3>
-              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="text-slate-500 hover:text-white transition">
+              <h3 className="text-gray-900 font-bold">Cancelar Operación</h3>
+              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="text-gray-400 hover:text-gray-700 transition">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-slate-400 text-sm mb-4 leading-relaxed">Esta acción es irreversible. Describe el motivo para continuar.</p>
+            <p className="text-gray-500 text-sm mb-4 leading-relaxed">Esta acción es irreversible. Describe el motivo para continuar.</p>
             <textarea
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
               placeholder="Motivo de cancelación..."
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm resize-none focus:outline-none focus:border-red-500/40 placeholder-slate-700 mb-4"
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm resize-none focus:outline-none focus:border-red-400 placeholder-gray-300 mb-4"
               rows={3}
             />
             <div className="flex gap-3">
-              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-sm font-semibold transition">
+              <button onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); }} className="flex-1 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-semibold transition">
                 Volver
               </button>
-              <button onClick={handleCancelOperation} disabled={!cancelReason.trim()} className="flex-1 py-3 rounded-xl bg-red-500/80 hover:bg-red-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition flex items-center justify-center gap-2">
+              <button onClick={handleCancelOperation} disabled={!cancelReason.trim()} className="flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-bold transition flex items-center justify-center gap-2">
                 <XCircle className="w-4 h-4" /> Cancelar
               </button>
             </div>
@@ -507,20 +489,20 @@ export default function OperacionDetallesPage() {
 
       {/* ── Overlay: Procesando cancelación ── */}
       {showCancelProcessing && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100]">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]">
           <div className="text-center px-6">
             {!showCancelSuccess ? (
               <>
-                <div className="w-12 h-12 border-2 border-red-500/20 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
+                <div className="w-12 h-12 border-2 border-red-200 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-white font-semibold">Cancelando operación...</p>
               </>
             ) : (
               <>
-                <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <XCircle className="w-7 h-7 text-red-400" />
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <XCircle className="w-7 h-7 text-red-500" />
                 </div>
                 <p className="text-white font-bold text-lg mb-1">Operación cancelada</p>
-                <p className="text-slate-500 text-sm">Redirigiendo...</p>
+                <p className="text-gray-300 text-sm">Redirigiendo...</p>
               </>
             )}
           </div>
