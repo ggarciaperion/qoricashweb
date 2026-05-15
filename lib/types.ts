@@ -99,6 +99,10 @@ export interface Operation {
   created_by?: number;
   assigned_to?: number;
   notas?: string;
+  origen?: string; // 'web' | 'sistema' | 'app' | 'plataforma'
+  source_bank_name?: string; // Banco del cliente derivado de sus cuentas bancarias
+  source_account?: string;
+  operation_type?: string;
 }
 
 // Exchange rate types
