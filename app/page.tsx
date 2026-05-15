@@ -251,7 +251,7 @@ export default function Home() {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-200 py-4 space-y-3">
+            <div className="lg:hidden border-t border-gray-200 py-4 space-y-3 bg-white pb-4 shadow-lg">
               <Link
                 href="/sobre-nosotros"
                 className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition rounded-lg"
