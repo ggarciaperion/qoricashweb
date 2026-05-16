@@ -9,7 +9,6 @@ import {
   X,
   Building2,
   CreditCard,
-  DollarSign,
   CheckCircle,
   AlertCircle,
   Info,
@@ -73,9 +72,9 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
     },
   });
 
-  // Actualizar el valor de currency cuando cambien los props
+  // Actualizar el valor de currency cuando cambian los props O cuando se abre el modal
   useEffect(() => {
-    if (operationType && accountContext) {
+    if (isOpen && operationType && accountContext) {
       let currency: 'S/' | '$' = 'S/';
 
       if (operationType === 'Compra') {
@@ -86,7 +85,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
 
       setValue('currency', currency);
     }
-  }, [operationType, accountContext, setValue]);
+  }, [isOpen, operationType, accountContext, setValue]);
 
   const selectedBank = watch('bank_name');
   const selectedCurrency = watch('currency');
@@ -296,22 +295,36 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                   <label htmlFor="currency" className="block text-sm font-semibold text-gray-700 mb-2">
                     Moneda
                   </label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
-                    <select
-                      {...register('currency')}
-                      id="currency"
-                      className={`w-full appearance-none pl-11 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                        errors.currency ? 'border-red-300 bg-red-50' : isCurrencyReadOnly ? 'border-gray-300 bg-gray-100' : 'border-gray-300'
-                      }`}
-                      disabled={isSubmitting || isCurrencyReadOnly}
-                    >
-                      <option value="">Selecciona</option>
-                      <option value="S/">Soles (S/)</option>
-                      <option value="$">Dólares ($)</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  {isCurrencyReadOnly ? (
+                    <div className="flex items-center gap-2 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50">
+                      <span className="text-lg font-bold text-gray-700">
+                        {selectedCurrency === 'S/' ? 'S/' : '$'}
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {selectedCurrency === 'S/' ? 'Soles' : 'Dólares'}
+                      </span>
+                      <span className="ml-auto text-xs text-gray-400 italic">Asignada por tipo de operación</span>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 pointer-events-none z-10 w-5 text-center">
+                        {selectedCurrency === 'S/' ? 'S/' : selectedCurrency === '$' ? '$' : '¤'}
+                      </span>
+                      <select
+                        {...register('currency')}
+                        id="currency"
+                        className={`w-full appearance-none pl-11 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
+                          errors.currency ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                        }`}
+                        disabled={isSubmitting}
+                      >
+                        <option value="">Selecciona</option>
+                        <option value="S/">Soles (S/)</option>
+                        <option value="$">Dólares ($)</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    </div>
+                  )}
                   {errors.currency && (
                     <p className="mt-2 text-sm text-red-600">{errors.currency.message}</p>
                   )}

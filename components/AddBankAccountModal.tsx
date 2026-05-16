@@ -219,8 +219,8 @@ export default function AddBankAccountModal({
                     {...register('currency')}
                     className="sr-only"
                   />
-                  <DollarSign className="w-5 h-5 mr-2" />
-                  <span className="font-medium">Soles (S/)</span>
+                  <span className="font-bold text-base mr-2 text-gray-600">S/</span>
+                  <span className="font-medium">Soles</span>
                 </label>
                 <label className={`relative flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition ${!selectedCurrency ? 'border-gray-300' : selectedCurrency === '$' ? 'border-primary-500 bg-primary-50' : 'border-gray-300'}`}>
                   <input
@@ -230,7 +230,7 @@ export default function AddBankAccountModal({
                     className="sr-only"
                   />
                   <DollarSign className="w-5 h-5 mr-2" />
-                  <span className="font-medium">Dólares ($)</span>
+                  <span className="font-medium">Dólares</span>
                 </label>
               </div>
               {errors.currency && (
