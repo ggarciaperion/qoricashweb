@@ -153,7 +153,7 @@ function NuevaOperacionContent() {
     const day = lima.getDay();
 
     let daysToAdd = 1;
-    if (day === 5) daysToAdd = 3; // Viernes -> Lunes
+    if (day === 5) daysToAdd = 1; // Viernes -> Sábado (trabajamos sábados)
     if (day === 6) daysToAdd = 2; // Sábado -> Lunes
     if (day === 0) daysToAdd = 1; // Domingo -> Lunes
 
