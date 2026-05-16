@@ -405,7 +405,7 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <section className="pt-10 md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
+      <section className="pt-[110px] md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
