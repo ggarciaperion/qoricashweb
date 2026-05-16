@@ -45,7 +45,7 @@ Para quienes gestionan exposición cambiaria en los próximos 30-60 días, el pe
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=1200&q=80',
   },
   {
     id: 'f002',
@@ -65,7 +65,7 @@ Para el mercado cambiario peruano, el cobre en máximos históricos es el mejor 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
   },
   {
     id: 'f003',
@@ -125,7 +125,7 @@ Para empresas con obligaciones en soles (planillas, impuestos, proveedores local
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
   },
   {
     id: 'f006',
@@ -165,7 +165,7 @@ Para decisiones cambiarias en los próximos 30 días, considera distribuir opera
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
   },
   {
     id: 'f008',
