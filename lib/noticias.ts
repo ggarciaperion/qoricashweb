@@ -45,7 +45,7 @@ Para quienes gestionan exposición cambiaria en los próximos 30-60 días, el pe
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-KvX3L_QXTgM?w=1200&q=80',
   },
   {
     id: 'f002',
@@ -65,7 +65,7 @@ Para el mercado cambiario peruano, el cobre en máximos históricos es el mejor 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-sRuz_SXLjCI?w=1200&q=80',
   },
   {
     id: 'f003',
@@ -85,7 +85,7 @@ Para el mercado cambiario, la combinación de exportaciones récord y superávit
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-ip0yX8W1veE?w=1200&q=80',
   },
   {
     id: 'f004',
@@ -105,7 +105,7 @@ Para el PEN/USD, la tasa del BCRP en 4.75% vs. Fed en 3.50%-3.75% representa un 
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-Skfy8ljB7X4?w=1200&q=80',
   },
   {
     id: 'f005',
@@ -125,7 +125,7 @@ Para empresas con obligaciones en soles (planillas, impuestos, proveedores local
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-pMs3Mzb5mIU?w=1200&q=80',
   },
   {
     id: 'f006',
@@ -145,7 +145,7 @@ Para quienes gestionan tesorería en empresas, el entorno de inflación controla
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-aChQ2cYg1ys?w=1200&q=80',
   },
   {
     id: 'f007',
@@ -165,7 +165,7 @@ Para decisiones cambiarias en los próximos 30 días, considera distribuir opera
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-vKNRKjSNbTo?w=1200&q=80',
   },
   {
     id: 'f008',
@@ -185,7 +185,7 @@ Para el tipo de cambio, un petróleo estabilizándose en US$ 95-97 es un escenar
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-pPjKPDLTyYw?w=1200&q=80',
   },
   {
     id: 'f009',
@@ -205,7 +205,7 @@ Para el PEN/USD, esto implica que el soporte estructural del sol por vía de exp
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-Uiy3_TW6m3M?w=1200&q=80',
   },
   {
     id: 'f010',
@@ -225,7 +225,7 @@ Para operaciones de la semana: quien necesite comprar dólares para pagos próxi
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1559526324-593bc073d938?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
   },
   {
     id: 'f011',
@@ -245,7 +245,7 @@ Para quienes tienen exposición en activos vinculados al oro (acciones mineras, 
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-ktXmcyqYx54?w=1200&q=80',
   },
   {
     id: 'f012',
@@ -265,7 +265,7 @@ Si tienes ganancias en BTC y debes liquidar a soles para cubrir obligaciones en 
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-kM6QNrgo0YE?w=1200&q=80',
   },
   {
     id: 'f013',
@@ -285,7 +285,7 @@ Para el PEN/USD, esto se traduce marginalmente en mayores flujos de capital haci
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-rISkvc4qjE8?w=1200&q=80',
   },
   {
     id: 'f014',
@@ -305,7 +305,7 @@ Para el corto plazo, las elecciones colombianas del 25 de mayo son un evento de 
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-KrXHa0JrHt0?w=1200&q=80',
   },
   {
     id: 'f015',
@@ -325,7 +325,7 @@ La comparación Chile-Perú ilustra que ambas monedas tienen fundamentos sólido
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-VXSlXVlLLY4?w=1200&q=80',
   },
   {
     id: 'e001',
@@ -345,7 +345,7 @@ Si tienes obligaciones en dólares próximas (importaciones, deuda en USD), cons
     fuente: 'Gestión',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-KvX3L_QXTgM?w=1200&q=80',
   },
   {
     id: 'e002',
@@ -365,7 +365,7 @@ Para quienes gestionan flujos de caja en dólares, este es un momento de revisar
     fuente: 'Bloomberg',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-vKNRKjSNbTo?w=1200&q=80',
   },
   {
     id: 'e003',
@@ -385,7 +385,7 @@ Para empresas con ingresos en dólares (exportadoras), el entorno es favorable p
     fuente: 'Gestión',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-JJCrTi0lvTs?w=1200&q=80',
   },
   {
     id: 'e004',
@@ -405,7 +405,7 @@ Para quienes operan en el mercado cambiario peruano, esto implica que movimiento
     fuente: 'Gestión',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-Skfy8ljB7X4?w=1200&q=80',
   },
   {
     id: 'e005',
@@ -425,7 +425,7 @@ Si el déficit se mantiene en línea con lo proyectado, el riesgo de una depreci
     fuente: 'Gestión',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-aChQ2cYg1ys?w=1200&q=80',
   },
   {
     id: 'e006',
@@ -445,7 +445,7 @@ Para empresas proveedoras del sector minero o que reciben pagos en soles vincula
     fuente: 'Gestión',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-sRuz_SXLjCI?w=1200&q=80',
   },
   {
     id: 'e007',
@@ -465,7 +465,7 @@ Si tu empresa tiene deuda en dólares o contratos de importación por vencer en 
     fuente: 'Bloomberg',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
   },
   {
     id: 'e008',
@@ -485,7 +485,7 @@ Para empresas con exposición al sector minero o agroexportador que venden a Chi
     fuente: 'Bloomberg',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-0p37Ch2LYQc?w=1200&q=80',
   },
   {
     id: 'e009',
@@ -505,7 +505,7 @@ Para quienes tienen exposición al sector o invierten en empresas mineras peruan
     fuente: 'Bloomberg',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo--SqpzkQFOgc?w=1200&q=80',
   },
   {
     id: 'e010',
@@ -525,7 +525,7 @@ Para operaciones puntuales esta jornada: si necesitas dólares para pagos de imp
     fuente: 'TradingView',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1559526324-593bc073d938?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-vKNRKjSNbTo?w=1200&q=80',
   },
   {
     id: 'e011',
@@ -545,7 +545,7 @@ Para empresas con alto consumo energético (transporte, manufactura, agroindustr
     fuente: 'TradingView',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-x-EG-R-bUTI?w=1200&q=80',
   },
   {
     id: 'e012',
@@ -565,7 +565,7 @@ Para quienes tienen exposición en cripto en Perú y necesitan convertir a soles
     fuente: 'TradingView',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-H1jdfM5jUxM?w=1200&q=80',
   },
   {
     id: 'e013',
@@ -585,7 +585,7 @@ Además, la normalización argentina abre oportunidades de comercio bilateral. L
     fuente: 'Infobae',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-VXSlXVlLLY4?w=1200&q=80',
   },
   {
     id: 'e014',
@@ -605,7 +605,7 @@ En términos prácticos para el tipo de cambio peruano, la estabilización argen
     fuente: 'Infobae',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-2fn3TdIbYxc?w=1200&q=80',
   },
   {
     id: 'e015',
@@ -625,7 +625,7 @@ La comparación con Colombia es instructiva para el mercado peruano: el sol ha r
     fuente: 'Infobae',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-KrXHa0JrHt0?w=1200&q=80',
   },
   {
     id: 'd001',
@@ -646,7 +646,7 @@ Desde la perspectiva forex, una mayor estabilidad fiscal reduce la prima de ries
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-XquCLVbTYLE?w=1200&q=80',
   },
   {
     id: 'd002',
@@ -665,7 +665,7 @@ Para las empresas peruanas que importan insumos de China o exportan commodities 
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-H23f-2byY_E?w=1200&q=80',
   },
 
   // ── GESTIÓN — 4 nacionales / regionales ───────────────────────────────────
@@ -686,7 +686,7 @@ Desde la perspectiva cambiaria, la indexación al dólar de los costos energéti
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-x-EG-R-bUTI?w=1200&q=80',
   },
   {
     id: 'd004',
@@ -707,7 +707,7 @@ Las divisas asociadas a economías minero-exportadoras tienden a apreciarse cuan
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-pMs3Mzb5mIU?w=1200&q=80',
   },
   {
     id: 'd005',
@@ -726,7 +726,7 @@ Para empresas que operan en sectores de exportación o que tienen ingresos en d�
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-NXF9MI3zby0?w=1200&q=80',
   },
   {
     id: 'd006',
@@ -745,7 +745,7 @@ El contexto es favorable para el PEN en el corto plazo: alta demanda de cobre + 
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1604594849809-dfedbc827105?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-sRuz_SXLjCI?w=1200&q=80',
   },
 
   // ── GESTIÓN / BofA — INTERNACIONAL ────────────────────────────────────────
@@ -766,7 +766,7 @@ El oro en máximos también es una señal de que los inversores globales buscan 
     fuente: 'Gestión / Bloomberg Intelligence',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo--SqpzkQFOgc?w=1200&q=80',
   },
   {
     id: 'd008',
@@ -785,7 +785,7 @@ Para el tipo de cambio, un petróleo más barato en el mundo reduce la inflació
     fuente: 'Gestión',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-pPjKPDLTyYw?w=1200&q=80',
   },
   {
     id: 'd009',
@@ -804,7 +804,7 @@ Para el tipo de cambio peruano, una Argentina más estable reduce el riesgo de c
     fuente: 'Gestión / Bloomberg',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-2fn3TdIbYxc?w=1200&q=80',
   },
 
   // ── TRADINGVIEW ────────────────────────────────────────────────────────────
@@ -825,7 +825,7 @@ Para las empresas peruanas con deuda en dólares o que importan en USD, este es 
     fuente: 'TradingView / Invezz',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1559526324-593bc073d938?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
   },
   {
     id: 'd011',
@@ -844,7 +844,7 @@ Para el tipo de cambio peruano, un petróleo más barato significa: menor inflac
     fuente: 'TradingView / Reuters',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-x-EG-R-bUTI?w=1200&q=80',
   },
   {
     id: 'd012',
@@ -863,7 +863,7 @@ Para el tipo de cambio, las perturbaciones en la producción minera nacional tie
     fuente: 'TradingView / Reuters',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-pMs3Mzb5mIU?w=1200&q=80',
   },
 
   // ── INFOBAE ────────────────────────────────────────────────────────────────
@@ -884,7 +884,7 @@ Para los operadores de divisas en Perú, el mercado argentino es un termómetro 
     fuente: 'Infobae',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-rISkvc4qjE8?w=1200&q=80',
   },
   {
     id: 'd014',
@@ -903,7 +903,7 @@ Desde la perspectiva cambiaria, una economía argentina débil en actividad pero
     fuente: 'Infobae',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-KrXHa0JrHt0?w=1200&q=80',
   },
   {
     id: 'd015',
@@ -922,7 +922,7 @@ Si Argentina consolida una inflación mensual del 2% o menos, ese efecto de cont
     fuente: 'Infobae',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80',
+    imagen: 'https://images.unsplash.com/photo-0p37Ch2LYQc?w=1200&q=80',
   },
 ];
 
