@@ -245,7 +245,7 @@ Para quienes tienen exposición en activos vinculados al oro (acciones mineras, 
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/47047/pexels-photo-47047.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'f012',
@@ -505,7 +505,7 @@ Para quienes tienen exposición al sector o invierten en empresas mineras peruan
     fuente: 'Bloomberg',
     fecha: '2026-05-15T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/47047/pexels-photo-47047.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/16055836/pexels-photo-16055836.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'e010',
@@ -766,7 +766,7 @@ El oro en máximos también es una señal de que los inversores globales buscan 
     fuente: 'Gestión / Bloomberg Intelligence',
     fecha: '2026-05-14T08:00:00.000Z',
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/47047/pexels-photo-47047.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'd008',
