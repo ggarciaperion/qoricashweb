@@ -24,9 +24,309 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-05-16T08:00:00.000Z';
+const HOY = '2026-05-19T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'g001',
+    titulo: 'Actas del FOMC de mayo revelan que 8 de 12 gobernadores respaldan recorte de tasas en septiembre',
+    descripcion: 'La Reserva Federal publicó las minutas de su reunión del 6-7 de mayo, mostrando un amplio consenso hacia un primer recorte de tasas en septiembre si la inflación continúa moderándose. El dólar retrocedió frente a todas las divisas emergentes tras la publicación.',
+    contenido: `La Reserva Federal publicó este lunes las actas de su última reunión del Comité Federal de Mercado Abierto (FOMC), celebrada el 6 y 7 de mayo. El documento reveló que 8 de los 12 miembros votantes consideran apropiado un primer recorte de 25 puntos básicos en la reunión de septiembre, siempre que los datos de inflación continúen moderándose hacia el objetivo del 2%.
+
+Los cuatro miembros restantes se dividieron entre quienes prefieren esperar hasta diciembre para mayor certeza sobre el camino desinflacionario, y quienes argumentan que la economía puede soportar tasas más altas por más tiempo dado el mercado laboral robusto con desempleo en 4.1%. La tasa de fondos federales se mantiene actualmente en el rango de 4.25%-4.50%.
+
+El presidente Kevin Warsh, quien tomó posesión el 16 de mayo, no participó de esta reunión pero sus primeras declaraciones públicas sugieren que respaldará el consenso existente dentro del FOMC antes de introducir cambios de rumbo. Los mercados de futuros de Fed Funds ahora asignan un 68% de probabilidad a un recorte en septiembre, frente al 54% previo a la publicación de las actas.
+
+El rendimiento del bono del Tesoro a 10 años cayó 11 puntos básicos hasta 4.43% y el DXY retrocedió a 102.3 puntos, su nivel más bajo desde enero de 2026. El euro subió a 1.1340 y el yen japonés se apreció a 149.80 por dólar.`,
+    analisis: `Las actas del FOMC son directamente alcistas para el sol peruano. Un recorte de la Fed en septiembre reduciría el diferencial de tasas entre EE.UU. y Perú, haciendo relativamente menos atractivos los activos en dólares y favoreciendo flujos hacia economías emergentes como la peruana. El BCRP mantendría margen para también recortar su tasa referencial sin presionar el tipo de cambio.
+
+Si eres importador o tienes deudas en dólares, el escenario de Fed recortando en septiembre sugiere que el sol podría fortalecerse hacia S/ 3.58-3.60 en el segundo semestre. Considera adelantar compras de dólares que necesites para el tercer trimestre antes de que ese movimiento se materialice, ya que el mercado podría anticipar el fortalecimiento del sol con semanas de anticipación.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.unsplash.com/photo-KvX3L_QXTgM?w=1200&q=80',
+  },
+  {
+    id: 'g002',
+    titulo: 'BCRP recorta tasa referencial 25 pbs a 4.50% — primera reducción del año en señal de confianza en desinflación',
+    descripcion: 'El Banco Central de Reserva del Perú redujo su tasa de interés de referencia de 4.75% a 4.50% en su sesión de directorio del 19 de mayo, citando la consolidación del proceso desinflacionario y la moderación de expectativas. Es el primer recorte de 2026 y el sexto en el ciclo iniciado en agosto de 2024.',
+    contenido: `El Directorio del Banco Central de Reserva del Perú (BCRP) aprobó este lunes por unanimidad reducir la tasa de interés de referencia en 25 puntos básicos, pasando de 4.75% a 4.50%. La decisión se sustenta en la consolidación del proceso desinflacionario: la inflación interanual se ubica en 2.3% en abril, dentro del rango meta del BCRP (1%-3%), con expectativas de inflación para 2026 ancladas en 2.4%.
+
+El comunicado del BCRP destacó que la actividad económica interna muestra una expansión sostenida con el PBI creciendo 3.2% en el primer trimestre, liderado por la minería (+8.1%), manufactura (+4.3%) y servicios (+3.6%). La demanda interna privada se recupera gradualmente con el crédito al sector privado creciendo 6.8% anual.
+
+El presidente del BCRP, Julio Velarde, señaló en conferencia de prensa que el banco central evaluará los datos de las próximas semanas para definir el ritmo del ciclo de flexibilización monetaria. "No estamos comprometidos con un sendero de recortes predeterminado; actuamos en función de los datos", precisó. Los analistas del mercado anticipan dos recortes adicionales de 25 pbs cada uno antes de fin de año.
+
+El tipo de cambio PEN/USD reaccionó con moderada apreciación del sol, cerrando en S/ 3.62, reflejando que el recorte ya estaba parcialmente descontado por el mercado.`,
+    analisis: `Un BCRP recortando tasas en un contexto de inflación controlada y crecimiento sólido es la combinación ideal para el sol peruano. Reduce el costo del crédito doméstico sin generar presiones cambiarias, ya que el fundamento exportador —cobre en máximos, exportaciones creciendo— provee el contrapeso en la balanza de pagos.
+
+Para quienes tienen exposición cambiaria, el recorte del BCRP abre la posibilidad de refinanciar deuda en soles a tasas más bajas. Si tienes créditos en dólares con tasa variable, evalúa migrar a soles si la brecha de tasas se ha reducido. El escenario base apunta a un sol estable a fuerte en S/ 3.60-3.65 durante el segundo semestre.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.unsplash.com/photo-Skfy8ljB7X4?w=1200&q=80',
+  },
+  {
+    id: 'g003',
+    titulo: 'MEF revisa al alza proyección de crecimiento del PBI peruano a 3.4% para 2026 impulsado por inversión minera',
+    descripcion: 'El Ministerio de Economía y Finanzas actualizó su Marco Macroeconómico Multianual, elevando la proyección de crecimiento del PBI de 3.0% a 3.4% para 2026. La revisión se sustenta en el dinamismo de la inversión privada minera, el alza del precio de los metales y la recuperación del consumo privado.',
+    contenido: `El Ministerio de Economía y Finanzas (MEF) publicó hoy la actualización de su Marco Macroeconómico Multianual 2026-2029, en el cual eleva la proyección de crecimiento del Producto Bruto Interno peruano de 3.0% a 3.4% para el presente año. La revisión al alza responde principalmente al mejor desempeño del sector minero, cuya proyección de crecimiento se eleva de 5.2% a 8.7% ante los precios récord del cobre y el zinc.
+
+La inversión privada total crecería 6.1% en 2026, con la inversión minera como principal motor. Proyectos como Quellaveco segunda fase, la ampliación de Las Bambas y el inicio de obras de Zafranal sumarian US$ 4,200 millones en inversión comprometida para el año. La inversión pública, por su parte, crecería 8.3% con énfasis en infraestructura de transportes y saneamiento.
+
+El consumo privado se expandiría 3.8%, beneficiado por la mejora del empleo formal, el crecimiento del crédito de consumo al 7.2% y la reducción de la inflación que incrementa el poder adquisitivo real de los hogares. El sector de servicios, que representa el 52% del PBI, crecería 3.9% liderado por telecomunicaciones, finanzas y turismo.
+
+El déficit fiscal proyectado se reduce a 2.1% del PBI en 2026, desde 2.4% en 2025, gracias al mayor recaudo tributario asociado al boom minero y la mejora de la actividad económica.`,
+    analisis: `La revisión al alza del MEF refuerza el panorama positivo para el sol peruano. Un PBI creciendo a 3.4% con déficit fiscal decreciente proyecta solidez macroeconómica que atrae inversión extranjera y fortalece la moneda local. Los mayores ingresos fiscales por minería reducen la necesidad de endeudamiento externo en dólares, otro factor positivo para el tipo de cambio.
+
+Para empresas con operaciones en Perú, este contexto de crecimiento sostenido justifica planificar en un escenario de sol estable o apreciándose moderadamente. Si tienes compromisos de pago en dólares en el segundo semestre, el tipo de cambio actual en S/ 3.62 puede representar una oportunidad de cobertura favorable.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-aChQ2cYg1ys?w=1200&q=80',
+  },
+  {
+    id: 'g004',
+    titulo: 'Exportaciones peruanas crecen 18.3% en abril — minería aporta US$ 4,850 millones y sector textil repunta 11.2%',
+    descripcion: 'SUNAT reportó que las exportaciones totales de Perú alcanzaron US$ 6,920 millones en abril de 2026, un incremento del 18.3% respecto al mismo mes del año anterior. La minería tradicional lideró con US$ 4,850 millones, mientras que las exportaciones no tradicionales sumaron US$ 1,380 millones.',
+    contenido: `La Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT) publicó hoy las estadísticas de comercio exterior de abril de 2026, mostrando exportaciones totales por US$ 6,920 millones, un crecimiento del 18.3% respecto a los US$ 5,849 millones registrados en abril de 2025. Es el cuarto mes consecutivo de crecimiento de doble dígito en las exportaciones peruanas.
+
+La minería tradicional aportó US$ 4,850 millones, impulsada por el cobre (US$ 2,940 millones, +24.1%), el oro (US$ 1,120 millones, +12.8%) y el zinc (US$ 490 millones, +18.6%). El precio promedio del cobre en abril fue de US$ 13,847/TM, un 38.2% superior al precio promedio de abril 2025. Los principales destinos de las exportaciones mineras fueron China (41%), Japón (12%) y Corea del Sur (9%).
+
+Las exportaciones no tradicionales alcanzaron US$ 1,380 millones, con el sector textil y confecciones destacando con un crecimiento del 11.2% hasta US$ 210 millones, impulsado por mayor demanda desde EE.UU. y la Unión Europea. Las agroexportaciones sumaron US$ 680 millones (+7.4%), con los arándanos, uvas y espárragos como los principales productos.
+
+El saldo comercial de abril fue positivo en US$ 2,140 millones, acumulando un superávit de US$ 7,820 millones en los primeros cuatro meses del año, el mayor registro histórico para el período enero-abril.`,
+    analisis: `Un superávit comercial de US$ 2,140 millones mensual implica una entrada neta de dólares al sistema financiero peruano de esa magnitud, lo que crea una presión estructural alcista sobre el sol. Las empresas exportadoras deben liquidar sus dólares para pagar costos en soles, aumentando la oferta de moneda extranjera en el mercado cambiario local.
+
+Este flujo exportador es el principal ancla del tipo de cambio en el rango S/ 3.60-3.65. Para importadores, el contexto sugiere que el sol tiene soporte fundamental para mantenerse en estos niveles o apreciarse modestamente. Si necesitas dólares para importaciones del tercer trimestre, el tipo de cambio actual ofrece niveles atractivos.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-JJCrTi0lvTs?w=1200&q=80',
+  },
+  {
+    id: 'g005',
+    titulo: 'Reservas internacionales del BCRP alcanzan US$ 78,400 millones — equivalente a 18 meses de importaciones',
+    descripcion: 'El Banco Central de Reserva reportó que las Reservas Internacionales Netas del Perú alcanzaron US$ 78,400 millones al 16 de mayo de 2026, un incremento de US$ 3,200 millones respecto al cierre de 2025. El ratio de reservas sobre importaciones es el más alto de América Latina.',
+    contenido: `El Banco Central de Reserva del Perú (BCRP) informó que las Reservas Internacionales Netas (RIN) del país alcanzaron US$ 78,400 millones al 16 de mayo de 2026, su nivel más alto desde agosto de 2024. El incremento de US$ 3,200 millones respecto al cierre de diciembre de 2025 (US$ 75,200 millones) refleja los mayores flujos de exportaciones mineras y la acumulación activa de reservas por parte del banco central.
+
+Las reservas representan el 27.8% del PBI proyectado para 2026 y equivalen a 18.3 meses de importaciones de bienes y servicios, el ratio más alto de América del Sur, superando a Chile (14.2 meses), Colombia (11.8 meses) y Brasil (10.1 meses). Esta posición de reservas provee al BCRP una capacidad de intervención cambiaria extraordinariamente robusta para estabilizar el tipo de cambio en episodios de volatilidad externa.
+
+La composición de las reservas incluye US$ 54,200 millones en moneda extranjera, US$ 14,800 millones en oro monetario y US$ 9,400 millones en DEG y posición en el FMI. El BCRP valúa su posición en oro a precios de mercado, que con el metal en US$ 3,318/oz representa una apreciación de US$ 2,100 millones respecto a la valoración de cierre de 2025.
+
+El nivel de reservas otorga al BCRP capacidad para intervenir en el mercado cambiario hasta en US$ 15,000-20,000 millones sin comprometer los niveles mínimos de prudencia fiscal internacional.`,
+    analisis: `Las reservas en US$ 78,400 millones son un factor de estabilidad cambiaria de primer orden. Le dan al BCRP una capacidad de intervención que ningún especulador o flujo de capital puede contrarrestar fácilmente, lo que explica por qué el sol peruano muestra menor volatilidad que el peso colombiano, el real brasileño o el peso chileno ante shocks externos.
+
+Para cualquier decisión cambiaria en el corto y mediano plazo, este nivel de reservas es una señal de confianza. El BCRP puede y va a defender el tipo de cambio si este sale del rango que considera razonable. Evita apostar en contra del sol peruano: las municiones del banco central son formidables.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
+  },
+  {
+    id: 'g006',
+    titulo: 'Manufactura peruana crece 4.1% en el primer trimestre de 2026 — textil y alimentos lideran la recuperación',
+    descripcion: 'El INEI reportó que el sector manufacturero peruano creció 4.1% en el primer trimestre de 2026, la tasa más alta desde el cuarto trimestre de 2023. La industria textil avanzó 6.8% y la industria de alimentos procesados 5.3%, beneficiadas por la recuperación del consumo interno y la mayor demanda externa.',
+    contenido: `El Instituto Nacional de Estadística e Informática (INEI) publicó hoy los resultados del sector manufacturero para el primer trimestre de 2026, mostrando un crecimiento del 4.1% respecto al mismo período del año anterior. Es la tasa más alta de expansión manufacturera en diez trimestres y revierte la contracción del 1.2% registrada en el primer trimestre de 2025.
+
+La manufactura no primaria —que excluye la refinación de minerales y la producción de harina de pescado— creció 5.2%, liderada por la industria textil y de confecciones (+6.8%), la industria de alimentos y bebidas (+5.3%) y la fabricación de productos metálicos (+4.1%). El crecimiento de la manufactura textil responde al incremento de exportaciones hacia EE.UU. bajo el TLC y la recuperación de la demanda interna de prendas de vestir.
+
+La manufactura primaria creció 2.1%, con la refinación de cobre como principal contribuyente gracias a los mayores volúmenes procesados en las refinerías de Ilo y La Oroya. La producción de harina y aceite de pescado, sin embargo, cayó 8.4% por el inicio anticipado del período de veda en el litoral norte.
+
+El empleo formal en el sector manufacturero creció 3.2% en el trimestre, con la creación de 24,000 puestos de trabajo formal en Lima Metropolitana y 18,000 en regiones.`,
+    analisis: `La recuperación manufacturera peruana es un buen indicador adelantado del consumo interno y del dinamismo del mercado laboral. Un sector industrial creciendo al 4.1% implica mayor demanda de crédito empresarial en soles, salarios crecientes y mayor recaudo tributario —todos factores positivos para la estabilidad del tipo de cambio.
+
+Para empresas del sector, el contexto de recuperación justifica planes de expansión financiados en soles a tasas decrecientes gracias al ciclo de recortes del BCRP. Si tu empresa tiene compromisos en dólares para importación de maquinaria o insumos, la fortaleza del sol en este contexto manufacturero favorable ofrece condiciones favorables para cubrir esas necesidades.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-ip0yX8W1veE?w=1200&q=80',
+  },
+  {
+    id: 'g007',
+    titulo: 'China anuncia paquete de estímulo fiscal de US$ 200,000 millones para infraestructura y transición energética',
+    descripcion: 'El gobierno chino anunció este lunes un paquete de estímulo fiscal por 1.45 billones de yuanes (US$ 200,000 millones) orientado a infraestructura de transportes, redes eléctricas y energías renovables. El anuncio impulsó los precios del cobre, aluminio y acero en los mercados internacionales.',
+    contenido: `El Consejo de Estado de la República Popular China anunció este lunes un paquete de estímulo fiscal por 1.45 billones de yuanes (aproximadamente US$ 200,000 millones) para ser ejecutado en el segundo semestre de 2026. El programa se enfoca en tres áreas prioritarias: infraestructura de transportes (US$ 74,000 millones), modernización de redes eléctricas y energías renovables (US$ 82,000 millones) y desarrollo urbano en ciudades de segundo y tercer nivel (US$ 44,000 millones).
+
+El anuncio responde a la moderación del crecimiento económico chino en el primer trimestre, con el PBI expandiéndose al 4.6% anual, por debajo del objetivo oficial del 5%. El premier Li Qiang presentó el plan como un mecanismo de estabilización anticíclica para garantizar el cumplimiento de la meta anual de crecimiento.
+
+El impacto en commodities fue inmediato: el cobre en el LME subió 2.8% hasta US$ 14,587/TM, el aluminio avanzó 1.9% hasta US$ 2,890/TM y el zinc subió 2.4% hasta US$ 3,210/TM. China consume el 53% del cobre mundial, el 57% del aluminio y el 44% del zinc, por lo que cualquier estímulo a su demanda interna de infraestructura tiene un efecto multiplicador directo sobre los precios globales de metales.
+
+Los analistas de Goldman Sachs elevaron su objetivo de precio para el cobre a US$ 15,500/TM para el segundo semestre de 2026, argumentando que el estímulo chino llega en un momento de inventarios bajos en almacenes del LME y COMEX.`,
+    analisis: `El estímulo chino es una noticia extraordinariamente buena para Perú y para el sol peruano. China es el principal destino de las exportaciones peruanas de cobre y zinc, por lo que mayor gasto en infraestructura chino se traduce directamente en mayor demanda y mayores precios de los metales que Perú exporta. Cada 1% de aumento en el precio del cobre genera aproximadamente US$ 200-250 millones adicionales de ingresos para el Perú anualmente.
+
+El impacto cambiario es claro: más ingresos de exportación de cobre = más dólares en el mercado cambiario peruano = mayor presión apreciadora sobre el sol. Este factor, combinado con el recorte de tasas del BCRP anunciado hoy, crea un entorno muy favorable para el sol peruano en los próximos meses.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-0p37Ch2LYQc?w=1200&q=80',
+  },
+  {
+    id: 'g008',
+    titulo: 'Petróleo WTI sube a US$ 84.20 por barril tras caída de inventarios en EE.UU. y reducción de producción OPEP+',
+    descripcion: 'El contrato de futuros del petróleo WTI para entrega en julio cerró en US$ 84.20 por barril, un alza del 2.3% en la sesión, impulsado por una caída de inventarios en EE.UU. mayor a la esperada y la confirmación de que Arabia Saudita mantendrá los recortes voluntarios de producción.',
+    contenido: `El petróleo crudo WTI para entrega en julio cerró este lunes en US$ 84.20 por barril en el NYMEX, su nivel más alto en tres semanas, tras avanzar 2.3% en la sesión. El Brent, referencia global, se situó en US$ 87.40 por barril (+2.1%). El catalizador principal fue el reporte semanal de inventarios de la Administración de Información de Energía (EIA) de EE.UU., que mostró una caída de 7.2 millones de barriles la semana pasada, muy por encima de la expectativa consenso de -2.1 millones.
+
+El ministro de energía saudí, el príncipe Abdulaziz bin Salman, confirmó el domingo que Arabia Saudita mantendrá sus recortes voluntarios de producción de 1 millón de barriles diarios hasta por lo menos septiembre de 2026, descartando rumores de mercado sobre un posible retroceso en esa posición. La decisión fue interpretada como una señal de compromiso de Riad con mantener los precios por encima de US$ 80/barril.
+
+La demanda global de crudo sigue mostrando resiliencia: la Agencia Internacional de Energía (AIE) revisó al alza su estimado de demanda para 2026 en 200,000 barriles diarios, hasta 104.2 millones de b/d, liderado por la demanda china (+1.8 mb/d) y la de India (+0.9 mb/d). La demanda de combustible de aviación en Asia supera ya en un 12% los niveles prepandemia.
+
+El soporte técnico del WTI se ubica en US$ 81.50 (media de 50 días) y la resistencia inmediata en US$ 86.00, nivel que de romperse proyectaría un objetivo hacia US$ 90/barril.`,
+    analisis: `El petróleo en US$ 84 tiene un efecto moderadamente negativo para Perú, que es importador neto de crudo para consumo interno, aunque las exportaciones de gas natural y petróleo crudo de la selva generan cierta compensación. El mayor costo de combustibles presiona la inflación de transporte y los costos logísticos de las empresas, factores que el BCRP monitorea en su función de reacción.
+
+Para el tipo de cambio, el petróleo alto es un factor mixto: encarece la factura de importación (negativo para el balance externo) pero también eleva los precios de exportación de gas y crudo peruano (positivo). El efecto neto para el PEN/USD es moderado, con mayor influencia del precio del cobre y las tasas de interés globales.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-pPjKPDLTyYw?w=1200&q=80',
+  },
+  {
+    id: 'g009',
+    titulo: 'Oro retrocede a US$ 3,318/oz por toma de ganancias — analistas mantienen objetivo de US$ 3,600 para fin de año',
+    descripcion: 'El oro al contado cedió 1.4% hasta US$ 3,318 por onza troy en la sesión del lunes, en una corrección técnica después de haber tocado máximos de US$ 3,487 la semana pasada. Analistas de Citi y UBS recomiendan usar las correcciones como oportunidad de posicionamiento.',
+    contenido: `El oro al contado retrocedió 1.4% este lunes hasta US$ 3,318 por onza troy, mientras que el contrato de futuros de junio en el COMEX cerró en US$ 3,332/oz (-1.3%). La corrección se produce tras el máximo histórico de US$ 3,487/oz alcanzado el jueves pasado y corresponde a una toma de ganancias técnica anticipada por los analistas, dado que el indicador de fuerza relativa (RSI) había alcanzado 78 puntos, territorio de sobrecompra.
+
+Los factores estructurales que sostienen el precio del oro permanecen intactos: la demanda de bancos centrales emergentes se mantiene en niveles récord con 480 toneladas compradas en el primer trimestre de 2026, liderada por China (140 TM), India (95 TM) y Turquía (62 TM). La incertidumbre geopolítica por el conflicto en Medio Oriente y las tensiones en el Mar del Sur de China también sustentan la demanda de activos refugio.
+
+El soporte técnico inmediato del oro se ubica en US$ 3,280/oz (media de 20 días) y US$ 3,210/oz (media de 50 días). Analistas de Citi elevaron esta semana su objetivo de precio para fin de 2026 de US$ 3,400 a US$ 3,600/oz, argumentando que el ciclo de recortes de tasas globales incrementará el atractivo del metal al reducir el costo de oportunidad de tener oro. UBS mantiene una recomendación de "overweight" en oro dentro de carteras diversificadas.
+
+Las reservas de oro del ETF SPDR Gold Trust (GLD) subieron 4.2 toneladas en la semana hasta 923 toneladas, señal de que los inversores institucionales siguen acumulando posiciones.`,
+    analisis: `El oro en US$ 3,318/oz tras corrección no altera el impacto positivo estructural para las exportaciones auríferas peruanas. Perú es el sexto productor mundial de oro con exportaciones anuales de aproximadamente 115 toneladas. Con el precio actual, las exportaciones de oro generarían ingresos anuales de aproximadamente US$ 12,400 millones, un flujo sustancial de dólares para el mercado cambiario local.
+
+Las correcciones del oro son oportunidades para exportadores peruanos de oro con necesidad de coberturas. Si el precio objetivo del metal es US$ 3,600 para diciembre, las posiciones largas en oro en este rango de US$ 3,300-3,350 ofrecen una relación riesgo-beneficio favorable para quienes necesiten planificar ingresos en dólares por exportaciones auríferas.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-ktXmcyqYx54?w=1200&q=80',
+  },
+  {
+    id: 'g010',
+    titulo: 'PEN/USD cierra en S/ 3.62 — sol gana 0.8% en la semana apoyado por recorte BCRP y superávit comercial',
+    descripcion: 'El tipo de cambio PEN/USD cerró el lunes en S/ 3.62, acumulando una apreciación del 0.8% en la semana. El recorte de tasas del BCRP, el superávit comercial récord de abril y las actas dovish del FOMC convergieron para impulsar al sol peruano a su nivel más fuerte desde octubre de 2025.',
+    contenido: `El tipo de cambio PEN/USD cerró este lunes en S/ 3.6210 en el mercado interbancario de Lima, con un mínimo intradiario de S/ 3.6150 y un máximo de S/ 3.6280. La apreciación semanal acumulada es del 0.8% frente al cierre del viernes previo en S/ 3.6490, y ubica al sol en su nivel más fuerte desde octubre de 2025.
+
+Tres factores convergieron para fortalecer el sol esta semana: el recorte de 25 pbs en la tasa referencial del BCRP a 4.50%, que refuerza la confianza en la gestión macroeconómica peruana; el dato de exportaciones de abril con superávit comercial de US$ 2,140 millones, que garantiza abundante oferta de dólares; y las actas del FOMC que aumentan la probabilidad de un recorte de la Fed en septiembre, reduciendo el atractivo relativo del dólar.
+
+El BCRP intervino moderadamente en el mercado cambiario comprando US$ 180 millones para moderar la apreciación del sol y evitar una fortaleza excesiva que perjudique la competitividad exportadora. Las mesas de cambio reportan flujo vendedor de dólares por parte de empresas exportadoras mineras que liquidan ingresos para pagar costos en soles.
+
+Los niveles técnicos a monitorear: soporte en S/ 3.60 (zona psicológica) y resistencia en S/ 3.6650. El rango probable para la semana es S/ 3.60-3.66. El indicador de volatilidad implícita del PEN/USD a 1 mes cayó a 5.2%, su nivel más bajo del año.`,
+    analisis: `El sol en S/ 3.62 con tendencia apreciadora refleja fundamentos sólidos: exportaciones creciendo, BCRP actuando con prudencia y Fed virando hacia recortes. El BCRP comprando dólares confirma que el banco central no quiere un sol demasiado fuerte que perjudique a los exportadores no tradicionales.
+
+Para empresas con nómina o costos en soles y cuentas por cobrar en dólares, el momento es bueno para convertir dólares al tipo de cambio actual. Para importadores que necesitan dólares en los próximos 60-90 días, esperar a ver si el sol se aprecia a S/ 3.60 antes de comprar puede ser una estrategia razonable, aunque conlleva el riesgo de que un evento externo revierta la tendencia.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-vKNRKjSNbTo?w=1200&q=80',
+  },
+  {
+    id: 'g011',
+    titulo: 'DXY cae a 102.3 — mayor caída semanal del dólar en 2026 ante expectativas de recorte de la Fed en septiembre',
+    descripcion: 'El índice del dólar (DXY) retrocedió a 102.3 puntos, acumulando una caída semanal del 1.7%, su mayor corrección semanal desde diciembre de 2025. Las actas del FOMC que muestran consenso hacia un recorte en septiembre y los datos débiles de ventas minoristas de EE.UU. presionan al dólar.',
+    contenido: `El índice del dólar estadounidense (DXY), que mide el valor del dólar frente a una canasta de seis divisas principales, cayó a 102.3 puntos este lunes, su nivel más bajo desde el 8 de enero de 2026. La caída semanal acumulada es del 1.7%, la mayor corrección del dólar en lo que va del año, superando el -1.4% registrado en la semana del 3 de febrero.
+
+Los factores que presionan al dólar a la baja son múltiples: las actas del FOMC publicadas hoy elevan la probabilidad de recorte en septiembre al 68%; los datos de ventas minoristas de EE.UU. de abril mostraron un avance del 0.2%, por debajo del 0.6% esperado, señal de moderación del consumo; y el índice de actividad manufacturera ISM se mantuvo en zona de contracción (49.1) por cuarto mes consecutivo.
+
+El euro avanzó a 1.1342 (+1.2% semanal), el yen japonés se apreció a 149.82 por dólar (+1.8%), la libra esterlina subió a 1.3480 (+0.9%) y el dólar australiano tocó 0.6580 (+1.6%). Las divisas emergentes de América Latina también se apreciaron: el real brasileño (5.06/USD), el peso chileno (892/USD) y el sol peruano (3.62/USD) anotaron ganancias semanales de entre 0.6% y 1.1%.
+
+El nivel técnico de soporte del DXY se ubica en 101.5 puntos (mínimo de enero 2026) y la resistencia en 103.8 puntos. Una ruptura de 101.5 abriría la puerta hacia el área de 99-100 puntos, un escenario de dólar débil que generalmente coincide con apreciación de commodities y divisas emergentes.`,
+    analisis: `Un DXY en 102.3 y cayendo es una de las mejores noticias posibles para el sol peruano y para los exportadores peruanos. Dólar débil = commodities más caros (los metales se cotizan en dólares, entonces cuando el dólar baja, el precio en dólares de los metales sube para compensar) = mayores ingresos de exportación para Perú = más oferta de dólares en el mercado cambiario local = sol más fuerte.
+
+La convergencia de DXY débil + cobre en máximos + BCRP recortando es una triada históricamente muy favorable para el sol. Si gestionas exposición cambiaria, el sesgo de corto plazo favorece al sol. No es momento de acumular dólares especulativamente; sí es momento de cubrir necesidades reales de importación al tipo de cambio actual si tu negocio lo requiere.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
+  },
+  {
+    id: 'g012',
+    titulo: 'Bitcoin consolida en US$ 103,800 — baja volatilidad implícita sugiere acumulación institucional antes del próximo movimiento',
+    descripcion: 'Bitcoin cotiza en US$ 103,800 con una volatilidad implícita a 30 días del 38%, su nivel más bajo desde noviembre de 2024. Los analistas de on-chain identifican señales de acumulación por parte de ballenas con más de 1,000 BTC, mientras los ETFs de Bitcoin en EE.UU. suman su décima semana consecutiva de entradas netas.',
+    contenido: `Bitcoin (BTC/USD) cotiza este lunes en US$ 103,800, dentro de un rango lateral de US$ 99,500-108,200 que mantiene desde hace tres semanas. La volatilidad implícita a 30 días cayó al 38%, su nivel más bajo desde noviembre de 2024, señal técnica que históricamente precede a movimientos de precio de alta magnitud —aunque la dirección puede ser en cualquier sentido.
+
+Los datos de on-chain proporcionan señales constructivas. Las "ballenas" —direcciones con más de 1,000 BTC— acumularon netas 14,200 BTC en los últimos 14 días según datos de Glassnode, el mayor ritmo de acumulación desde enero de 2026. El Spent Output Profit Ratio (SOPR) se mantiene por encima de 1.0, indicando que las transacciones generales son rentables para los vendedores, lo que reduce la presión de venta por necesidad.
+
+Los ETFs de Bitcoin al contado en EE.UU. acumularon US$ 2,840 millones en entradas netas en las últimas 10 semanas consecutivas de flujos positivos, liderados por el iShares Bitcoin Trust de BlackRock (US$ 1,240 millones) y el Fidelity Wise Origin Bitcoin Fund (US$ 890 millones). Los activos bajo gestión totales de los ETFs de BTC en EE.UU. ascienden a US$ 128,400 millones.
+
+El próximo catalizador a monitorear es la expiración de opciones de Bitcoin el último viernes de mayo, con el precio de ejercicio de mayor interés abierto ("max pain") en US$ 100,000, lo que suele ejercer una atracción gravitacional sobre el precio en las semanas previas al vencimiento.`,
+    analisis: `Bitcoin en US$ 103,800 con baja volatilidad y acumulación institucional es el patrón que precedió los grandes rallies de 2024 y 2025. Para el tipo de cambio PEN/USD, la correlación de Bitcoin con el apetito de riesgo global implica que si BTC sube significativamente, es probable que el dólar se debilite y el sol se aprecie moderadamente, ya que ambos movimientos reflejan mayor tolerancia al riesgo y salida de activos refugio como el dólar.
+
+Para quienes tienen exposición a activos digitales en Perú, el contexto sugiere mantener posiciones. El soporte clave a monitorear es US$ 99,500; una ruptura de ese nivel invalidaría el escenario alcista de corto plazo. La resistencia inmediata es US$ 108,200; una ruptura proyectaría un objetivo hacia US$ 115,000-120,000.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-kM6QNrgo0YE?w=1200&q=80',
+  },
+  {
+    id: 'g013',
+    titulo: 'Argentina: inflación de abril cae a 3.1% mensual — el dato más bajo en cinco años aviva debate sobre tipo de cambio',
+    descripcion: 'El INDEC reportó que la inflación mensual de Argentina en abril fue del 3.1%, la más baja desde marzo de 2021 y por debajo del 3.7% de marzo 2026. La acumulada en 12 meses se reduce a 68.4%. El gobierno de Milei celebra el dato pero economistas advierten que el atraso cambiario puede comprometer la competitividad exportadora.',
+    contenido: `El Instituto Nacional de Estadística y Censos (INDEC) de Argentina publicó hoy los datos de inflación de abril de 2026, mostrando un alza mensual del 3.1%, por debajo del 3.7% registrado en marzo y del 3.9% de febrero. Es el menor registro mensual desde marzo de 2021, cuando la inflación mensual fue del 2.8%. La inflación interanual se reduce a 68.4% desde el 84.2% de diciembre de 2025.
+
+La desaceleración inflacionaria es transversal a los rubros: alimentos y bebidas (+2.8%), indumentaria (+3.4%), vivienda y servicios (+2.6%) y educación (+3.1%). Los analistas atribuyen la moderación a la política de shock monetario del gobierno de Javier Milei, que mantiene el crecimiento de la base monetaria en el 0% mensual, y al esquema de "crawling peg" con devaluación mensual del peso del 1%, lo que ancla las expectativas de tipo de cambio.
+
+Sin embargo, la apreciación real del peso argentino —el tipo de cambio oficial se ubica en ARS 1,180 por dólar mientras el tipo de cambio paralelo ("blue") cotiza en ARS 1,340— genera preocupaciones sobre competitividad. Las exportaciones no tradicionales argentinas cayeron 8.4% en el primer cuatrimestre, con el sector agropecuario reportando dificultades por los altos costos internos en dólares.
+
+El Fondo Monetario Internacional elogió los avances en el programa de estabilización argentino en su última revisión, pero señaló que la sostenibilidad requiere avanzar hacia una mayor flexibilidad cambiaria en los próximos trimestres.`,
+    analisis: `El dato de inflación argentino de 3.1% es un hito del programa de estabilización de Milei, con implicancias para toda la región. Una Argentina con menor inflación y mayor estabilidad macroeconómica reduce los riesgos de contagio financiero hacia otras economías sudamericanas, incluido Perú. En episodios pasados de crisis argentina, el sol peruano se depreció por efecto contagio de aversión al riesgo regional.
+
+Para el tipo de cambio PEN/USD, la estabilización argentina es un factor de fondo positivo. Menos turbulencia regional = menor volatilidad cambiaria en todos los países de la región. El riesgo a monitorear es el atraso cambiario argentino: si el gobierno realiza una devaluación del peso más significativa para corregirlo, podría generar una ola de volatilidad regional que afecte temporalmente al sol peruano.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-rISkvc4qjE8?w=1200&q=80',
+  },
+  {
+    id: 'g014',
+    titulo: 'Colombia pausa ciclo de recortes: Banco de la República mantiene tasa en 5.25% por presiones inflacionarias en servicios',
+    descripcion: 'La junta directiva del Banco de la República de Colombia decidió por mayoría de 5-2 mantener la tasa de intervención en 5.25% en su reunión de mayo, pausando el ciclo de recortes iniciado en diciembre de 2024. La inflación en servicios se mantiene en 7.8% anual, muy por encima de la meta del 3%.',
+    contenido: `La junta directiva del Banco de la República de Colombia decidió en su reunión del 19 de mayo mantener la tasa de interés de intervención en 5.25%, en una votación de 5 miembros a favor de mantener frente a 2 que propusieron un recorte de 25 puntos básicos. La decisión sorprendió levemente al mercado, que asignaba un 65% de probabilidad a un recorte.
+
+La decisión se sustenta en la persistencia de la inflación en el componente de servicios, que se mantiene en 7.8% anual a abril de 2026, muy por encima de la meta del 3% del banco central. Si bien la inflación total cayó a 4.9% anual —su nivel más bajo desde enero de 2024— la divergencia entre la inflación de bienes (1.8%) y servicios (7.8%) evidencia rigideces estructurales en el mercado laboral y de arriendos.
+
+El gerente general del Banco de la República, Leonardo Villar, explicó que la junta evaluó los riesgos al alza para la inflación derivados del fenómeno El Niño tardío, que ha afectado la producción agropecuaria colombiana, y las presiones sobre los costos de transporte por el deterioro vial en algunas regiones del país tras las lluvias del primer trimestre.
+
+El peso colombiano (COP) se depreció 0.8% frente al dólar hasta COP 4,245/USD tras el anuncio, reflejando la decepción del mercado ante la pausa. El diferencial de tasas Colombia-EE.UU. se mantiene en 75 puntos básicos.`,
+    analisis: `La pausa del Banco de la República colombiano tiene implicancias moderadas para el sol peruano. Colombia y Perú compiten por flujos de inversión en renta fija regional: si Colombia detiene sus recortes mientras el BCRP los continúa, el diferencial de tasas a favor de Colombia podría atraer flujos de capital que de otro modo irían a Perú. Esto podría ejercer una presión bajista marginal sobre el sol, aunque el efecto es secundario frente a los fundamentos domésticos peruanos.
+
+El dato relevante para Perú es que la inflación en servicios sigue siendo el rezago más persistente del ciclo inflacionario en economías de la región. El BCRP monitoreará la evolución de la inflación de servicios en Perú —actualmente en 3.4% anual— antes de profundizar su ciclo de recortes.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-H23f-2byY_E?w=1200&q=80',
+  },
+  {
+    id: 'g015',
+    titulo: 'Chile: cobre impulsa crecimiento económico a 3.8% anual en el primer trimestre de 2026 — el mejor dato en tres años',
+    descripcion: 'El Banco Central de Chile informó que el PBI chileno creció 3.8% anual en el primer trimestre de 2026, superando las expectativas del mercado (3.1%) y marcando el mejor registro desde el tercer trimestre de 2023. La minería del cobre avanzó 9.4% y se convirtió en el principal motor del crecimiento.',
+    contenido: `El Banco Central de Chile publicó hoy los datos del Producto Interno Bruto del primer trimestre de 2026, mostrando un crecimiento anual del 3.8%, por encima del consenso de mercado de 3.1% y del 2.6% registrado en el cuarto trimestre de 2025. Es el mejor registro trimestral para la economía chilena desde el tercer trimestre de 2023, cuando el PBI creció 4.1%.
+
+El principal motor fue la minería del cobre (+9.4%), beneficiada por el rally de precios del metal en los mercados internacionales —el cobre promedio del primer trimestre fue US$ 12,847/TM, un 34% superior al mismo período de 2025— y por la recuperación de los volúmenes de producción en las minas de Codelco tras los problemas operacionales de 2025. La actividad manufacturera creció 4.1% y el sector servicios 3.5%.
+
+El gasto de los hogares se expandió 3.2%, recuperándose de la debilidad del año pasado. El empleo formal creció 2.8% anual con la creación de 38,000 empleos en el trimestre, concentrados en minería, construcción y servicios empresariales. La inversión privada subió 5.6%, con la minería y el sector de energías renovables como principales destinos.
+
+El Banco Central de Chile redujo su tasa de política monetaria en 25 pbs al 3.75% en su reunión de mayo, señalizando uno o dos recortes adicionales para el segundo semestre si la inflación continúa convergiendo hacia la meta del 3%.`,
+    analisis: `El sólido crecimiento chileno impulsado por el cobre confirma que el rally del metal es un fenómeno con efectos macro reales en las economías productoras de la región, no solo un movimiento especulativo. Para Perú, el caso chileno es un espejo: mayor precio del cobre = mayor crecimiento, mayor inversión, mayor empleo, mayor recaudo fiscal y moneda más fuerte.
+
+La diferencia es que Chile depende aún más del cobre que Perú (representa el 52% de sus exportaciones vs 38% para Perú), por lo que el impulso proporcionalmente es incluso mayor en Chile. Ambas economías se benefician del mismo viento de cola, lo que posiciona a los países mineros andinos como los de mejor desempeño macroeconómico en la región durante 2026.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.unsplash.com/photo-sRuz_SXLjCI?w=1200&q=80',
+  },
   {
     id: 'f001',
     titulo: 'Kevin Warsh asume la presidencia de la Fed: mercados evalúan si el nuevo jefe bajará tasas pese a inflación en 4%',
@@ -44,7 +344,7 @@ Para quienes gestionan exposición cambiaria en los próximos 30-60 días, el pe
     categoria: 'Internacional',
     fuente: 'Bloomberg',
     fecha: HOY,
-    destacada: true,
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/14820474/pexels-photo-14820474.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
@@ -64,7 +364,7 @@ Para el mercado cambiario peruano, el cobre en máximos históricos es el mejor 
     categoria: 'Internacional',
     fuente: 'Bloomberg',
     fecha: HOY,
-    destacada: true,
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
