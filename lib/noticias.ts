@@ -65,7 +65,7 @@ Para quienes tienen exposición cambiaria, el recorte del BCRP abre la posibilid
     fuente: 'Gestión',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/11251720/pexels-photo-11251720.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://revistaganamas.com.pe/wp-content/uploads/2025/11/BCRP-julio.jpg',
   },
   {
     id: 'g003',
