@@ -45,7 +45,7 @@ Si eres importador o tienes deudas en dólares, el escenario de Fed recortando e
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-KvX3L_QXTgM?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/6590628/pexels-photo-6590628.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g002',
@@ -65,7 +65,7 @@ Para quienes tienen exposición cambiaria, el recorte del BCRP abre la posibilid
     fuente: 'Gestión',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.unsplash.com/photo-Skfy8ljB7X4?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/11251720/pexels-photo-11251720.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g003',
@@ -85,7 +85,7 @@ Para empresas con operaciones en Perú, este contexto de crecimiento sostenido j
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-aChQ2cYg1ys?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/4960438/pexels-photo-4960438.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g004',
@@ -105,7 +105,7 @@ Este flujo exportador es el principal ancla del tipo de cambio en el rango S/ 3.
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-JJCrTi0lvTs?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/14020705/pexels-photo-14020705.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g005',
@@ -125,7 +125,7 @@ Para cualquier decisión cambiaria en el corto y mediano plazo, este nivel de re
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/16055836/pexels-photo-16055836.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g006',
@@ -145,7 +145,7 @@ Para empresas del sector, el contexto de recuperación justifica planes de expan
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-ip0yX8W1veE?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/31091544/pexels-photo-31091544.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g007',
@@ -165,7 +165,7 @@ El impacto cambiario es claro: más ingresos de exportación de cobre = más dó
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-0p37Ch2LYQc?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/7883869/pexels-photo-7883869.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g008',
@@ -185,7 +185,7 @@ Para el tipo de cambio, el petróleo alto es un factor mixto: encarece la factur
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-pPjKPDLTyYw?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g009',
@@ -205,7 +205,7 @@ Las correcciones del oro son oportunidades para exportadores peruanos de oro con
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-ktXmcyqYx54?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g010',
@@ -225,7 +225,7 @@ Para empresas con nómina o costos en soles y cuentas por cobrar en dólares, el
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-vKNRKjSNbTo?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/5831529/pexels-photo-5831529.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g011',
@@ -245,7 +245,7 @@ La convergencia de DXY débil + cobre en máximos + BCRP recortando es una triad
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-VM_6EtTAfDQ?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/5831251/pexels-photo-5831251.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g012',
@@ -265,7 +265,7 @@ Para quienes tienen exposición a activos digitales en Perú, el contexto sugier
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-kM6QNrgo0YE?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/7267611/pexels-photo-7267611.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g013',
@@ -285,7 +285,7 @@ Para el tipo de cambio PEN/USD, la estabilización argentina es un factor de fon
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-rISkvc4qjE8?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/16228260/pexels-photo-16228260.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g014',
@@ -305,7 +305,7 @@ El dato relevante para Perú es que la inflación en servicios sigue siendo el r
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-H23f-2byY_E?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/7613843/pexels-photo-7613843.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g015',
@@ -325,7 +325,7 @@ La diferencia es que Chile depende aún más del cobre que Perú (representa el 
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.unsplash.com/photo-sRuz_SXLjCI?w=1200&q=80',
+    imagen: 'https://images.pexels.com/photos/15138925/pexels-photo-15138925.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'f001',
