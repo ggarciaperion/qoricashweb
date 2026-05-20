@@ -45,7 +45,7 @@ Si gestionas exposición cambiaria y necesitas comprar dólares para pagos de im
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/6590628/pexels-photo-6590628.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/4968645/pexels-photo-4968645.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h002',
@@ -65,7 +65,7 @@ Para empresas con ingresos en dólares vinculados a exportaciones mineras (y sus
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/5831529/pexels-photo-5831529.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/366551/pexels-photo-366551.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h003',
@@ -85,7 +85,7 @@ Para empresas y personas con ingresos en soles que necesiten dólares para viaje
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/2231744/pexels-photo-2231744.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/1340552/pexels-photo-1340552.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h004',
@@ -105,7 +105,7 @@ Para quienes importan bienes o tienen deudas en dólares, este es un contexto fa
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/11251720/pexels-photo-11251720.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/7447655/pexels-photo-7447655.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h005',
@@ -125,7 +125,7 @@ Para empresas que operan en Perú, el escenario de crecimiento de 3.5% es modera
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/16055836/pexels-photo-16055836.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/7054380/pexels-photo-7054380.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h006',
@@ -145,7 +145,7 @@ La concentración del 74% de exportaciones en minería también implica vulnerab
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/3943716/pexels-photo-3943716.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/29988955/pexels-photo-29988955.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h007',
@@ -165,7 +165,7 @@ Para quienes operan con dólares de forma regular, considerar cerrar posiciones 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/14820474/pexels-photo-14820474.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/6534073/pexels-photo-6534073.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h008',
@@ -185,7 +185,7 @@ Para Perú, el riesgo chino es mitigado parcialmente porque la demanda de cobre 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/28806603/pexels-photo-28806603.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h009',
@@ -205,7 +205,7 @@ Para el tipo de cambio, el canal principal es indirecto: petróleo caro implica 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/10020724/pexels-photo-10020724.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h010',
@@ -225,7 +225,7 @@ Para quienes tienen ingresos en soles y gastos en dólares (viajes, matrículas 
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7883869/pexels-photo-7883869.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/4386474/pexels-photo-4386474.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h011',
@@ -245,7 +245,7 @@ Sin embargo, este paralelo también implica el mismo riesgo de reversión: si el
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/17489160/pexels-photo-17489160.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/8919573/pexels-photo-8919573.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h012',
@@ -265,7 +265,7 @@ Para empresas mineras y sus cadenas de proveedores, la corrección técnica actu
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/3721272/pexels-photo-3721272.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h013',
@@ -285,7 +285,7 @@ Para empresas que hacen negocios con Argentina, el tipo de cambio oficial en $1,
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7267611/pexels-photo-7267611.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/34437872/pexels-photo-34437872.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h014',
@@ -305,7 +305,7 @@ Para inversores en empresas peruanas del sector minero, el paralelo con Chile re
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/31091544/pexels-photo-31091544.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/2017747/pexels-photo-2017747.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'h015',
@@ -325,7 +325,7 @@ Para empresas peruanas que compiten con productos brasileños o que tienen prove
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/4386471/pexels-photo-4386471.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/11678630/pexels-photo-11678630.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'g001',
