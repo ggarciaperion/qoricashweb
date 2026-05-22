@@ -1,8 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAlertas, markAlertasNotificadas, type AlertaTC } from '@/lib/alertas';
+import { getAlertas, markAlertasNotificadas, updateLastCheck, type AlertaTC } from '@/lib/alertas';
+
+// ── TC fetcher ─────────────────────────────────────────────────────────────────
+async function fetchTC(): Promise<{ compra: number; venta: number }> {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const res = await fetch(`${apiUrl}/api/platform/public/exchange-rates`, {
+    next: { revalidate: 0 },
+  });
+  if (!res.ok) throw new Error(`TC fetch failed: HTTP ${res.status}`);
+  const data = await res.json();
+  const compra = Number(data.data?.tipo_compra ?? data.tipo_compra);
+  const venta  = Number(data.data?.tipo_venta  ?? data.tipo_venta);
+  if (!compra || !venta) throw new Error('TC inválido recibido del backend');
+  return { compra, venta };
+}
 
 // ── Email sender ──────────────────────────────────────────────────────────────
-async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number) {
+async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    // CRITICAL: throw so the caller knows the email was NOT sent
+    throw new Error('RESEND_API_KEY no configurada — email no enviado');
+  }
+
   const tcActual = alerta.moneda === 'compra' ? compra : venta;
   const label = alerta.moneda === 'compra' ? 'Compra' : 'Venta';
   const condicion = alerta.tipo === 'sobre' ? 'por encima de' : 'por debajo de';
@@ -103,18 +123,6 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number) {
 </body>
 </html>`;
 
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
-    // Localhost dev mode — log instead of sending
-    console.log('\n📬 [ALERTA TC] Email que se enviaría:');
-    console.log(`  Para:    ${alerta.email}`);
-    console.log(`  Asunto:  ¡Alerta de tipo de cambio activada! TC ${alerta.moneda} = S/ ${tcActual.toFixed(3)}`);
-    console.log(`  Condición: ${alerta.moneda} ${alerta.tipo === 'sobre' ? '>' : '<'} ${alerta.valor}`);
-    console.log('  (Agrega RESEND_API_KEY al .env.local para enviar emails reales)\n');
-    return;
-  }
-
   const { Resend } = await import('resend');
   const resend = new Resend(apiKey);
 
@@ -126,57 +134,91 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number) {
   });
 }
 
-// ── Check handler ─────────────────────────────────────────────────────────────
-export async function POST(req: NextRequest) {
+// ── Core check logic (shared by GET cron + POST manual) ───────────────────────
+async function runCheck(compra?: number, venta?: number): Promise<NextResponse> {
   try {
-    // Accept rates from request body, or fetch them
-    let compra: number;
-    let venta: number;
-
-    const body = await req.json().catch(() => null);
-
-    if (body?.compra && body?.venta) {
-      compra = Number(body.compra);
-      venta = Number(body.venta);
-    } else {
-      // Fetch from Flask backend
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/platform/public/exchange-rates`, {
-        next: { revalidate: 0 },
-      });
-      if (!res.ok) return NextResponse.json({ error: 'No se pudo obtener el TC' }, { status: 502 });
-      const data = await res.json();
-      compra = Number(data.data?.tipo_compra ?? data.tipo_compra);
-      venta = Number(data.data?.tipo_venta ?? data.tipo_venta);
+    if (!compra || !venta) {
+      const tc = await fetchTC();
+      compra = tc.compra;
+      venta  = tc.venta;
     }
-
-    if (!compra || !venta) return NextResponse.json({ error: 'TC inválido' }, { status: 400 });
 
     const alertas = await getAlertas();
     const activas = alertas.filter((a) => a.activa && !a.notificada);
 
     const disparadas: AlertaTC[] = [];
-
     for (const alerta of activas) {
-      const tcActual = alerta.moneda === 'compra' ? compra : venta;
-      const condicionCumplida =
+      const tcActual = alerta.moneda === 'compra' ? compra! : venta!;
+      const cumplida =
         (alerta.tipo === 'sobre' && tcActual >= alerta.valor) ||
-        (alerta.tipo === 'bajo' && tcActual <= alerta.valor);
-
-      if (condicionCumplida) disparadas.push(alerta);
+        (alerta.tipo === 'bajo'  && tcActual <= alerta.valor);
+      if (cumplida) disparadas.push(alerta);
     }
 
-    if (disparadas.length === 0) {
-      return NextResponse.json({ checked: activas.length, triggered: 0 });
+    let sent = 0;
+    let failed = 0;
+    const sentIds: string[] = [];
+    const notificada_at = new Date().toISOString();
+
+    if (disparadas.length > 0) {
+      const results = await Promise.allSettled(
+        disparadas.map((a) => sendAlertEmail(a, compra!, venta!))
+      );
+
+      results.forEach((result, i) => {
+        if (result.status === 'fulfilled') {
+          sentIds.push(disparadas[i].id);
+          sent++;
+        } else {
+          failed++;
+          console.error(`[alertas/check] Email FAILED for ${disparadas[i].email}:`, result.reason);
+        }
+      });
+
+      // Only mark as notified the ones whose email was actually sent
+      if (sentIds.length > 0) {
+        await markAlertasNotificadas(sentIds, {
+          notificada_at,
+          tc_disparado: venta,  // store the TC at trigger time
+        });
+      }
     }
 
-    // Send emails and mark as notified
-    await Promise.allSettled(disparadas.map((a) => sendAlertEmail(a, compra, venta)));
-    await markAlertasNotificadas(disparadas.map((a) => a.id));
+    const summary = {
+      checked: activas.length,
+      triggered: disparadas.length,
+      sent,
+      failed,
+      compra,
+      venta,
+    };
 
-    return NextResponse.json({ checked: activas.length, triggered: disparadas.length });
-  } catch (e) {
+    // Persist last check info
+    await updateLastCheck({ ...summary, at: notificada_at }).catch(() => {});
+
+    return NextResponse.json(summary);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Error interno';
     console.error('[alertas/check]', e);
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
+}
+
+// ── GET handler — Vercel Cron calls this ──────────────────────────────────────
+export async function GET(req: NextRequest) {
+  const isVercelCron = req.headers.get('x-vercel-cron') === 'true';
+  const secret = req.nextUrl.searchParams.get('secret');
+  const isAuthorized = isVercelCron || (secret && secret === process.env.CRON_SECRET);
+  if (!isAuthorized) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  }
+  return runCheck();
+}
+
+// ── POST handler — manual trigger from Flask dashboard ────────────────────────
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => null);
+  const compra = body?.compra ? Number(body.compra) : undefined;
+  const venta  = body?.venta  ? Number(body.venta)  : undefined;
+  return runCheck(compra, venta);
 }

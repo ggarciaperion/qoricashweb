@@ -10,11 +10,23 @@ export interface AlertaTC {
   moneda: 'compra' | 'venta';    // which rate to compare
   activa: boolean;
   notificada: boolean;
+  notificada_at?: string;        // ISO timestamp when email was successfully sent
+  tc_disparado?: number;         // TC value that triggered the alert
   fecha: string;
-  esProspecto?: boolean;          // true = user was not registered when creating the alert
+  esProspecto?: boolean;         // true = user was not registered when creating the alert
 }
 
-const REDIS_KEY = 'qoricash:alertas';
+export interface LastCheckInfo {
+  at: string;       // ISO timestamp
+  compra: number;
+  venta: number;
+  checked: number;
+  triggered: number;
+  sent: number;
+}
+
+const REDIS_KEY       = 'qoricash:alertas';
+const LAST_CHECK_KEY  = 'qoricash:alertas:lastCheck';
 
 function getRedis(): Redis | null {
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
@@ -64,12 +76,39 @@ export async function deleteAlerta(id: string, userId: number): Promise<boolean>
   return true;
 }
 
-export async function markAlertasNotificadas(ids: string[]): Promise<void> {
+export async function markAlertasNotificadas(
+  ids: string[],
+  extra?: { notificada_at?: string; tc_disparado?: number }
+): Promise<void> {
   const redis = getRedis();
   if (!redis) return;
   const current = await getAlertas();
   const updated = current.map((a) =>
-    ids.includes(a.id) ? { ...a, activa: false, notificada: true } : a
+    ids.includes(a.id)
+      ? {
+          ...a,
+          activa: false,
+          notificada: true,
+          notificada_at: extra?.notificada_at ?? new Date().toISOString(),
+          ...(extra?.tc_disparado !== undefined ? { tc_disparado: extra.tc_disparado } : {}),
+        }
+      : a
   );
   await redis.set(REDIS_KEY, updated);
+}
+
+export async function updateLastCheck(info: LastCheckInfo): Promise<void> {
+  const redis = getRedis();
+  if (!redis) return;
+  await redis.set(LAST_CHECK_KEY, info);
+}
+
+export async function getLastCheck(): Promise<LastCheckInfo | null> {
+  const redis = getRedis();
+  if (!redis) return null;
+  try {
+    return await redis.get<LastCheckInfo>(LAST_CHECK_KEY);
+  } catch {
+    return null;
+  }
 }
