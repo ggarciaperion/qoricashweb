@@ -31,20 +31,31 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): 
 <!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
-<body style="margin:0;padding:0;background:#F1F5F9;font-family:'Segoe UI',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F1F5F9;padding:32px 16px;">
+<body style="margin:0;padding:0;background:#ffffff;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;padding:32px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);">
 
         <!-- Header -->
         <tr>
-          <td style="background:#0D1B2A;padding:24px 32px;">
+          <td style="background:#0D1B2A;padding:20px 32px;">
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td>
-                  <span style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Qori<span style="color:#5CB85C;">Cash</span></span>
+                <td style="vertical-align:middle;">
+                  <table cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:10px;">
+                        <img src="https://app.qoricash.pe/static/images/logo-email.png" height="42" alt="QoriCash" style="display:block;border:0;"/>
+                      </td>
+                      <td style="vertical-align:middle;">
+                        <span style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:2px;text-transform:uppercase;">QORICASH</span>
+                        <br/>
+                        <span style="font-size:10px;color:#94a3b8;letter-spacing:0.5px;">Casa de Cambio Digital</span>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
-                <td align="right">
+                <td align="right" style="vertical-align:middle;">
                   <span style="background:#5CB85C;color:#ffffff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:20px;">&#9650; Alerta activada</span>
                 </td>
               </tr>
