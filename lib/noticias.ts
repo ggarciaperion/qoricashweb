@@ -45,7 +45,7 @@ Para quienes gestionan exposición cambiaria: si tienes pagos en dólares progra
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/4968645/pexels-photo-4968645.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/12504957/pexels\-photo\-12504957\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j002',
@@ -65,7 +65,7 @@ Para importadores y deudores en dólares, S/ 3.45 es una oportunidad para adelan
     fuente: 'Gestión',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/11251720/pexels-photo-11251720.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/29027606/pexels\-photo\-29027606\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j003',
@@ -85,7 +85,7 @@ Para el sector financiero y empresarial, el pipeline de US$ 4,200 millones para 
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/1340552/pexels-photo-1340552.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/5505961/pexels\-photo\-5505961\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j004',
@@ -105,7 +105,7 @@ Para empresas agroexportadoras que facturan en dólares y tienen costos en soles
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/366551/pexels-photo-366551.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/13277183/pexels\-photo\-13277183\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j005',
@@ -145,7 +145,7 @@ Para el mercado cambiario, el aumento del crédito de consumo en soles es un fac
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7054380/pexels-photo-7054380.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/29302360/pexels\-photo\-29302360\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j007',
@@ -165,7 +165,7 @@ Si el plan fracasa nuevamente, el DXY podría caer por debajo de 100 y el sol ap
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/3721272/pexels-photo-3721272.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/17507798/pexels\-photo\-17507798\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j008',
@@ -185,7 +185,7 @@ Si el LME Copper supera los US$ 4.95/lb y consolida un nuevo récord, el BCRP en
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7447655/pexels-photo-7447655.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/31091544/pexels\-photo\-31091544\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j009',
@@ -205,7 +205,7 @@ Para el tipo de cambio, un petróleo más barato reduce la demanda de dólares p
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/3207536/pexels\-photo\-3207536\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j010',
@@ -225,7 +225,7 @@ Para gestores de FX en empresas peruanas: el análisis técnico sugiere que el p
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/31091544/pexels-photo-31091544.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/29611783/pexels\-photo\-29611783\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j011',
@@ -245,7 +245,7 @@ Para Perú, el precio del oro a estos niveles sigue siendo muy favorable para la
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/8919573/pexels-photo-8919573.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/8442325/pexels\-photo\-8442325\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j012',
@@ -265,7 +265,7 @@ Para el mercado cambiario local, la demanda de Bitcoin implica compras de dólar
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/4386474/pexels-photo-4386474.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/8919573/pexels\-photo\-8919573\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j013',
@@ -285,7 +285,7 @@ Para el tipo de cambio peruano, una Argentina más estable es una noticia margin
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/2017747/pexels-photo-2017747.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/34004034/pexels\-photo\-34004034\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j014',
@@ -305,7 +305,7 @@ Para Perú, el ciclo de flexibilización colombiano es un referente de que la re
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7883869/pexels-photo-7883869.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/19676231/pexels\-photo\-19676231\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'j015',
@@ -325,7 +325,7 @@ Para Perú, la sincronía con Chile refuerza la visión de que el sol seguirá a
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/28806603/pexels-photo-28806603.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images\.pexels\.com/photos/29713911/pexels\-photo\-29713911\.jpeg\?auto=compress\&cs=tinysrgb\&w=1200',
   },
   {
     id: 'i001',
