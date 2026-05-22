@@ -56,7 +56,7 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): 
                   </table>
                 </td>
                 <td align="right" style="vertical-align:middle;">
-                  <span style="color:#ffffff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;">&#9650; Alerta activada</span>
+                  <span style="background:#5CB85C;color:#ffffff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:20px;">&#9650; Alerta activada</span>
                 </td>
               </tr>
             </table>
