@@ -45,7 +45,7 @@ Para empresas importadoras de energía o derivados del petróleo, este es un mom
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/15970032/pexels-photo-15970032.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k002',
@@ -65,7 +65,7 @@ Para importadores, el entorno de sol fuerte que se prevé durante al menos el se
     fuente: 'Gestión',
     fecha: HOY,
     destacada: true,
-    imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/1554646/pexels-photo-1554646.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k003',
@@ -85,7 +85,7 @@ Para personas y empresas que necesitan dólares en el corto plazo (viajes, impor
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/19985010/pexels-photo-19985010.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/20934324/pexels-photo-20934324.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k004',
@@ -105,7 +105,7 @@ En términos prácticos, este contexto macroeconómico sólido reduce la probabi
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/5831355/pexels-photo-5831355.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k005',
@@ -125,7 +125,7 @@ Para el tipo de cambio PEN/USD, el contexto de precios metálicos altos es el pr
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/29336321/pexels-photo-29336321.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k006',
@@ -165,7 +165,7 @@ Para Perú, un recorte de la Fed en septiembre, si se materializa, abre espacio 
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/4705378/pexels-photo-4705378.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/534229/pexels-photo-534229.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k008',
@@ -225,7 +225,7 @@ Para operadores de tipo de cambio y tesoreros corporativos, este es un momento d
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/19985010/pexels-photo-19985010.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/31738798/pexels-photo-31738798.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k011',
@@ -285,7 +285,7 @@ Para el tipo de cambio peruano, el contexto de Argentina estabilizada es margina
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/16228260/pexels-photo-16228260.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/15574935/pexels-photo-15574935.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'k014',
