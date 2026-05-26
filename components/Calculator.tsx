@@ -109,10 +109,10 @@ export default function Calculator({
     <div className="w-full bg-transparent p-3 pt-2 md:p-6 md:pt-4">
       {/* Header con indicadores */}
       <div className="flex items-center justify-between mb-2 md:mb-3 px-1">
-        <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide">
-          Tipos de cambio
+        <p className="text-xs text-gray-600 font-semibold">
+          Tipos de cambio en tiempo real
         </p>
-        <div className="flex items-center text-green-700 text-[10px] font-semibold bg-green-50 border border-green-100 px-2.5 py-1 rounded-full">
+        <div className="flex items-center text-green-600 text-xs font-bold bg-green-50/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
           <div className="relative flex items-center mr-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-green-600"></div>
             <div className="absolute w-1.5 h-1.5 rounded-full bg-green-600 animate-ping"></div>
@@ -127,13 +127,13 @@ export default function Calculator({
           onClick={() => setOperationType('Compra')}
           className={`py-3 px-4 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Compra'
-              ? 'bg-secondary text-white shadow-md'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-white/70'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-[1.02]'
+              : 'text-gray-700 hover:text-gray-900 hover:bg-white/60'
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Compra</div>
           {ratesReady ? (
-            <div className="text-[15px] font-bold tabular-nums">S/ {exchangeRates.compra.toFixed(3)}</div>
+            <div className="text-base font-bold">S/ {exchangeRates.compra.toFixed(3)}</div>
           ) : (
             <div className="h-5 w-16 rounded bg-current opacity-20 animate-pulse mx-auto mt-0.5" />
           )}
@@ -142,13 +142,13 @@ export default function Calculator({
           onClick={() => setOperationType('Venta')}
           className={`py-3 px-4 font-bold text-sm rounded-lg transition-all ${
             operationType === 'Venta'
-              ? 'bg-secondary text-white shadow-md'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-white/70'
+              ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-[1.02]'
+              : 'text-gray-700 hover:text-gray-900 hover:bg-white/60'
           }`}
         >
           <div className="text-xs font-medium opacity-90 mb-0.5">Venta</div>
           {ratesReady ? (
-            <div className="text-[15px] font-bold tabular-nums">S/ {exchangeRates.venta.toFixed(3)}</div>
+            <div className="text-base font-bold">S/ {exchangeRates.venta.toFixed(3)}</div>
           ) : (
             <div className="h-5 w-16 rounded bg-current opacity-20 animate-pulse mx-auto mt-0.5" />
           )}
@@ -159,7 +159,7 @@ export default function Calculator({
       <div className="space-y-0">
         {/* Fila superior: Input */}
         <div
-          className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200/80 hover:border-primary-300 focus-within:border-primary-400 focus-within:ring-1 focus-within:ring-primary-400/20 transition-all cursor-text shadow-sm relative z-10"
+          className="bg-white/70 backdrop-blur-sm rounded-xl p-3 border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md relative z-10"
           onClick={(e) => {
             const input = document.getElementById('amount-input') as HTMLInputElement;
             if (input) {
@@ -247,12 +247,12 @@ export default function Calculator({
         <div className={`flex justify-between text-xs font-semibold px-1 pt-2 transition-opacity duration-300 ${
           amountOutput ? 'opacity-100' : 'opacity-0'
         }`}>
-          <span className="flex items-center gap-1.5 text-green-700 bg-green-50 px-2.5 py-1 rounded-lg text-[11px] font-semibold">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
-            Ahorro vs. banco: S/ {calculateSavings()}
+          <span className="flex items-center gap-1.5 text-green-700 bg-green-50/80 backdrop-blur-sm px-2.5 py-1 rounded-lg">
+            <span>💰</span>
+            Ahorro: S/ {calculateSavings()}
           </span>
           {ratesReady ? (
-            <span className="bg-gray-50 border border-gray-200/80 px-3 py-1 rounded-lg font-semibold text-gray-700 text-[11px]">TC S/ {currentRate.toFixed(3)}</span>
+            <span className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-lg font-bold text-gray-800 border border-white/60">TC: {currentRate.toFixed(3)}</span>
           ) : (
             <div className="h-6 w-20 rounded-lg bg-gray-200 animate-pulse" />
           )}
