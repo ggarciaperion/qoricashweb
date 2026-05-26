@@ -12,6 +12,7 @@ import { useExchangeStore } from '@/lib/store/exchangeStore';
 import TradingViewWidget from '@/components/TradingViewWidget';
 import {
   ArrowRight,
+  ArrowUpRight,
   Shield,
   Clock,
   TrendingUp,
@@ -20,7 +21,6 @@ import {
   Users,
   CheckCircle2,
   Smartphone,
-  Globe,
   Lock,
   UserPlus,
   Calculator as CalculatorIcon,
@@ -28,12 +28,13 @@ import {
   LogOut,
   User as UserIcon,
   ChevronDown,
-  HelpCircle,
   Menu,
   X,
   Gift,
   Share2,
-  Coins
+  Coins,
+  Zap,
+  Bell,
 } from 'lucide-react';
 import AlertaTCModal from '@/components/AlertaTCModal';
 import AlertaTCBanner from '@/components/AlertaTCBanner';
@@ -50,6 +51,7 @@ export default function Home() {
   const [navScrolled, setNavScrolled] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [savingsAmount, setSavingsAmount] = useState('1000');
   const [noticiasHome, setNoticiasHome] = useState<Array<{
     id: string; titulo: string; descripcion: string; categoria: string; fuente: string; fecha: string; destacada: boolean; imagen?: string;
   }>>([]);
@@ -63,7 +65,6 @@ export default function Home() {
 
   const { currentRates } = useExchangeStore();
 
-  // Check TC alerts whenever rates update
   const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
   useEffect(() => {
     if (!currentRates) return;
@@ -79,67 +80,35 @@ export default function Home() {
     }).catch(() => {});
   }, [currentRates]);
 
-  // Punto de referencia BCRP interdiario (actualizar cuando el mercado cambie significativamente)
   const BCRP_REF = 3.39;
   const rateDirection: 'up' | 'down' | 'stable' | null = currentRates
-    ? currentRates.tipo_venta > BCRP_REF + 0.005
-      ? 'up'
-      : currentRates.tipo_venta < BCRP_REF - 0.005
-      ? 'down'
-      : 'stable'
+    ? currentRates.tipo_venta > BCRP_REF + 0.005 ? 'up'
+    : currentRates.tipo_venta < BCRP_REF - 0.005 ? 'down'
+    : 'stable'
     : null;
 
-  useEffect(() => {
-    // TODO: Fetch real rates from API
-    // fetchExchangeRates();
-  }, []);
+  useEffect(() => {}, []);
 
-  // El cierre del menú al hacer clic fuera se maneja con un backdrop fixed (ver JSX)
-
-  // Intersection Observer for banks section animation
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsBanksSectionVisible(true);
-          }
-        });
-      },
+      (entries) => { entries.forEach((e) => { if (e.isIntersecting) setIsBanksSectionVisible(true); }); },
       { threshold: 0.2 }
     );
-
-    if (banksSectionRef.current) {
-      observer.observe(banksSectionRef.current);
-    }
-
-    return () => {
-      if (banksSectionRef.current) {
-        observer.unobserve(banksSectionRef.current);
-      }
-    };
+    if (banksSectionRef.current) observer.observe(banksSectionRef.current);
+    return () => { if (banksSectionRef.current) observer.unobserve(banksSectionRef.current); };
   }, []);
 
-  // Navbar shadow on scroll
   useEffect(() => {
     const onScroll = () => setNavScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Scroll reveal — Intersection Observer
   useEffect(() => {
     const els = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      (entries) => { entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -154,1253 +123,777 @@ export default function Home() {
     window.location.href = '/';
   };
 
+  const qoriCompra = currentRates ? currentRates.tipo_compra : parseFloat(buyRate);
+  const qoriVenta  = currentRates ? currentRates.tipo_venta  : parseFloat(sellRate);
+
+  const BANKS = [
+    { name: 'BCP',        compra: 3.680, venta: 3.815 },
+    { name: 'BBVA',       compra: 3.675, venta: 3.825 },
+    { name: 'Scotiabank', compra: 3.665, venta: 3.835 },
+    { name: 'Interbank',  compra: 3.685, venta: 3.808 },
+  ];
+
+  const usd = parseFloat(savingsAmount) || 0;
+  const savingVsBCP  = ((BANKS[0].venta - qoriVenta) * usd).toFixed(2);
+  const savingBest   = ((Math.min(...BANKS.map((b) => b.venta)) - qoriVenta) * usd).toFixed(2);
+
   return (
     <>
-    {loggingOut && createPortal(
-      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
-        <div className="flex flex-col items-center gap-5">
-          <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto animate-logo-exit" />
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">
-              Cerrando sesión...
-            </p>
-            <div className="flex gap-1.5 animate-slide-up-fade">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-bounce [animation-delay:300ms]" />
-            </div>
-          </div>
-        </div>
-      </div>,
-      document.body
-    )}
-    <main className="min-h-screen">
-      {/* Header */}
-      <header className={`fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`}>
-        <nav className="w-full px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition-opacity">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-10 sm:h-14 md:h-16 w-auto" />
-              <span className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-gray-900">
-                QoriCash
-              </span>
-            </Link>
-            <div className="hidden lg:flex items-center space-x-8">
-              <Link href="/sobre-nosotros" className="text-gray-700 hover:text-primary-600 transition">
-                Nosotros
-              </Link>
-              <a href="#como-funciona" className="text-gray-700 hover:text-primary-600 transition">
-                Cómo Funciona
-              </a>
-              <Link href="/noticias" className="text-gray-700 hover:text-primary-600 transition">
-                Noticias
-              </Link>
-              <Link href="/dashboard/promociones" className="text-gray-700 hover:text-primary-600 transition">
-                Promociones
-              </Link>
-
-              {isAuthenticated ? (
-                <div className="flex items-center gap-3">
-                  {user && (
-                    <AlertaTCModal
-                      user={user}
-                      currentCompra={currentRates?.tipo_compra}
-                      currentVenta={currentRates?.tipo_venta}
-                    />
-                  )}
-                  <div className="relative">
-                    <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                      className="flex items-center space-x-2 text-gray-700 hover:text-primary-600 transition group"
-                    >
-                      <UserIcon className="w-5 h-5" />
-                      <span className="font-medium">
-                        {user?.document_type === 'RUC'
-                          ? user?.razon_social || user?.nombres
-                          : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                    </button>
-
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <Link href="/login" className="text-gray-700 hover:text-primary-600 transition">
-                    Iniciar Sesión
-                  </Link>
-                  <Link
-                    href="/crear-cuenta"
-                    className="bg-primary-600 text-white px-6 py-2 rounded-full hover:bg-primary-700 transition shadow-md hover:shadow-lg"
-                  >
-                    Regístrate
-                  </Link>
-                </>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-700 hover:text-primary-600 transition"
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
-        </nav>
-      </header>
-
-      {/* Mobile Menu Backdrop */}
-      <div
-        className={`lg:hidden fixed inset-0 z-[45] transition-opacity duration-300 ${
-          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        style={{ background: 'rgba(15,23,42,0.5)' }}
-        onClick={() => setIsMobileMenuOpen(false)}
-      />
-
-      {/* Mobile Menu Panel */}
-      <div
-        className={`lg:hidden fixed left-0 right-0 z-[49] bg-white shadow-2xl rounded-b-3xl overflow-hidden transition-all duration-300 ease-out ${
-          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        style={{
-          top: '80px',
-          maxHeight: isMobileMenuOpen ? '82vh' : '0px',
-          transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
-        }}
-      >
-        <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
-
-          {/* Sección navegación */}
-          <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Menú</p>
-          <div className="space-y-1 mb-4">
-            {[
-              { href: '/sobre-nosotros', label: 'Nosotros',       Icon: Users,        iconCls: 'text-blue-600',   bgCls: 'bg-blue-50'    },
-              { href: '#como-funciona',  label: 'Cómo Funciona',  Icon: CheckCircle2, iconCls: 'text-emerald-600', bgCls: 'bg-emerald-50', isAnchor: true },
-              { href: '/noticias',       label: 'Noticias',       Icon: TrendingUp,   iconCls: 'text-amber-600',  bgCls: 'bg-amber-50'   },
-              { href: '/dashboard/promociones', label: 'Promociones', Icon: Gift,     iconCls: 'text-violet-600', bgCls: 'bg-violet-50'  },
-            ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
-              const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
-              const inner = (
-                <>
-                  <div className={`w-9 h-9 rounded-xl ${bgCls} flex items-center justify-center flex-shrink-0`}>
-                    <Icon className={`w-4 h-4 ${iconCls}`} />
-                  </div>
-                  <span className="font-medium flex-1">{label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
-                </>
-              );
-              return isAnchor
-                ? <a key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</a>
-                : <Link key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</Link>;
-            })}
-          </div>
-
-          {/* Sección cuenta */}
-          <div className="border-t border-gray-100 pt-4">
-            {isAuthenticated ? (
-              <>
-                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Mi Cuenta</p>
-                <div className="space-y-1">
-                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <UserIcon className="w-4 h-4 text-gray-600" />
-                    </div>
-                    <span className="font-medium flex-1">Mi perfil</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
-                  </Link>
-                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <Banknote className="w-4 h-4 text-gray-600" />
-                    </div>
-                    <span className="font-medium flex-1">Mi Dashboard</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
-                  </Link>
-                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-                      <HelpCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                    <span className="font-medium flex-1">Ayuda</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-green-400 group-hover:translate-x-0.5 transition-all" />
-                  </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                    <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
-                      <LogOut className="w-4 h-4 text-red-500" />
-                    </div>
-                    <span className="font-medium">Cerrar Sesión</span>
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="space-y-2">
-                <Link href="/login" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                    <Lock className="w-4 h-4 text-gray-600" />
-                  </div>
-                  <span className="font-medium flex-1">Iniciar Sesión</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
-                </Link>
-                <Link href="/crear-cuenta" className="flex items-center gap-3 px-4 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-bold shadow-lg shadow-primary-200 hover:from-primary-700 hover:to-primary-800 transition-all" onClick={() => setIsMobileMenuOpen(false)}>
-                  <UserPlus className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1">Regístrate gratis</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+      {loggingOut && createPortal(
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
+          <div className="flex flex-col items-center gap-5">
+            <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto animate-logo-exit" />
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">Cerrando sesión...</p>
+              <div className="flex gap-1.5 animate-slide-up-fade">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-bounce [animation-delay:300ms]" />
               </div>
-            )}
+            </div>
           </div>
-
-        </div>
-      </div>
-
-      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
-      {isUserMenuOpen && createPortal(
-        <>
-          <div
-            className="fixed inset-0"
-            style={{ zIndex: 99998 }}
-            onClick={() => setIsUserMenuOpen(false)}
-          />
-          <div
-            className="fixed right-8 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-            style={{ zIndex: 99999, top: '80px' }}
-          >
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-            >
-              <UserIcon className="w-5 h-5 mr-3" />
-              Mi perfil
-            </button>
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition text-left"
-            >
-              <TrendingUp className="w-5 h-5 mr-3" />
-              Mi Dashboard
-            </button>
-            <a
-              href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition"
-              onClick={() => setIsUserMenuOpen(false)}
-            >
-              <HelpCircle className="w-5 h-5 mr-3" />
-              Ayuda
-            </a>
-            <div className="border-t border-gray-200 my-1" />
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
-            >
-              <LogOut className="w-5 h-5 mr-3" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </>,
+        </div>,
         document.body
       )}
 
-      {/* Hero Section */}
-      <section className="pt-[110px] md:pt-16 pb-0 px-4 sm:px-6 md:px-8 lg:px-12 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
-        </div>
+      <main className="min-h-screen bg-white">
 
-        <div className="w-full relative">
-          <div className="grid lg:grid-cols-12 gap-2 md:gap-6 items-center relative">
-
-            {/* Right Column: Calculator — primero en mobile */}
-            <div className="order-1 lg:order-3 lg:col-span-4 relative z-30">
-              <div className="w-full bg-transparent px-0 py-2 md:p-6 md:pt-4">
-                <Calculator
-                  initialRates={{
-                    compra: parseFloat(buyRate),
-                    venta: parseFloat(sellRate)
-                  }}
-                />
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login')}
-                    className="-mt-2 bg-primary text-white py-2 px-8 rounded-xl font-bold hover:bg-primary-600 transition shadow-md inline-flex items-center justify-center group text-sm"
-                  >
-                    Cambiar Ahora
-                    <ArrowRight className="ml-1.5 group-hover:translate-x-1 transition w-3.5 h-3.5" />
-                  </button>
-                </div>
+        {/* ────────────────────────────────────────
+            LIVE RATE BAR
+        ──────────────────────────────────────── */}
+        <div className="fixed top-0 w-full z-50 bg-white border-b border-gray-100">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="flex items-center justify-between h-9 text-[11px] text-gray-500">
+              <div className="flex items-center gap-6">
+                <span className="flex items-center gap-1.5 font-semibold text-gray-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
+                  EN VIVO
+                </span>
+                <span>
+                  Compra <strong className="text-gray-900 font-mono text-xs ml-1">S/ {qoriCompra.toFixed(3)}</strong>
+                </span>
+                <span>
+                  Venta <strong className="text-primary-600 font-mono text-xs ml-1">S/ {qoriVenta.toFixed(3)}</strong>
+                </span>
+                {rateDirection === 'up'   && <TrendingUp   className="w-3.5 h-3.5 text-emerald-500" />}
+                {rateDirection === 'down' && <TrendingDown  className="w-3.5 h-3.5 text-red-500" />}
               </div>
+              <span className="hidden md:block text-gray-400">Lun – Vie 9:00 – 18:00 &nbsp;·&nbsp; Sáb 9:00 – 13:00</span>
             </div>
-
-            {/* Left Column: Text Content — segundo en mobile */}
-            <div className="order-2 lg:order-1 lg:col-span-4 space-y-3 md:space-y-4 relative z-10 lg:pr-4">
-              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight">
-                El cambio de{' '}
-                <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
-                  dólares
-                </span>{' '}
-                que siempre quisiste tener
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-                Personas y empresas cambian millones de soles con QoriCash. Rápido, seguro y sin sorpresas.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                <button
-                  onClick={() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta')}
-                  className="inline-flex items-center justify-center bg-primary text-white px-6 py-2.5 md:py-3 rounded-full text-sm md:text-base font-bold hover:bg-primary-600 transition shadow-lg hover:shadow-xl group"
-                >
-                  Empezar Ahora
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition w-4 h-4" />
-                </button>
-                <Link
-                  href="#como-funciona"
-                  className="inline-flex items-center justify-center border-2 border-primary text-primary px-6 py-2.5 md:py-3 rounded-full text-sm md:text-base font-semibold hover:bg-primary-50 transition"
-                >
-                  Ver cómo funciona
-                </Link>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-2 md:gap-4 pt-3 md:pt-4 border-t border-gray-200">
-                <AnimatedStat
-                  value={15}
-                  prefix="< "
-                  suffix=" min"
-                  label="Tiempo de operación"
-                  duration={2000}
-                />
-                <div>
-                  <div className="text-xl md:text-2xl font-bold text-primary">S/ 0</div>
-                  <div className="text-[11px] md:text-xs text-gray-600">Comisiones ocultas</div>
-                </div>
-                <div>
-                  <div className="text-xl md:text-2xl font-bold text-primary">L–V 9–6</div>
-                  <div className="text-[11px] md:text-xs text-gray-600">Sáb 9–1pm · Atención real</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Center: Hero Image — solo desktop */}
-            <div className="order-3 lg:order-2 lg:col-span-4 flex items-center justify-center relative lg:-ml-20 z-20 hidden md:flex">
-              <div className="relative w-full max-w-[380px] h-auto">
-                <Image
-                  src="/hero-visual.png"
-                  alt="QoriCash Exchange"
-                  width={1080}
-                  height={1350}
-                  className="w-full h-auto object-contain drop-shadow-2xl relative z-10 animate-float"
-                  priority
-                  sizes="(max-width: 1024px) 300px, 500px"
-                />
-              </div>
-            </div>
-
           </div>
         </div>
-      </section>
 
-      {/* Banks Strip */}
-      <section className="pt-8 pb-10 px-6 sm:px-8 lg:px-12 relative">
-        <div ref={banksSectionRef} className={`max-w-5xl mx-auto ${isBanksSectionVisible ? 'animate-slide-in-left' : 'opacity-0'}`}>
-          <div className="grid md:grid-cols-2 gap-5 items-stretch">
+        {/* ────────────────────────────────────────
+            HEADER
+        ──────────────────────────────────────── */}
+        <header className={`fixed top-9 w-full z-40 transition-all duration-300 ${navScrolled ? 'bg-white/98 backdrop-blur-md shadow-[0_1px_0_0_#f0f0f0]' : 'bg-white/95 backdrop-blur-md'}`}>
+          <nav className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="flex items-center justify-between h-16">
 
-            {/* Contenedor 1 - Transferencias Inmediatas */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 px-6 pt-10 pb-6 hover:shadow-2xl transition-all flex flex-col">
-              <div className="absolute -top-3 left-5 bg-gradient-to-r from-green-50 to-emerald-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-green-200">
-                <span className="text-xs font-bold text-green-700">✓ Transferencias Inmediatas</span>
+              <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
+                <span className="text-xl font-display font-bold tracking-tight text-gray-900">QoriCash</span>
+              </Link>
+
+              <div className="hidden md:flex items-center gap-8">
+                {[
+                  { href: '/nosotros', label: 'Nosotros' },
+                  { href: '/#como-funciona', label: 'Cómo funciona' },
+                  { href: '/noticias', label: 'Noticias' },
+                  { href: '/dashboard/promociones', label: 'Promociones' },
+                ].map((l) => (
+                  <Link key={l.href} href={l.href} className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+                    {l.label}
+                  </Link>
+                ))}
               </div>
-              <div className="flex flex-row items-center justify-center gap-4 flex-1">
-                <div className="flex flex-col items-center gap-2 flex-1">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/BCP.png" alt="BCP" className="max-w-full max-h-full object-contain drop-shadow-md" />
+
+              <div className="hidden md:flex items-center gap-3">
+                {isAuthenticated && user ? (
+                  <div className="relative">
+                    <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+                      <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                        <UserIcon className="w-4 h-4 text-primary-600" />
+                      </div>
+                      <span>{user.primer_nombre || user.email}</span>
+                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isUserMenuOpen && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
+                        <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-gray-100 rounded-2xl shadow-xl py-1.5 z-50">
+                          <Link href="/dashboard" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl mx-1" onClick={() => setIsUserMenuOpen(false)}>
+                            <UserIcon className="w-4 h-4 text-gray-400" /> Mi cuenta
+                          </Link>
+                          <Link href="/dashboard/nueva-operacion" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl mx-1" onClick={() => setIsUserMenuOpen(false)}>
+                            <Banknote className="w-4 h-4 text-gray-400" /> Nueva operación
+                          </Link>
+                          <div className="h-px bg-gray-100 mx-3 my-1" />
+                          <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl mx-1">
+                            <LogOut className="w-4 h-4" /> Cerrar sesión
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
-                </div>
-                <div className="w-px h-14 bg-gray-200 self-center shrink-0" />
-                <div className="flex flex-col items-center gap-2 flex-1">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/Interbank.png" alt="Interbank" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[11px] font-semibold text-green-700 bg-green-50 border border-green-100 px-3 py-0.5 rounded-full">Todo el Perú</span>
-                </div>
-                <div className="w-px h-14 bg-gray-200 self-center shrink-0" />
-                <div className="flex flex-col items-center gap-2 flex-1">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/BanBif.png" alt="BanBif" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-3 py-0.5 rounded-full">Solo Lima</span>
-                </div>
+                ) : (
+                  <>
+                    <Link href="/iniciar-sesion" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-2">
+                      Iniciar sesión
+                    </Link>
+                    <Link href="/crear-cuenta" className="text-sm font-semibold bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl transition-colors">
+                      Crear cuenta
+                    </Link>
+                  </>
+                )}
               </div>
+
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden p-2 text-gray-500">
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
 
-            {/* Contenedor 2 - Interbancarias */}
-            <div className="relative bg-white/70 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 px-6 pt-10 pb-6 hover:shadow-2xl transition-all flex flex-col">
-              <div className="absolute -top-3 left-5 bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-md border border-blue-200">
-                <span className="text-xs font-bold text-blue-700">⏱ Interbancarias ≥ 2 horas</span>
-              </div>
-              <div className="grid grid-cols-4 gap-3 flex-1">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/BBVA.png" alt="BBVA" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/Scotiabank.png" alt="Scotiabank" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <img src="/Banco Pichincha.png" alt="Banco Pichincha" className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-full h-20 flex items-center justify-center">
-                    <div className="text-xs font-bold text-gray-600 text-center bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 leading-snug">Otros<br/>bancos</div>
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full whitespace-nowrap">Solo Lima</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section — Social Proof */}
-      <section className="py-10 bg-secondary border-y border-white/5 relative overflow-hidden reveal">
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5 rounded-2xl overflow-hidden">
-            {[
-              { value: 8500, suffix: '+', label: 'Usuarios registrados', prefix: '' },
-              { value: 18, prefix: 'S/ ', suffix: 'M+', label: 'Soles cambiados' },
-              { value: 4200, suffix: '+', label: 'Operaciones completadas', prefix: '' },
-              { value: 4.8, decimals: 1, suffix: '★', label: 'Satisfacción', prefix: '' },
-            ].map((stat, i) => (
-              <div key={i} className={`flex flex-col items-center gap-1 py-8 px-4 bg-secondary text-center animate-fade-up stagger-${i + 1}`}>
-                <div className="text-2xl md:text-3xl font-display font-bold text-primary-400 animate-number-glow">
-                  <AnimatedStat value={stat.value} prefix={stat.prefix || ''} suffix={stat.suffix} label="" duration={2000 + i * 200} decimals={stat.decimals} />
-                </div>
-                <div className="text-gray-500 text-xs font-medium tracking-wide uppercase">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          COMPARISON — ¿Cuánto ahorras con QoriCash?
-      ══════════════════════════════════════════════ */}
-      <section className="relative py-12 bg-gray-950 overflow-hidden reveal">
-        {/* Background decoration */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/8 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-green-500/8 rounded-full blur-3xl" />
-          <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px)', backgroundSize: '56px 56px' }} />
-        </div>
-
-        <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
-              Transparencia total
-            </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">
-              ¿Cuánto ahorras con{' '}
-              <span className="bg-gradient-to-r from-primary-400 to-green-400 bg-clip-text text-transparent">QoriCash</span>?
-            </h2>
-            <p className="text-gray-400 max-w-xl mx-auto text-sm">
-              Comparamos en tiempo real. Decide con información real, no estimaciones.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-5 gap-6 items-start">
-            {/* Left — savings card */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-gradient-to-br from-green-500/15 to-primary-500/10 border border-green-500/25 rounded-2xl p-8">
-                <p className="text-green-400 text-sm font-semibold mb-3">Al vender $1,000 dólares</p>
-                <div className="text-6xl md:text-7xl font-display font-bold text-white mb-1">
-                  {currentRates ? `S/ ${((currentRates.tipo_compra - 3.330) * 1000).toFixed(0)}` : '—'}
-                </div>
-                <p className="text-gray-400 text-sm mb-8">más de lo que recibirías en un banco</p>
-                <div className="space-y-3 border-t border-white/10 pt-6">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400 text-sm">Con QoriCash recibes</span>
-                    {currentRates ? <span className="font-bold text-green-400 text-lg">S/ {(currentRates.tipo_compra * 1000).toFixed(2)}</span> : <div className="h-5 w-24 bg-green-900 animate-pulse rounded" />}
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400 text-sm">Banco promedio</span>
-                    <span className="font-semibold text-gray-500">S/ {(3.330 * 1000).toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-[11px] text-gray-500 leading-relaxed">
-                * Tasas bancarias son referenciales. Las de QoriCash se actualizan en tiempo real durante el horario de atención.
-              </div>
-            </div>
-
-            {/* Right — comparison rows */}
-            <div className="lg:col-span-3 space-y-2.5">
-              {/* Header */}
-              <div className="grid grid-cols-3 px-5 pb-2 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                <div>Entidad</div>
-                <div className="text-center">Compra</div>
-                <div className="text-center">Venta</div>
-              </div>
-
-              {/* QoriCash */}
-              <div className="relative bg-gradient-to-r from-primary-500/20 to-green-500/10 border-2 border-primary-500/40 rounded-2xl px-5 py-4 overflow-hidden">
-                <div className="absolute top-0 right-0 bg-green-500 text-white text-[9px] font-bold px-2.5 py-1 rounded-bl-xl tracking-wide">MEJOR TASA ⭐</div>
-                <div className="grid grid-cols-3 items-center">
-                  <div className="flex items-center gap-2.5">
-                    <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
-                    <span className="font-bold text-white text-sm">QoriCash</span>
-                  </div>
-                  <div className="text-center">
-                    {currentRates ? <div className="text-xl font-bold text-green-400">S/ {currentRates.tipo_compra.toFixed(3)}</div> : <div className="h-7 w-20 bg-primary-900 animate-pulse rounded mx-auto" />}
-                  </div>
-                  <div className="text-center">
-                    {currentRates ? <div className="text-xl font-bold text-green-400">S/ {currentRates.tipo_venta.toFixed(3)}</div> : <div className="h-7 w-20 bg-primary-900 animate-pulse rounded mx-auto" />}
-                  </div>
-                </div>
-              </div>
-
-              {/* Banks */}
-              {[
-                { name: 'BCP', logo: '/BCP.png', compra: 3.340, venta: 3.440 },
-                { name: 'Interbank', logo: '/Interbank.png', compra: 3.345, venta: 3.435 },
-                { name: 'BBVA', logo: '/BBVA.png', compra: 3.330, venta: 3.450 },
-                { name: 'Scotiabank', logo: '/Scotiabank.png', compra: 3.325, venta: 3.455 },
-              ].map((bank, i) => (
-                <div key={i} className="grid grid-cols-3 bg-gray-900 border border-gray-800 rounded-xl px-5 py-3.5 items-center hover:border-gray-700 transition-colors group hover-shimmer">
-                  <div className="flex items-center gap-3">
-                    <div className="w-14 h-7 flex items-center">
-                      <img src={bank.logo} alt={bank.name} className="max-w-full max-h-full object-contain opacity-50 grayscale group-hover:opacity-70 transition-opacity" />
+            {isMobileMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsMobileMenuOpen(false)} />
+                <div className="absolute left-0 right-0 top-16 bg-white border-t border-gray-100 shadow-xl z-50 py-5 px-6 rounded-b-2xl">
+                  <div className="flex flex-col gap-1">
+                    {['/nosotros', '/#como-funciona', '/noticias', '/dashboard/promociones'].map((href, i) => (
+                      <Link key={href} href={href} className="py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900" onClick={() => setIsMobileMenuOpen(false)}>
+                        {['Nosotros', 'Cómo funciona', 'Noticias', 'Promociones'][i]}
+                      </Link>
+                    ))}
+                    <div className="border-t border-gray-100 mt-3 pt-4 flex flex-col gap-2">
+                      {isAuthenticated ? (
+                        <>
+                          <Link href="/dashboard" className="py-2.5 text-sm font-medium text-gray-700" onClick={() => setIsMobileMenuOpen(false)}>Mi cuenta</Link>
+                          <button onClick={handleLogout} className="text-left py-2.5 text-sm text-red-500 font-medium">Cerrar sesión</button>
+                        </>
+                      ) : (
+                        <>
+                          <Link href="/iniciar-sesion" className="py-2.5 text-sm font-medium text-gray-700" onClick={() => setIsMobileMenuOpen(false)}>Iniciar sesión</Link>
+                          <Link href="/crear-cuenta" className="py-2.5 text-sm font-bold text-primary-600" onClick={() => setIsMobileMenuOpen(false)}>Crear cuenta gratis →</Link>
+                        </>
+                      )}
                     </div>
-                    <span className="text-gray-400 text-sm font-medium">{bank.name}</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm font-semibold text-gray-400">S/ {bank.compra.toFixed(3)}</div>
-                    {currentRates && <div className="text-[10px] text-red-400 font-medium">-{((currentRates.tipo_compra - bank.compra) * 1000).toFixed(0)} por $1k</div>}
+                </div>
+              </>
+            )}
+          </nav>
+        </header>
+
+        {/* ────────────────────────────────────────
+            HERO
+        ──────────────────────────────────────── */}
+        <section className="pt-[100px] min-h-screen flex items-center bg-white">
+          <div className="w-full px-6 sm:px-8 lg:px-12 py-16">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-16 items-center">
+
+              {/* Left */}
+              <div className="max-w-2xl">
+
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 border border-gray-200 rounded-full px-4 py-1.5 mb-8 text-xs font-semibold text-gray-600 tracking-wide">
+                  <Shield className="w-3.5 h-3.5 text-primary-500" />
+                  Regulado SBS · Res. N° 00313-2026 · RUC 20615113698
+                </div>
+
+                {/* Headline */}
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-bold text-gray-950 leading-[1.05] tracking-tight mb-6">
+                  Cambia dólares.<br />
+                  <span className="text-primary-500">Sin perder ni un sol.</span>
+                </h1>
+
+                <p className="text-gray-500 text-xl mb-10 leading-relaxed max-w-lg">
+                  La casa de cambio digital con el mejor tipo de cambio del Perú. Sin comisiones. En menos de 15 minutos.
+                </p>
+
+                {/* Rate display — premium terminal style */}
+                <div className="flex items-stretch gap-4 mb-10">
+                  <div className="flex-1 border border-gray-200 rounded-2xl p-5 bg-[#FAFAF8]">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Compramos USD</p>
+                    <p className="text-4xl font-bold text-gray-900 font-mono tracking-tight">
+                      S/ <span>{qoriCompra.toFixed(3)}</span>
+                    </p>
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm font-semibold text-gray-400">S/ {bank.venta.toFixed(3)}</div>
-                    {currentRates && <div className="text-[10px] text-red-400 font-medium">+{((bank.venta - currentRates.tipo_venta) * 1000).toFixed(0)} por $1k</div>}
+                  <div className="flex-1 border-2 border-primary-500 rounded-2xl p-5 bg-primary-50 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 bg-primary-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-xl tracking-widest">
+                      MEJOR PRECIO
+                    </div>
+                    <p className="text-[10px] font-bold text-primary-600 uppercase tracking-[0.15em] mb-2">Vendemos USD</p>
+                    <p className="text-4xl font-bold text-primary-600 font-mono tracking-tight">
+                      S/ <span>{qoriVenta.toFixed(3)}</span>
+                    </p>
                   </div>
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-3 mb-10">
+                  <Link
+                    href={isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta'}
+                    className="inline-flex items-center justify-center gap-2 bg-gray-950 hover:bg-gray-800 text-white px-8 py-4 rounded-xl font-bold text-base transition-all shadow-lg shadow-gray-950/10 group"
+                  >
+                    {isAuthenticated ? 'Iniciar operación' : 'Abrir mi cuenta gratis'}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                  <a
+                    href="https://wa.me/51926011920?text=Hola%2C%20quiero%20cambiar%20d%C3%B3lares"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 border-2 border-gray-200 hover:border-gray-300 bg-white text-gray-700 px-8 py-4 rounded-xl font-bold text-base transition-all hover:shadow-sm"
+                  >
+                    <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    926 011 920
+                  </a>
+                </div>
+
+                {/* Trust row */}
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400 font-medium">
+                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-primary-400" /> Sin comisiones</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary-400" /> Menos de 15 minutos</span>
+                  <span className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-primary-400" /> 100% seguro y cifrado</span>
+                  <span className="flex items-center gap-1.5"><Smartphone className="w-3.5 h-3.5 text-primary-400" /> Sin ir al banco</span>
+                </div>
+              </div>
+
+              {/* Right: Calculator */}
+              <div>
+                <Calculator />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            STATS — borderless, numbers as heroes
+        ──────────────────────────────────────── */}
+        <section className="bg-[#F8F8F6] py-14 border-y border-gray-100 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+              {[
+                { value: 8500,  suffix: '+',  prefix: '',   label: 'Clientes activos' },
+                { value: 18,    suffix: 'M+', prefix: 'S/', label: 'Soles procesados' },
+                { value: 4200,  suffix: '+',  prefix: '',   label: 'Operaciones' },
+                { value: 4.8,   suffix: '★',  prefix: '',   label: 'Calificación Google' },
+              ].map((s, i) => (
+                <div key={i} className="text-center">
+                  <p className="text-4xl md:text-5xl font-display font-bold text-gray-950 mb-1 tracking-tight">
+                    {s.prefix && <span className="text-primary-500">{s.prefix}</span>}
+                    <AnimatedStat value={s.value} />
+                    <span className="text-primary-500">{s.suffix}</span>
+                  </p>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">{s.label}</p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ══════════════════════════════════════════
-          TRADINGVIEW — Historial tipo de cambio
-      ══════════════════════════════════════════ */}
-      <section className="relative py-12 bg-gray-900 border-t border-gray-700/60 overflow-hidden reveal">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-0 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2" />
-          <div className="absolute top-1/2 right-0 w-80 h-80 bg-blue-500/8 rounded-full blur-3xl -translate-y-1/2" />
-        </div>
-        <div className="relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-5 gap-10 items-center">
-            {/* Left info */}
-            <div className="lg:col-span-2 space-y-6">
-              <div>
-                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-400/10 border border-blue-400/20 px-4 py-2 rounded-full mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-                  Mercado en vivo
-                </span>
-                <h2 className="text-3xl md:text-4xl font-display font-bold text-white mt-3 mb-3">
-                  El dólar,<br />
-                  <span className="bg-gradient-to-r from-blue-400 to-primary-400 bg-clip-text text-transparent">al instante</span>
-                </h2>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Sigue la evolución del dólar frente al sol peruano y decide el mejor momento para cambiar.
-                </p>
-              </div>
-              <div className="space-y-3">
+        {/* ────────────────────────────────────────
+            BANKS
+        ──────────────────────────────────────── */}
+        <section ref={banksSectionRef} className="bg-white py-10 border-b border-gray-100 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-4xl mx-auto">
+              <p className="text-center text-[11px] font-bold text-gray-400 uppercase tracking-[0.18em] mb-7">
+                Transferencias con todos los bancos del Perú
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
                 {[
-                  { icon: '📈', label: 'Datos en tiempo real', desc: 'Mercado Forex · USD/PEN' },
-                  { icon: '🕐', label: 'Múltiples rangos', desc: '1 día · 1 mes · 1 año · Todo' },
-                  { icon: '🔒', label: 'Fuente verificada', desc: 'TradingView · OANDA · FX_IDC' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3 bg-gray-800/60 border border-gray-700/50 rounded-xl p-4">
-                    <span className="text-xl">{item.icon}</span>
+                  { title: 'Inmediatas', banks: ['BCP', 'INTERBANK', 'BANBIF'], note: 'Mismo banco · Segundos' },
+                  { title: 'Interbancarias', banks: ['BBVA', 'SCOTIABANK', 'PICHINCHA', 'OTROS'], note: 'CCI requerido · 30–60 min' },
+                ].map((g, gi) => (
+                  <div key={gi} className={`border border-gray-100 rounded-2xl p-5 transition-all duration-500 delay-${gi * 100} ${isBanksSectionVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">{g.title}</p>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {g.banks.map((b) => (
+                        <span key={b} className={`px-3 py-1.5 text-xs font-bold rounded-full ${gi === 0 ? 'bg-primary-50 text-primary-700' : 'bg-gray-50 text-gray-600'}`}>{b}</span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-400">{g.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            RATE COMPARISON + SAVINGS CALCULATOR
+        ──────────────────────────────────────── */}
+        <section className="bg-[#F8F8F6] py-20 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+
+              {/* Header */}
+              <div className="mb-12">
+                <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-3">Comparación</p>
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                  <h2 className="text-4xl md:text-5xl font-display font-bold text-gray-950 leading-tight tracking-tight">
+                    Cuánto pierdes<br />con tu banco.
+                  </h2>
+                  <p className="text-sm text-gray-400 max-w-xs text-right hidden sm:block">
+                    {new Date().toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+
+                {/* Table */}
+                <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-50">
+                        <th className="text-left px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Entidad</th>
+                        <th className="text-center px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Compra</th>
+                        <th className="text-center px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Venta</th>
+                        <th className="text-right px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest hidden sm:table-cell">Diferencia</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* QoriCash */}
+                      <tr className="border-b border-primary-100 bg-primary-50/60">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 rounded-full bg-primary-500" />
+                            <span className="font-bold text-gray-900">QoriCash</span>
+                            <span className="text-[10px] font-bold text-primary-700 bg-primary-100 px-2 py-0.5 rounded-full tracking-wide">MEJOR</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center font-bold text-gray-900 font-mono">{qoriCompra.toFixed(3)}</td>
+                        <td className="px-6 py-4 text-center font-bold text-primary-600 font-mono">{qoriVenta.toFixed(3)}</td>
+                        <td className="px-6 py-4 text-right hidden sm:table-cell">
+                          <span className="text-emerald-600 font-bold text-xs">Referencia</span>
+                        </td>
+                      </tr>
+                      {BANKS.map((bank) => {
+                        const diff = ((bank.venta - qoriVenta) * 1000).toFixed(2);
+                        return (
+                          <tr key={bank.name} className="border-b border-gray-50 hover:bg-gray-50/80 transition-colors">
+                            <td className="px-6 py-3.5 text-gray-600 font-medium">{bank.name}</td>
+                            <td className="px-6 py-3.5 text-center text-gray-400 font-mono">{bank.compra.toFixed(3)}</td>
+                            <td className="px-6 py-3.5 text-center text-gray-400 font-mono">{bank.venta.toFixed(3)}</td>
+                            <td className="px-6 py-3.5 text-right hidden sm:table-cell">
+                              <span className="text-xs text-red-500 font-semibold">−S/ {diff} x $1K</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <p className="px-6 py-3 text-xs text-gray-400 border-t border-gray-50 bg-gray-50/50">
+                    Tasas bancarias son referenciales y orientativas.
+                  </p>
+                </div>
+
+                {/* Savings calculator */}
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Calculadora</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-5">Tu ahorro real</h3>
+
+                  <div className="mb-5">
+                    <label className="text-xs text-gray-500 font-medium mb-2 block">¿Cuántos dólares cambias?</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                      <input
+                        type="number"
+                        value={savingsAmount}
+                        onChange={(e) => setSavingsAmount(e.target.value)}
+                        className="w-full pl-8 pr-4 py-3.5 border-2 border-gray-200 focus:border-primary-400 rounded-xl text-2xl font-bold text-gray-900 outline-none transition-colors font-mono"
+                        placeholder="1000"
+                        min="1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+                      <p className="text-xs text-emerald-700 font-medium mb-1">Ahorras vs BCP</p>
+                      <p className="text-3xl font-bold text-emerald-700 font-mono">
+                        S/ {parseFloat(savingVsBCP) > 0 ? savingVsBCP : '0.00'}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 border border-gray-100 rounded-xl p-3">
+                      <p className="text-xs text-gray-500 mb-0.5">Vs mejor banco del día</p>
+                      <p className="text-xl font-bold text-gray-700 font-mono">
+                        S/ {parseFloat(savingBest) > 0 ? savingBest : '0.00'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link
+                    href={isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta'}
+                    className="mt-auto w-full inline-flex items-center justify-center gap-2 bg-gray-950 hover:bg-gray-800 text-white py-4 rounded-xl font-bold text-sm transition-all group"
+                  >
+                    {isAuthenticated ? 'Cambiar ahora' : 'Empezar a ahorrar'}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            TRADINGVIEW
+        ──────────────────────────────────────── */}
+        <section className="bg-white py-20 border-t border-gray-100 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <div>
+                  <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-2">Mercado</p>
+                  <h2 className="text-3xl font-display font-bold text-gray-950 tracking-tight">USD/PEN en tiempo real</h2>
+                </div>
+                <Link href="/noticias" className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors group">
+                  Noticias del mercado <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
+              </div>
+              <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                <TradingViewWidget />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            FEATURES — horizontal list
+        ──────────────────────────────────────── */}
+        <section className="bg-[#F8F8F6] py-20 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-12">
+                <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-3">Por qué elegirnos</p>
+                <h2 className="text-4xl font-display font-bold text-gray-950 tracking-tight">Lo que nos diferencia.</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { icon: Shield,     n: '01', title: 'Regulado por la SBS', desc: 'Res. N° 00313-2026. Operamos bajo supervisión formal del sistema financiero peruano.' },
+                  { icon: Clock,      n: '02', title: 'En menos de 15 min',  desc: 'Confirmamos y enviamos tu dinero en tiempo récord. Sin esperas, sin excusas.' },
+                  { icon: TrendingUp, n: '03', title: 'Mejor tipo de cambio', desc: 'Ahorra hasta S/ 80 por cada $1,000 comparado con cualquier banco del Perú.' },
+                  { icon: Smartphone, n: '04', title: '100% digital',        desc: 'Opera desde tu celular, tablet o computadora. Sin ir al banco, sin colas.' },
+                ].map((f, i) => (
+                  <div key={i} className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-md hover:border-gray-200 transition-all group">
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-11 h-11 rounded-xl bg-primary-50 group-hover:bg-primary-100 flex items-center justify-center transition-colors">
+                        <f.icon className="w-5 h-5 text-primary-500" />
+                      </div>
+                      <span className="text-3xl font-bold text-gray-100 font-mono">{f.n}</span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-2 text-sm">{f.title}</h3>
+                    <p className="text-xs text-gray-500 leading-relaxed">{f.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            NEWS
+        ──────────────────────────────────────── */}
+        {noticiasHome.length > 0 && (
+          <section className="bg-white py-20 border-t border-gray-100 reveal">
+            <div className="w-full px-6 sm:px-8 lg:px-12">
+              <div className="max-w-5xl mx-auto">
+                <div className="flex items-end justify-between mb-10">
+                  <div>
+                    <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-2">Noticias</p>
+                    <h2 className="text-4xl font-display font-bold text-gray-950 tracking-tight">Mercado hoy.</h2>
+                  </div>
+                  <Link href="/noticias" className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-900 group transition-colors">
+                    Ver todas <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {noticiasHome.map((n) => (
+                    <Link key={n.id} href={`/noticias/${n.id}`} className="group flex flex-col bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all">
+                      {n.imagen && (
+                        <div className="aspect-[16/9] overflow-hidden bg-gray-100">
+                          <img src={n.imagen} alt={n.titulo} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                        </div>
+                      )}
+                      <div className="p-6 flex flex-col flex-1">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-[10px] font-bold text-primary-600 bg-primary-50 px-2.5 py-1 rounded-full uppercase tracking-widest">{n.fuente}</span>
+                          <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{n.categoria}</span>
+                        </div>
+                        <h3 className="font-bold text-gray-900 leading-snug mb-2 group-hover:text-primary-700 transition-colors line-clamp-2 text-base">
+                          {n.titulo}
+                        </h3>
+                        <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mt-auto pt-2">{n.descripcion}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ────────────────────────────────────────
+            ALERTA TC
+        ──────────────────────────────────────── */}
+        {!isAuthenticated && <AlertaTCBanner />}
+
+        {/* ────────────────────────────────────────
+            HOW IT WORKS
+        ──────────────────────────────────────── */}
+        <section id="como-funciona" className="bg-[#F8F8F6] py-20 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-12">
+                <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-3">Proceso</p>
+                <h2 className="text-4xl font-display font-bold text-gray-950 tracking-tight">Cambiar dólares<br />en 3 pasos.</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                {[
+                  { n: '01', icon: UserPlus,      title: 'Crea tu cuenta',       desc: 'Solo tu DNI y un correo. Verificación única, gratuita, en 2 minutos.',     tag: '2 min · Solo la primera vez' },
+                  { n: '02', icon: CalculatorIcon, title: 'Cotiza y transfiere',  desc: 'Ve el tipo de cambio en tiempo real, confirma y transfiere desde tu banco.', tag: 'Mínimo S/ 100 o $ 30' },
+                  { n: '03', icon: Banknote,       title: 'Recibe tu dinero',     desc: 'Confirmamos tu pago y enviamos el dinero directo a tu cuenta bancaria.',     tag: 'En menos de 15 minutos' },
+                ].map((s, i) => (
+                  <div key={i} className="relative bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md transition-all">
+                    <span className="absolute top-5 right-5 text-5xl font-bold text-gray-50 font-mono select-none">{s.n}</span>
+                    <div className="w-12 h-12 rounded-xl bg-primary-500 flex items-center justify-center mb-5 shadow-md shadow-primary-500/20">
+                      <s.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-base mb-2">{s.title}</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-4">{s.desc}</p>
+                    <span className="inline-block text-[11px] font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full tracking-wide">{s.tag}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Link
+                  href={isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta'}
+                  className="inline-flex items-center gap-2 bg-gray-950 hover:bg-gray-800 text-white px-8 py-4 rounded-xl font-bold text-base transition-all shadow-lg shadow-gray-950/10 group"
+                >
+                  {isAuthenticated ? 'Iniciar mi operación' : 'Crear cuenta y empezar'}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <p className="text-xs text-gray-400 mt-3 font-medium">Sin costos de apertura · Sin saldo mínimo</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ────────────────────────────────────────
+            REFERIDOS
+        ──────────────────────────────────────── */}
+        <section className="bg-white py-20 border-t border-gray-100 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div>
+                <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-3">Referidos</p>
+                <h2 className="text-4xl font-display font-bold text-gray-950 tracking-tight leading-tight mb-5">
+                  Gana descuentos<br />por recomendar.
+                </h2>
+                <p className="text-gray-500 text-base mb-7 leading-relaxed">
+                  Comparte tu código único. Por cada operación que complete tu referido, acumulas <strong className="text-gray-800">15 pips</strong>. Con 30 pips, obtienes un cupón de descuento real en tu próxima operación.
+                </p>
+                <div className="flex items-center gap-4 p-5 border border-gray-100 rounded-2xl bg-[#F8F8F6] w-fit mb-7">
+                  <Gift className="w-9 h-9 text-primary-500 flex-shrink-0" />
+                  <div>
+                    <p className="text-3xl font-bold text-gray-900 font-mono">30 pips</p>
+                    <p className="text-xs text-gray-500 font-medium">= cupón de descuento en tu próxima operación</p>
+                  </div>
+                </div>
+                <Link
+                  href={isAuthenticated ? '/dashboard/promociones' : '/crear-cuenta'}
+                  className="inline-flex items-center gap-2 bg-gray-950 hover:bg-gray-800 text-white px-7 py-4 rounded-xl font-bold text-sm transition-all group"
+                >
+                  {isAuthenticated ? 'Ver mi código' : 'Registrarme y empezar'}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                {[
+                  { icon: Share2, n: '01', title: 'Comparte tu código único',         desc: 'Al registrarte recibes un código personal que puedes compartir con quien quieras.' },
+                  { icon: UserPlus, n: '02', title: 'Tu referido crea su cuenta',     desc: 'Ingresa tu código al registrarse. Es gratis y no tiene condiciones ocultas.' },
+                  { icon: Coins, n: '03', title: 'Acumulas pips automáticamente',  desc: '15 pips por cada operación completada. Sin límite de referidos ni fecha de vencimiento.' },
+                ].map((s, i) => (
+                  <div key={i} className="flex items-start gap-4 p-5 border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-sm transition-all bg-[#FAFAF8]">
+                    <div className="w-11 h-11 rounded-xl bg-primary-50 border border-primary-100 flex items-center justify-center flex-shrink-0">
+                      <s.icon className="w-5 h-5 text-primary-500" />
+                    </div>
                     <div>
-                      <div className="text-white text-sm font-semibold">{item.label}</div>
-                      <div className="text-gray-500 text-xs">{item.desc}</div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Paso {s.n}</span>
+                      </div>
+                      <h4 className="text-gray-900 font-bold text-sm mb-1">{s.title}</h4>
+                      <p className="text-gray-500 text-xs leading-relaxed">{s.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            {/* Right chart */}
-            <div className="lg:col-span-3">
-              <div className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="px-5 py-3 border-b border-gray-700 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
-                    <span className="text-white text-sm font-bold">USD / PEN</span>
-                    {currentRates && <span className="text-gray-400 text-xs ml-1">S/ {currentRates.tipo_venta.toFixed(3)}</span>}
-                  </div>
-                  <span className="text-gray-500 text-xs">TradingView</span>
-                </div>
-                <div className="p-2">
-                  <TradingViewWidget />
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ══════════════════════════════════════
-          FEATURES — ¿Por qué elegir QoriCash?
-      ══════════════════════════════════════ */}
-      <section id="servicios" className="relative py-12 bg-white overflow-hidden reveal">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-200 to-transparent" />
-          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-60" />
-        </div>
-        <div className="relative w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
-              Nuestras ventajas
-            </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              ¿Por qué elegir{' '}
-              <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">QoriCash</span>?
-            </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-sm">
-              La plataforma de cambio de divisas más confiable del Perú
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
-            {[
-              { image: 'Seguro y Confiable.png', title: 'Seguro y Confiable', description: 'Registro SBS Res. N° 00313-2026. Verificación KYC y cifrado de extremo a extremo.', accent: 'text-blue-600', bar: 'from-blue-400 to-blue-600' },
-              { image: 'Transferencia-Rapida.png', title: 'En menos de 15 min', description: 'Operaciones completadas en menos de 15 minutos. Inmediato a BCP e Interbank.', accent: 'text-primary-600', bar: 'from-primary-400 to-primary-600' },
-              { image: 'Mejor Tipo de Cambio.png', title: 'Mejor Tipo de Cambio', description: 'Tasas actualizadas en tiempo real. Siempre por encima de los bancos.', accent: 'text-green-600', bar: 'from-green-400 to-green-600' },
-              { image: 'Protegido.png', title: '100% Digital', description: 'Sin papeleos, sin colas. Opera desde tu celular o computadora en todo Perú.', accent: 'text-violet-600', bar: 'from-violet-400 to-violet-600' },
-            ].map((feature, index) => (
-              <div key={index} className={`group relative bg-white rounded-2xl p-6 border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden card-lift animate-fade-up stagger-${index + 1}`}>
-                {/* Imagen decorativa de fondo */}
-                <div className="absolute -right-4 -bottom-4 w-32 h-32 opacity-40 group-hover:opacity-60 transition-opacity duration-300 pointer-events-none">
-                  <Image src={`/${feature.image}`} alt="" width={128} height={128} className="w-full h-full object-contain" />
-                </div>
-                {/* Número badge */}
-                <span className={`text-xs font-bold tracking-widest ${feature.accent} mb-4 block`}>
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-sm font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors duration-200 leading-snug">{feature.title}</h3>
-                <p className="text-gray-400 text-xs leading-relaxed flex-1">{feature.description}</p>
-                <div className={`absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${feature.bar} transition-all duration-500`} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ══════════════════════════════════════════════
-          ANÁLISIS DE MERCADO — Noticias destacadas
-      ══════════════════════════════════════════════ */}
-      {noticiasHome.length > 0 && (
-        <section className="relative py-14 bg-slate-50 overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-
-          <div className="relative w-full px-6 sm:px-8 lg:px-12">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-              <div>
-                <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-600 uppercase bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full mb-3">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  Análisis de Mercado
-                </span>
-                <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight flex items-center gap-3 flex-wrap">
-                  Noticias que mueven{' '}
-                  <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">el tipo de cambio</span>
-                  <span className="inline-flex items-center gap-2 text-red-500 text-sm font-bold tracking-widest uppercase">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                    Live
-                  </span>
-                </h2>
-                <p className="mt-1.5 text-gray-500 text-sm max-w-lg">
-                  Seguimos los eventos económicos globales y su impacto directo en el PEN/USD.
+        {/* ────────────────────────────────────────
+            FAQ
+        ──────────────────────────────────────── */}
+        <section id="faq" className="bg-[#F8F8F6] py-20 reveal">
+          <div className="w-full px-6 sm:px-8 lg:px-12">
+            <div className="max-w-3xl mx-auto">
+              <div className="mb-10">
+                <p className="text-[11px] font-bold text-primary-500 uppercase tracking-[0.18em] mb-3">FAQ</p>
+                <h2 className="text-4xl font-display font-bold text-gray-950 tracking-tight">Preguntas frecuentes.</h2>
+                <p className="text-gray-400 text-sm mt-3">
+                  ¿Más dudas? Escríbenos por{' '}
+                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">WhatsApp</a>.
                 </p>
               </div>
-              <Link
-                href="/noticias"
-                className="flex-shrink-0 inline-flex items-center gap-2 bg-white border border-gray-200 hover:border-primary-400 text-gray-700 hover:text-primary-600 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 shadow-sm"
-              >
-                Ver todas
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4 max-w-7xl mx-auto">
-              {noticiasHome.map((n) => {
-                const catColors: Record<string, { bg: string; text: string; border: string }> = {
-                  Nacional:       { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-                  Internacional:  { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
-                  Economía:       { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
-                  Tecnología:     { bg: 'bg-violet-50',  text: 'text-violet-700',  border: 'border-violet-200'  },
-                  Misceláneos:    { bg: 'bg-slate-100',  text: 'text-slate-600',   border: 'border-slate-200'   },
-                  'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-                  'Mercado Forex':    { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
-                  Análisis:           { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
-                };
-                const color = catColors[n.categoria] ?? catColors['Economía'];
-                return (
-                  <Link
-                    key={n.id}
-                    href={`/noticias/${n.id}`}
-                    className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-primary-300 transition-all duration-300 flex"
-                  >
-                    {n.imagen && (
-                      <div className="relative w-36 flex-shrink-0 overflow-hidden">
-                        <img
-                          src={n.imagen}
-                          alt={n.titulo}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
-                      </div>
-                    )}
-                    <div className="p-4 flex flex-col flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className={`inline-flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full border ${color.bg} ${color.text} ${color.border} flex-shrink-0`}>
-                          {n.categoria}
-                        </span>
-                        <span className="text-[10px] text-gray-400 flex-shrink-0">
-                          {new Date(n.fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}
-                        </span>
-                      </div>
-                      <h3 className="text-sm font-display font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-600 transition-colors line-clamp-2">
-                        {n.titulo}
-                      </h3>
-                      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">
-                        {n.descripcion}
-                      </p>
-                      <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-100">
-                        <span className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold group-hover:text-primary-700 transition-colors">
-                          Leer más <ArrowRight className="w-3 h-3" />
-                        </span>
+              <div className="space-y-2">
+                {[
+                  { q: '¿Cuánto tiempo tarda una operación?', a: 'La mayoría se completan en menos de 15 minutos. BCP, Interbank y BanBif son casi inmediatas; las interbancarias (BBVA, Scotiabank) tardan entre 30 y 60 minutos dependiendo de la hora.' },
+                  { q: '¿Es seguro cambiar con QoriCash?', a: 'Sí. Operamos con Resolución SBS N° 00313-2026. Cada operación requiere verificación de identidad, tus datos están cifrados y todas las transacciones quedan registradas con trazabilidad completa.' },
+                  { q: '¿Cuáles son las comisiones?', a: 'Ninguna. No cobramos comisiones de apertura ni por operación. La única diferencia es el spread (diferencial compra-venta), que es significativamente menor al de los bancos.' },
+                  { q: '¿Cuál es el monto mínimo y máximo?', a: (
+                    <span>Mínimo S/ 100 o $30. No hay máximo fijo: para operaciones corporativas o montos grandes, contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-primary-600 font-semibold hover:underline">WhatsApp al 926 011 920</a> para condiciones preferenciales.</span>
+                  )},
+                  { q: '¿Qué documentos necesito para registrarme?', a: 'Solo tu DNI (CE para extranjeros, RUC para empresas), un correo y tu número de celular. La verificación de identidad se hace una única vez, antes de tu primera operación.' },
+                  { q: '¿Puedo operar desde provincia?', a: 'Sí. QoriCash es 100% digital. Opera desde cualquier ciudad del Perú siempre que tengas acceso a la banca online de tu banco.' },
+                ].map((item, i) => (
+                  <div key={i} className={`bg-white rounded-2xl border overflow-hidden transition-all ${openFaq === i ? 'border-primary-200' : 'border-gray-100 hover:border-gray-200'}`}>
+                    <button
+                      className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    >
+                      <span className="font-semibold text-gray-900 text-sm">{item.q}</span>
+                      <ChevronDown className={`flex-shrink-0 w-4 h-4 transition-transform duration-200 ${openFaq === i ? 'rotate-180 text-primary-500' : 'text-gray-300'}`} />
+                    </button>
+                    <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
+                      <div>
+                        <div className="px-6 pb-5">
+                          <p className="text-gray-500 text-sm leading-relaxed">{item.a}</p>
+                        </div>
                       </div>
                     </div>
-                  </Link>
-                );
-              })}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
-      )}
 
-      {/* ══════════════════════════════════════
-          ALERTAS DE TIPO DE CAMBIO
-      ══════════════════════════════════════ */}
-      {!isAuthenticated && <AlertaTCBanner />}
-
-      {/* ══════════════════════════════════════
-          HOW IT WORKS — Cambia en 3 simples pasos
-      ══════════════════════════════════════ */}
-      <section id="como-funciona" className="relative py-14 overflow-hidden bg-gradient-to-b from-slate-50 to-white reveal">
-        {/* Decorative background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-300 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-          <div className="absolute -top-40 left-1/3 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-50" />
-          <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-emerald-50 rounded-full blur-3xl opacity-60" />
-        </div>
-        <div className="relative w-full px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
-              Simple y rápido
-            </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              Cambia en{' '}
-              <span className="bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent">
-                3 simples pasos
-              </span>
-            </h2>
-            <p className="text-gray-500 text-sm max-w-xl mx-auto">
-              Rápido, seguro y sin complicaciones
-            </p>
-          </div>
-
-          {/* Mobile: grid de cards */}
-          <div className="grid sm:grid-cols-2 gap-8 md:hidden max-w-2xl mx-auto px-4">
-            {[
-              { step: '01', title: 'Regístrate', description: 'Regístrate en 2 minutos con tu DNI, CE o RUC', detailedDescription: 'Proceso rápido y 100% digital. Solo necesitas tu DNI y datos básicos.', image: '/registro.png', delay: '0s' },
-              { step: '02', title: 'Cotiza', description: 'Ingresa el monto y confirma el tipo de cambio', detailedDescription: 'Tipo de cambio en tiempo real, sin sorpresas ni comisiones ocultas.', image: '/cotiza.png', delay: '0.2s' },
-              { step: '03', title: 'Recibe', description: 'Tu dinero llega en 10 minutos a tu cuenta', detailedDescription: 'Transferencias inmediatas a todos los bancos principales del Perú.', image: '/transfiere.png', delay: '0.4s' },
-            ].map((step, index) => (
-              <div key={index} className="animate-step-fade-in" style={{ animationDelay: step.delay }}>
-                <div className="bg-white/60 backdrop-blur-md rounded-2xl shadow-lg border-2 border-white/60 p-6 h-full">
-                  <div className="inline-block mb-3">
-                    <span className="text-xs font-bold bg-gradient-to-r from-primary-500 to-primary-600 text-white px-3 py-1 rounded-full">Paso {step.step}</span>
-                  </div>
-                  <div className="w-20 h-20 mx-auto mb-4">
-                    <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
-                  </div>
-                  <h3 className="text-lg font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent mb-3">{step.title}</h3>
-                  <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-3"></div>
-                  <p className="text-sm text-gray-700 leading-snug text-center font-medium mb-2">{step.description}</p>
-                  <p className="text-xs text-primary-600 leading-snug text-center">{step.detailedDescription}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop: flex con conectores inline — los bordes del conector tocan exactamente los bordes de los círculos */}
-          <div className="hidden md:flex items-center justify-center max-w-6xl mx-auto px-4">
-            {[
-              { step: '01', title: 'Regístrate', description: 'Regístrate en 2 minutos con tu DNI, CE o RUC', detailedDescription: 'Proceso rápido y 100% digital. Solo necesitas tu DNI y datos básicos.', image: '/registro.png', delay: '0s' },
-              { step: '02', title: 'Cotiza', description: 'Ingresa el monto y confirma el tipo de cambio', detailedDescription: 'Tipo de cambio en tiempo real, sin sorpresas ni comisiones ocultas.', image: '/cotiza.png', delay: '0.2s' },
-              { step: '03', title: 'Recibe', description: 'Tu dinero llega en 10 minutos a tu cuenta', detailedDescription: 'Transferencias inmediatas a todos los bancos principales del Perú.', image: '/transfiere.png', delay: '0.4s' },
-            ].map((step, index) => (
-              <div key={index} className={`flex items-center ${index < 2 ? 'flex-1' : 'shrink-0'}`}>
-
-                {/* Círculo */}
-                <div className="group cursor-pointer relative shrink-0 animate-step-fade-in" style={{ animationDelay: step.delay }}>
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 opacity-0 group-hover:opacity-20 blur-2xl transition-all duration-500"></div>
-                  <div className="relative bg-white/60 backdrop-blur-md rounded-full shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:scale-105 overflow-hidden flex flex-col items-center justify-center w-56 h-56 lg:w-64 lg:h-64 border-2 border-white/60 group-hover:border-primary-300/60">
-                    <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 animate-pulse-slow" style={{ padding: '2px', zIndex: -1 }}>
-                      <div className="w-full h-full rounded-full bg-white/60 backdrop-blur-md"></div>
-                    </div>
-                    <div className="absolute top-8 right-8 w-3 h-3 rounded-full bg-primary-400 opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-500"></div>
-                    <div className="absolute bottom-12 left-12 w-2 h-2 rounded-full bg-primary-500 opacity-0 group-hover:opacity-100 group-hover:animate-pulse transition-opacity duration-500"></div>
-                    {/* Estado normal */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 transition-all duration-500 group-hover:opacity-0 group-hover:scale-95">
-                      <div className="mb-2">
-                        <div className={`${index === 2 ? 'w-40 h-40' : 'w-36 h-36'} flex items-center justify-center animate-icon-float`} style={{ animationDelay: step.delay }}>
-                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-lg" />
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold text-center bg-gradient-to-r from-primary-600 via-primary-700 to-primary-600 bg-clip-text text-transparent">{step.title}</h3>
-                    </div>
-                    {/* Estado hover */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 bg-white/70 backdrop-blur-md rounded-full">
-                      <div className="text-center space-y-2 max-w-[200px]">
-                        <div className="w-16 h-16 mx-auto mb-1">
-                          <img src={step.image} alt={step.title} className="w-full h-full object-contain drop-shadow-md opacity-80" />
-                        </div>
-                        <h3 className="text-base font-bold text-primary-600 mb-1">{step.title}</h3>
-                        <div className="w-12 h-0.5 bg-gradient-to-r from-primary-400 to-primary-600 mx-auto rounded-full mb-2"></div>
-                        <p className="text-sm text-gray-700 leading-snug px-2 font-medium">{step.description}</p>
-                        <p className="text-xs text-primary-600 leading-snug px-3 mt-1">{step.detailedDescription}</p>
-                      </div>
-                    </div>
+        {/* ────────────────────────────────────────
+            FOOTER
+        ──────────────────────────────────────── */}
+        <footer className="bg-gray-950 text-gray-400">
+          {/* Compliance */}
+          <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-12">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="border border-white/8 rounded-xl px-4 py-2 flex items-center gap-2.5">
+                  <Shield className="w-3.5 h-3.5 text-primary-400" />
+                  <div>
+                    <p className="text-white font-bold text-[11px]">Empresa Registrada</p>
+                    <p className="text-gray-500 text-[10px]">RUC 20615113698 · Lima, Perú</p>
                   </div>
                 </div>
-
-                {/* Conector: flex-1 → ocupa exactamente el espacio entre bordes de círculos */}
-                {index < 2 && (
-                  <div className="relative flex-1 self-center" style={{ height: '2px' }}>
-                    {/* Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-300 opacity-40 blur-sm" />
-                    {/* Línea punteada */}
-                    <div className="absolute inset-0 border-t-2 border-dashed border-primary-400" />
-                    {/* Punto animado — left:0% = borde izquierdo del conector = borde del círculo izquierdo */}
-                    <div className={`absolute top-0 -translate-y-1/2 -translate-x-1/2 ${index === 0 ? 'animate-dot-seq-1' : 'animate-dot-seq-2'}`}>
-                      <div className="relative">
-                        <div className="w-4 h-4 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg" />
-                        <div className="absolute inset-0 w-4 h-4 rounded-full bg-primary-400 animate-ping" />
-                      </div>
-                    </div>
+                <div className="border border-white/8 rounded-xl px-4 py-2 flex items-center gap-2.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <div>
+                    <p className="text-white font-bold text-[11px]">Regulada SBS</p>
+                    <p className="text-gray-500 text-[10px]">Res. N° 00313-2026</p>
                   </div>
-                )}
-
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          REFERIDOS — Comparte y gana
-      ══════════════════════════════════════ */}
-      <section id="referidos" className="relative py-14 overflow-hidden bg-[#080e1a] reveal">
-        {/* Background decoration */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
-          <div className="absolute -top-40 -left-40 w-[500px] h-[500px] bg-primary-500 rounded-full blur-[120px] opacity-10" />
-          <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-emerald-400 rounded-full blur-[120px] opacity-10" />
-          <div className="absolute inset-0 bg-[url('/grid-white.svg')] opacity-[0.03]" />
-        </div>
-
-        <div className="relative w-full px-6 sm:px-8 lg:px-12">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary-400 uppercase bg-primary-400/10 border border-primary-400/20 px-4 py-2 rounded-full mb-3">
-              Programa de referidos
-            </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-3">
-              Comparte y gana con{' '}
-              <span className="bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent">
-                cada amigo
-              </span>
-            </h2>
-            <p className="text-gray-400 max-w-xl mx-auto text-sm">
-              Invita a tus amigos a QoriCash. Por cada operación que completen, acumulas <strong className="text-primary-300">pips</strong> que puedes canjear por descuentos reales en tus cambios.
-            </p>
+              <div className="flex gap-5 text-[11px] text-gray-600">
+                <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL</span>
+                <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos</span>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            {/* Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Main */}
+          <div className="w-full px-6 sm:px-8 lg:px-12 py-14">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
+              <div>
+                <Link href="/" className="flex items-center gap-2.5 mb-5 hover:opacity-80 transition-opacity w-fit">
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
+                  <span className="text-xl font-display font-bold text-white">QoriCash</span>
+                </Link>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Casa de cambio digital regulada por la SBS. Los mejores tipos de cambio del Perú, sin comisiones.
+                </p>
+              </div>
               {[
                 {
-                  icon: Share2,
-                  step: '01',
-                  title: 'Comparte tu código',
-                  desc: 'Después de registrarte recibes tu código único. Compártelo con amigos, familia o clientes.',
-                  color: 'from-primary-500 to-primary-600',
-                  glow: 'shadow-primary-500/20',
+                  title: 'Servicios',
+                  links: [
+                    { href: '/servicios#compra',       label: 'Compra de dólares' },
+                    { href: '/servicios#venta',        label: 'Venta de dólares' },
+                    { href: '/servicios#tipo-cambio',  label: 'Tipo de cambio' },
+                  ]
                 },
                 {
-                  icon: UserPlus,
-                  step: '02',
-                  title: 'Tu amigo se registra',
-                  desc: 'Ingresa tu código al crear su cuenta. Sin costo, sin condiciones ocultas.',
-                  color: 'from-emerald-500 to-emerald-600',
-                  glow: 'shadow-emerald-500/20',
+                  title: 'Empresa',
+                  links: [
+                    { href: '/sobre-nosotros',          label: 'Sobre nosotros' },
+                    { href: '/terminos-condiciones',    label: 'Términos y condiciones' },
+                    { href: '/politica-privacidad',     label: 'Política de privacidad' },
+                    { href: '/politica-cookies',        label: 'Política de cookies' },
+                    { href: '/libro-reclamaciones',     label: 'Libro de reclamaciones' },
+                  ]
                 },
-                {
-                  icon: Coins,
-                  step: '03',
-                  title: 'Ganas pips',
-                  desc: 'Cada vez que tu referido complete una operación, acumulas 15 pips automáticamente.',
-                  color: 'from-amber-500 to-amber-600',
-                  glow: 'shadow-amber-500/20',
-                }
-              ].map((item, i) => (
-                <div key={i} className="relative group">
-                  {/* Connector arrow (desktop) */}
-                  {i < 2 && (
-                    <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                      <ArrowRight className="w-6 h-6 text-gray-600" />
-                    </div>
-                  )}
-                  <div className={`bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group-hover:bg-white/8 group-hover:border-white/20 transition-all duration-300 shadow-xl ${item.glow}`}>
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 shadow-lg`}>
-                      <item.icon className="w-7 h-7 text-white" />
-                    </div>
-                    <span className="text-xs font-bold text-gray-500 tracking-widest mb-2 uppercase">Paso {item.step}</span>
-                    <h3 className="font-bold text-white text-lg mb-3">{item.title}</h3>
-                    <p className="text-sm text-gray-400 leading-relaxed">{item.desc}</p>
-                  </div>
+              ].map((col) => (
+                <div key={col.title}>
+                  <h4 className="text-white font-bold mb-4 text-[11px] uppercase tracking-[0.15em]">{col.title}</h4>
+                  <ul className="space-y-2.5 text-sm">
+                    {col.links.map((l) => (
+                      <li key={l.href}><Link href={l.href} className="hover:text-white transition-colors">{l.label}</Link></li>
+                    ))}
+                  </ul>
                 </div>
               ))}
-            </div>
-
-            {/* Reward card + CTA */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-              {/* Pip reward card */}
-              <div className="relative bg-gradient-to-br from-primary-600 to-emerald-600 rounded-2xl p-px shadow-2xl shadow-primary-500/20">
-                <div className="bg-gradient-to-br from-[#0d1b2a] to-[#0a1520] rounded-2xl p-8 text-center min-w-[260px]">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary-500/30">
-                    <Gift className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="text-5xl font-display font-bold bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent mb-1">30 pips</div>
-                  <div className="text-sm text-gray-300 mb-4">= cupón de descuento en tu próxima operación</div>
-                  <div className="text-xs text-gray-500 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
-                    15 pips por operación · Sin límite de referidos
-                  </div>
-                </div>
-              </div>
-
-              {/* CTA */}
-              <div className="text-center md:text-left">
-                <p className="text-gray-300 text-lg font-medium mb-2">¿Listo para empezar?</p>
-                <p className="text-gray-500 text-sm mb-6 max-w-xs">
-                  Regístrate gratis y obtén tu código de referido en menos de 2 minutos.
-                </p>
-                <Link
-                  href={isAuthenticated ? "/dashboard/promociones" : "/crear-cuenta"}
-                  className="inline-flex items-center gap-2 btn-primary-gradient text-white px-7 py-3.5 rounded-full font-bold text-sm group"
-                >
-                  {isAuthenticated ? 'Ver mi código de referido' : 'Crear cuenta y empezar a ganar'}
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                </Link>
+              <div>
+                <h4 className="text-white font-bold mb-4 text-[11px] uppercase tracking-[0.15em]">Contacto</h4>
+                <ul className="space-y-3 text-sm">
+                  <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors flex items-center gap-2.5"><span className="w-4 h-4 text-primary-400 flex-shrink-0">@</span>info@qoricash.pe</a></li>
+                  <li>
+                    <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2.5">
+                      <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                      </svg>
+                      926 011 920
+                    </a>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-gray-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors leading-relaxed text-xs">
+                      Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre
+                    </a>
+                  </li>
+                  <li className="text-xs text-gray-500 leading-relaxed">
+                    Lun–Vie 9:00–18:00 &nbsp;·&nbsp; Sáb 9:00–13:00
+                  </li>
+                </ul>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* ══════════════════════════════════════
-          CTA — Comienza hoy mismo
-      ══════════════════════════════════════ */}
-      <section className="relative py-12 overflow-hidden bg-white reveal">
-        {/* Background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-emerald-50" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary-100 rounded-full blur-3xl opacity-60" />
-        </div>
-
-        <div className="relative w-full px-6 sm:px-8 lg:px-12 text-center">
-          <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-4">
-            Sin comisiones · Sin colas · 100% digital
-          </span>
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-4 leading-tight">
-            Comienza a cambiar{' '}
-            <span className="bg-gradient-to-r from-primary-500 to-emerald-500 bg-clip-text text-transparent">
-              hoy mismo
-            </span>
-          </h2>
-          <p className="text-base text-gray-500 mb-6 max-w-2xl mx-auto">
-            Únete a miles de clientes que confían en QoriCash para sus cambios de divisas. Apertura gratuita, sin requisitos mínimos.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href={isAuthenticated ? "/dashboard/nueva-operacion" : "/crear-cuenta"}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full font-bold hover:from-primary-400 hover:to-primary-500 transition-all shadow-xl shadow-primary-500/25 hover:shadow-primary-500/40 group"
-            >
-              {isAuthenticated ? "Iniciar operación" : "Abrir mi cuenta gratis"}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
-            </Link>
-            <a
-              href="https://wa.me/51926011920?text=Hola%2C%20quiero%20iniciar%20una%20operaci%C3%B3n%20de%20cambio"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-full font-bold hover:border-primary-300 hover:text-primary-700 transition-all shadow-md hover:shadow-lg group"
-            >
-              <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Hablar por WhatsApp
-            </a>
-          </div>
-
-          {/* Trust signals */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-gray-400">
-            {[
-              { icon: Shield, label: 'Regulado SBS' },
-              { icon: Lock, label: 'SSL cifrado' },
-              { icon: CheckCircle2, label: 'Sin comisiones' },
-              { icon: Clock, label: 'En 15 minutos' },
-            ].map((t, i) => (
-              <span key={i} className="flex items-center gap-1.5">
-                <t.icon className="w-4 h-4 text-primary-400" />
-                {t.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          FAQ — Todo lo que necesitas saber
-      ══════════════════════════════════════ */}
-      <section id="faq" className="relative py-14 bg-slate-50 overflow-hidden reveal">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-        </div>
-
-        <div className="relative w-full px-6 sm:px-8 lg:px-12 max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-primary uppercase bg-primary-50 border border-primary-100 px-4 py-2 rounded-full mb-3">
-              Preguntas frecuentes
-            </span>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">
-              Todo lo que necesitas saber
-            </h2>
-            <p className="text-gray-500 text-sm">Resolvemos tus dudas antes de empezar</p>
-          </div>
-
-          <div className="space-y-3">
-            {[
-              {
-                q: '¿Cuánto tiempo tarda mi operación?',
-                a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.'
-              },
-              {
-                q: '¿Es seguro cambiar dólares con QoriCash?',
-                a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.'
-              },
-              {
-                q: '¿Cuáles son las comisiones?',
-                a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales.'
-              },
-              {
-                q: '¿Cuál es el monto mínimo para operar?',
-                a: <span>Puedes cambiar desde S/ 100 o $30 dólares. No hay un monto máximo fijo; para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold underline underline-offset-2 hover:text-green-700">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span>
-              },
-              {
-                q: '¿Con qué bancos trabajan?',
-                a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Pichincha. Puedes enviar y recibir desde cualquiera de ellos.'
-              },
-              {
-                q: '¿Cómo se determina el tipo de cambio?',
-                a: 'Nuestros traders actualizan las tasas en tiempo real durante el horario de atención, siguiendo el mercado interbancario peruano. Siempre verás el tipo de cambio exacto antes de confirmar.'
-              },
-              {
-                q: '¿Qué documentos necesito para registrarme?',
-                a: 'Solo tu DNI (o CE para extranjeros, RUC para empresas), un correo electrónico y tu número de celular. La verificación de identidad se hace una sola vez antes de tu primera operación.'
-              },
-              {
-                q: '¿Puedo operar si estoy en provincia?',
-                a: 'Sí. QoriCash es 100% digital, por lo que puedes operar desde cualquier lugar del Perú siempre que tengas acceso a la banca online de tu banco para realizar la transferencia.'
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md ${openFaq === i ? 'border-primary-200' : 'border-gray-100 hover:border-gray-200'}`}
-              >
-                <button
-                  className="w-full flex items-center gap-5 px-6 py-5 text-left"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                >
-                  <span className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${openFaq === i ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="flex-1 font-semibold text-gray-900 text-sm sm:text-base">{item.q}</span>
-                  <ChevronDown
-                    className={`flex-shrink-0 w-5 h-5 text-primary-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
-                  <div>
-                    <div className="px-6 pb-5 pl-[72px]">
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        {item.a}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* ══════════════════════════════════════
-          FOOTER
-      ══════════════════════════════════════ */}
-      <footer className="bg-[#080e1a] text-gray-400">
-        {/* Top compliance bar */}
-        <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-12">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
-                <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                <div>
-                  <div className="text-white font-bold text-[11px] leading-tight">Empresa Registrada</div>
-                  <div className="text-gray-500 text-[10px]">RUC: 20615113698 · Lima, Perú</div>
-                </div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <div>
-                  <div className="text-white font-bold text-[11px] leading-tight">Regulada SBS</div>
-                  <div className="text-gray-500 text-[10px]">Res. N° 00313-2026</div>
-                </div>
+            <div className="max-w-7xl mx-auto border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+              <p>© 2025 QoriCash. Todos los derechos reservados.</p>
+              <div className="flex items-center gap-5">
+                <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
+                <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
+                <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[11px] text-gray-600">
-              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
-              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
-            </div>
           </div>
-        </div>
+        </footer>
 
-        {/* Main footer content */}
-        <div className="w-full px-6 sm:px-8 lg:px-12 py-14">
-          <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
-            {/* Brand */}
-            <div>
-              <Link href="/" className="flex items-center gap-3 mb-5 hover:opacity-80 transition-opacity w-fit">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
-                <span className="text-2xl font-display font-bold text-white">QoriCash</span>
-              </Link>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Casa de cambio online líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.
-              </p>
-            </div>
-
-            {/* Servicios */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Servicios</h4>
-              <ul className="space-y-3 text-sm">
-                <li><Link href="/servicios#compra" className="hover:text-white transition-colors">Compra de dólares</Link></li>
-                <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
-                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
-              </ul>
-            </div>
-
-            {/* Empresa */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Empresa</h4>
-              <ul className="space-y-3 text-sm">
-                <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link></li>
-                <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors">Términos y condiciones</Link></li>
-                <li><Link href="/politica-privacidad" className="hover:text-white transition-colors">Política de privacidad</Link></li>
-                <li><Link href="/politica-cookies" className="hover:text-white transition-colors">Política de cookies</Link></li>
-                <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de reclamaciones</Link></li>
-              </ul>
-            </div>
-
-            {/* Contacto */}
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Contacto</h4>
-              <ul className="space-y-4 text-sm">
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                  </svg>
-                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">926 011 920</a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors leading-relaxed">
-                    Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre
-                  </a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div className="leading-relaxed">
-                    <div>Lun – Vie: 9:00 a.m. – 6:00 p.m.</div>
-                    <div>Sáb: 9:00 a.m. – 1:00 p.m.</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom bar */}
-          <div className="max-w-7xl mx-auto border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
-            <p>© 2025 QoriCash. Todos los derechos reservados.</p>
-            <div className="flex items-center gap-4">
-              <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
-              <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
-              <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </main>
+      </main>
     </>
   );
 }

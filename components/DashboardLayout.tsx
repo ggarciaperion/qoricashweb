@@ -75,9 +75,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>,
       document.body
     )}
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gray-50/70">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+      <div className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -104,12 +104,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Compra */}
                 <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-100 rounded-lg">
                   <span className="hidden md:inline text-gray-500 text-xs">Compra</span>
-                  <span className="font-bold text-green-600 text-sm">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
+                  <span className="font-bold text-green-600 text-sm tabular-nums">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
                 </div>
                 {/* Venta */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-50 border border-blue-100 rounded-lg">
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-secondary/5 border border-secondary/10 rounded-lg">
                   <span className="hidden md:inline text-gray-500 text-xs">Venta</span>
-                  <span className="font-bold text-blue-600 text-sm">S/ {currentRates.tipo_venta?.toFixed(3)}</span>
+                  <span className="font-bold text-secondary text-sm tabular-nums">S/ {currentRates.tipo_venta?.toFixed(3)}</span>
                 </div>
               </div>
             )}

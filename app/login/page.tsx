@@ -140,9 +140,9 @@ export default function LoginPage() {
     <main className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gold-100 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-40"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gold-50 rounded-full blur-3xl opacity-25"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-primary-50 rounded-full blur-3xl opacity-20"></div>
       </div>
 
       <div className="relative w-full max-w-md">
@@ -156,11 +156,11 @@ export default function LoginPage() {
         </Link>
 
         {/* Login card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/80 ring-1 ring-gray-100/50">
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-8 sm:p-10 border border-gray-100/80">
           {/* Logo and title */}
           <div className="text-center mb-8">
             <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
-            <p className="text-gray-600 text-lg">Inicia sesión en tu cuenta</p>
+            <h1 className="text-xl font-semibold text-gray-700 mt-1">Accede a tu cuenta</h1>
           </div>
 
           {/* Error message */}
@@ -180,7 +180,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* DNI field */}
             <div>
-              <label htmlFor="dni" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="dni" className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                 DNI / CE / RUC
               </label>
               <div className="relative">
@@ -191,8 +191,8 @@ export default function LoginPage() {
                   {...register('dni')}
                   type="text"
                   id="dni"
-                  className={`block w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.dni ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl focus:ring-2 focus:outline-none transition ${
+                    errors.dni ? 'border-red-200 bg-red-50/20 focus:ring-red-400/20 focus:border-red-400' : 'border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary-400 focus:ring-primary-400/20'
                   }`}
                   placeholder="12345678"
                   disabled={isLoading}
@@ -216,7 +216,7 @@ export default function LoginPage() {
 
             {/* Password field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                 Contraseña
               </label>
               <div className="relative">
@@ -227,8 +227,8 @@ export default function LoginPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  className={`block w-full pl-12 pr-12 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.password ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl focus:ring-2 focus:outline-none transition ${
+                    errors.password ? 'border-red-200 bg-red-50/20 focus:ring-red-400/20 focus:border-red-400' : 'border-gray-200 bg-gray-50/50 focus:bg-white focus:border-primary-400 focus:ring-primary-400/20'
                   }`}
                   placeholder="••••••••"
                   disabled={isLoading}
@@ -309,7 +309,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <Link
               href="/crear-cuenta"
-              className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 hover:shadow-md transition-all duration-200"
+              className="inline-flex items-center justify-center w-full border border-primary-300 text-primary-600 py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 hover:border-primary transition-all duration-200"
             >
               Crear cuenta gratis
             </Link>
@@ -317,9 +317,10 @@ export default function LoginPage() {
         </div>
 
         {/* Security note */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Tus datos están protegidos con encriptación de nivel bancario
-        </p>
+        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+          <span>Conexión cifrada SSL · Datos protegidos</span>
+        </div>
       </div>
 
       {/* Modals */}
