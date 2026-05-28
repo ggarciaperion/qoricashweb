@@ -85,7 +85,7 @@ Para empresas importadoras, el contexto de superávit comercial crónico en 2026
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/1554646/pexels-photo-1554646.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/11820859/pexels-photo-11820859.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n004',
@@ -105,7 +105,7 @@ En términos cambiarios, un Estado que consolida sus finanzas reduce la probabil
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/186461/pexels-photo-186461.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/19985009/pexels-photo-19985009.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n005',
@@ -125,7 +125,7 @@ Para el tipo de cambio PEN/USD, el precio del cobre es el indicador líder más 
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/29336321/pexels-photo-29336321.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/14747539/pexels-photo-14747539.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n006',
@@ -145,7 +145,7 @@ Para empresas que buscan financiamiento, el entorno actual de tasas activas en 1
     fuente: 'Gestión',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/3721272/pexels-photo-3721272.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/29117446/pexels-photo-29117446.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n007',
@@ -165,7 +165,7 @@ El escenario de base sigue siendo positivo para el cobre, pero el PMI oficial cr
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/1267338/pexels-photo-1267338.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/29988955/pexels-photo-29988955.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n008',
@@ -205,7 +205,7 @@ El escenario de corto plazo para el PEN/USD depende crucialmente de si la escala
     fuente: 'Bloomberg',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/11678630/pexels-photo-11678630.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/33539235/pexels-photo-33539235.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n010',
@@ -245,7 +245,7 @@ Para Perú, un DXY en 99-101 es un entorno relativamente favorable: no genera pr
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/22690629/pexels-photo-22690629.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n012',
@@ -265,7 +265,7 @@ Para inversores peruanos con exposición a Bitcoin, el RSI cerca de la zona de s
     fuente: 'TradingView',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/7655117/pexels-photo-7655117.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/14354113/pexels-photo-14354113.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n013',
@@ -305,7 +305,7 @@ Para importadores peruanos que compran a proveedores colombianos o para empresas
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/28682356/pexels-photo-28682356.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/13795638/pexels-photo-13795638.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'n015',
@@ -325,7 +325,7 @@ Para empresas que operan en ambos países o que compiten con productos chilenos,
     fuente: 'Infobae',
     fecha: HOY,
     destacada: false,
-    imagen: 'https://images.pexels.com/photos/14747539/pexels-photo-14747539.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    imagen: 'https://images.pexels.com/photos/29032777/pexels-photo-29032777.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
     id: 'm001',
