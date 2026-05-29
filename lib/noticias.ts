@@ -627,8 +627,6 @@ Para empresas que operan en ambos países o que compiten con productos chilenos,
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29032777/pexels-photo-29032777.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
-  {
-
 ];
 
 function getRedis(): Redis | null {
