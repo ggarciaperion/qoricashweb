@@ -269,8 +269,8 @@ El catalizador para el próximo leg up del cobre será cuando los estímulos fis
   },
   {
     id: 'f013',
-    titulo: 'DXY cae a 99.1 y mercados emergentes reciben US$ 18,200M en mayo — el mayor flujo mensual en 14 meses tras rebaja de Moody's a deuda de EE.UU.',
-    descripcion: 'El DXY acumula una pérdida del 4.8% en mayo, el peor mes para el dólar desde noviembre de 2022, presionado por la rebaja de Moody's a la deuda soberana de EE.UU. de Aaa a Aa1. Los mercados emergentes recibieron US$ 18,200M en entradas netas en el mes, con América Latina captando US$ 5,200M.',
+    titulo: "DXY cae a 99.1 y mercados emergentes reciben US$ 18,200M en mayo — el mayor flujo mensual en 14 meses tras rebaja de Moody's a deuda de EE.UU.",
+    descripcion: "El DXY acumula una pérdida del 4.8% en mayo, el peor mes para el dólar desde noviembre de 2022, presionado por la rebaja de Moody's a la deuda soberana de EE.UU. de Aaa a Aa1. Los mercados emergentes recibieron US$ 18,200M en entradas netas en el mes, con América Latina captando US$ 5,200M.",
     contenido: `El Índice del Dólar DXY cayó 0.2% hasta 99.1 al cierre del jueves, acumulando una pérdida mensual del 4.8% que convierte a mayo en el peor mes para el dólar desde noviembre de 2022. La presión viene de tres frentes: perspectiva de recortes de la Fed, preocupaciones sobre la sostenibilidad de la deuda de EE.UU. tras la rebaja de Moody's del 16 de mayo (de Aaa a Aa1), y la diversificación de reservas de bancos centrales fuera del dólar.
 
 El Instituto de Finanzas Internacionales (IIF) reportó entradas netas de US$ 18,200 millones a mercados emergentes en mayo, el mayor flujo mensual desde marzo de 2025. La distribución fue: Asia emergente US$ 9,400M (52%), América Latina US$ 5,200M (29%) y EMEA US$ 3,600M (19%). Brasil (US$ 2,100M), México (US$ 1,640M) y Colombia (US$ 880M) lideraron en la región; analistas de Credicorp estiman que Perú recibió entre US$ 280M-350M en flujos de portafolio.
