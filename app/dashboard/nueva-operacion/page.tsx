@@ -824,15 +824,16 @@ function NuevaOperacionContent() {
 
   // Upload KYC Documents
   const handleUploadKYCDocuments = async () => {
-    if (!dniFront || !dniBack) {
-      setError('Debes subir ambas fotos del DNI (anverso y reverso)');
-      return;
-    }
-
-    // Validar Ficha RUC para RUC
-    if (user?.document_type === 'RUC' && !rucFicha) {
-      setError('Debes subir la Ficha RUC para persona jurídica');
-      return;
+    if (user?.document_type === 'RUC') {
+      if (!rucFicha) {
+        setError('Debes subir la Ficha RUC de tu empresa');
+        return;
+      }
+    } else {
+      if (!dniFront || !dniBack) {
+        setError('Debes subir ambas fotos del DNI (anverso y reverso)');
+        return;
+      }
     }
 
     if (!user?.dni) {
@@ -846,11 +847,12 @@ function NuevaOperacionContent() {
     try {
       const formData = new FormData();
       formData.append('dni', user.dni);
-      formData.append('dni_front', dniFront);
-      formData.append('dni_back', dniBack);
 
-      if (user.document_type === 'RUC' && rucFicha) {
-        formData.append('ruc_ficha', rucFicha);
+      if (user.document_type === 'RUC') {
+        if (rucFicha) formData.append('ruc_ficha', rucFicha);
+      } else {
+        if (dniFront) formData.append('dni_front', dniFront);
+        if (dniBack) formData.append('dni_back', dniBack);
       }
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/client/upload-dni`, {
@@ -2424,7 +2426,7 @@ function NuevaOperacionContent() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800">
                   {user?.document_type === 'RUC'
-                    ? 'Para activar tu cuenta, necesitamos que subas los documentos del representante legal y la Ficha RUC de tu empresa.'
+                    ? 'Para activar tu cuenta, necesitamos que subas la Ficha RUC de tu empresa.'
                     : 'Para activar tu cuenta, necesitamos que subas ambas caras de tu documento de identidad.'}
                 </p>
                 <p className="text-sm text-blue-800 mt-2 font-semibold">
@@ -2432,75 +2434,78 @@ function NuevaOperacionContent() {
                 </p>
               </div>
 
-              {/* DNI Front Upload */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  {user?.document_type === 'RUC' ? 'DNI Representante Legal - Anverso *' : 'DNI/CE - Anverso *'}
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
-                  <input
-                    type="file"
-                    id="dni-front-upload"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setDnifront(e.target.files[0]);
-                      }
-                    }}
-                    className="hidden"
-                    disabled={isUploadingKYC}
-                  />
-                  <label htmlFor="dni-front-upload" className="cursor-pointer flex flex-col items-center">
-                    {dniFront ? (
-                      <div className="flex items-center gap-2">
-                        <FileImage className="w-6 h-6 text-green-600" />
-                        <span className="text-sm font-medium text-green-700">{dniFront.name}</span>
-                      </div>
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
-                        <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
+              {/* DNI Front/Back Upload (only for PN) */}
+              {user?.document_type !== 'RUC' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      DNI/CE - Anverso *
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
+                      <input
+                        type="file"
+                        id="dni-front-upload"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setDnifront(e.target.files[0]);
+                          }
+                        }}
+                        className="hidden"
+                        disabled={isUploadingKYC}
+                      />
+                      <label htmlFor="dni-front-upload" className="cursor-pointer flex flex-col items-center">
+                        {dniFront ? (
+                          <div className="flex items-center gap-2">
+                            <FileImage className="w-6 h-6 text-green-600" />
+                            <span className="text-sm font-medium text-green-700">{dniFront.name}</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
+                            <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  </div>
 
-              {/* DNI Back Upload */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  {user?.document_type === 'RUC' ? 'DNI Representante Legal - Reverso *' : 'DNI/CE - Reverso *'}
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
-                  <input
-                    type="file"
-                    id="dni-back-upload"
-                    accept="image/*"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setDniBack(e.target.files[0]);
-                      }
-                    }}
-                    className="hidden"
-                    disabled={isUploadingKYC}
-                  />
-                  <label htmlFor="dni-back-upload" className="cursor-pointer flex flex-col items-center">
-                    {dniBack ? (
-                      <div className="flex items-center gap-2">
-                        <FileImage className="w-6 h-6 text-green-600" />
-                        <span className="text-sm font-medium text-green-700">{dniBack.name}</span>
-                      </div>
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
-                        <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
-                      </>
-                    )}
-                  </label>
-                </div>
-              </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      DNI/CE - Reverso *
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
+                      <input
+                        type="file"
+                        id="dni-back-upload"
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setDniBack(e.target.files[0]);
+                          }
+                        }}
+                        className="hidden"
+                        disabled={isUploadingKYC}
+                      />
+                      <label htmlFor="dni-back-upload" className="cursor-pointer flex flex-col items-center">
+                        {dniBack ? (
+                          <div className="flex items-center gap-2">
+                            <FileImage className="w-6 h-6 text-green-600" />
+                            <span className="text-sm font-medium text-green-700">{dniBack.name}</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
+                            <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* RUC Ficha Upload (only for RUC) */}
               {user?.document_type === 'RUC' && (
@@ -2566,7 +2571,7 @@ function NuevaOperacionContent() {
                 </button>
                 <button
                   onClick={handleUploadKYCDocuments}
-                  disabled={isUploadingKYC || !dniFront || !dniBack || (user?.document_type === 'RUC' && !rucFicha)}
+                  disabled={isUploadingKYC || (user?.document_type === 'RUC' ? !rucFicha : (!dniFront || !dniBack))}
                   className="flex-1 bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {isUploadingKYC ? (
