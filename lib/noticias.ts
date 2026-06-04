@@ -24,9 +24,309 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-06-03T08:00:00.000Z';
+const HOY = '2026-06-04T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'j001',
+    titulo: 'BCRP compra USD 800M el 4 de junio — PEN toca S/ 3.40 intradiario; reservas internacionales ascienden a US$ 100,800M y el sol acumula apreciación de 2.6% en 2026',
+    descripcion: 'El Banco Central de Reserva del Perú intervino comprando USD 800 millones en la apertura del 4 de junio para moderar la apreciación del sol, que tocó S/ 3.40 intradiario por primera vez desde febrero de 2023. Las reservas internacionales netas alcanzan US$ 100,800 millones. El sol acumula una apreciación del 2.6% en lo corrido del año.',
+    contenido: `El Banco Central de Reserva del Perú (BCRP) ejecutó compras de USD 800 millones en el mercado cambiario durante la sesión del 4 de junio de 2026, en su intervención más voluminosa en un solo día desde enero de 2025. La acción del banco central busca moderar la velocidad de apreciación del sol peruano, que tocó S/ 3.40 por dólar en las operaciones de apertura, su nivel más bajo (mayor apreciación) desde el 14 de febrero de 2023.
+
+El BCRP ha intervenido comprando USD 4,200 millones en los últimos 30 días hábiles, acumulando reservas que ahora suman US$ 100,800 millones. Este nivel equivale a 22 meses de importaciones y cubre ampliamente los criterios del FMI de adecuación de reservas (ARA metric). La intervención sistemática tiene un doble objetivo: evitar que una apreciación excesiva perjudique la competitividad de los exportadores no mineros y acumular reservas para futuras contingencias.
+
+Los fundamentos que sostienen la apreciación del sol son estructurales: el superávit comercial de los primeros cinco meses de 2026 alcanza US$ 9,800 millones, el cobre cotiza a US$ 5.15/lb y el oro supera los US$ 3,600/oz. La debilidad del DXY —que cotiza por debajo de 99 ante las expectativas de recortes de la Fed— amplifica los flujos de capital hacia emergentes con fundamentos sólidos.
+
+El sol acumula una apreciación del 2.6% en lo corrido de 2026 (desde S/ 3.49 de inicio de año hasta S/ 3.40 actual), siendo la quinta moneda emergente con mejor desempeño frente al dólar en el año según Bloomberg. El directorio del BCRP se reúne el próximo martes 11 de junio; el mercado mantiene un 68% de probabilidad de que la tasa de referencia se mantenga en 4.25%.`,
+    analisis: `La intervención del BCRP en USD 800M en un solo día es una señal clara de que el banco central no está dispuesto a dejar que el sol se aprecie más allá de S/ 3.40 sin resistencia. Esto establece un piso técnico implícito: si el DXY no cae más, el sol tiene dificultades para romper S/ 3.40 de manera sostenida.
+
+Para empresas con cuentas por cobrar en dólares (exportadores no mineros, prestadores de servicios en USD), el nivel de S/ 3.40-3.42 puede ser una ventana para adelantar conversiones de divisas antes de la reunión del BCRP del 11 de junio. Si el banco central sorprende con un recorte de 25 pbs, el diferencial de tasas se reduce y el sol podría apreciarse marginalmente más; si mantiene en 4.25%, el carry trade se preserva y la apreciación se frena.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/29027606/pexels-photo-29027606.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j002',
+    titulo: 'Warsh en Chicago Fed: "el IPC del 10 de junio decidirá si actuamos en junio o julio" — mercados elevan probabilidad de recorte al 42%',
+    descripcion: 'El presidente de la Reserva Federal, Kevin Warsh, señaló en la Conferencia Anual de la Fed de Chicago que la lectura del IPC de mayo será el dato determinante para el FOMC del 16-17 de junio. Tras el discurso, los mercados de futuros elevaron la probabilidad de recorte de 35% a 42%.',
+    contenido: `Kevin Warsh, presidente de la Reserva Federal desde febrero de 2026, ofreció el discurso más explícito hasta la fecha sobre las condiciones para un primer recorte de tasas en su intervención ante la Conferencia Anual de la Fed de Chicago el 3 de junio. Warsh afirmó que el dato del IPC de mayo, que publicará el BLS el 10 de junio, sería el árbitro final de la decisión para el FOMC del 16-17 de junio. El mercado de futuros de Fed Funds respondió: la probabilidad de un recorte de 25 pbs en junio subió de 35% a 42% en el CME FedWatch tool.
+
+Warsh precisó que para respaldar un recorte en junio, la Fed necesitaría ver el core CPI por debajo del 2.7% interanual. El consenso del mercado ubica el core CPI de mayo en 2.8%. No necesitamos que la inflación esté en el objetivo para recalibrar; necesitamos evidencia convincente de que estamos en la trayectoria correcta, indicó Warsh.
+
+El presidente también abordó el impacto de los aranceles, señalando que el PPI de abril mostró moderación inesperada, sugiriendo que las empresas absorben parte del costo a través de márgenes más bajos en lugar de trasladarlo al consumidor.
+
+Goldman Sachs revisó su previsión tras el discurso: 45% de probabilidad de recorte en junio (previo: 30%) y 85% acumulado en julio. El rendimiento del Tesoro a 2 años cayó 6 pbs hasta 4.04%, y el DXY cedió 0.3% hasta 98.7.`,
+    analisis: `Un Warsh explícitamente dependiente de datos con referencia directa al IPC del 10 de junio es el catalizador que el mercado necesitaba para re-pricear el riesgo de recorte en junio. El movimiento del DXY (-0.3%) y del Treasury 2Y (-6 pbs) son la traducción más directa para el sol peruano: cada punto básico de caída en el yield corto de EE.UU. hace al carry trade en soles más atractivo.
+
+Si el IPC de mayo sale en 2.7% o menos, el escenario de recorte en junio se vuelve el dominante y el sol podría apreciarse hacia S/ 3.38-3.39 en los días previos al FOMC. Para quienes tienen exposición larga en USD, los próximos 7 días son críticos: el dato del 10 de junio es el evento de mayor riesgo cambiario del mes.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/12504957/pexels-photo-12504957.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j003',
+    titulo: 'ADEX: exportaciones agro no tradicionales crecen 18% en abril a US$ 650M — arándanos +34%, paltas +22%, uvas +19%; proyección anual récord de US$ 8,200M para 2026',
+    descripcion: 'La Asociación de Exportadores (ADEX) reportó que las exportaciones agro no tradicionales peruanas alcanzaron US$ 650 millones en abril de 2026, un 18% más que en abril de 2025. Los arándanos lideraron con +34%, seguidos por paltas (+22%) y uvas (+19%). El sector proyecta un año récord con US$ 8,200 millones en exportaciones agro no tradicionales.',
+    contenido: `La Asociación de Exportadores (ADEX) publicó sus estadísticas de comercio exterior de abril de 2026, revelando que las exportaciones de productos agropecuarios no tradicionales alcanzaron US$ 650 millones, un 18.3% más que en el mismo mes de 2025. En los cuatro primeros meses del año, las exportaciones agro no tradicionales suman US$ 2,380 millones, un 16.1% por encima del acumulado de enero a abril de 2025.
+
+Los arándanos continúan siendo el producto estrella: en abril se exportaron US$ 148 millones (+34.2%). La expansión de áreas de cultivo en Virú, Chao, Huamachuco y el Valle del Santa consolida a Perú como el primer exportador mundial de arándanos frescos, con el 30% de la participación de mercado global. Los principales destinos son EE.UU. (42%), Países Bajos (28%) y Reino Unido (16%).
+
+Las paltas exportaron US$ 127 millones en abril (+22.1%), beneficiadas por la demanda sostenida en Europa y EE.UU. y la ventana estacional de Perú que complementa la oferta de México. Las uvas de mesa sumaron US$ 89 millones (+18.9%), con las variedades sin semilla Crimson Seedless y Sweet Globe ganando participación en mercados premium.
+
+El presidente de ADEX señaló que de mantenerse el ritmo del primer cuatrimestre, el sector podría exportar US$ 8,200 millones en el año completo, superando el récord histórico de US$ 7,400 millones de 2025.`,
+    analisis: `Las exportaciones agro no tradicionales son el mejor ejemplo de la diversificación exitosa de la oferta exportable peruana. A diferencia de la minería, el agro no tradicional genera valor a través de productividad, calidad y posicionamiento en mercados premium, haciéndolo más resiliente a shocks externos.
+
+Para los exportadores agro, el tipo de cambio en S/ 3.40-3.42 reduce el margen en soles. Una empresa que vende a US$ 5.00/kg de arándanos recibe S/ 17.00-17.10 por kilo hoy versus S/ 17.45-17.50 hace tres meses. A escala de cientos de toneladas, este diferencial es material. La planificación de coberturas cambiarias para los envíos del segundo semestre es prioritaria.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/13277183/pexels-photo-13277183.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j004',
+    titulo: 'SBS: cartera de créditos del sistema financiero llega a S/ 380,000M en abril — crédito al consumo crece 12.1% y empresarial 7.4% interanual; morosidad cede a 4.1%',
+    descripcion: 'La SBS informó que la cartera de créditos del sistema financiero peruano alcanzó S/ 380,000 millones en abril de 2026, creciendo 8.2% interanual. El crédito al consumo lidera con +12.1%, seguido por hipotecario (+9.3%) y empresarial (+7.4%). La morosidad cedió a 4.1%, mínimo desde agosto de 2025.',
+    contenido: `La Superintendencia de Banca, Seguros y AFP (SBS) publicó las estadísticas del sistema financiero de abril de 2026, mostrando que la cartera de créditos total alcanzó S/ 380,000 millones, un 8.2% más que en abril de 2025. El crecimiento nominal supera en 4.5 puntos porcentuales la inflación del período, evidenciando una expansión real del crédito sostenida.
+
+El crédito al consumo fue el segmento de mayor dinamismo, creciendo 12.1% interanual hasta S/ 72,400 millones. El impulso proviene del crédito vehicular (+18.3%), las tarjetas de crédito (+14.2%) y los préstamos personales (+9.8%), categorías que se benefician de la mejora en el empleo formal y el incremento de los salarios reales. Los cuatro grandes bancos privados (BCP, BBVA, Interbank, Scotiabank) concentran el 73.4% del crédito al consumo.
+
+El crédito hipotecario creció 9.3% interanual hasta S/ 54,600 millones, impulsado por el programa Techo Propio y el Fondo MiVivienda. La perspectiva de recortes de tasas ha reactivado la demanda de vivienda, especialmente en el segmento de S/ 300,000 a S/ 600,000.
+
+La ratio de morosidad del sistema cedió a 4.1% en abril desde el pico de 4.8% de agosto de 2025. El nivel de provisiones cubre el 147% de la cartera morosa y el ratio de capital global promedia 16.2%, holgadamente por encima del mínimo regulatorio del 10%.`,
+    analisis: `Una cartera crediticia en S/ 380,000M creciendo al 8.2% real con morosidad cayendo a 4.1% y cobertura de provisiones del 147% es el cuadro de salud financiera más sólido que Perú ha mostrado desde 2019. Este ciclo virtuoso históricamente precede períodos de expansión sostenida del consumo privado y la inversión.
+
+Para empresas que buscan financiamiento bancario, este entorno es favorable: los bancos tienen apetito de riesgo y las tasas activas han bajado marginalmente. Si el BCRP recorta en julio o agosto, las tasas de crédito empresarial podrían caer adicionalmente 50-75 pbs en los próximos 6 meses.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29302360/pexels-photo-29302360.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j005',
+    titulo: 'MEF aprueba S/ 3,200M en inversión pública regional para Q2 — 47 proyectos en 15 regiones priorizan carreteras, saneamiento y hospitales; desembolso antes del 30 de junio',
+    descripcion: 'El Ministerio de Economía y Finanzas (MEF) aprobó la transferencia de S/ 3,200 millones a 15 regiones para 47 proyectos de inversión pública en el Q2 de 2026. Los proyectos priorizan carreteras (38%), saneamiento básico (26%) e infraestructura hospitalaria (18%). Los desembolsos deben ejecutarse antes del cierre del trimestre.',
+    contenido: `El Ministerio de Economía y Finanzas (MEF) publicó en el Diario El Peruano la resolución ministerial que autoriza la transferencia de S/ 3,200 millones a 15 gobiernos regionales para la ejecución de 47 proyectos de inversión pública en el segundo trimestre de 2026. La medida forma parte del Plan de Aceleración de la Inversión Pública 2026, que tiene como meta alcanzar una ejecución presupuestal del 78% al cierre del año (versus el 61% de 2025).
+
+Por sectores, la mayor asignación corresponde a infraestructura vial con S/ 1,216 millones (38%), que financiará la rehabilitación de 847 kilómetros de carreteras en Loreto, Puno, Apurímac, Huancavelica y Ayacucho. El saneamiento básico recibe S/ 832 millones (26%) para sistemas de agua potable y alcantarillado en 124 centros poblados rurales.
+
+La infraestructura de salud absorbe S/ 576 millones (18%) destinados al Hospital Regional de Ica (categoría III), la ampliación del Hospital Regional de Huánuco y 12 Centros de Salud Mental Comunitaria. La inversión en educación suma S/ 352 millones (11%) para 28 Colegios de Alto Rendimiento y 156 aulas en zonas de frontera.
+
+El ministro de Economía subrayó que los S/ 3,200 millones representan el 0.3% del PBI con efecto multiplicador estimado en 1.8x. Las regiones con mayor asignación son Loreto (S/ 420M), Puno (S/ 380M) y La Libertad (S/ 290M).`,
+    analisis: `La inversión pública actúa como estabilizador automático de la economía regional: S/ 3,200M en un trimestre equivalen a ~S/ 213M por semana, un flujo que activa cadenas de proveedores locales de materiales de construcción, servicios de ingeniería y mano de obra.
+
+Para empresas con operaciones en las regiones beneficiadas, la llegada de estos fondos puede representar oportunidades de contratos de provisión. El punto crítico es la ejecución: históricamente, las transferencias de fin de trimestre tienen tasas de ejecución bajas (40-50%) por problemas de capacidad de gestión regional. Si el MEF cumple el monitoreo comprometido, el impacto en el PBI del Q2 podría ser de 0.2-0.3 puntos porcentuales adicionales.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19985010/pexels-photo-19985010.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j006',
+    titulo: 'Quellaveco establece récord: 305,000 TM de cobre en 12 meses a mayo — Anglo American eleva guía 2026 a 310,000-320,000 TM; proyecto supera expectativas post-ramp-up',
+    descripcion: 'Quellaveco, la operación de Anglo American en Moquegua, produjo 305,000 TM de cobre fino en los últimos 12 meses, nuevo récord histórico. Anglo American eleva su guía de producción para 2026 a 310,000-320,000 TM, superando las 285,000 TM proyectadas originalmente al inicio de operaciones.',
+    contenido: `Anglo American informó que su operación Quellaveco, en la región Moquegua a 4,500 m.s.n.m., produjo 305,000 toneladas métricas de cobre fino en los 12 meses comprendidos entre junio de 2025 y mayo de 2026, nuevo récord histórico para la mina desde su inicio de producción comercial en octubre de 2022. El dato supera en 7.0% la producción del período anterior (285,000 TM).
+
+La mejora productiva responde a la optimización del proceso de flotación de cobre, que elevó la recuperación metalúrgica del 85.2% al 88.6%, y a la ampliación de la capacidad de molienda de 127,500 a 134,000 TM/día tras instalar un tercer molino de bolas en octubre de 2025. La ley del mineral se mantiene estable en 0.54%, por encima del plan de vida de la mina del 0.51%.
+
+Anglo American eleva su guía de producción 2026 a 310,000-320,000 TM (previo: 290,000-300,000 TM). A US$ 5.15/lb, la producción de 315,000 TM generaría ingresos brutos de US$ 3,576 millones, con tributos estimados al Estado peruano de US$ 980 millones (regalías mineras + IEM + Impuesto a la Renta).
+
+La operación ha cumplido todos los compromisos del Acuerdo Marco con las comunidades de Moquegua: US$ 380 millones en contratos locales, 4,200 trabajadores directos (68% de Moquegua) y un fondo de desarrollo regional de US$ 40 millones anuales.`,
+    analisis: `Quellaveco produciendo 305,000 TM en 12 meses confirma que el proyecto de US$ 5,300 millones ha superado las expectativas de producción post-ramp-up. Con cobre a US$ 5.15/lb, la operación genera márgenes EBITDA superiores al 60%, haciendo de Quellaveco uno de los activos más rentables de la cartera global de Anglo American.
+
+Para Perú, cada 10,000 TM adicionales de cobre equivalen a ~US$ 114 millones de ingresos de exportación anuales. La guía elevada a 310,000-320,000 TM implica US$ 285-400 millones más de divisas versus la guía original. Este flujo adicional es uno de los factores que sostiene la fortaleza del sol peruano.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5505961/pexels-photo-5505961.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j007',
+    titulo: 'PMI Caixin China mayo: manufactura cae a 49.5 en zona de contracción por primera vez en 4 meses — servicios suben a 53.2; pedidos de exportación se desploman a 44.8',
+    descripcion: 'El PMI Manufacturero Caixin de China cayó a 49.5 en mayo desde 50.4 en abril, entrando en zona de contracción por primera vez en cuatro meses. El PMI de Servicios subió a 53.2, máximo de 14 meses. Los nuevos pedidos de exportación se desplomaron a 44.8, el nivel más bajo en 18 meses, evidenciando el impacto de los aranceles de EE.UU.',
+    contenido: `El PMI Manufacturero del índice Caixin/S&P Global de China registró 49.5 en mayo de 2026, cayendo por debajo del umbral de 50 por primera vez desde enero de 2026. El dato decepcionó frente al consenso de 50.1 y al 50.4 de abril. Los nuevos pedidos de exportación se desplomaron a 44.8, el nivel más bajo en 18 meses, evidenciando el impacto directo de los aranceles estadounidenses sobre la demanda externa de manufacturas chinas.
+
+El componente de empleo manufacturero también cayó por debajo de 50 (48.9 vs 50.2 previo), indicando que las fábricas del sector exportador están comenzando a reducir plantillas o congelar contrataciones. Los precios de insumos subieron al ritmo más rápido en 7 meses (subíndice: 54.8), mientras los fabricantes acumulan materias primas ante potenciales alzas de precios por aranceles.
+
+En contraste, el PMI de Servicios Caixin subió a 53.2 en mayo desde 52.5 en abril, máximo desde marzo de 2025. El sector servicios —turismo doméstico, entretenimiento digital y servicios financieros— se beneficia de los paquetes de estímulo al consumo interno anunciados en marzo.
+
+El PMI Compuesto resultó en 50.8, el más bajo en 5 meses. Los analistas de Nomura y UBS mantienen su proyección de crecimiento del PIB chino para 2026 en 4.5%, pero señalan riesgo a la baja si los aranceles se amplían en el segundo semestre.`,
+    analisis: `Un PMI manufacturero chino en contracción (49.5) con pedidos de exportación en 44.8 confirma que los aranceles de EE.UU. están impactando la actividad industrial china. Esto es relevante para el cobre: si la manufactura china se modera más de lo esperado, la demanda de cobre industrial puede caer, ejerciendo presión bajista sobre los precios.
+
+Sin embargo, la demanda de cobre para infraestructura de energía verde (paneles solares, turbinas eólicas, cables de transmisión) sigue siendo el motor dominante en China y está en expansión a pesar de los aranceles. El balance neto para el precio del cobre sigue siendo ligeramente alcista estructuralmente, aunque con mayor volatilidad a corto plazo si el PMI manufacturero continúa en contracción en junio.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/31091544/pexels-photo-31091544.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j008',
+    titulo: 'OPEP+ acuerda aumentar producción en 400,000 bbl/día desde julio — WTI sube 1.8% a US$ 83/bbl; mercado interpreta el movimiento como señal de confianza en la demanda global',
+    descripcion: 'La OPEP+ acordó en su reunión del 2 de junio aumentar la producción en 400,000 barriles por día a partir de julio de 2026, la tercera reducción consecutiva de los recortes voluntarios. El WTI subió 1.8% a US$ 83/bbl, interpretando el movimiento como señal de confianza del cártel en la demanda. Arabia Saudita lideró la negociación para mantener la cohesión del grupo.',
+    contenido: `La OPEP+ acordó en su reunión ministerial del 2 de junio en Viena aumentar la producción en 400,000 barriles por día (bpd) a partir del 1 de julio de 2026, la tercera reducción consecutiva de los recortes voluntarios implementados desde octubre de 2023. La decisión fue adoptada por unanimidad, con Arabia Saudita liderando la negociación para mantener la cohesión del grupo.
+
+El mercado reaccionó alcistamente: el WTI subió 1.8% hasta US$ 83.20 por barril y el Brent avanzó 1.6% hasta US$ 86.40/bbl. La reacción positiva refleja que el mercado interpreta la reducción de recortes como señal de que la OPEP+ confía en que la demanda global puede absorber el volumen adicional sin deprimir precios. Arabia Saudita necesita un precio del petróleo por encima de US$ 78/bbl para equilibrar su presupuesto fiscal.
+
+Los 400,000 bpd adicionales se repartirán entre ocho países: Arabia Saudita (120,000 bpd), Rusia (80,000 bpd), Emiratos Árabes Unidos (50,000 bpd), Kuwait (40,000 bpd) y cuatro miembros adicionales. La producción total de la OPEP+ pasará de 33.8 a 34.2 millones bpd en julio.
+
+Goldman Sachs y Citigroup revisaron sus proyecciones al alza: Goldman sitúa el WTI en US$ 85-90/bbl para el segundo semestre de 2026 si la demanda china de combustibles para transporte se recupera según lo previsto. El descuento del crudo peruano (Loreto y Talara) respecto al WTI se mantiene en US$ 4-5/bbl.`,
+    analisis: `Para Perú, el impacto del petróleo más caro es bidireccional: por un lado, eleva el costo de los combustibles importados (Perú importa el 30% de su consumo de derivados) y añade presión inflacionaria; por el otro, beneficia las finanzas de Petroperú y las regalías de las operaciones en Loreto.
+
+El efecto neto en el tipo de cambio es ambiguo: un WTI más alto eleva el déficit energético de la balanza de pagos, presionando al sol negativamente. Pero si el alza del petróleo viene de la mano de recuperación de demanda china, el cobre también sube, y el impacto positivo del cobre compensa el negativo del petróleo. El balance histórico en episodios de petróleo moderadamente alto (US$ 80-90/bbl) con cobre fuerte (>US$ 5/lb) es de apreciación neta del sol.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/3207536/pexels-photo-3207536.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j009',
+    titulo: 'Swap markets: Treasury 2Y cae 6 pbs a 4.04% y DXY cede a 98.7 tras discurso Warsh — probabilidad recorte Fed junio sube a 42%; sol peruano toca S/ 3.40 y real a BRL 5.62',
+    descripcion: 'Los mercados de renta fija reaccionaron al discurso de Warsh en Chicago: el Treasury 2Y cayó 6 pbs hasta 4.04%, su nivel más bajo desde enero. El DXY retrocedió a 98.7. La probabilidad de recorte de la Fed en junio subió al 42%. El sol peruano tocó S/ 3.40 intradiario y el real brasileño se apreció a BRL 5.62.',
+    contenido: `Los mercados de renta fija reaccionaron con claridad al discurso de Kevin Warsh en la Conferencia Anual de la Fed de Chicago del 3 de junio: el rendimiento del Tesoro de EE.UU. a 2 años cayó 6 puntos básicos hasta 4.04%, su nivel más bajo desde el 14 de enero de 2026, y el rendimiento a 10 años cedió 4 pbs hasta 4.24%, manteniendo la pendiente 2Y-10Y ligeramente positiva en +20 pbs.
+
+En el mercado de swaps de tasas de interés (OIS), la probabilidad implícita de un recorte de 25 pbs en el FOMC del 16-17 de junio subió al 42%, desde el 35% previo al discurso. La probabilidad para julio se ubica en el 71%, y el mercado pricéa 1.8 recortes de 25 pbs acumulados para el cierre del año.
+
+El DXY retrocedió 0.3% hasta 98.7, su nivel más bajo en dos semanas. La caída del DXY impulsó al alza los principales cruces emergentes: el real brasileño se apreció 0.4% hasta BRL 5.62, el sol peruano cotiza en S/ 3.40 tras tocar S/ 3.39 intradiario. El índice MSCI Emerging Markets subió 0.8%. El euro avanzó 0.3% hasta 1.085 EUR/USD y la libra esterlina subió a 1.272 GBP/USD.
+
+Los spreads de crédito investment grade se comprimieron 3-5 pbs, reflejando el apetito renovado por activos de riesgo en un entorno de Fed más acomodaticia.`,
+    analisis: `La caída del Treasury 2Y a 4.04% es la señal de renta fija más relevante del día para los mercados emergentes: cuando el yield corto de EE.UU. cae, el diferencial de tasas con economías de alta tasa real como Perú (4.25% BCRP vs 3.50%-3.75% Fed) se amplía, haciendo el carry trade en soles más atractivo para gestores de fondos globales.
+
+El nivel crítico a monitorear es si el Treasury 2Y perfora el 4.00% (lo que requeriría un IPC de mayo en 2.7% o menos el 10 de junio). En ese caso, la probabilidad de recorte en junio supera el 60% y el DXY podría caer hacia 97.5-98, nivel que históricamente ha coincidido con el sol peruano en S/ 3.37-3.39.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5831355/pexels-photo-5831355.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j010',
+    titulo: 'Análisis técnico PEN/USD 4 junio: sol perfora soporte S/ 3.42 con marubozu bajista para el dólar — próximo objetivo S/ 3.38; RSI en 28 señala dólar sobrevendido',
+    descripcion: 'El tipo de cambio PEN/USD rompió el soporte de S/ 3.42 en la sesión del 4 de junio registrando un mínimo intradiario de S/ 3.40. El RSI-14 en 28 indica dólar sobrevendido en el corto plazo. El siguiente soporte técnico se ubica en S/ 3.38 (mínimo de febrero de 2023). El MACD muestra divergencia bajista para el dólar.',
+    contenido: `El tipo de cambio PEN/USD rompió el soporte clave de S/ 3.42 en la sesión del 4 de junio de 2026, registrando un mínimo intradiario de S/ 3.40 antes de que la intervención del BCRP (compra de USD 800M) frenara la caída. El cierre provisional en S/ 3.415 confirma la ruptura del soporte que había actuado como piso las últimas tres semanas.
+
+La vela del 4 de junio en el gráfico diario PEN/USD presenta un patrón de marubozu bajista para el dólar: apertura cerca del máximo del día, cierre cerca del mínimo. Este patrón en contexto de ruptura de soporte señala continuación de la tendencia apreciativa del sol. El volumen de la sesión fue el mayor en 11 días, confirmando la significancia del movimiento.
+
+Los indicadores técnicos refuerzan el escenario apreciativo: el RSI-14 en el gráfico diario USD/PEN se sitúa en 28, por debajo del nivel de sobreventa de 30. Esto sugiere que un rebote técnico del dólar es posible en 1-3 días, pero la tendencia de fondo sigue siendo de fortalecimiento del sol.
+
+El MACD (12-26-9) muestra divergencia bajista para el dólar: el precio hace mínimos más bajos (S/ 3.40 vs S/ 3.41 de tres semanas atrás) pero el histograma del MACD sube levemente, señalando agotamiento del impulso bajista del dólar a muy corto plazo. Niveles clave: Soporte inmediato S/ 3.40, soporte principal S/ 3.38, resistencia S/ 3.45, resistencia fuerte S/ 3.49 (MA50 días).`,
+    analisis: `Para los actores cambiarios con exposiciones en dólares, la ruptura de S/ 3.42 es una señal técnica de alerta: el mercado busca el soporte de S/ 3.38, y si el IPC del 10 de junio sale bajo (≤2.7%), la probabilidad de alcanzar ese nivel antes del FOMC del 17 de junio es significativa.
+
+La estrategia más conservadora para un exportador con cobros en USD pendientes es aprovechar los rebotes del dólar (hacia S/ 3.43-3.45) para cerrar posiciones. Los rebotes son probables dado el RSI sobrevendido, pero la tendencia de fondo es de apreciación del sol mientras el superávit comercial, el DXY débil y el cobre alto permanezcan intactos.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29611783/pexels-photo-29611783.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j011',
+    titulo: 'Oro spot alcanza US$ 3,620/oz el 4 de junio — bancos centrales compraron 290 TM en Q1 2026; China lidera con 95 TM; ETFs globales acumulan entradas récord de 387 TM en 5 meses',
+    descripcion: 'El precio del oro spot avanzó 0.7% hasta US$ 3,620/oz el 4 de junio, acercándose al máximo histórico de US$ 3,680 del 22 de mayo. El World Gold Council reporta 290 TM de compras de bancos centrales en Q1 2026, el mayor trimestre desde Q3 de 2022. China lidera con 95 TM. Los ETFs de oro acumulan 387 TM de entradas netas en 5 meses.',
+    contenido: `El precio del oro en el mercado spot avanzó 0.7% hasta US$ 3,620 por onza troy en la sesión del 4 de junio de 2026, impulsado por la debilidad del DXY (98.7), la caída de rendimientos del Tesoro a 2 años (4.04%) y el discurso dovish de Warsh. El metal acumula una ganancia del 18.4% en lo que va del año 2026 y se sitúa a un 1.6% del máximo histórico de US$ 3,680 del 22 de mayo.
+
+El World Gold Council publicó su reporte trimestral, revelando que los bancos centrales compraron en conjunto 290 TM en el Q1 2026, el mayor nivel trimestral desde el Q3 de 2022. El Banco Popular de China lideró con 95 TM, elevando sus reservas oficiales de oro a 2,285 TM (7.8% de sus reservas totales). Turquía adquirió 45 TM, Polonia 32 TM e India 28 TM.
+
+La demanda de ETFs de oro registra niveles récord: los ETFs respaldados por oro físico acumulan entradas netas de 387 TM en los primeros cinco meses de 2026, más que las 295 TM de todo 2025. Los SPDR Gold Shares (GLD) administra activos por US$ 84,600 millones, máximo histórico.
+
+En el COMEX, las posiciones especulativas netas largas en oro subieron a 312,000 contratos equivalentes (966 TM), cerca del máximo histórico. La prima del oro en China respecto a Londres se mantiene en US$ 15-18/oz, señalando demanda física sólida en el mayor mercado del mundo.`,
+    analisis: `El oro a US$ 3,620/oz con bancos centrales comprando a ritmo récord es señal de la reasignación global de reservas desde dólares hacia activos reales. Esta tendencia estructural —impulsada por la reducción de la confianza en el dólar como reserva única tras las sanciones a Rusia en 2022 y la degradación de la deuda de EE.UU. por Moody's— tiene décadas de recorrido potencial.
+
+Para Perú, el oro a US$ 3,600+/oz es un multiplicador de ingresos de exportación: cada 10 dólares de alza por onza genera ~US$ 24 millones anuales adicionales de exportaciones mineras (asumiendo producción de 3.4M oz/año). Con el oro en US$ 3,620 vs los US$ 2,050 de inicio de 2024, el impacto acumulado en los ingresos de exportación aurífera se mide en miles de millones de dólares anuales.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/8442325/pexels-photo-8442325.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j012',
+    titulo: 'Bitcoin consolida en US$ 108,000 tras ATH de US$ 112,000 del 2 de junio — ETFs spot acumulan USD 2,100M de entradas netas en la semana; dominance sube a 58% del mercado cripto',
+    descripcion: 'Bitcoin (BTC) cotiza en US$ 108,000 el 4 de junio, consolidando ganancias tras el nuevo ATH de US$ 112,000 del lunes 2 de junio. Los ETFs de Bitcoin spot en EE.UU. acumularon USD 2,100 millones de entradas netas en la semana, el mayor flujo desde enero de 2024. La dominance de Bitcoin sobre el mercado cripto subió al 58%, máximo desde noviembre de 2024.',
+    contenido: `Bitcoin (BTC) opera en US$ 108,000 en la sesión del 4 de junio de 2026, retrocediendo 3.6% desde el máximo histórico de US$ 112,050 registrado el lunes 2 de junio. El retroceso se encuadra en un patrón técnico saludable de consolidación: las correcciones del 3-5% después de nuevos ATH son habituales antes de que el precio busque niveles más altos. El volumen de Binance y Coinbase durante la consolidación fue el 40% menor que el del 2 de junio, señalando ausencia de presión vendedora significativa.
+
+Los ETFs de Bitcoin spot en EE.UU. —encabezados por el iShares Bitcoin Trust (IBIT) de BlackRock— acumularon USD 2,100 millones de entradas netas en los últimos 5 días hábiles, el mayor flujo semanal desde el lanzamiento de los ETFs en enero de 2024. Solo el IBIT recibió USD 890 millones, elevando sus activos bajo gestión a US$ 52,400 millones. El Fidelity FBTC sumó USD 340 millones y el Ark 21Shares USD 210 millones.
+
+La dominance de Bitcoin subió al 58%, máximo desde noviembre de 2024, reflejando que el flujo institucional actual se dirige preferentemente a Bitcoin frente a altcoins, patrón típico de la fase inicial de un ciclo alcista post-halving. El cuarto halving de Bitcoin se produjo en abril de 2024; históricamente, los ATH post-halving se producen entre 12 y 18 meses después.
+
+MicroStrategy (rebrandeada como Strategy) anunció la compra de 3,200 BTC adicionales entre el 28 de mayo y el 3 de junio a un precio promedio de US$ 105,800, elevando sus holdings totales a 592,400 BTC (US$ 63,979 millones al precio actual).`,
+    analisis: `Un Bitcoin en US$ 108,000 consolidando después de un ATH de US$ 112,000 con flujos de ETFs récord es el patrón técnico y de flujos más alcista posible. La participación institucional a través de ETFs regulados cambia la naturaleza del ciclo: las correcciones son más moderadas porque los compradores institucionales tienen horizontes de inversión más largos que los traders retail.
+
+Para el mercado de divisas peruano, un Bitcoin bullish implica mayor demanda de dólares en el mercado local: el cliente que compra BTC en exchanges nacionales necesita USD previamente, generando flujo hacia operadores de cambio. Un ciclo alcista sostenido en cripto puede ser un catalizador indirecto de demanda de divisas en el mercado local.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/8919573/pexels-photo-8919573.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j013',
+    titulo: 'Milei anuncia Privatizaciones 2.0 en Argentina — YPF (25% flotante), Banco Nación y Aerolíneas en lista; FMI aprueba cuarta revisión y desembolsa USD 1,300M; riesgo país a 380 pbs',
+    descripcion: 'El presidente Javier Milei presentó el plan Privatizaciones 2.0 ante el Congreso argentino: venta del 25% de YPF en bolsa, privatización total de Aerolíneas Argentinas y transformación del Banco Nación en entidad mixta. El FMI aprobó la cuarta revisión del programa Stand-By y desembolsó USD 1,300 millones. El riesgo país cayó a 380 pbs, mínimo desde 2018.',
+    contenido: `El presidente de Argentina, Javier Milei, presentó ante el Congreso Nacional el plan denominado Privatizaciones 2.0, la segunda fase de las reformas estructurales de su gobierno. El plan contempla tres operaciones: la colocación en bolsa del 25% del capital de YPF S.A. (actualmente 100% estatal) mediante una OPI en la BCBA y simultáneamente en el NYSE; la privatización total de Aerolíneas Argentinas mediante licitación pública; y la transformación del Banco de la Nación Argentina en entidad de economía mixta con 49% de participación privada.
+
+El anuncio coincidió con la aprobación por el FMI de la cuarta revisión del programa Stand-By de USD 20,000 millones firmado en enero de 2026 y el desembolso de USD 1,300 millones, el mayor giro del año. La directora gerente del FMI destacó los avances sobresalientes en disciplina fiscal, desinflación y normalización cambiaria de Argentina.
+
+La inflación argentina cayó del 211% anual de diciembre de 2023 al 4.2% anual de abril de 2026 (medición mensual: 0.3%), el nivel más bajo en 17 años. La tasa de cambio oficial cotiza en ARS 1,020 por dólar, con el diferencial con el mercado informal reducido al 8%, el menor en seis años. Las reservas internacionales netas del BCRA suman USD 28,400 millones.
+
+La reacción del mercado fue positiva: el índice Merval subió 4.8% y los bonos soberanos Bonar 2035 y 2038 ganaron 1.2 puntos porcentuales. El riesgo país cayó a 380 pbs, su nivel más bajo desde 2018.`,
+    analisis: `Argentina bajo Milei protagoniza la transformación fiscal y macroeconómica más rápida de un país grande en América Latina en décadas. La caída de la inflación del 211% al 4.2% en 28 meses, la eliminación del déficit fiscal y la acumulación de reservas son logros objetivamente extraordinarios.
+
+Para el mercado de divisas regional, una Argentina con diferencial blue del 8% reduce las distorsiones que históricamente generaban arbitraje cambiario entre los mercados de la región. Un ecosistema cambiario latinoamericano más ordenado beneficia a operadores formales de cambio que compiten con el mercado informal en calidad y velocidad de servicio.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/16228260/pexels-photo-16228260.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j014',
+    titulo: 'Banrep Colombia recorta tasa 25 pbs a 5.00% — primera rebaja tras pausa de 4 meses; inflación mayo cae a 4.6% y abre espacio; peso colombiano cede a COP 3,670 post-decisión',
+    descripcion: 'El Banco de la República de Colombia (Banrep) recortó su tasa de intervención en 25 pbs hasta el 5.00% en su reunión del 4 de junio de 2026, retomando el ciclo de relajación monetaria tras una pausa de cuatro meses. La inflación de mayo cayó a 4.6% anual. El peso colombiano cede 0.4% a COP 3,670 post-decisión.',
+    contenido: `El Banco de la República de Colombia (Banrep) sorprendió a los mercados al recortar su tasa de intervención de política monetaria en 25 pbs hasta el 5.00% en su reunión del 4 de junio de 2026, reanudando el ciclo de recortes que había iniciado en diciembre de 2024 y pausado en febrero de 2026. El consenso de analistas esperaba que Banrep mantuviera la tasa en 5.25% dado que la inflación todavía supera el techo de la banda meta del 2%-4%.
+
+La decisión se fundamenta en el IPC de mayo de Colombia: la inflación cayó a 4.6% anual desde el 5.1% de abril, el menor nivel desde agosto de 2021. La inflación de servicios —el componente más persistente— retrocedió de 7.8% a 6.8%, una caída de 100 pbs en un solo mes que convenció a la mayoría de los miembros de la junta de que la convergencia está en curso.
+
+La decisión fue adoptada por seis votos a favor y uno en contra (el disidente prefería esperar dos lecturas consecutivas por debajo del 5%). El comunicado señala que la política monetaria continuará siendo calibrada de manera gradual y dependiente de los datos.
+
+El peso colombiano (COP) cedió 0.4% hasta COP 3,670 por dólar inmediatamente después de la decisión, reacción típica ante recortes de tasas. Los analistas de Davivienda y Bancolombia señalan que el movimiento es transitorio: los fundamentales de balanza de pagos deberían sostener al COP por debajo de COP 3,700 en el corto plazo.`,
+    analisis: `El recorte del Banrep a 5.00% con inflación en 4.6% (sobre el techo del 4%) muestra que el banco central colombiano prioriza el estímulo al crecimiento sobre la cautela inflacionaria, un trade-off que históricamente genera volatilidad cambiaria. La diferencia con el BCRP peruano es instructiva: el BCRP mantiene en 4.25% con inflación en 3.7%, esperando dos lecturas convergentes antes de recortar.
+
+Para los clientes de QoriCash con negocios en Colombia, el COP en COP 3,670 post-recorte es 0.8% más débil que los COP 3,642 de ayer. Si el Banrep recorta otros 25 pbs en los próximos dos meses (escenario con 55% de probabilidad de mercado), el COP podría ceder a COP 3,720-3,750, haciendo las importaciones desde Colombia más baratas en soles pero encareciendo los cobros en COP.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19676231/pexels-photo-19676231.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'j015',
+    titulo: 'BCCh Chile mantiene tasa en 3.75% y señaliza recorte en julio — IPC mayo 3.2% confirma convergencia a la meta; peso chileno en CLP 882 impulsado por cobre a US$ 5.15/lb',
+    descripcion: 'El Banco Central de Chile (BCCh) mantuvo su Tasa de Política Monetaria en 3.75% en la reunión del 3 de junio, en línea con expectativas. El comunicado señaliza un recorte de 25 pbs en julio como escenario base. El IPC de mayo en 3.2% confirma la convergencia a la meta del 3%. El peso chileno se aprecia a CLP 882 por dólar impulsado por el cobre en US$ 5.15/lb.',
+    contenido: `El Banco Central de Chile (BCCh) decidió por unanimidad mantener la Tasa de Política Monetaria (TPM) en 3.75% en su reunión del 3 de junio de 2026, en línea con las expectativas del 94% de los economistas encuestados por Bloomberg. El comunicado post-reunión señaliza que de continuar la convergencia de la inflación según lo proyectado, un ajuste adicional de 25 pbs en la reunión de julio sería apropiado, lo que el mercado interpreta como un compromiso de recorte en julio con alta probabilidad.
+
+El IPC de mayo de Chile, publicado el viernes 30 de mayo, registró 3.2% anual, el menor nivel desde diciembre de 2020 y prácticamente en el centro del rango meta del 2%-4%. La inflación de servicios cayó al 4.1% (desde 4.8% en abril) y la inflación subyacente se ubica en 3.0%, primera lectura en el blanco del objetivo desde 2021.
+
+La economía chilena creció 3.8% anual en el Q1 2026, beneficiada por el cobre alto y la recuperación del consumo interno. El mercado laboral muestra resiliencia con desempleo del 8.4% (vs 9.1% de Q1 2025). El IMACEC de abril creció 3.5% anual, sosteniendo el momentum del Q1.
+
+El peso chileno (CLP) se aprecia hasta CLP 882 por dólar durante la sesión del 4 de junio, impulsado por el cobre a US$ 5.15/lb y la debilidad del DXY. El CLP acumula una apreciación del 4.1% en el año (desde CLP 919 de inicio de enero), siendo junto al sol peruano y el real brasileño una de las tres divisas latinoamericanas con mejor desempeño en 2026. La correlación histórica del CLP con el precio del cobre (R² de 0.78 mensual) explica en gran medida este movimiento.`,
+    analisis: `Un BCCh que señaliza explícitamente el recorte de julio con inflación en el blanco del 3% es el banco central latinoamericano más avanzado en el ciclo de normalización monetaria después de Brasil. La TPM en 3.75% con inflación en 3.2% implica una tasa real de política del 0.55%, nivel esencialmente neutral para Chile.
+
+Para la paridad CLP/PEN, que el BCCh recorte en julio mientras el BCRP posiblemente también recorte implica que el diferencial de tasas entre los dos países se mantiene relativamente estable. El CLP y el PEN deberían continuar apreciándose en paralelo frente al dólar mientras el DXY se mantenga débil y el cobre supere US$ 5/lb. La paridad cruzada CLP/PEN permanecerá en el rango de 0.0041-0.0043 soles por peso chileno (CLP 1,000 ≈ S/ 4.20-4.30).`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29713911/pexels-photo-29713911.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
   {
     id: 'i001',
     titulo: 'Sol peruano toca S/ 3.41 — mínimo del año impulsado por superávit comercial récord y reservas BCRP en US$ 100,000M mientras mercados globales debilitan el dólar',
@@ -43,8 +343,8 @@ El BCRP ha intervenido comprador en el mercado cambiario por US$ 1,200 millones 
 Para quienes tienen exposición cambiaria activa —ya sea cuentas por cobrar en USD o por pagar en USD— el nivel de S/ 3.41 puede ser una ventana interesante para cerrar posiciones. El consenso de analistas ubica al sol entre S/ 3.38 y S/ 3.50 para los próximos 60 días, con sesgo apreciativo mientras el DXY se mantenga débil y el superávit comercial continúe.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
-    destacada: true,
+    fecha: '2026-06-03T08:00:00.000Z',
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/13824652/pexels-photo-13824652.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
@@ -63,8 +363,8 @@ Kevin Warsh, que asumió la presidencia de la Fed en febrero, ha mantenido un to
 Para quienes tienen deuda o financiamiento en dólares, el momento de asegurar tasas puede ser ahora: una vez que la Fed comience a recortar, el costo de financiamiento en USD bajará, pero también lo hará el tipo de cambio si el sol se aprecia. El neto dependerá de la magnitud de cada movimiento; modelar escenarios de sensibilidad antes del 17 de junio es prudente.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
-    destacada: true,
+    fecha: '2026-06-03T08:00:00.000Z',
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/4705378/pexels-photo-4705378.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
@@ -83,7 +383,7 @@ Southern Copper ejecuta el plan de expansión más ambicioso del sector: busca a
 Para tesoreros y CFOs con flujos en dólares, el dinamismo exportador minero crea un mercado spot de divisas con amplia liquidez. La profundidad del mercado cambiario PEN/USD en Lima es mayor que en años anteriores, lo que facilita la cobertura de posiciones sin impacto significativo en el precio.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/14747539/pexels-photo-14747539.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -103,7 +403,7 @@ El café merece mención especial: las exportaciones acumuladas de enero a mayo 
 Para el tipo de cambio, los flujos agroexportadores tienen estacionalidad marcada: los mayores ingresos de divisas se concentran en los meses de cosecha (agosto-febrero para arándanos, mayo-octubre para café). Fuera de esas ventanas, la presión exportadora sobre el tipo de cambio se reduce, generando oportunidades de cobertura a mejores precios.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/10112717/pexels-photo-10112717.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -123,7 +423,7 @@ El déficit fiscal acumulado a mayo está en 1.8% del PBI, en línea con la meta
 Para el sector privado, la aceleración de la inversión pública en infraestructura crea demanda en cascada: cementeras, ferreterías, transportistas, consultores y empresas de servicios de ingeniería. El crecimiento del 9.4% en construcción en abril ya captura parte de ese efecto multiplicador.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/19985009/pexels-photo-19985009.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -143,7 +443,7 @@ El ROE (retorno sobre patrimonio) promedio del sistema bancario alcanza 18.4%, s
 Para las empresas en expansión, este es un momento favorable para negociar líneas de crédito revolventes o financiamiento de capital de trabajo: la liquidez del sistema es alta y la competencia entre bancos por buenos créditos mantiene los spreads comprimidos. Quienes tengan proyectos de inversión en cartera deberían explorar el mercado ahora, antes de que un eventual recorte de la tasa de referencia reduzca el margen de los bancos y los vuelva más selectivos.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29117446/pexels-photo-29117446.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -163,7 +463,7 @@ El impacto sobre los commodities es mixto. El cobre, que depende más de la inve
 Para importadores peruanos de insumos chinos (textiles, plásticos, maquinaria), la debilidad de la manufactura china puede traducirse en mejores precios de compra en los próximos dos a tres trimestres, ya que los fabricantes chinos compiten más agresivamente por pedidos externos.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/31047132/pexels-photo-31047132.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -183,7 +483,7 @@ Las señales de alerta están en el mercado de deuda: el spread del high yield (
 El escenario negativo —IPC de mayo sorprendiendo al alza por encima del 3.0%— mantendría a la Fed en pausa indefinida y presionaría al S&P hacia el soporte de 5,500-5,550. La asimetría de riesgo-beneficio favorece al escenario base constructivo, pero el mercado está claramente esperando confirmación antes de romper la lateralidad.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/33539235/pexels-photo-33539235.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -203,7 +503,7 @@ El OPEP+ se reúne el 7 de junio en sesión de seguimiento. Los miembros del gru
 Para empresas con flotas de vehículos o maquinaria pesada, el precio del diésel en Lima puede subir S/ 0.10-0.15/galón en las próximas 2-3 semanas si el WTI se mantiene en estas alturas. Asegurar stock de combustible o cerrar contratos de abastecimiento a precio fijo puede ser una estrategia eficiente en este entorno.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -223,7 +523,7 @@ Los niveles técnicos clave: soporte inmediato en S/ 3.40 (psicológico), soport
 Para quien tiene deuda en dólares o compromisos de pago en USD, cada centavo de apreciación del sol es una ganancia directa. Para exportadores no mineros con costos en soles, este entorno reduce la rentabilidad; evaluar el uso de forwards o opciones PEN/USD a 90-180 días puede proteger el margen operativo.`,
     categoria: 'Nacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -243,7 +543,7 @@ Desde la perspectiva técnica, Bitcoin perdió el soporte de US$ 68,000 (media m
 Para quienes tienen exposición a Bitcoin como reserva de valor o diversificador, una corrección a US$ 65,000-66,000 es una zona de acumulación razonable con perspectiva de 60-90 días, especialmente si el dot plot del FOMC del 17 de junio señaliza dos recortes. El catalizador más positivo de corto plazo para el cripto sería un IPC de mayo por debajo de 2.7% el próximo martes 10.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/7267611/pexels-photo-7267611.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -263,7 +563,7 @@ El nivel técnico más relevante para el DXY es 97.5-98.0: si el índice perfora
 Para empresas peruanas con deuda en dólares emitida en mercados internacionales, el entorno es doblemente favorable: el costo medido en soles cae (apreciación del sol) y los spreads soberanos se comprimen (menor riesgo país). Si tienen ventanas de recompra o prepago, este entorno puede ser óptimo para reducir el endeudamiento en moneda extranjera.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/5831511/pexels-photo-5831511.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -283,7 +583,7 @@ El FMI aprobó en mayo la cuarta revisión del programa Extended Fund Facility (
 Para empresas peruanas con operaciones o proveedores en Argentina, el tipo de cambio en ARS 1,437 con crawling peg del 1% mensual es predecible en el corto plazo, lo que facilita la planificación de pagos. La baja de la inflación también reduce la indexación de contratos.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/13107068/pexels-photo-13107068.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -303,7 +603,7 @@ Las remesas —segunda mayor fuente de divisas del país después del petróleo�
 Para empresas peruanas con operaciones en Colombia o que compiten con proveedores colombianos, la apreciación del peso encarece los costos de producción colombianos medidos en dólares, reduciendo ligeramente la ventaja competitiva de precio de las exportaciones colombianas.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/19675635/pexels-photo-19675635.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -323,7 +623,7 @@ Las exportaciones totales de Chile alcanzaron US$ 24,600 millones en Q1 2026 (+2
 Para Perú, Chile es el principal competidor en exportaciones de cobre, palta, uva y vino. La apreciación del peso chileno reduce la ventaja de precio de los exportadores chilenos en dólares, lo que puede abrir oportunidades para los exportadores peruanos en mercados como China, Europa y EE.UU.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/17403824/pexels-photo-17403824.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -343,8 +643,8 @@ Los analistas de Credicorp Capital, BBVA Research e Intercorp Capital Markets co
 Para empresas con flujos en dólares, el tipo de cambio S/ 3.60-3.65 representa una ventana de equilibrio razonable. Si el BCRP sorprende con un recorte de 25 pbs, el sol puede retroceder transitoriamente hacia S/ 3.63-3.65 antes de recuperar terreno dado que los fundamentos subyacentes son sólidos. Mantener posiciones cambiarias sin grandes cambios hasta después del 11 de junio es la recomendación de los tesoreros de la banca local.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
-    destacada: true,
+    fecha: '2026-06-03T08:00:00.000Z',
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/37430652/pexels-photo-37430652.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
@@ -363,8 +663,8 @@ El rendimiento del Tesoro a 10 años cedió 4 pbs hasta 4.24%, con el spread 2-1
 Para el sol peruano, el escenario de Fed dovish con dot plot proyectando dos recortes en el segundo semestre refuerza la debilidad estructural del DXY y el viento de cola para monedas emergentes con fundamentos sólidos. La correlación entre el DXY débil y la apreciación del sol es la más alta desde 2021.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
-    destacada: true,
+    fecha: '2026-06-03T08:00:00.000Z',
+    destacada: false,
     imagen: 'https://images.pexels.com/photos/17507798/pexels-photo-17507798.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
   {
@@ -383,7 +683,7 @@ El ICSG (International Copper Study Group) revisó su balance global para 2026 h
 Para Perú, cada día que el cobre se mantiene por encima de US$ 5.00/lb genera exportaciones adicionales de ~US$ 60M respecto al año pasado. La acumulación de estos flujos a lo largo del año es la razón fundamental por la que el sol peruano tiene uno de los mejores fundamentos macro de los mercados emergentes.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -403,7 +703,7 @@ La calidad del café peruano ha escalado en el mercado internacional de specialt
 Para el tipo de cambio, el café añade ~US$ 1,100M anuales al flujo de divisas. No es tan grande como el cobre, pero es representativo de la diversificación exportadora que hace al sol más resiliente ante correcciones de cualquier commodity individual.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/5980178/pexels-photo-5980178.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -423,7 +723,7 @@ La estrategia de acumulación de oro del BCRP responde a la tendencia global de 
 Para el sol peruano, las reservas de US$ 85,200M en oro y divisas son un escudo que prácticamente elimina el riesgo de una crisis cambiaria. Incluso ante un shock externo severo, el BCRP puede defender el sol con intervenciones sostenidas por meses sin agotar sus reservas.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -443,7 +743,7 @@ El Puerto del Callao maneja el 80% del comercio exterior peruano en valor. La am
 Para el tipo de cambio, mayor capacidad de exportación equivale a mayor flujo potencial de divisas y soporte estructural del sol. La mejora de la competitividad logística del Callao también atrae inversión industrial para exportación, generando más empleo y más divisas en los próximos años.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/14020705/pexels-photo-14020705.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -463,7 +763,7 @@ La plata spot (XAG/USD) sube 1.1% hasta US$ 34.20/oz, con el ratio oro/plata ced
 Para Perú, el binomio cobre+oro en máximos simultáneos es el mejor escenario posible para la balanza de pagos. Ambos representan el 72% de las exportaciones minerales del país. Este es el viento de cola fundamental que mantiene al sol entre las monedas emergentes de mejor desempeño en 2026.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29483248/pexels-photo-29483248.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -483,7 +783,7 @@ El índice compuesto de actividad económica de Shanghai creció 4.8% interanual
 Para Perú, el escenario de China con inversión masiva en infraestructura eléctrica es el mejor fundamento de largo plazo para el cobre. Si el ICSG tiene razón en su proyección de déficit de 230,000 TM de cobre en 2026, el precio puede mantenerse por encima de US$ 5.00/lb durante la mayor parte del año, sosteniendo el superávit comercial peruano.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/31772145/pexels-photo-31772145.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -503,7 +803,7 @@ Para la economía peruana, el MEF estima que el escenario actual —WTI sostenid
 Para empresas peruanas con costos de combustibles significativos (transporte, minería, agroindustria), el nivel actual justifica mantener coberturas activas para el Q3 2026. El mayor riesgo es una escalada militar en el Golfo que envíe el WTI a US$ 110-120, escenario que no está en el caso base pero sí en el mapa de riesgos.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/1716008/pexels-photo-1716008.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -523,7 +823,7 @@ Las posiciones especulativas netas a favor del sol en el mercado de futuros son 
 La dirección post-BCRP dependerá del tono del comunicado. Un BCRP que señalice claramente que el primer recorte es inminente puede llevar el sol a S/ 3.56-3.59. Un BCRP cauteloso por la inflación puede mantener el rango S/ 3.60-3.65. En ambos casos, el fundamento de largo plazo (superávit comercial, reservas récord, cobre alto) favorece al sol.`,
     categoria: 'Nacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/31650949/pexels-photo-31650949.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -543,7 +843,7 @@ Los modelos de valoración de divisas de JPMorgan y Goldman Sachs sitúan el val
 Para empresas peruanas, el DXY en 98-100 corresponde históricamente con PEN/USD en el rango S/ 3.55-3.65. Si el DXY cae hacia 96-97 en el segundo semestre (como proyectan Goldman y JPMorgan), el sol puede apreciarse hacia S/ 3.45-3.55. El rebound post-FOMC, si ocurre, sería la oportunidad para comprar dólares a precio razonable.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/31738798/pexels-photo-31738798.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -563,7 +863,7 @@ El mercado de opciones señala optimismo moderado: las opciones call en US$ 115,
 El impacto macro del Bitcoin en el tipo de cambio peruano es indirecto pero real: un BTC que rompe ATH señaliza que los inversores globales buscan alternativas al dólar como reserva de valor —mismo mensaje del oro en máximos, mismo mensaje del EUR/USD en máximos de 5 años. Todo converge: DXY débil implica sol más fuerte.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/14354113/pexels-photo-14354113.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -583,7 +883,7 @@ El FMI elogió el dato de inflación en un comunicado, señalando que "Argentina
 Para empresas peruanas con operaciones en Argentina, la estabilización en ARS 1,430 con brecha al 2.9% y tendencia bajista de inflación ofrece más certeza para planificar operaciones que en cualquier momento de los últimos tres años. El riesgo sigue siendo la sostenibilidad política del ajuste: cualquier retroceso en el programa generaría volatilidad cambiaria rápida.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/34004034/pexels-photo-34004034.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -603,7 +903,7 @@ La economía colombiana muestra recuperación moderada: el PIB creció 2.9% en Q
 Para empresas peruanas con operaciones en Colombia, la apreciación del COP es positiva para el costo real de las importaciones desde Colombia. Es una ventana para fijar precios en contratos de servicios denominados en pesos a tipos favorables antes de que el ciclo de apreciación eventualmente se revierta.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29477129/pexels-photo-29477129.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -623,7 +923,7 @@ Si el BCCh recorta a 3.50%, será el sexto recorte del ciclo que comenzó en jul
 La analogía para el sol peruano es directa: cuando el BCRP recorte (julio-agosto es el escenario más probable), la reacción inicial del PEN será de moderada depreciación transitoria (S/ 3.63-3.65), seguida de recuperación a medida que el mercado confirma que el ciclo de crédito más activo genera más crecimiento. La experiencia chilena de los últimos 36 meses es el mejor roadmap para interpretar cómo reaccionará el sol ante el primer recorte del BCRP.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-06-03T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/19821189/pexels-photo-19821189.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
