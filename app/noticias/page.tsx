@@ -24,6 +24,7 @@ const CATEGORIA_COLORS: Record<string, { bg: string; text: string; border: strin
 
 function formatFecha(iso: string) {
   return new Date(iso).toLocaleDateString('es-PE', {
+    timeZone: 'America/Lima',
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -154,7 +155,7 @@ export default async function NoticiasPage({
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
               <span className="text-gray-500 text-xs">
-                {new Date().toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                {new Date().toLocaleDateString('es-PE', { timeZone: 'America/Lima', weekday: 'long', day: 'numeric', month: 'long' })}
               </span>
             </div>
           </div>

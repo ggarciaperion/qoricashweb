@@ -61,7 +61,7 @@ export default async function NoticiaDetallePage({
             </span>
             <span className="flex items-center gap-1.5 text-xs text-gray-500">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date(noticia.fecha).toLocaleDateString('es-PE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              {new Date(noticia.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
             <span className="text-xs text-gray-600">· Fuente: <span className="font-medium text-gray-400">{noticia.fuente}</span></span>
           </div>
@@ -170,7 +170,7 @@ export default async function NoticiaDetallePage({
                           {n.titulo}
                         </p>
                         <p className="text-[10px] text-gray-400 mt-1">
-                          {new Date(n.fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}
+                          {new Date(n.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: 'numeric', month: 'short' })}
                         </p>
                       </div>
                     </Link>

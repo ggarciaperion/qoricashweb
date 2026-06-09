@@ -365,7 +365,7 @@ export default function AdminNoticiasPage() {
                         </span>
                         <span className="text-gray-800">·</span>
                         <span className="text-[10px] text-gray-600">
-                          {new Date(n.fecha).toLocaleDateString('es-PE')}
+                          {new Date(n.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}
                         </span>
                       </div>
                     </div>

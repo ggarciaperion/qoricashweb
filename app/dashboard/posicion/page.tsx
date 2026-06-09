@@ -469,7 +469,7 @@ export default function PosicionPage() {
   // ── Sprint 3: Copy summary to clipboard ──
   const handleCopyResumen = async () => {
     if (!posicion) return;
-    const fechaFmt = new Date(fecha + 'T12:00:00').toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const fechaFmt = new Date(fecha + 'T12:00:00-05:00').toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: '2-digit', year: 'numeric' });
     const lines = [
       `📊 *Posición QoriCash — ${fechaFmt}*`,
       ``,

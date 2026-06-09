@@ -880,7 +880,7 @@ export default function Home() {
                           {n.categoria}
                         </span>
                         <span className="text-[10px] text-gray-400 flex-shrink-0">
-                          {new Date(n.fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}
+                          {new Date(n.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: 'numeric', month: 'short' })}
                         </span>
                       </div>
                       <h3 className="text-sm font-display font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-600 transition-colors line-clamp-2">

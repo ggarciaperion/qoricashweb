@@ -6,6 +6,7 @@ import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
 import { operationsApi } from '@/lib/api/operations';
+import { parseSafeDate } from '@/lib/utils/date';
 import { banksApi } from '@/lib/api/banks';
 import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import type { BankAccount } from '@/lib/types';
@@ -632,7 +633,8 @@ function NuevaOperacionContent() {
 
         const operation = response.data.operation;
         const formattedDateString = operation.created_at
-          ? new Date(operation.created_at).toLocaleString('es-PE', {
+          ? (parseSafeDate(operation.created_at) ?? new Date()).toLocaleString('es-PE', {
+              timeZone: 'America/Lima',
               day: '2-digit',
               month: '2-digit',
               year: 'numeric',

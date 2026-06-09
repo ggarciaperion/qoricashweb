@@ -374,7 +374,7 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
                             </p>
                             <p className="text-[10px] text-gray-400 font-medium">
                               {a.activa ? 'Activa' : 'Disparada'} ·{' '}
-                              {new Date(a.fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' })}
+                              {new Date(a.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: 'numeric', month: 'short' })}
                             </p>
                           </div>
                         </div>

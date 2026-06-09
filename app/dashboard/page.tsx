@@ -8,6 +8,7 @@ import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useOperationEventStore } from '@/lib/store/operationEventStore';
 import { operationsApi } from '@/lib/api/operations';
+import { parseSafeDate } from '@/lib/utils/date';
 import type { Operation, ClientStats } from '@/lib/types';
 import {
   TrendingUp,
@@ -42,9 +43,9 @@ const fmt$ = (n: number) =>
 const fmtS = (n: number) =>
   n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtDate = (s: string) =>
-  new Date(s).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: '2-digit' });
+  (parseSafeDate(s) ?? new Date()).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: 'short', year: '2-digit' });
 const fmtTime = (s: string) =>
-  new Date(s).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+  (parseSafeDate(s) ?? new Date()).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit' });
 
 /* ─── status config ───────────────────────────────────────────── */
 const STATUS: Record<string, { label: string; dot: string; pill: string }> = {
@@ -598,7 +599,7 @@ export default function DashboardPage() {
                 <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
                   <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-1.5 font-semibold">Fecha</p>
                   <p className="text-gray-900 text-sm font-bold">
-                    {new Date(selectedOperation.fecha_creacion).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' })}
+                    {(parseSafeDate(selectedOperation.fecha_creacion) ?? new Date()).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })}
                   </p>
                 </div>
               </div>

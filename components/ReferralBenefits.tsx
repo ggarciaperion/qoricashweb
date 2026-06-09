@@ -112,6 +112,7 @@ export default function ReferralBenefits({ clientDni }: ReferralBenefitsProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-PE', {
+      timeZone: 'America/Lima',
       year: 'numeric',
       month: 'short',
       day: 'numeric'
