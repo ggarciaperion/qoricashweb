@@ -24,9 +24,309 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-06-10T08:00:00.000Z';
+const HOY = '2026-06-11T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'n001',
+    titulo: 'BCRP mantiene tasa de referencia en 4.25% en reunión de junio: sol estable en S/ 3.388',
+    descripcion: 'El directorio del Banco Central de Reserva del Perú decidió por unanimidad mantener la tasa de política monetaria en 4.25% en su sesión mensual de hoy. La decisión estuvo en línea con lo esperado por el 73% del mercado y el sol reaccionó con estabilidad, cotizando en S/ 3.388 interbancario.',
+    contenido: `El Banco Central de Reserva del Perú (BCRP) anunció hoy jueves 11 de junio su decisión de mantener la tasa de referencia de política monetaria en 4.25%, nivel en que se ha mantenido desde febrero de 2026. La resolución fue adoptada por unanimidad del directorio, en línea con las expectativas del 73% de los analistas consultados por Reuters.
+
+En su comunicado, el BCRP señaló que la decisión refleja la necesidad de anclar las expectativas de inflación, que se ubica en 2.8% interanual en mayo, dentro del rango meta pero por encima del punto objetivo de 2%. El banco central destacó también la incertidumbre del entorno político post-electoral como un factor que recomienda cautela en la política monetaria.
+
+El tipo de cambio reaccionó con moderación a la noticia. El sol se cotiza en S/ 3.388 interbancario, apreciándose levemente desde S/ 3.393 del cierre de ayer, en la medida en que el mercado descarta un ciclo de recortes agresivos en el corto plazo. El BCRP intervino comprando USD 120 millones en la sesión para moderar la apreciación.
+
+El directorio señaló que evaluará los datos de inflación de junio y el resultado electoral definitivo antes de la próxima reunión de política monetaria programada para el 10 de julio. Los analistas de Credicorp Capital y Scotiabank mantienen su proyección de primer recorte en agosto, condicionado a que la inflación converja hacia el 2.5% en julio.`,
+    analisis: `La decisión del BCRP de mantener la tasa en 4.25% elimina el factor de incertidumbre monetaria para el tipo de cambio en el corto plazo. Al descartar tanto un recorte como un alza sorpresiva, el sol queda anclado a los factores externos y al resultado electoral como principales catalizadores esta semana. El diferencial de tasas Perú-Fed se mantiene favorable al sol.
+
+Para empresas con obligaciones en dólares en junio, el entorno de tasa estable y sol apreciado representa una oportunidad de cubrir posiciones a tipos favorables. En QoriCash atendemos operaciones de cambio con spread competitivo para personas naturales y empresas que quieran aprovechar el tipo de cambio actual antes de que el resultado ONPE final genere nueva volatilidad.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/19985010/pexels-photo-19985010.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n002',
+    titulo: 'IPC mayo EE.UU. en 2.7% confirma consenso: probabilidad de recorte Fed en julio sube a 72%',
+    descripcion: 'El Departamento de Trabajo de EE.UU. publicó hoy el IPC de mayo: el índice core marcó 2.7% interanual, en línea con el consenso. El dato desencadenó un alza en las expectativas de recorte de tasas Fed para julio, que según CME FedWatch alcanza ahora el 72%, y presionó al dólar a la baja a nivel global.',
+    contenido: `El Bureau of Labor Statistics publicó hoy a las 8:30 AM hora de Nueva York el Índice de Precios al Consumidor (IPC) de mayo 2026. El índice core —que excluye alimentos y energía— registró una variación interanual del 2.7%, exactamente en línea con el consenso del mercado, mientras el índice general marcó 3.1%, también dentro de lo esperado.
+
+La reacción del mercado fue inmediata y positiva para los activos de riesgo. Los futuros del S&P 500 avanzaron 0.7%, el dólar cayó 0.4% en los primeros minutos post-publicación y los rendimientos del bono del Tesoro a 10 años bajaron de 4.32% a 4.27%. La herramienta FedWatch de CME Group elevó la probabilidad de recorte en la reunión del FOMC del 29 de julio de 58% a 72%.
+
+Los componentes del IPC que más influyeron en el resultado fueron: servicios de vivienda (shelter) con +0.3% mensual, por debajo del +0.4% de abril, lo que refleja la moderación en el mercado de alquileres. Los precios de bienes duraderos cayeron 0.2% mensual, el cuarto mes consecutivo de descenso, impulsados por la caída en vehículos usados (-1.1%).
+
+Para la Fed, el dato confirma que la desinflación continúa su curso sin acelerarse ni revertirse. El presidente Powell tiene margen para recortar en julio si los datos de empleo de junio —que se publican el 4 de julio— no muestran un mercado laboral excesivamente caliente. El mercado ya descuenta 2.5 recortes de 25 puntos básicos para el cierre del 2026.`,
+    analisis: `Un IPC en línea con el consenso es el escenario más benigno para las monedas emergentes: el dólar se debilita pero sin el shock de una sorpresa a la baja que generaría volatilidad excesiva. Para el sol peruano, la debilidad del DXY es un viento de cola que permite al BCRP comprar dólares para acumular reservas sin generar presión inflacionaria.
+
+Para quienes tienen ingresos en dólares y gastos en soles —como exportadores o trabajadores con salarios en USD— este entorno de sol apreciado representa el momento ideal para convertir excedentes de dólares a soles en casas de cambio como QoriCash, donde el tipo de cambio ofrecido supera al bancario.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/17507798/pexels-photo-17507798.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n003',
+    titulo: 'ONPE: Sanchez alcanza 99.1% de actas con ventaja de 0.19 puntos — JNE espera resultados definitivos mañana',
+    descripcion: 'La Oficina Nacional de Procesos Electorales procesó el 99.1% de las actas de la segunda vuelta del 8 de junio. Jorge Sanchez (Avancemos Perú) mantiene 50.095% frente al 49.905% de Keiko Fujimori (Fuerza Popular). El JNE estima proclamar al ganador oficial el viernes 12 de junio.',
+    contenido: `La Oficina Nacional de Procesos Electorales (ONPE) informó esta mañana que el 99.1% de las actas electorales de la segunda vuelta presidencial del 8 de junio han sido procesadas. Con ese escrutinio, Jorge Sanchez (Avancemos Perú) mantiene 50.095% de los votos válidos, frente al 49.905% de Keiko Fujimori (Fuerza Popular). La diferencia equivale a aproximadamente 132,000 votos.
+
+El Jurado Nacional de Elecciones (JNE) informó que el 0.9% de actas restantes corresponde a circunscripciones de la selva norte —Loreto y Ucayali— y a los votos del extranjero, cuya transmisión por sistemas satelitales presenta mayor latencia. El organismo estima que el conteo estará completo antes del mediodía del jueves y que la proclamación oficial del presidente electo se realizará el viernes 12 de junio.
+
+Ambas campañas han presentado observaciones sobre actas específicas ante el JNE. El equipo legal de Fuerza Popular ha cuestionado 280 actas de regiones de la selva central, mientras el equipo de Avancemos Perú ha pedido la nulidad de 47 actas de Lima. Observadores de la OEA, la Unión Europea y el Centro Carter coinciden en que el proceso ha seguido los protocolos establecidos y que las impugnaciones no alterarán el resultado global.
+
+En el mercado de divisas, la progresiva claridad electoral mantiene el dólar en niveles bajos. El tipo de cambio interbancario opera en S/ 3.388, y los analistas de mercado estiman que en el escenario de proclamación sin mayores contratiempos el sol podría apreciarse a S/ 3.370-3.380 para el cierre de la semana.`,
+    analisis: `La reducción de la incertidumbre electoral es el factor de mayor peso en la apreciación del sol de las últimas dos semanas. A medida que el resultado se consolida y se acerca la proclamación oficial, el mercado elimina la prima de riesgo político que mantenía el dólar elevado. En QoriCash observamos mayor volumen de operaciones de conversión de dólares a soles por parte de clientes corporativos que anticipan necesidades de pago en moneda local.
+
+Para importadores y deudores en dólares, la apreciación del sol reduce el costo de sus obligaciones en moneda extranjera. Sin embargo, si la proclamación transcurre sin incidentes el viernes, podría darse una toma de ganancias en el sol y una ligera recuperación del dólar hacia S/ 3.40-3.42, nivel técnico de soporte fuerte.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29302360/pexels-photo-29302360.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n004',
+    titulo: 'Sol peruano se consolida en S/ 3.388 post-BCRP: menor spread compra-venta en mesas de cambio',
+    descripcion: 'Tras la decisión del BCRP de mantener la tasa en 4.25% y con el IPC de EE.UU. en línea al consenso, el sol peruano opera estable en S/ 3.388 interbancario. Las mesas de cambio reportan menor spread y mayor liquidez, con el BCRP acumulando reservas con compras en la sesión.',
+    contenido: `El tipo de cambio PEN/USD interbancario opera hoy en S/ 3.388, consolidándose en niveles de apreciación del sol que no se registraban desde mayo de 2024. La estabilización del tipo de cambio responde a la confluencia de tres factores: decisión de tasa BCRP en línea con lo esperado, IPC de EE.UU. sin sorpresas y progresiva claridad electoral.
+
+En el mercado paralelo, las casas de cambio y exchange houses en Lima reportan operaciones con spread reducido: compra en S/ 3.375-3.380 y venta en S/ 3.390-3.395, un diferencial de apenas 15 centavos, el más estrecho en lo que va del año. El menor spread refleja alta liquidez en ambas monedas y menor volatilidad percibida por los operadores.
+
+El BCRP intervino en la sesión matutina comprando USD 120 millones en el mercado spot para moderar la velocidad de apreciación del sol y acumular reservas internacionales. Con esta operación, las reservas netas superan los USD 101,740 millones, ampliando el récord histórico. El banco central ha comprado USD 400 millones en lo que va de junio.
+
+Los operadores de mesas de cambio corporativas señalan que la demanda de dólares por parte de importadores se ha reducido notablemente respecto a mayo. Los principales flujos de venta de dólares provienen de empresas mineras que convierten sus ingresos de exportación y de fondos de inversión extranjeros que adquieren bonos soberanos peruanos.`,
+    analisis: `El comportamiento del tipo de cambio esta semana refleja fundamentos sólidos para el sol: resultado electoral que apunta a continuidad de la política económica, BCRP con las manos libres para acumular reservas y entorno externo favorable con Fed dovish y dólar débil. La combinación de estos tres factores dificulta una depreciación significativa del sol en el corto plazo.
+
+Para quienes planifican operaciones de cambio en los próximos días, el nivel de S/ 3.385-3.395 parece ser el nuevo rango de equilibrio de corto plazo. Operar en QoriCash dentro de este rango garantiza condiciones cambiarias entre las mejores del mercado local para personas y empresas.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5831355/pexels-photo-5831355.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n005',
+    titulo: 'Cobre LME avanza a USD 5.31 por libra: exportaciones cupreras de Peru crecerán 19% en 2026 según MINEM',
+    descripcion: 'El cobre en el London Metal Exchange sube a USD 5.31 por libra ante la caída de inventarios a 93,200 toneladas y la sólida demanda industrial china. El Ministerio de Energía y Minas eleva su proyección de exportaciones cupreras peruanas a USD 16,500 millones para el año.',
+    contenido: `El cobre a tres meses en el London Metal Exchange (LME) avanza a USD 5.31 por libra (USD 11,705 por tonelada métrica), acumulando una ganancia del 1.8% en la semana. El metal rojo se beneficia de la confluencia de inventarios en mínimos, demanda industrial sostenida de China y la debilidad generalizada del dólar que hace más atractivos los commodities cotizados en USD.
+
+Los inventarios de cobre en los almacenes certificados del LME cayeron a 93,200 toneladas métricas, 5,250 toneladas menos que hace una semana y el nivel más bajo desde mayo de 2021. La reducción de stocks ocurre mientras la demanda de cobre para infraestructura de inteligencia artificial —centros de datos, cables de transmisión de alta tensión y sistemas de refrigeración— se acelera en EE.UU. y Europa.
+
+El Ministerio de Energía y Minas del Perú (MINEM) elevó hoy su proyección de exportaciones de cobre para 2026 a USD 16,500 millones, desde USD 16,200 millones anteriores, un incremento del 19% frente a los USD 13,870 millones exportados en 2025. Las minas de Antamina, Cerro Verde, Las Bambas y Toromocho operan a plena capacidad. Quellaveco de Anglo American amplió su producción en un 8% interanual en el primer trimestre.
+
+Los mayores ingresos por exportaciones cupreras tienen un efecto directo sobre el mercado cambiario peruano: cada USD 1,000 millones adicionales en exportaciones mineras genera aproximadamente S/ 3,400 millones en oferta de divisas, contribuyendo a la apreciación del sol observada en las últimas semanas.`,
+    analisis: `El alza del cobre beneficia directamente a Perú como segundo mayor productor mundial. Los mayores ingresos de exportación en dólares generan mayor oferta de divisas en el mercado local, ejerciendo presión hacia la apreciación del sol. Este factor estructural, combinado con la reducción de la incertidumbre electoral, explica gran parte de la fortaleza reciente del PEN.
+
+Para empresas del sector minero que necesiten convertir ingresos en dólares a soles para cubrir planillas y gastos locales, QoriCash ofrece tipos de cambio competitivos y atención personalizada. El volumen de operaciones del sector minero representa uno de los principales segmentos que atendemos.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n006',
+    titulo: 'SUNAT: recaudación tributaria acumula S/ 72,400M en enero-mayo — superávit fiscal por primera vez desde 2019',
+    descripcion: 'La recaudación de SUNAT alcanzó S/ 72,400 millones en los primeros cinco meses del año, un crecimiento real del 11.8% frente al mismo periodo de 2025. El MEF informó que el sector público no financiero registró un superávit fiscal de +0.2% del PBI en mayo, el primero desde 2019.',
+    contenido: `La Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT) publicó hoy el reporte de recaudación acumulada enero-mayo 2026, mostrando un total de S/ 72,400 millones, equivalente a USD 21,360 millones al tipo de cambio actual. El crecimiento en términos reales respecto al mismo periodo de 2025 es del 11.8%, por encima del objetivo de crecimiento proyectado por el MEF (8.5%).
+
+Los factores detrás del sólido desempeño tributario son: el IGV interno creció 14.9% real (consumo privado robusto), el Impuesto a la Renta de tercera categoría subió 17.2% (precios de exportación de minerales y agroexportaciones), y los derechos arancelarios aumentaron 8.3% por el mayor valor de las importaciones. La base tributaria se amplió con 42,800 nuevos contribuyentes registrados en el periodo.
+
+El Ministerio de Economía y Finanzas (MEF) informó que en mayo el sector público no financiero registró un resultado positivo de +0.2% del PBI mensualizado, lo que representa el primer superávit fiscal mensual desde octubre de 2019. Con este resultado, el déficit fiscal acumulado en enero-mayo 2026 se reduce a -1.9% del PBI, por debajo del objetivo anual de -2.5%.
+
+Los mejores fundamentos fiscales son valorados positivamente por los mercados de capitales. El riesgo país de Perú medido por el EMBI+ cayó a 112 puntos básicos hoy, el nivel más bajo desde noviembre de 2021, lo que abarata el financiamiento externo del Estado peruano.`,
+    analisis: `La mejora fiscal tiene un impacto cambiario indirecto pero relevante: reduce la necesidad del Estado de emitir deuda en dólares y mejora la calificación crediticia soberana, lo que atrae inversión extranjera que demanda soles. Un Perú con fundamentos fiscales sólidos es un Perú con menor riesgo de depreciación cambiaria estructural.
+
+Para el mediano plazo, el contexto de fundamentos peruanos sólidos —fiscal, monetario, de reservas y electoral— configura un entorno favorable para el sol. Las empresas con planificación de compras de dólares para el segundo semestre deben considerar que el tipo de cambio actual podría representar un piso de largo plazo si la tendencia fiscal continúa.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n007',
+    titulo: 'Fed: probabilidad de recorte en julio sube a 72% tras IPC mayo — Powell habla el viernes en conferencia',
+    descripcion: 'Tras el IPC de mayo en línea con el consenso, el mercado eleva la probabilidad de un recorte de 25 pb en la reunión del FOMC del 29 de julio al 72%. El presidente Powell participará en una conferencia del Banco de la Reserva Federal de San Francisco el viernes, donde se esperan señales sobre el timing del primer recorte.',
+    contenido: `Los mercados financieros elevaron significativamente las apuestas por un primer recorte de tasas de la Reserva Federal tras la publicación del IPC de mayo. La herramienta FedWatch de CME Group muestra ahora una probabilidad del 72% de que el FOMC baje tasas en 25 puntos básicos en su reunión del 29 de julio, desde el 58% que registraba antes del dato de inflación.
+
+Los rendimientos de los bonos del Tesoro de EE.UU. reaccionaron con caídas: el Treasury a 2 años bajó de 4.71% a 4.65%, mientras el a 10 años cayó de 4.32% a 4.27%. La curva de rendimientos se está inclinando levemente hacia una forma más "normal" (positiva), lo que el mercado interpreta como señal de que el ciclo de recortes se acerca.
+
+El presidente de la Fed, Jerome Powell, tiene agendada para el viernes 13 de junio una participación en el Simposio Anual de la Reserva Federal de San Francisco. Los operadores analizarán con lupa cada palabra de su discurso en busca de pistas sobre si el dato de mayo fue suficiente para desbloquear el primer recorte. Las actas de la reunión del FOMC de mayo —que se publicarán el miércoles 18 de junio— también serán clave.
+
+Para los mercados emergentes, el escenario de recorte Fed en julio sería muy positivo: capital global rotaría hacia activos de mayor rendimiento, beneficiando a bonos y monedas como el sol peruano, el real brasileño y el peso colombiano.`,
+    analisis: `El giro dovish de la Fed es el catalizador externo más relevante para el sol peruano en las próximas semanas. Si Powell confirma el viernes que julio es una reunión "viva" para recortar, el DXY podría caer a 96-97 puntos y el sol apreciarse por debajo de S/ 3.37. En ese escenario, el BCRP intensificaría las compras de dólares para evitar una apreciación excesiva.
+
+Para empresas con pasivos en dólares a largo plazo, el escenario de recorte Fed + sol apreciado representa el mejor momento del año para refinanciar deuda en USD o convertir reservas en dólares a soles en condiciones favorables.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/4705378/pexels-photo-4705378.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n008',
+    titulo: 'Oro sube a USD 3,742 por onza: bancos centrales compraron 485 toneladas en Q1 2026 según Consejo Mundial del Oro',
+    descripcion: 'El metal precioso avanza a USD 3,742 por onza este jueves, nuevo máximo histórico, impulsado por datos que revelan que los bancos centrales globales compraron 485 toneladas de oro en el primer trimestre de 2026, el mayor volumen trimestral registrado. La debilidad del dólar amplifica el rally.',
+    contenido: `El oro al contado alcanzó USD 3,742 por onza troy en las operaciones europeas de este jueves, superando el récord previo de USD 3,720 establecido el martes y acumulando una ganancia del 39.5% en lo que va del año 2026. El metal precioso consolida su posición como el activo de mejor desempeño global en el ejercicio.
+
+El Consejo Mundial del Oro (World Gold Council) publicó hoy su informe de demanda del primer trimestre de 2026, revelando que los bancos centrales globales compraron un total de 485 toneladas de oro durante el período, el mayor volumen trimestral desde que existen registros fiables. China lideró las compras con 120 toneladas, seguida por India (85 toneladas), Polonia (62 toneladas) y Turquía (48 toneladas).
+
+Los ETFs de oro también registraron entradas netas de USD 8,400 millones en el primer trimestre, revirtiéndose las salidas que predominaron durante 2024-2025. El iShares Gold Trust (IAU) y el SPDR Gold Shares (GLD) acumulan activos bajo gestión combinados de USD 142,000 millones, cifra récord.
+
+La demanda de joyería global creció 7.3% interanual en el primer trimestre, liderada por China e India en el período previo a los festivales. El uso industrial del oro en electrónica y tecnología también aumentó 11%, reflejo de la expansión de la industria de semiconductores y dispositivos médicos de alta precisión.`,
+    analisis: `El oro en máximos históricos tiene un efecto indirecto sobre el Perú como productor relevante del metal. Las empresas mineras auríferas registran un incremento sustancial en sus márgenes y flujos de caja, lo que se traduce en mayor oferta de dólares en el mercado local al convertir sus ingresos a soles.
+
+Para inversores peruanos que buscan refugio en oro, el rally actual sugiere cautela ante la posibilidad de corrección técnica. Sin embargo, los fundamentos de largo plazo —demanda de bancos centrales, incertidumbre geopolítica y expectativas de recorte Fed— sostienen la tendencia alcista estructural del metal.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n009',
+    titulo: 'Petróleo Brent en USD 96.50: Arabia Saudita extiende recorte voluntario hasta septiembre — OSINERGMIN monitorea impacto',
+    descripcion: 'El crudo Brent sube a USD 96.50 por barril tras confirmarse que Arabia Saudita extenderá su recorte voluntario adicional de 500,000 barriles diarios hasta septiembre 2026, un mes más de lo esperado. El WTI cotiza en USD 93.90. OSINERGMIN Peru evalúa activar el Fondo de Estabilización de Precios.',
+    contenido: `El petróleo Brent de referencia mundial cotiza en USD 96.50 por barril en el mercado ICE de Londres, alcanzando su nivel más alto desde febrero de 2026. El WTI estadounidense avanza a USD 93.90 en el NYMEX. El catalizador del alza fue el anuncio oficial de Arabia Saudita de que extenderá su recorte voluntario adicional de producción —500,000 barriles diarios sobre el compromiso base de la OPEP+— hasta el 30 de septiembre, un mes más de lo que el mercado anticipaba.
+
+La extensión del recorte saudita se suma a la confirmación de Rusia de que también mantendrá sus 500,000 barriles diarios de recorte voluntario durante todo el tercer trimestre. En conjunto, OPEP+ mantiene fuera del mercado aproximadamente 3.6 millones de barriles diarios entre recortes base y voluntarios, lo que equivale al 3.6% de la demanda global.
+
+Las reservas de petróleo de EE.UU. reportadas por la EIA esta semana mostraron una caída de 3.2 millones de barriles, mayor a la esperada (1.8 millones), señal de que la demanda industrial y de transporte se mantiene robusta. Analistas de Citigroup elevaron su precio objetivo para el Brent en el segundo semestre a USD 98-102.
+
+En Perú, OSINERGMIN monitorea el nivel del Brent para determinar si corresponde activar el Fondo de Estabilización de Precios de los Combustibles (FEPC). Si el Brent se mantiene por encima de USD 95 durante dos semanas consecutivas, las gasolinas de 90, 95 y 97 octanos podrían registrar ajustes al alza en su precio al consumidor en la segunda quincena de junio.`,
+    analisis: `El petróleo elevado tiene un efecto mixto para el Perú. Por el lado positivo, Perú es exportador neto de petróleo (principalmente del norte y la selva) y los mayores precios incrementan los ingresos por exportación. Por el lado negativo, el costo de los combustibles importados sube, generando presión inflacionaria que podría complicar la estrategia del BCRP de recortar tasas.
+
+Para el tipo de cambio, el efecto es neutral en el corto plazo. Sin embargo, si el precio del petróleo escala hacia USD 100+, podría generarse un aumento de la inflación peruana que obligue al BCRP a ser más cauteloso con los recortes de tasas, lo cual sería marginalmente positivo para el sol.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/1716008/pexels-photo-1716008.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n010',
+    titulo: 'Análisis técnico PEN/USD: soporte clave en S/ 3.385 — ¿puede el sol llegar a S/ 3.35 si ONPE confirma ganador?',
+    descripcion: 'Con el tipo de cambio consolidado en S/ 3.388 tras la decisión del BCRP y el IPC de EE.UU., el análisis técnico identifica un soporte fuerte en S/ 3.385 y resistencia en S/ 3.405. Una proclamación electoral limpia el viernes podría impulsar al sol hacia S/ 3.35-3.37 en el corto plazo.',
+    contenido: `El tipo de cambio PEN/USD ha completado esta semana una figura técnica de rompimiento bajista (para el dólar) en el gráfico diario, quebrando la zona de S/ 3.41-3.43 que actuó como soporte durante abril y mayo. Esta ruptura confirma la tendencia de apreciación del sol que comenzó el 3 de junio con la primera vuelta electoral.
+
+En el gráfico de cuatro horas, el indicador RSI opera en 38, en zona de sobreventa leve pero sin alcanzar los extremos que históricamente han marcado rebotes técnicos del dólar. El MACD muestra cruce bajista (para el dólar) confirmado desde el martes, con el histograma ampliándose en territorio negativo. Las bandas de Bollinger se estrechan, señal de que se aproxima un movimiento de mayor amplitud.
+
+Los niveles técnicos clave para las próximas 48 horas son: soporte inmediato S/ 3.385 (mínimo de 20 meses, zona de alta liquidez), soporte fuerte S/ 3.370 (retroceso de Fibonacci del 61.8% del rally 2024-2025), y resistencia S/ 3.405 (media móvil de 20 días). Un cierre diario por debajo de S/ 3.385 abriría paso hacia S/ 3.360-3.370.
+
+El escenario de catalizador positivo para el sol sería una proclamación electoral limpia el viernes más un discurso dovish de Powell. En ese caso, el objetivo técnico de mediano plazo es S/ 3.340-3.350, nivel de equilibrio pre-pandemia. El escenario adverso, de impugnación prolongada o dato de empleo fuerte en EE.UU. el 4 de julio, llevaría el dólar de vuelta a S/ 3.42-3.45.`,
+    analisis: `El sesgo técnico del PEN/USD es claramente favorable al sol en el corto plazo. Los indicadores de tendencia, momentum y volatilidad apuntan a que la apreciación tiene espacio adicional si los catalizadores fundamentales acompañan. El nivel S/ 3.385 es el piso que el BCRP defiende activamente con compras de dólares.
+
+Para empresas que necesitan dólares en los próximos 30 días, comprar en el rango S/ 3.385-3.400 parece razonable desde una perspectiva de gestión de riesgo cambiario. QoriCash ofrece cotizaciones en tiempo real y atención inmediata para operaciones desde USD 1,000 hasta USD 500,000.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/4960438/pexels-photo-4960438.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n011',
+    titulo: 'DXY cae a 97.3: mínimo de 17 meses — euro en 1.1445 y yen en 140.8 por dólar tras IPC mayo',
+    descripcion: 'El índice dólar (DXY) retrocede a 97.3 puntos tras el IPC de mayo en línea con el consenso, su nivel más bajo desde enero de 2025. El euro avanza a USD 1.1445 y el yen se aprecia a 140.8 por dólar. La debilidad del billete verde beneficia a las monedas emergentes latinoamericanas.',
+    contenido: `El índice dólar estadounidense (DXY), que pondera el billete verde frente a seis divisas principales (euro, yen, libra, dólar canadiense, corona sueca y franco suizo), cayó a 97.3 puntos en las operaciones de este jueves, su nivel más bajo desde el 15 de enero de 2025. El DXY acumula una caída del 8.2% desde su pico de 106.1 alcanzado en octubre de 2025.
+
+El euro lidera las ganancias entre las divisas del G10, avanzando a USD 1.1445, nivel no visto desde marzo de 2022. El catalizador es la combinación del IPC de EE.UU. en línea con el consenso y el mantenimiento de tasas del BCE en 3.40%. El diferencial de tasas BCE-Fed se reduce en las expectativas del mercado, lo que favorece al euro. El EUR/USD ha roto la resistencia de 1.1400 que había contenido el par desde abril.
+
+El yen japonés se aprecia a 140.8 por dólar, acumulando un 4.3% de revalorización en la semana. El mercado especula cada vez más con que el Banco de Japón (BoJ) podría anunciar una subida adicional de 15 puntos básicos en su reunión de julio, lo que generaría un diferencial de tasas más favorable al yen.
+
+En Latinoamérica, la debilidad del DXY es una bendición: el real brasileño cotiza en 4.88 por dólar (+0.6%), el peso colombiano en 4,198 (+0.8%), el peso chileno en 872 (+0.7%) y el sol peruano en S/ 3.388 (+0.1%, limitado por las compras del BCRP). Los diferenciales de tasas de interés de la región frente a EE.UU. se vuelven más atractivos en el escenario de recorte Fed.`,
+    analisis: `Un DXY en 97.3 es territorio de debilidad crónica para el dólar. Desde una perspectiva histórica, niveles por debajo de 98 han coincidido con períodos de fortaleza sostenida para el sol peruano. El riesgo principal para esta tendencia es un dato de empleo sorpresivamente fuerte en EE.UU. el 4 de julio que reaplace al mercado sobre el timing del recorte Fed.
+
+Para empresas y personas naturales con ahorros en dólares que planifican gastos en soles, el momento actual es favorable para cambiar dólares gradualmente, aprovechando el tipo de cambio competitivo que ofrece QoriCash frente a las tasas bancarias.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/4386469/pexels-photo-4386469.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n012',
+    titulo: 'Bitcoin supera USD 108,500 y establece nuevo máximo histórico: ETFs suman USD 620M en dos días',
+    descripcion: 'El bitcoin alcanza USD 108,500, nuevo máximo histórico, impulsado por entradas récord en ETFs de EE.UU. que suman USD 620 millones en las últimas 48 horas. La debilidad del dólar y las expectativas de recorte Fed impulsan el apetito por activos de riesgo a nivel global.',
+    contenido: `El bitcoin (BTC) estableció un nuevo máximo histórico de USD 108,500 en las operaciones de este jueves en Asia, superando el récord previo de USD 108,135 del 18 de diciembre de 2025. La criptomoneda acumula una ganancia del 7.8% en los últimos tres días, catalizada por el IPC de mayo que confirmó las expectativas de recorte Fed y desencadenó un rally generalizado en activos de riesgo.
+
+Los ETFs de bitcoin al contado que operan en EE.UU. registraron entradas netas combinadas de USD 620 millones en los últimos dos días de operaciones, el mayor flujo de dos días desde marzo. El iShares Bitcoin Trust (IBIT) de BlackRock concentró USD 342 millones, mientras el Fidelity Wise Origin Bitcoin Fund (FBTC) captó USD 185 millones. Los activos bajo gestión de todos los ETFs de bitcoin en EE.UU. alcanzan USD 112,000 millones, nuevo récord histórico.
+
+El ethereum (ETH) acompaña el rally con una ganancia del 5.8%, cotizando en USD 4,050, acercándose a su máximo histórico de USD 4,878. Los ETFs de ethereum también muestran flujos positivos de USD 87 millones en el mismo período. Solana (SOL) avanza 9.2% a USD 186, beneficiándose de la mayor actividad en su blockchain.
+
+Los analistas de Galaxy Digital señalan que el rally actual está siendo impulsado tanto por el entorno macro favorable —recorte Fed, dólar débil— como por factores propios del ecosistema cripto: el halving de abril 2026 sigue comprimiendo la oferta nueva de BTC, y la adopción institucional continúa acelerándose con nuevos mandatos de fondos soberanos en Asia.`,
+    analisis: `El rally del bitcoin en paralelo con el oro y las monedas emergentes confirma el patrón de "risk-on" global. En este entorno, los inversores diversifican hacia activos alternativos buscando protección ante la depreciación del dólar. Para el tipo de cambio peruano, el efecto es positivo: mayor apetito por riesgo global = más flujos hacia emergentes = más oferta de dólares en Peru.
+
+Los peruanos que operan con criptomonedas y realizan conversiones entre cripto y soles deben considerar que el tipo de cambio vigente en casas de cambio como QoriCash aplica también para operaciones donde se reciben dólares físicos producto de la liquidación de activos digitales.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/14902702/pexels-photo-14902702.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n013',
+    titulo: 'Argentina: BCRA sube tasa a 45% y peso cae a 1,295 por dólar — FMI envía misión técnica de urgencia',
+    descripcion: 'Un día después de elevar la tasa de emergencia a 45%, el BCRA enfrenta presiones adicionales: el peso argentino cedió a 1,295 por dólar oficial y 1,335 en el mercado paralelo. El FMI enviará una misión técnica a Buenos Aires la próxima semana para evaluar el cumplimiento del programa de estabilización.',
+    contenido: `El Banco Central de la República Argentina (BCRA) publicó hoy el comunicado de su reunión extraordinaria de ayer, confirmando que la decisión de elevar la tasa de referencia de 40% a 45% fue adoptada con el voto de seis directores a favor y dos en abstención. La suba, la mayor en un solo movimiento desde el programa de estabilización de diciembre 2023, busca anclar expectativas ante la aceleración inflacionaria de mayo.
+
+El peso argentino, sin embargo, continuó depreciándose: el tipo de cambio oficial alcanzó 1,295 por dólar (frente a 1,285 de ayer), mientras el dólar MEP opera en 1,315 y el contado con liquidación en 1,328. La brecha cambiaria entre el oficial y el CCL se amplió al 2.5%, señal de que el mercado no confía en que la suba de tasas sola sea suficiente para estabilizar el peso.
+
+El Fondo Monetario Internacional anunció que enviará una misión técnica a Buenos Aires la próxima semana para evaluar el cumplimiento del programa de ajuste acordado en enero de 2026. El acuerdo prevé una meta de inflación de 40% anual para el cierre de 2026, objetivo que se aleja con el dato de mayo (4.1% mensual que implica una tasa anualizada del 63%). El FMI podría condicionar el desembolso del próximo tramo de USD 2,300 millones a medidas adicionales de consolidación fiscal.
+
+El ministro de Economía de Argentina, Luis Caputo, señaló en conferencia de prensa que el gobierno no contempla una devaluación del peso oficial y que las medidas de ajuste de tarifas que generaron el rebote inflacionario son "transitorias" y necesarias para eliminar los subsidios que distorsionaban la economía.`,
+    analisis: `El deterioro macro argentino tiene impacto limitado sobre el Perú dado el bajo nivel de intercambio comercial bilateral y la solidez de los fundamentos peruanos. Sin embargo, en episodios de contagio regional, los inversores globales pueden reducir exposición a toda Latinoamérica, generando presión sobre el sol.
+
+El diferencial de fundamentos entre Perú y Argentina es el mayor en décadas: inflación peruana 2.8% vs argentina 58.7%, reservas en máximos históricos vs Argentina con reservas netas negativas. Este diferencial fundamental limita el contagio y podría generar flujos de inversión hacia activos peruanos como refugio regional.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/34004034/pexels-photo-34004034.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n014',
+    titulo: 'Colombia: inflación mayo en 4.6% abre puerta a recorte BanRep en agosto — peso colombiano a 4,198 por dólar',
+    descripcion: 'El DANE confirmó que el IPC de mayo en Colombia desaceleró a 4.6% interanual, acercándose al techo del rango meta del Banco de la República. Con este dato, el mercado eleva al 68% la probabilidad de un recorte de 25 pb del BanRep en agosto desde el 9.75% actual. El peso colombiano se aprecia a 4,198.',
+    contenido: `El Departamento Administrativo Nacional de Estadística (DANE) de Colombia confirmó hoy que el Índice de Precios al Consumidor de mayo de 2026 registró una variación interanual del 4.6%, por debajo del 5.1% de abril y del consenso del mercado (4.9%). Este es el nivel de inflación más bajo desde octubre de 2021 y marca el décimo mes consecutivo de descenso.
+
+La desaceleración fue generalizada entre los principales componentes: alimentos bajaron de 3.5% a 2.8% interanual, servicios de 7.1% a 6.2%, y el índice sin alimentos ni regulados de 5.8% a 5.1%. Los únicos componentes con aceleración fueron los precios regulados —electricidad y gas— que reflejaron ajustes tarifarios de abril.
+
+El Banco de la República (BanRep) mantiene su tasa de intervención en 9.75%, después de acumular 500 puntos básicos de recorte desde el pico de 13.25%. El dato de mayo abre la puerta a un recorte adicional en la reunión de agosto. Según una encuesta de Bloomberg, el 68% de los analistas espera una baja de 25 pb en agosto, mientras el 22% proyecta 50 pb.
+
+El peso colombiano (COP) se aprecía a 4,198 por dólar en operaciones de este jueves, beneficiándose tanto del dato de inflación positivo como de la debilidad generalizada del DXY. La moneda colombiana acumula una revaluación del 5.3% frente al dólar en lo que va de junio, impulsada por los mismos factores que fortalecen al sol peruano.`,
+    analisis: `La desinflación colombiana y la perspectiva de nuevos recortes BanRep configuran un entorno macro positivo para la región andina. La correlación entre el peso colombiano y el sol peruano es históricamente alta (0.78) por los fundamentos compartidos: commodities, política monetaria ortodoxa y apertura comercial similar.
+
+Para empresas peruanas con operaciones en Colombia, el tipo de cambio COP/PEN en niveles favorables al sol peruano facilita las transacciones comerciales bilaterales. Las casas de cambio especializadas como QoriCash facilitan la operación en múltiples monedas con tasas competitivas.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19676231/pexels-photo-19676231.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'n015',
+    titulo: 'Chile: S&P mantiene perspectiva positiva — BCCh estudia recorte en septiembre y peso chileno en 872 por dólar',
+    descripcion: "Standard & Poor's ratificó la perspectiva positiva de Chile un día después de su anuncio inicial, descartando revisiones adversas. El Banco Central de Chile publicó las minutas de su última reunión, donde tres de cinco directores discutieron la posibilidad de un recorte de tasas en septiembre. El peso chileno se aprecia a 872 por dólar.",
+    contenido: `Standard & Poor's ratificó hoy la perspectiva positiva de la calificación soberana de Chile (A-) en una nota complementaria, aclarando que no hay riesgos inmediatos que pudieran revertir la mejora anunciada ayer. La agencia destacó especialmente la reducción del déficit fiscal estructural a -1.8% del PBI y las reformas al mercado de capitales impulsadas por el gobierno de Gabriel Boric.
+
+El Banco Central de Chile (BCCh) publicó las minutas de su reunión del 22 de mayo, revelando que tres de los cinco directores debatieron la posibilidad de un recorte de tasas de 25 puntos básicos en septiembre si la inflación continúa convergiendo hacia el 3%. Los otros dos directores prefieren esperar hasta el cuarto trimestre para tener mayor claridad sobre la evolución de los precios. La tasa se mantiene en 5.00%.
+
+El peso chileno (CLP) opera en 872 por dólar, su nivel más bajo desde agosto de 2024, beneficiándose de tres factores simultáneos: mejora de perspectiva S&P, precio del cobre en máximos de 14 meses (Chile es el mayor productor mundial) y debilidad del DXY. Con el CLP en 872, las empresas chilenas que facturan en dólares experimentan un incremento en sus costos en pesos locales.
+
+La bolsa de Santiago (IPSA) avanza 1.4% en la semana, con las mineras cupreras (Antofagasta, SQM) como principales ganadoras. La inversión extranjera directa en Chile aumentó un 18% interanual en el primer trimestre, confirmando el atractivo del país para el capital global en busca de estabilidad en la región.`,
+    analisis: `La mejora de perspectiva crediticia de Chile es una señal positiva para toda la región andina. Los inversores extranjeros que miran Latinoamérica como bloque tienden a asignar flujos cuando uno de los países benchmark del bloque recibe una mejora de calificación. Perú se beneficia indirectamente de este efecto de "marea alta que levanta todos los botes".
+
+Para peruanos que viajan o tienen gastos en Chile, el peso chileno en 872 por dólar —equivalente a aproximadamente S/ 0.00389 por peso chileno— supone condiciones favorables para cambiar soles a pesos en casas de cambio especializadas antes del viaje.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29713911/pexels-photo-29713911.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
   {
     id: 'm001',
     titulo: 'Segunda vuelta Peru: Sanchez 50.075% vs Keiko 49.925% con 97% de actas procesadas — dolar cae a S/ 3.393',
