@@ -44,10 +44,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // Handle other errors
-    const errorMessage = error.response?.data || 'An error occurred';
-    console.error('API Error:', errorMessage);
-
     return Promise.reject(error);
   }
 );

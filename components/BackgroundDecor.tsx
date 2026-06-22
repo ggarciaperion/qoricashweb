@@ -8,176 +8,99 @@
 export default function BackgroundDecor() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-      {/* Grid Pattern VISIBLE */}
-      <div className="absolute inset-0 bg-grid-pattern" />
 
-      {/* Dot Pattern Diagonal VISIBLE */}
-      <div className="absolute inset-0 bg-dot-pattern" />
+      {/* ── AURORA MESH ENHANCED ── */}
 
-      {/* Diagonal Lines VISIBLE */}
-      <div className="absolute inset-0 bg-diagonal-lines" />
+      {/* Dot grid sutil como textura base */}
+      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="aurora-dots" width="28" height="28" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="rgba(13,27,42,0.055)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#aurora-dots)" />
+      </svg>
 
-      {/* Gradientes Radiales Estratégicos MÁS VISIBLES */}
-      <div className="absolute top-0 right-0 w-[900px] h-[900px] bg-radial-gradient-primary" />
-      <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-radial-gradient-secondary" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[1100px] bg-radial-gradient-primary opacity-70" />
+      {/* Blob 1 — Verde grande, top-right (principal) */}
+      <div style={{
+        position: 'absolute',
+        top: '-180px', right: '-120px',
+        width: '750px', height: '680px',
+        borderRadius: '43% 57% 62% 38% / 48% 52% 48% 52%',
+        background: 'radial-gradient(circle at 40% 40%, rgba(34,197,94,0.22) 0%, rgba(34,197,94,0.08) 45%, transparent 70%)',
+        filter: 'blur(72px)',
+      }} />
 
-      {/* Orbes Decorativos GRANDES Y VISIBLES - Superior */}
-      <div
-        className="decorative-orb decorative-orb-primary animate-float-slow"
-        style={{
-          top: '8%',
-          right: '12%',
-          width: '500px',
-          height: '500px',
-        }}
-      />
+      {/* Blob 2 — Navy profundo, bottom-left */}
+      <div style={{
+        position: 'absolute',
+        bottom: '-160px', left: '-120px',
+        width: '680px', height: '620px',
+        borderRadius: '55% 45% 40% 60% / 45% 55% 45% 55%',
+        background: 'radial-gradient(circle at 55% 55%, rgba(13,27,42,0.15) 0%, rgba(13,27,42,0.05) 50%, transparent 72%)',
+        filter: 'blur(80px)',
+      }} />
 
-      <div
-        className="decorative-orb decorative-orb-success animate-float-slow"
-        style={{
-          top: '15%',
-          left: '8%',
-          width: '450px',
-          height: '450px',
-          animationDelay: '4s',
-        }}
-      />
+      {/* Blob 3 — Cyan accent, top-left */}
+      <div style={{
+        position: 'absolute',
+        top: '0px', left: '-60px',
+        width: '480px', height: '420px',
+        borderRadius: '62% 38% 55% 45% / 40% 60% 40% 60%',
+        background: 'radial-gradient(circle at 45% 50%, rgba(6,182,212,0.11) 0%, transparent 65%)',
+        filter: 'blur(65px)',
+      }} />
 
-      {/* Orbes Decorativos - Medio */}
-      <div
-        className="decorative-orb decorative-orb-secondary animate-float-slow"
-        style={{
-          top: '45%',
-          right: '18%',
-          width: '550px',
-          height: '550px',
-          animationDelay: '8s',
-        }}
-      />
+      {/* Blob 4 — Verde medio, center-right */}
+      <div style={{
+        position: 'absolute',
+        top: '38%', right: '-60px',
+        width: '420px', height: '480px',
+        borderRadius: '48% 52% 38% 62% / 58% 42% 58% 42%',
+        background: 'radial-gradient(circle at 50% 45%, rgba(34,197,94,0.12) 0%, transparent 68%)',
+        filter: 'blur(68px)',
+      }} />
 
-      <div
-        className="decorative-orb decorative-orb-primary animate-pulse-glow"
-        style={{
-          top: '40%',
-          left: '3%',
-          width: '400px',
-          height: '400px',
-        }}
-      />
+      {/* Blob 5 — Navy accent, bottom-right */}
+      <div style={{
+        position: 'absolute',
+        bottom: '8%', right: '8%',
+        width: '360px', height: '360px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle at center, rgba(13,27,42,0.09) 0%, transparent 70%)',
+        filter: 'blur(55px)',
+      }} />
 
-      {/* Orbes Decorativos - Inferior */}
-      <div
-        className="decorative-orb decorative-orb-success animate-float-slow"
-        style={{
-          bottom: '10%',
-          left: '22%',
-          width: '500px',
-          height: '500px',
-          animationDelay: '12s',
-        }}
-      />
+      {/* Blob 6 — Verde pálido, center-left — da continuidad */}
+      <div style={{
+        position: 'absolute',
+        top: '55%', left: '-40px',
+        width: '340px', height: '400px',
+        borderRadius: '38% 62% 55% 45% / 52% 48% 52% 48%',
+        background: 'radial-gradient(circle at 50% 50%, rgba(34,197,94,0.08) 0%, transparent 65%)',
+        filter: 'blur(60px)',
+      }} />
 
-      <div
-        className="decorative-orb decorative-orb-secondary animate-pulse-glow"
-        style={{
-          bottom: '15%',
-          right: '8%',
-          width: '450px',
-          height: '450px',
-          animationDelay: '6s',
-        }}
-      />
+      {/* Blob 7 — Teal center, da el "mesh" en el medio */}
+      <div style={{
+        position: 'absolute',
+        top: '25%', left: '30%',
+        width: '500px', height: '400px',
+        borderRadius: '50% 50% 60% 40% / 45% 55% 45% 55%',
+        background: 'radial-gradient(circle at center, rgba(16,185,129,0.06) 0%, transparent 65%)',
+        filter: 'blur(90px)',
+      }} />
 
-      {/* Símbolos de Moneda VISIBLES */}
-      <div className="currency-symbol" style={{ top: '12%', right: '22%', transform: 'rotate(-12deg)' }}>
-        $
-      </div>
-      <div className="currency-symbol" style={{ top: '55%', left: '12%', transform: 'rotate(18deg)', fontSize: '140px' }}>
-        S/
-      </div>
-      <div className="currency-symbol" style={{ bottom: '22%', right: '28%', transform: 'rotate(-8deg)', fontSize: '130px' }}>
-        €
-      </div>
-      <div className="currency-symbol" style={{ top: '35%', right: '5%', fontSize: '120px', transform: 'rotate(12deg)' }}>
-        ¥
-      </div>
-      <div className="currency-symbol" style={{ bottom: '32%', left: '5%', fontSize: '135px', transform: 'rotate(-18deg)' }}>
-        £
-      </div>
+      {/* Noise grain — da profundidad fotográfica tipo Stripe */}
+      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={{ mixBlendMode: 'overlay', opacity: 0.6 }}>
+        <filter id="grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" result="noise" />
+          <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise" />
+          <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#grain)" opacity="0.035" />
+      </svg>
 
-      {/* Líneas de Conexión Diagonales VISIBLES */}
-      <div
-        className="connection-line animate-pulse-glow"
-        style={{
-          top: '18%',
-          left: '8%',
-          width: '450px',
-          transform: 'rotate(-25deg)',
-          animationDelay: '1s',
-        }}
-      />
-      <div
-        className="connection-line animate-pulse-glow"
-        style={{
-          top: '48%',
-          right: '3%',
-          width: '550px',
-          transform: 'rotate(40deg)',
-          animationDelay: '3s',
-        }}
-      />
-      <div
-        className="connection-line animate-pulse-glow"
-        style={{
-          bottom: '25%',
-          left: '18%',
-          width: '400px',
-          transform: 'rotate(-40deg)',
-          animationDelay: '5s',
-        }}
-      />
-      <div
-        className="connection-line animate-pulse-glow"
-        style={{
-          top: '32%',
-          left: '28%',
-          width: '500px',
-          transform: 'rotate(55deg)',
-          animationDelay: '2s',
-        }}
-      />
-
-      {/* Círculos decorativos MÁS VISIBLES */}
-      <div
-        className="absolute rounded-full border-2 border-primary/20 animate-pulse-slow"
-        style={{
-          top: '22%',
-          left: '38%',
-          width: '150px',
-          height: '150px',
-        }}
-      />
-      <div
-        className="absolute rounded-full border-2 border-primary/20 animate-pulse-slow"
-        style={{
-          bottom: '32%',
-          right: '32%',
-          width: '120px',
-          height: '120px',
-          animationDelay: '2s',
-        }}
-      />
-      <div
-        className="absolute rounded-full border-2 border-success/20 animate-pulse-slow"
-        style={{
-          top: '58%',
-          right: '42%',
-          width: '130px',
-          height: '130px',
-          animationDelay: '4s',
-        }}
-      />
     </div>
   );
 }

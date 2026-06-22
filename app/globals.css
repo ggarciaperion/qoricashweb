@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes clockOrganic {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(60deg); }
+  30%  { transform: rotate(140deg); }
+  50%  { transform: rotate(220deg); }
+  70%  { transform: rotate(300deg); }
+  85%  { transform: rotate(340deg); }
+  100% { transform: rotate(360deg); }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -567,6 +577,19 @@ body {
   );
   background-size: 200% 100%;
   animation: shimmer-bg 1.2s ease infinite;
+}
+
+/* Marquee bancos */
+@keyframes marquee-banks {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee-banks {
+  animation: marquee-banks 22s linear infinite;
+  will-change: transform;
+}
+.animate-marquee-banks:hover {
+  animation-play-state: paused;
 }
 
 /* Card lift — genérico */

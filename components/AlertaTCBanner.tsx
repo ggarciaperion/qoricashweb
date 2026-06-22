@@ -72,68 +72,53 @@ export default function AlertaTCBanner() {
 
   return (
     <>
-    <section className="relative overflow-hidden bg-[#060e1a]">
+    <section className="relative overflow-hidden" style={{ background: '#0D1B2A' }}>
 
-      {/* ── Ambient glows ── */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-amber-500/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary-500/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-900/20 rounded-full blur-[140px] pointer-events-none" />
+      {/* Glow sutil institucional */}
+      <div className="absolute top-0 right-1/3 w-[400px] h-[400px] bg-primary-500/6 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-primary-500/8 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* ── Grid overlay ── */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
+      {/* Separador superior */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      {/* ── Separador superior ── */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
 
-      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-        {/* ── HERO ── */}
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-
-          {/* Texto */}
+          {/* ── Texto ── */}
           <div>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/25 rounded-full px-4 py-1.5 mb-6">
+            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-6">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-400" />
               </span>
-              <span className="text-amber-300 text-xs font-bold tracking-[0.15em] uppercase">Nueva función · Alertas de TC</span>
+              <span className="text-primary-400 text-xs font-bold tracking-[0.15em] uppercase">Alertas de Tipo de Cambio</span>
             </div>
 
             {/* Headline */}
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-black text-white leading-[1.1] mb-5">
-              El dólar no espera.
-              <br />
-              <span className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                Tú tampoco deberías.
-              </span>
+            <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-display font-black text-white leading-[1.1] mb-4">
+              Te avisamos cuando el<br />
+              <span className="text-primary-400">dólar llega a tu precio.</span>
             </h2>
 
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-lg">
-              El tipo de cambio puede moverse <strong className="text-gray-200">varios céntimos en minutos</strong>.
-              Con las alertas de QoriCash, eres el primero en saberlo —
-              sin estar pegado a la pantalla todo el día.
+            <p className="text-gray-400 text-base leading-relaxed mb-7 max-w-md">
+              Configura un TC objetivo y recibe un email al instante. Sin aplicaciones, sin costo.
             </p>
 
             {/* Beneficios */}
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-2.5 mb-8">
               {[
-                { icon: Zap,         text: 'Notificación en segundos' },
-                { icon: Bell,        text: 'Alertas al alza y a la baja' },
-                { icon: CheckCircle, text: 'Gratis para clientes' },
-                { icon: Smartphone,  text: 'Al correo, sin apps extra' },
+                { icon: Zap,         text: 'Aviso en segundos' },
+                { icon: Bell,        text: 'Al alza y a la baja' },
+                { icon: CheckCircle, text: '100% gratis' },
+                { icon: Smartphone,  text: 'Solo necesitas tu email' },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-primary-500/15 border border-primary-500/25 flex items-center justify-center flex-shrink-0">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>
                     <Icon className="w-3.5 h-3.5 text-primary-400" />
                   </div>
-                  <span className="text-sm text-gray-300">{text}</span>
+                  <span className="text-sm text-gray-300 font-medium">{text}</span>
                 </div>
               ))}
             </div>
@@ -142,53 +127,54 @@ export default function AlertaTCBanner() {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={openModal}
-                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-black px-7 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-amber-500/25 hover:shadow-amber-400/40 text-sm"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 font-bold px-7 py-3.5 rounded-full transition-all duration-200 text-sm text-white"
+                style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 20px rgba(34,197,94,0.25)' }}
               >
-                <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
                 <Bell className="w-4 h-4" />
-                Activar mis alertas gratis
+                Activar alerta gratis
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 bg-white/6 hover:bg-white/10 text-white font-semibold px-7 py-3.5 rounded-full transition-all duration-200 border border-white/15 text-sm"
+                className="inline-flex items-center justify-center gap-2 text-white font-semibold px-7 py-3.5 rounded-full transition-all duration-200 text-sm"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
               >
                 Ya tengo cuenta
               </Link>
             </div>
 
-            {/* Social proof */}
             <p className="mt-5 text-gray-600 text-xs flex items-center gap-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-              Sin tarjeta de crédito · Se configura en 30 segundos
+              <CheckCircle className="w-3.5 h-3.5 text-primary-500" />
+              Sin registro · Se configura en menos de 30 segundos
             </p>
           </div>
 
-          {/* Demo card */}
+          {/* ── Demo card ── */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[340px]">
-              <div className="absolute -inset-4 bg-gradient-to-br from-amber-500/20 to-primary-500/10 rounded-3xl blur-2xl" />
-              <div className="relative bg-white/[0.05] backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-[320px]">
+              <div className="absolute -inset-3 rounded-3xl blur-2xl" style={{ background: 'rgba(34,197,94,0.08)' }} />
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
 
                 {/* Header */}
-                <div className="bg-gradient-to-r from-[#0D1B2A] to-[#0f2235] px-5 py-4 flex items-center justify-between border-b border-white/8">
+                <div className="px-5 py-4 flex items-center justify-between" style={{ background: 'rgba(13,27,42,0.8)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                      <Bell className="w-4 h-4 text-amber-400" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
+                      <Bell className="w-4 h-4 text-primary-400" />
                     </div>
                     <div>
                       <p className="text-white text-xs font-bold">Alertas TC · QoriCash</p>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-emerald-400 text-[10px] font-semibold">Monitoreando en vivo</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
+                        <span className="text-primary-400 text-[10px] font-semibold">Monitoreando en vivo</span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-500 bg-white/5 px-2 py-1 rounded-full">ACTIVA</span>
+                  <span className="text-[10px] font-bold text-primary-400 px-2 py-1 rounded-full" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>ACTIVA</span>
                 </div>
 
-                {/* TC simulado */}
-                <div className="px-5 py-4 border-b border-white/5">
+                {/* TC actual */}
+                <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2">Tipo de cambio actual</p>
                   <div className="flex items-end gap-6">
                     <div>
@@ -199,7 +185,7 @@ export default function AlertaTCBanner() {
                       <p className="text-[10px] text-gray-500 mb-0.5">Venta</p>
                       <p className="text-2xl font-black text-white">3.415</p>
                     </div>
-                    <div className="ml-auto flex items-center gap-1 text-emerald-400">
+                    <div className="ml-auto flex items-center gap-1 text-primary-400">
                       <TrendingUp className="w-4 h-4" />
                       <span className="text-xs font-bold">+0.005</span>
                     </div>
@@ -208,23 +194,25 @@ export default function AlertaTCBanner() {
 
                 {/* Alerta animada */}
                 <div className="px-5 py-4">
-                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2.5">Tu alerta configurada</p>
+                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2.5">Tu alerta</p>
                   <div
-                    className={`rounded-xl border p-3.5 mb-3 transition-all duration-500 ${
-                      ej.tipo === 'sobre' ? 'bg-amber-500/8 border-amber-500/20' : 'bg-blue-500/8 border-blue-500/20'
-                    } ${notifVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                    className={`rounded-xl p-3.5 mb-3 transition-all duration-500 ${notifVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                    style={{
+                      background: ej.tipo === 'sobre' ? 'rgba(34,197,94,0.08)' : 'rgba(59,130,246,0.08)',
+                      border: ej.tipo === 'sobre' ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(59,130,246,0.2)',
+                    }}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {ej.tipo === 'sobre'
-                        ? <TrendingUp className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                        ? <TrendingUp className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" />
                         : <TrendingDown className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />}
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-amber-400' : 'text-blue-400'}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-primary-400' : 'text-blue-400'}`}>
                         {ej.tipo === 'sobre' ? 'Alerta al alza' : 'Alerta a la baja'}
                       </span>
                     </div>
                     <p className="text-white text-xs font-semibold">
-                      {ej.emoji} Avísame cuando TC {ej.moneda} {ej.accion}{' '}
-                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-amber-300' : 'text-blue-300'}`}>
+                      Avísame cuando TC {ej.moneda} {ej.accion}{' '}
+                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-primary-300' : 'text-blue-300'}`}>
                         S/ {ej.valor}
                       </span>
                     </p>
@@ -235,35 +223,36 @@ export default function AlertaTCBanner() {
                       <button
                         key={i}
                         onClick={() => setActive(i)}
-                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-amber-400' : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30'}`}
+                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-primary-400' : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30'}`}
                       />
                     ))}
                   </div>
 
-                  <div className="bg-white/5 border border-white/8 rounded-xl p-3 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
+                      <Mail className="w-3.5 h-3.5 text-primary-400" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-white text-[11px] font-bold">info@qoricash.pe</p>
                       <p className="text-gray-400 text-[10px] truncate">
-                        ⚡ ¡Alerta activada! TC {ej.moneda} llegó a S/ {ej.valor}
+                        ⚡ TC {ej.moneda} llegó a S/ {ej.valor}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1 flex-shrink-0">
                       <span className="text-[9px] text-gray-600">ahora</span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span className="w-2 h-2 rounded-full bg-primary-400" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
       {/* Separador inferior */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </section>
 
     {/* ── Modal prospecto ── */}
@@ -272,7 +261,7 @@ export default function AlertaTCBanner() {
         className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
       >
-        <div className="w-full max-w-lg bg-[#0b1420] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden" style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.1)' }}>
 
           {/* Header */}
           <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #112238 100%)' }}>
