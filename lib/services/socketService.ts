@@ -66,18 +66,22 @@ class SocketService {
     });
 
     this.socket.on('disconnect', (reason) => {
+      console.log('🔌 Socket.IO disconnected:', reason);
       this.emit('connection_status', { connected: false, reason });
     });
 
-    this.socket.on('connect_error', (_error) => {
+    this.socket.on('connect_error', (error) => {
+      console.error('❌ Socket.IO connection error:', error.message);
       this.reconnectAttempts++;
+
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+        console.error('Max reconnection attempts reached');
         this.emit('connection_status', { connected: false, error: 'Max reconnection attempts' });
       }
     });
 
     this.socket.on('reconnect', (attemptNumber) => {
-      // reconnected
+      console.log(`🔄 Socket.IO reconnected after ${attemptNumber} attempts`);
       this.reconnectAttempts = 0;
       this.emit('connection_status', { connected: true, reconnected: true });
     });
