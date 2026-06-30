@@ -141,7 +141,6 @@ export default function Home() {
             <div className="hidden lg:flex items-center space-x-8">
               {[
                 { href: '/sobre-nosotros', label: 'Nosotros', isLink: true },
-                { href: '/noticias',       label: 'Noticias', isLink: true },
                 { href: '/dashboard/promociones', label: 'Promociones', isLink: true },
               ].map(({ href, label, isLink }) => {
                 const cls = 'relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1';
@@ -216,7 +215,6 @@ export default function Home() {
           <div className="space-y-1 mb-4">
             {[
               { href: '/sobre-nosotros',        label: 'Nosotros',      Icon: Users,        iconCls: 'text-blue-600',   bgCls: 'bg-blue-50'    },
-              { href: '/noticias',              label: 'Noticias',      Icon: TrendingUp,   iconCls: 'text-amber-600',  bgCls: 'bg-amber-50'   },
               { href: '/dashboard/promociones', label: 'Promociones',   Icon: Gift,         iconCls: 'text-violet-600', bgCls: 'bg-violet-50'  },
             ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
               const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
