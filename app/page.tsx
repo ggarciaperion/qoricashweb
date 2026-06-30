@@ -140,8 +140,6 @@ export default function Home() {
             </Link>
             <div className="hidden lg:flex items-center space-x-8">
               {[
-                { href: '/sobre-nosotros', label: 'Nosotros', isLink: true },
-                { href: '/dashboard/promociones', label: 'Promociones', isLink: true },
               ].map(({ href, label, isLink }) => {
                 const cls = 'relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1';
                 const inner = (
@@ -214,8 +212,6 @@ export default function Home() {
           <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Menú</p>
           <div className="space-y-1 mb-4">
             {[
-              { href: '/sobre-nosotros',        label: 'Nosotros',      Icon: Users,        iconCls: 'text-blue-600',   bgCls: 'bg-blue-50'    },
-              { href: '/dashboard/promociones', label: 'Promociones',   Icon: Gift,         iconCls: 'text-violet-600', bgCls: 'bg-violet-50'  },
             ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
               const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
               const inner = (
