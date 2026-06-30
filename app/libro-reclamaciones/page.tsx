@@ -101,7 +101,7 @@ export default function LibroReclamaciones() {
       const fd = new FormData();
       Object.entries(formData).forEach(([k, v]) => fd.append(k, v));
       if (evidenceImage) fd.append('evidenceImage', evidenceImage);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
       const res = await fetch(`${apiUrl}/api/web/complaints`, { method: 'POST', body: fd });
       const result = await res.json();
       if (result.success) {

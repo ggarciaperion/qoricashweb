@@ -73,7 +73,6 @@ export async function POST(req: NextRequest) {
 
       const fecha = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' })
 
-      console.log(`[WA Webhook] Mensaje de +${numero} (${nombre}): ${texto}`)
 
       await appendRow([fecha, `+${numero}`, nombre, '', texto, wa_id])
     }

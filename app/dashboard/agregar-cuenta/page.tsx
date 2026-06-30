@@ -67,15 +67,6 @@ export default function AgregarCuentaPage() {
     setError(null);
 
     try {
-      console.log('📤 Enviando datos:', {
-        dni: user.dni,
-        bank_name: data.bank_name,
-        account_number: data.account_number,
-        account_type: data.account_type,
-        currency: data.currency,
-        origen: data.origen,
-      });
-
       const response = await banksApi.addAccount({
         dni: user.dni,
         bank_name: data.bank_name,
@@ -84,8 +75,6 @@ export default function AgregarCuentaPage() {
         currency: data.currency,
         origen: data.origen,
       });
-
-      console.log('✅ Respuesta del servidor:', response);
 
       if (response.success) {
         setSuccess(true);
@@ -96,9 +85,6 @@ export default function AgregarCuentaPage() {
         setError(response.message || 'Error al agregar cuenta bancaria');
       }
     } catch (err: any) {
-      console.error('❌ Error completo:', err);
-      console.error('❌ Error response:', err.response);
-      console.error('❌ Error response data:', err.response?.data);
       setError(err.response?.data?.message || err.message || 'Error al agregar cuenta bancaria');
     } finally {
       setIsSubmitting(false);

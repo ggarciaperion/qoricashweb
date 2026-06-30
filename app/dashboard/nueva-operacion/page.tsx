@@ -199,13 +199,8 @@ function NuevaOperacionContent() {
 
   // Start WebSocket subscription for real-time rates
   useEffect(() => {
-    console.log('🔌 Starting real-time rate subscription...');
     const cleanup = startRateSubscription();
-
-    return () => {
-      console.log('🔌 Cleaning up real-time rate subscription...');
-      cleanup();
-    };
+    return () => { cleanup(); };
   }, []);
 
   // Recalculate when input or operation type changes
@@ -222,9 +217,7 @@ function NuevaOperacionContent() {
   }, [searchParams, isAuthenticated, user]);
 
   const loadExistingOperation = async (operationId: string) => {
-    console.log('[Nueva Operación] Cargando operación existente:', operationId);
     try {
-      // Fetch operation details from API
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/web/my-operations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -234,26 +227,18 @@ function NuevaOperacionContent() {
       if (!response.ok) throw new Error('Failed to fetch operations');
 
       const data = await response.json();
-      console.log('[Nueva Operación] Respuesta API:', data);
 
       // El backend devuelve data.data como un array directamente
       const operations = data.data || [];
       const operation = operations.find((op: any) => op.codigo_operacion === operationId || op.operation_id === operationId);
 
-      if (!operation) {
-        console.error('[Nueva Operación] Operación no encontrada:', operationId);
-        console.error('[Nueva Operación] Operaciones disponibles:', operations);
-        return;
-      }
+      if (!operation) return;
 
       // Only load if operation is "Pendiente"
       if (operation.estado.toLowerCase() !== 'pendiente') {
-        console.log('[Nueva Operación] Operación no está pendiente, redirigiendo al dashboard');
         router.push('/dashboard');
         return;
       }
-
-      console.log('[Nueva Operación] Operación cargada:', operation);
 
       // Calculate time remaining (15 minutes from creation)
       // IMPORTANTE: El backend devuelve fechas en hora de Perú (UTC-5) sin timezone
@@ -262,7 +247,6 @@ function NuevaOperacionContent() {
       const dateString = operation.fecha_creacion || operation.created_at;
 
       if (!dateString) {
-        console.error('[Nueva Operación] No se encontró fecha de creación en la operación');
         createdAt = new Date();
       } else {
         // Parsear como hora local (Perú) sin añadir 'Z'
@@ -275,18 +259,6 @@ function NuevaOperacionContent() {
       const elapsedMs = now.getTime() - createdAt.getTime();
       const elapsedSeconds = Math.floor(elapsedMs / 1000);
       const remaining = Math.max(0, 900 - elapsedSeconds); // 900 seconds = 15 minutes
-
-      console.log('[Nueva Operación] Cálculo tiempo:', {
-        fecha_raw: dateString,
-        createdAt: createdAt.toString(),
-        createdAtISO: createdAt.toISOString(),
-        now: now.toString(),
-        nowISO: now.toISOString(),
-        elapsedSeconds,
-        remaining,
-        remainingMinutes: Math.floor(remaining / 60),
-        remainingSeconds: remaining % 60
-      });
 
       // Set operation data and jump to step 3 (Transfiere)
       setCreatedOperation(operation);
@@ -363,18 +335,14 @@ function NuevaOperacionContent() {
       return;
     }
 
-    console.log('🔄 Iniciando verificación automática de estado de cuenta...');
-
     const checkAccountStatus = async () => {
       if (isCheckingStatus) return; // Evitar múltiples llamadas simultáneas
 
       setIsCheckingStatus(true);
       try {
-        console.log('📡 Verificando estado de cuenta...');
         const success = await refreshUser();
 
         if (success && useAuthStore.getState().user?.has_complete_documents) {
-          console.log('✅ ¡Cuenta activada! Mostrando notificación...');
           setShowActivationToast(true);
 
           // Ocultar toast después de 10 segundos
@@ -431,12 +399,6 @@ function NuevaOperacionContent() {
   const canCreateOperation = useMemo(() => {
     const hasSoles = bankAccounts.some(acc => acc.moneda === 'S/');
     const hasDolares = bankAccounts.some(acc => acc.moneda === '$');
-    console.log('[Nueva Operación] Verificando cuentas:', {
-      totalCuentas: bankAccounts.length,
-      hasSoles,
-      hasDolares,
-      canCreate: hasSoles && hasDolares
-    });
     return hasSoles && hasDolares;
   }, [bankAccounts]);
 
@@ -637,39 +599,48 @@ function NuevaOperacionContent() {
     createAnimDoneRef.current = false;
 
     try {
-
-      // ── MODO DEMO: simulación sin base de datos ──
       const destAccount = bankAccounts.find(a => a.id === selectedDestinationAccount);
       const originAccount = bankAccounts.find(a => a.id === selectedOriginAccount);
-      const now = new Date();
-      const mockOperation = {
-        id: 9999,
-        operation_id: 'DEMO-' + Math.floor(Math.random() * 90000 + 10000),
-        codigo_operacion: 'DEMO-' + Math.floor(Math.random() * 90000 + 10000),
-        operation_type: tipo.toLowerCase(),
-        status: 'Pendiente',
-        amount_usd: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
-        amount_pen: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
-        exchange_rate: getAdjustedRate(),
-        source_bank_name: originAccount?.banco || originAccount?.bank_name || '',
-        destination_bank_name: destAccount?.banco || destAccount?.bank_name || '',
-        source_account: originAccount?.numero_cuenta || originAccount?.account_number || '',
-        destination_account: destAccount?.numero_cuenta || destAccount?.account_number || '',
-        created_at: now.toISOString(),
-        // Datos de cuenta QoriCash para el paso 3
-        qoricash_account: getQoricashAccount(tipo === 'Compra' ? '$' : 'S/', 'Lima'),
-      };
 
+      const response = await operationsApi.createOperation({
+        dni: user!.dni,
+        tipo: tipo === 'Compra' ? 'compra' : 'venta',
+        monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
+        monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
+        banco_cuenta_id: selectedDestinationAccount!,
+        referral_code: codeValidation?.isValid ? referralCode.toUpperCase() : undefined,
+      });
+
+      if (!response.success || !response.data?.operation) {
+        setShowCreatingOverlay(false);
+        setError(response.message || 'Error al crear la operación');
+        return;
+      }
+
+      const operation = response.data.operation;
+      const now = new Date();
       const formattedDateString = now.toLocaleString('es-PE', {
         timeZone: 'America/Lima', day: '2-digit', month: '2-digit',
         year: 'numeric', hour: '2-digit', minute: '2-digit',
       });
 
       setFormattedDate(formattedDateString);
-      setCreatedOperation(mockOperation);
+      setCreatedOperation({
+        ...operation,
+        source_bank_name: operation.source_bank_name || originAccount?.banco || originAccount?.bank_name || '',
+        source_account: operation.source_account || originAccount?.numero_cuenta || originAccount?.account_number || '',
+        destination_bank_name: destAccount?.banco || destAccount?.bank_name || '',
+        destination_account: destAccount?.numero_cuenta || destAccount?.account_number || '',
+        amount_usd: operation.monto_dolares,
+        amount_pen: operation.monto_soles,
+        exchange_rate: operation.tipo_cambio,
+        operation_type: operation.tipo,
+        status: operation.estado,
+        qoricash_account: getQoricashAccount(tipo === 'Compra' ? '$' : 'S/', user?.origen || 'Lima'),
+      });
       setTimeRemaining(900);
       setHasActiveOperation(true);
-      setActiveOperationMessage(`Tienes una operación en estado "Pendiente" (${mockOperation.codigo_operacion}). Debes completarla o cancelarla antes de crear una nueva.`);
+      setActiveOperationMessage(`Tienes una operación en estado "Pendiente" (${operation.codigo_operacion || operation.operation_id}). Debes completarla o cancelarla antes de crear una nueva.`);
       setReferralCode('');
       setCodeValidation(null);
       setAppliedDiscount(0);
@@ -686,6 +657,9 @@ function NuevaOperacionContent() {
           setCurrentStep(3);
         }, 3500);
       }
+    } catch (error: any) {
+      setShowCreatingOverlay(false);
+      setError(error.response?.data?.message || error.message || 'Error al crear la operación');
     } finally {
       setIsSubmitting(false);
     }
@@ -802,20 +776,6 @@ function NuevaOperacionContent() {
     setShowCancelOverlay(true);
     setShowCancelOverlaySuccess(false);
     const startTime = Date.now();
-
-    // MODO DEMO: operación simulada, no llamar API
-    const isDemo = createdOperation.id === 9999 || String(createdOperation.codigo_operacion || '').startsWith('DEMO-');
-    if (isDemo) {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, 2200 - elapsed);
-      setTimeout(() => {
-        setShowCancelOverlaySuccess(true);
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 2500);
-      }, remaining);
-      return;
-    }
 
     try {
       const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
@@ -964,22 +924,6 @@ function NuevaOperacionContent() {
     setShowProofSuccess(false);
     proofApiDoneRef.current = false;
     proofAnimDoneRef.current = false;
-
-    // MODO DEMO: simulación sin base de datos
-    const isDemo = createdOperation.id === 9999 || String(createdOperation.codigo_operacion || '').startsWith('DEMO-');
-    if (isDemo) {
-      proofApiDoneRef.current = true;
-      if (proofAnimDoneRef.current) {
-        setShowProofSuccess(true);
-        setTimeout(() => {
-          setShowProofOverlay(false);
-          setShowProofSuccess(false);
-          setCurrentStep(4);
-        }, 3000);
-      }
-      setIsUploadingProof(false);
-      return;
-    }
 
     try {
       const formData = new FormData();

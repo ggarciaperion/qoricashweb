@@ -62,7 +62,6 @@ export function useInactivityTimeout({
     // Si está habilitado, crear nuevo timeout
     if (enabled) {
       timeoutRef.current = setTimeout(() => {
-        console.log('⏰ [useInactivityTimeout] Timeout de inactividad alcanzado');
         onTimeoutRef.current();
       }, timeout);
     }

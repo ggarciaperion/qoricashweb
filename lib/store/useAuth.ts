@@ -33,15 +33,12 @@ export const useAuth = create<AuthState>()(
       error: null,
 
       login: async (dni: string, password: string) => {
-        console.log('🔑 [useAuth] Login initiated for DNI:', dni);
         set({ isLoading: true, error: null });
 
         try {
           const response = await authService.login({ dni, password });
-          console.log('🔑 [useAuth] Login response received:', response);
 
           if (response.success && response.client) {
-            console.log('✅ [useAuth] Login successful, updating state');
             set({
               client: response.client,
               isAuthenticated: true,
@@ -49,10 +46,8 @@ export const useAuth = create<AuthState>()(
               isLoading: false,
               error: null,
             });
-            console.log('✅ [useAuth] State updated, returning true');
             return true;
           } else {
-            console.log('❌ [useAuth] Login failed:', response.message);
             set({
               isLoading: false,
               error: response.message || 'Error al iniciar sesión',
@@ -60,7 +55,6 @@ export const useAuth = create<AuthState>()(
             return false;
           }
         } catch (error: any) {
-          console.error('❌ [useAuth] Login exception:', error);
           set({
             isLoading: false,
             error: error.message || 'Error inesperado al iniciar sesión',

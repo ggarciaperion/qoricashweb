@@ -21,30 +21,7 @@ export default function SocketNotifications() {
   useSocket({
     // Evento: Documentos aprobados (cuenta activada)
     onDocumentsApproved: async (data) => {
-      console.log('🎉 [Socket] Evento documents_approved recibido:', data);
-      console.log('📊 [Socket] Estado actual del usuario ANTES de refresh:', {
-        dni: user?.dni,
-        status: user?.status,
-        has_complete_documents: user?.has_complete_documents
-      });
-
-      // Refrescar datos del usuario desde el backend
-      console.log('🔄 [Socket] Llamando a refreshUser()...');
-      const refreshed = await refreshUser();
-
-      if (refreshed) {
-        console.log('✅ [Socket] refreshUser() exitoso - Estado actualizado');
-
-        // Obtener el usuario actualizado
-        const updatedUser = useAuthStore.getState().user;
-        console.log('📊 [Socket] Estado del usuario DESPUÉS de refresh:', {
-          dni: updatedUser?.dni,
-          status: updatedUser?.status,
-          has_complete_documents: updatedUser?.has_complete_documents
-        });
-      } else {
-        console.error('❌ [Socket] refreshUser() falló - No se pudo actualizar el estado');
-      }
+      await refreshUser();
 
       // Mostrar notificación
       setNotification({
@@ -55,7 +32,6 @@ export default function SocketNotifications() {
       });
 
       // Recargar la página para refrescar componentes
-      console.log('🔄 [Socket] Recargando página en 2 segundos...');
       setTimeout(() => {
         router.refresh();
         window.location.reload();
@@ -64,7 +40,6 @@ export default function SocketNotifications() {
 
     // Evento: Operación expirada
     onOperationExpired: (data) => {
-      console.log('⏱️ [Socket] Operación expirada:', data);
 
       setNotification({
         title: data.title || '⏱️ Operación Expirada',

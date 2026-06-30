@@ -47,12 +47,8 @@ export const useSocket = (options: UseSocketOptions = {}) => {
       socket.emit('join_client_room', { dni: user.dni });
     });
 
-    socket.on('joined_room', (data) => {
-      console.log('[Socket] Room unido:', data.room);
-    });
-
-    socket.on('disconnect', (reason) => {
-      console.log('[Socket] Desconectado:', reason);
+    socket.on('disconnect', () => {
+      // disconnected
     });
 
     socket.on('connect_error', (error) => {

@@ -83,15 +83,11 @@ export const useExchangeStore = create<ExchangeState>((set, get) => ({
    * Connect to Socket.IO for real-time updates
    */
   connectToSocket: () => {
-    console.log('🔌 Connecting to Socket.IO for real-time exchange rates...');
-
     // Connect to Socket.IO server
     socketService.connect();
 
     // Subscribe to exchange rate updates
     const unsubscribeRates = socketService.onExchangeRatesUpdated((data: ExchangeRateUpdate) => {
-      console.log('💱 Real-time exchange rate update received:', data);
-
       // Update store with new rates
       set({
         currentRates: {
@@ -108,8 +104,6 @@ export const useExchangeStore = create<ExchangeState>((set, get) => ({
 
     // Subscribe to connection status
     const unsubscribeStatus = socketService.onConnectionStatus((status: any) => {
-      console.log('🔌 Socket connection status:', status);
-
       set({
         isConnected: status.connected,
         connectionError: status.error || null,
@@ -124,7 +118,6 @@ export const useExchangeStore = create<ExchangeState>((set, get) => ({
    * Disconnect from Socket.IO
    */
   disconnectFromSocket: () => {
-    console.log('🔌 Disconnecting from Socket.IO...');
 
     // Call unsubscribe functions if they exist
     const unsubscribers = (get() as any)._socketUnsubscribers;
@@ -155,7 +148,6 @@ export const useExchangeStore = create<ExchangeState>((set, get) => ({
     const pollingInterval = setInterval(async () => {
       // Only poll if Socket.IO is not connected
       if (!get().isConnected) {
-        console.log('📡 Polling for rates (Socket.IO not connected)');
         try {
           const response = await exchangeApi.getCurrentRates();
           if (response.success && response.data) {

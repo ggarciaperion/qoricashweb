@@ -25,7 +25,6 @@ class SocketService {
    */
   connect(): void {
     if (this.socket?.connected || this.isConnecting) {
-      console.log('Socket already connected or connecting');
       return;
     }
 
