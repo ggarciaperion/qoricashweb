@@ -14,7 +14,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://res.cloudinary.com https://images.pexels.com https://www.google.com https://app.qoricash.pe",
+      "img-src 'self' data: blob: https://res.cloudinary.com https://images.pexels.com https://www.google.com https://app.qoricash.pe https://flagcdn.com",
       "connect-src 'self' https://app.qoricash.pe wss://app.qoricash.pe https://first-lizard-121914.upstash.io",
       "frame-ancestors 'none'",
       "base-uri 'self'",
