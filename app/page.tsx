@@ -1085,6 +1085,7 @@ export default function Home() {
                 <li><Link href="/servicios#compra" className="hover:text-white transition-colors">Compra de dólares</Link></li>
                 <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
                 <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
+                <li><Link href="/noticias" className="hover:text-white transition-colors">Noticias</Link></li>
               </ul>
             </div>
             <div>
