@@ -137,7 +137,7 @@ export default function Home() {
 
     <main className="min-h-screen">
       {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
-      <MarketTicker />
+      <MarketTicker hidden={navHidden} />
 
       {/* ══ NAVBAR ══ */}
       <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none', transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>

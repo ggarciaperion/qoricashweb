@@ -66,7 +66,7 @@ function TickerCell({ item }: { item: TickerItem }) {
   );
 }
 
-export default function MarketTicker() {
+export default function MarketTicker({ hidden = false }: { hidden?: boolean }) {
   const [items, setItems] = useState<TickerItem[]>([]);
 
   const fetchTicker = async () => {
@@ -106,6 +106,8 @@ export default function MarketTicker() {
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         borderBottom: '1px solid rgba(13,27,42,0.08)',
+        transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+        transform: hidden ? 'translateY(-116px)' : 'translateY(0)',
       }}
       aria-hidden="true"
     >
