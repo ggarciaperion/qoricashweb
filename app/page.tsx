@@ -28,6 +28,8 @@ export default function Home() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
@@ -78,7 +80,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const current = window.scrollY;
+      const prev = lastScrollYRef.current;
+      setNavScrolled(current > 20);
+      if (current > prev && current > 80) setNavHidden(true);
+      else if (current < prev) setNavHidden(false);
+      lastScrollYRef.current = current;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -131,7 +140,7 @@ export default function Home() {
       <MarketTicker />
 
       {/* ══ NAVBAR ══ */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none' }}>
+      <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none', transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
