@@ -660,10 +660,10 @@ export default function Home() {
                 {/* Bancos */}
                 <div className="flex flex-col flex-1">
                 {[
-                  { name: 'BCP',        logo: '/bcp.png',        compra: '3.620', venta: '3.710' },
-                  { name: 'Interbank',  logo: '/interbank.png',  compra: '3.625', venta: '3.715' },
-                  { name: 'BBVA',       logo: '/bbva.png',       compra: '3.610', venta: '3.720' },
-                  { name: 'Scotiabank', logo: '/scotiabank.png', compra: '3.615', venta: '3.712' },
+                  { name: 'BCP',        logo: '/BCP.png',        compra: '3.620', venta: '3.710' },
+                  { name: 'Interbank',  logo: '/Interbank.png',  compra: '3.625', venta: '3.715' },
+                  { name: 'BBVA',       logo: '/BBVA.png',       compra: '3.610', venta: '3.720' },
+                  { name: 'Scotiabank', logo: '/Scotiabank.png', compra: '3.615', venta: '3.712' },
                 ].map(({ name, logo, compra, venta }, i, arr) => (
                   <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
                     <div className="flex items-center gap-2.5 flex-1">
