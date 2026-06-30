@@ -1011,7 +1011,7 @@ export default function Home() {
               { q: '¿Es seguro cambiar dólares con QoriCash?', a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.' },
               { q: '¿Cuáles son las comisiones?',            a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales. El tipo de cambio que ves es exactamente lo que recibes.' },
               { q: '¿Cuál es el monto mínimo para operar?',  a: <span>Puedes cambiar desde S/ 100 o $30 dólares. Para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span> },
-              { q: '¿Con qué bancos trabajan?',              a: 'Operamos con los principales bancos del Perú: BCP, Interbank, BBVA, Scotiabank, BanBif y Pichincha. Puedes enviar y recibir desde cualquiera de ellos.' },
+              { q: '¿Con qué bancos trabajan?',              a: 'Trabajamos directamente con BCP, Interbank y BanBif. Además, aceptamos operaciones interbancarias desde BBVA, Scotiabank, Pichincha o cualquier otro banco con plaza Lima; estas acreditaciones toman entre 2 a 24 horas según el horario de envío.' },
             ].map((item, i) => (
               <div
                 key={i}
