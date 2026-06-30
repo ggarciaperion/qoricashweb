@@ -132,8 +132,8 @@ export default function Home() {
 
       {/* ══ NAVBAR ══ */}
       <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none' }}>
-        <nav className="w-full px-6 sm:px-8 lg:px-10">
-          <div className="max-w-5xl mx-auto flex justify-between items-center h-20">
+        <nav className="w-full">
+          <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
               <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
               <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white">Qoricash</span>
