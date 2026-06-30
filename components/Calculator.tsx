@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { RefreshCw, Ticket, Loader2, CheckCircle, XCircle } from 'lucide-react';
-import ReactCountryFlag from 'react-country-flag';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useReferralStore } from '@/lib/store/referralStore';
 
@@ -16,6 +15,7 @@ interface CalculatorProps {
   showContinueButton?: boolean;
   hideHeader?: boolean;
   compact?: boolean;
+  dark?: boolean;
   onOperationReady?: (operationType: 'Compra' | 'Venta', amountUSD: string, exchangeRate: number) => void;
 }
 
@@ -26,6 +26,7 @@ export default function Calculator({
   showContinueButton = false,
   hideHeader = false,
   compact = false,
+  dark = false,
   onOperationReady
 }: CalculatorProps) {
   const { currentRates: liveRates, fetchRates } = useExchangeStore();
@@ -211,18 +212,22 @@ export default function Calculator({
 
         {/* Header */}
         <div className={`flex items-center justify-between px-1 ${hideHeader ? 'hidden' : ''} ${compact ? 'mb-1.5' : 'mb-2 md:mb-3'}`}>
-          <p className="text-xs text-gray-600 font-semibold">Tipos de cambio en tiempo real</p>
-          <div className="flex items-center text-primary-600 text-xs font-bold bg-primary-50/90 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm">
+          <p className="text-xs font-semibold" style={{ color: dark ? 'rgba(255,255,255,0.5)' : '#4B5563' }}>Tipos de cambio en tiempo real</p>
+          <div className="flex items-center text-xs font-bold px-2.5 py-1 rounded-full backdrop-blur-sm"
+            style={dark
+              ? { color: '#4ade80' }
+              : { color: '#16a34a' }}>
             <div className="relative flex items-center mr-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary-600" />
-              <div className="absolute w-1.5 h-1.5 rounded-full bg-primary-600 animate-ping" />
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              <div className="absolute w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
             </div>
             En vivo
           </div>
         </div>
 
         {/* Tabs Compra / Venta */}
-        <div className={`relative grid grid-cols-2 bg-white/40 backdrop-blur-sm p-1.5 rounded-xl shadow-inner ${compact ? 'mb-2' : 'mb-3 md:mb-6'}`}>
+        <div className={`relative grid grid-cols-2 backdrop-blur-sm p-1.5 rounded-xl ${compact ? 'mb-2' : 'mb-3 md:mb-6'}`}
+          style={{ background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.4)', boxShadow: dark ? 'inset 0 1px 0 rgba(255,255,255,0.06)' : 'inset 0 2px 4px rgba(0,0,0,0.06)' }}>
 
           {/* Pill deslizante */}
           <div
@@ -243,7 +248,7 @@ export default function Calculator({
             style={{ transition: 'color 0.22s ease' }}
           >
             <div className="text-xs font-medium mb-0.5"
-              style={{ color: operationType === 'Compra' ? 'rgba(255,255,255,0.85)' : 'rgba(55,65,81,0.7)', transition: 'color 0.22s ease' }}>
+              style={{ color: operationType === 'Compra' ? 'rgba(255,255,255,0.85)' : dark ? 'rgba(255,255,255,0.4)' : 'rgba(55,65,81,0.7)', transition: 'color 0.22s ease' }}>
               Compra
             </div>
             {ratesReady ? (
@@ -259,7 +264,7 @@ export default function Calculator({
                   </span>
                 )}
                 <span className="text-base font-bold tabular-nums leading-tight"
-                  style={{ color: operationType === 'Compra' ? '#fff' : '#374151', transition: 'color 0.22s ease' }}>
+                  style={{ color: operationType === 'Compra' ? '#fff' : dark ? 'rgba(255,255,255,0.65)' : '#374151', transition: 'color 0.22s ease' }}>
                   S/ {effectiveRates.compra.toFixed(3)}
                 </span>
               </div>
@@ -275,7 +280,7 @@ export default function Calculator({
             style={{ transition: 'color 0.22s ease' }}
           >
             <div className="text-xs font-medium mb-0.5"
-              style={{ color: operationType === 'Venta' ? 'rgba(255,255,255,0.85)' : 'rgba(55,65,81,0.7)', transition: 'color 0.22s ease' }}>
+              style={{ color: operationType === 'Venta' ? 'rgba(255,255,255,0.85)' : dark ? 'rgba(255,255,255,0.4)' : 'rgba(55,65,81,0.7)', transition: 'color 0.22s ease' }}>
               Venta
             </div>
             {ratesReady ? (
@@ -291,7 +296,7 @@ export default function Calculator({
                   </span>
                 )}
                 <span className="text-base font-bold tabular-nums leading-tight"
-                  style={{ color: operationType === 'Venta' ? '#fff' : '#374151', transition: 'color 0.22s ease' }}>
+                  style={{ color: operationType === 'Venta' ? '#fff' : dark ? 'rgba(255,255,255,0.65)' : '#374151', transition: 'color 0.22s ease' }}>
                   S/ {effectiveRates.venta.toFixed(3)}
                 </span>
               </div>
@@ -306,7 +311,8 @@ export default function Calculator({
 
           {/* Input — Envías */}
           <div
-            className={`bg-white/70 backdrop-blur-sm rounded-xl border-2 border-white/60 hover:border-primary-400 transition-all cursor-text shadow-sm hover:shadow-md relative z-10 ${compact ? 'p-2' : 'p-3'}`}
+            className={`backdrop-blur-sm rounded-xl border-2 hover:border-primary-400 transition-all cursor-text relative z-10 ${compact ? 'p-2' : 'p-3'}`}
+            style={{ background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)', borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)', boxShadow: dark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)' }}
             onClick={(e) => {
               const input = document.getElementById('amount-input') as HTMLInputElement;
               if (input) { input.focus(); e.preventDefault(); }
@@ -314,13 +320,13 @@ export default function Calculator({
           >
             <div className={`flex items-center justify-between ${compact ? 'mb-1' : 'mb-2'}`}>
               <label htmlFor="amount-input"
-                className="text-xs text-gray-700 font-bold cursor-text pointer-events-none select-none uppercase tracking-wider">
+                className="text-xs font-bold cursor-text pointer-events-none select-none uppercase tracking-wider"
+                style={{ color: dark ? 'rgba(255,255,255,0.5)' : '#374151' }}>
                 Envías
               </label>
-              <div className="flex items-center gap-2 bg-white/80 px-2.5 py-1 rounded-full">
-                <ReactCountryFlag countryCode={inputCurrency === 'USD' ? 'US' : 'PE'} svg
-                  style={{ width: '1.2em', height: '1.2em', borderRadius: '50%', objectFit: 'cover' }} />
-                <span className="text-gray-800 font-bold text-xs">{inputCurrency}</span>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{inputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}</span>
+                <span className="font-bold text-xs" style={{ color: dark ? 'rgba(255,255,255,0.85)' : '#1F2937' }}>{inputCurrency}</span>
               </div>
             </div>
             <input
@@ -333,7 +339,7 @@ export default function Calculator({
                 if (/^\d*\.?\d*$/.test(raw)) setAmountInput(raw);
               }}
               placeholder="0.00"
-              className={`w-full font-bold text-gray-900 bg-transparent border-none outline-none placeholder-gray-400 ${compact ? 'text-lg' : 'text-xl'}`}
+              className={`w-full font-bold bg-transparent border-none outline-none ${compact ? 'text-lg' : 'text-xl'} ${dark ? 'text-white placeholder-white/30' : 'text-gray-900 placeholder-gray-400'}`}
             />
           </div>
 
@@ -341,24 +347,33 @@ export default function Calculator({
           <div className={`flex justify-center relative z-20 ${compact ? '-my-4' : '-my-5'}`}>
             <button
               onClick={handleSwapCurrency}
-              className={`bg-white/90 backdrop-blur-sm border-2 border-white/80 rounded-full p-2.5 shadow-lg hover:shadow-xl hover:border-primary-400 hover:bg-primary-50 transition-all ${isAnimating ? 'rotate-180' : ''}`}
-              style={{ transition: 'transform 0.3s ease' }}
+              className={`backdrop-blur-sm border-2 rounded-full p-2.5 transition-all hover:border-primary-400 ${isAnimating ? 'rotate-180' : ''}`}
+              style={{
+                background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)',
+                borderColor: dark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.8)',
+                boxShadow: dark ? '0 2px 8px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease',
+              }}
             >
-              <RefreshCw className={`w-5 h-5 text-primary-600 ${isAnimating ? 'rotate-180' : ''}`} />
+              <RefreshCw className={`w-5 h-5 text-primary-500 ${isAnimating ? 'rotate-180' : ''}`} />
             </button>
           </div>
 
           {/* Output — Recibes */}
-          <div className={`bg-gradient-to-br from-primary-50/90 to-primary-100/70 backdrop-blur-sm rounded-xl shadow-sm relative z-10 ${compact ? 'p-2' : 'p-3'}`}>
+          <div className={`backdrop-blur-sm rounded-xl relative z-10 ${compact ? 'p-2' : 'p-3'}`}
+            style={{
+              background: dark ? 'rgba(34,197,94,0.08)' : 'linear-gradient(135deg, rgba(240,253,244,0.9), rgba(220,252,231,0.7))',
+              border: dark ? '1px solid rgba(34,197,94,0.2)' : 'none',
+              boxShadow: dark ? 'none' : '0 1px 3px rgba(0,0,0,0.06)',
+            }}>
             <div className={`flex items-center justify-between ${compact ? 'mb-1' : 'mb-2'}`}>
-              <label className="text-xs text-primary-800 font-bold uppercase tracking-wider">Recibes</label>
-              <div className="flex items-center gap-2 bg-white/90 px-2.5 py-1 rounded-full">
-                <ReactCountryFlag countryCode={outputCurrency === 'USD' ? 'US' : 'PE'} svg
-                  style={{ width: '1.2em', height: '1.2em', borderRadius: '50%', objectFit: 'cover' }} />
-                <span className="text-gray-800 font-bold text-xs">{outputCurrency}</span>
+              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: dark ? '#4ade80' : '#166534' }}>Recibes</label>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{outputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}</span>
+                <span className="font-bold text-xs" style={{ color: dark ? 'rgba(255,255,255,0.85)' : '#1F2937' }}>{outputCurrency}</span>
               </div>
             </div>
-            <div className={`font-bold text-primary-900 ${compact ? 'text-lg' : 'text-xl'}`}>{amountOutput ? formatWithCommas(amountOutput) : '0.00'}</div>
+            <div className={`font-bold ${compact ? 'text-lg' : 'text-xl'}`} style={{ color: dark ? '#86efac' : '#14532d' }}>{amountOutput ? formatWithCommas(amountOutput) : '0.00'}</div>
           </div>
 
         </div>
@@ -368,9 +383,10 @@ export default function Calculator({
           <button
             onClick={handleContinue}
             disabled={!amountInput || !amountOutput}
-            className={`w-full rounded-xl font-bold text-white transition-all shadow-md ${compact ? 'mt-2 py-2.5' : 'mt-4 py-4'} ${
-              amountInput && amountOutput ? 'btn-primary-gradient' : 'bg-gray-300 cursor-not-allowed'
+            className={`w-full rounded-xl font-bold transition-all ${compact ? 'mt-2 py-2.5' : 'mt-4 py-4'} ${
+              amountInput && amountOutput ? 'btn-primary-gradient text-white shadow-md' : 'cursor-not-allowed'
             }`}
+            style={!(amountInput && amountOutput) ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.08)' } : {}}
           >
             INICIAR OPERACIÓN
           </button>
@@ -384,9 +400,9 @@ export default function Calculator({
             onClick={() => setCouponOpen(!couponOpen)}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-200"
             style={{
-              background: couponApplied ? 'rgba(34,197,94,0.10)' : 'rgba(255,255,255,0.70)',
-              border: couponApplied ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(13,27,42,0.12)',
-              color: couponApplied ? '#16a34a' : 'rgba(55,65,81,0.65)',
+              background: couponApplied ? 'rgba(34,197,94,0.10)' : dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.70)',
+              border: couponApplied ? '1px solid rgba(34,197,94,0.35)' : dark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(13,27,42,0.12)',
+              color: couponApplied ? '#4ade80' : dark ? 'rgba(255,255,255,0.5)' : 'rgba(55,65,81,0.65)',
             }}
           >
             <Ticket className="w-3 h-3 flex-shrink-0" />
@@ -394,7 +410,7 @@ export default function Calculator({
             {couponApplied && <CheckCircle className="w-3 h-3 flex-shrink-0 text-primary-600" />}
           </button>
 
-          <span className="text-gray-200 select-none">|</span>
+          <span className="select-none" style={{ color: dark ? 'rgba(255,255,255,0.15)' : '#E5E7EB' }}>|</span>
 
           {/* Mejorar tasas */}
           <a
@@ -403,17 +419,17 @@ export default function Calculator({
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-200"
             style={{
-              background: 'rgba(255,255,255,0.70)',
-              border: '1px solid rgba(13,27,42,0.12)',
-              color: 'rgba(55,65,81,0.65)',
+              background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.70)',
+              border: dark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(13,27,42,0.12)',
+              color: dark ? 'rgba(255,255,255,0.5)' : 'rgba(55,65,81,0.65)',
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.borderColor = 'rgba(34,197,94,0.40)';
-              (e.currentTarget as HTMLElement).style.color = '#16a34a';
+              (e.currentTarget as HTMLElement).style.color = '#4ade80';
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = 'rgba(13,27,42,0.12)';
-              (e.currentTarget as HTMLElement).style.color = 'rgba(55,65,81,0.65)';
+              (e.currentTarget as HTMLElement).style.borderColor = dark ? 'rgba(255,255,255,0.1)' : 'rgba(13,27,42,0.12)';
+              (e.currentTarget as HTMLElement).style.color = dark ? 'rgba(255,255,255,0.5)' : 'rgba(55,65,81,0.65)';
             }}
           >
             <svg className="w-3 h-3 flex-shrink-0" fill="#22C55E" viewBox="0 0 24 24">
@@ -446,10 +462,10 @@ export default function Calculator({
                 }}
                 placeholder="QORI2026"
                 disabled={couponStatus === 'loading' || couponApplied}
-                className="flex-1 px-3 py-2.5 text-sm font-bold tracking-[0.18em] uppercase bg-white/70 backdrop-blur-sm rounded-xl border-2 border-white/60 focus:outline-none transition-all placeholder-gray-300 disabled:opacity-50"
-                style={{ fontFamily: 'monospace', borderColor: couponStatus === 'valid' ? 'rgba(34,197,94,0.5)' : couponStatus === 'invalid' ? 'rgba(239,68,68,0.4)' : undefined }}
+                className={`flex-1 px-3 py-2.5 text-sm font-bold tracking-[0.18em] uppercase backdrop-blur-sm rounded-xl border-2 focus:outline-none transition-all disabled:opacity-50 ${dark ? 'placeholder-white/20 text-white' : 'placeholder-gray-300 text-gray-900 bg-white/70'}`}
+                style={{ fontFamily: 'monospace', background: dark ? 'rgba(255,255,255,0.06)' : undefined, borderColor: couponStatus === 'valid' ? 'rgba(34,197,94,0.5)' : couponStatus === 'invalid' ? 'rgba(239,68,68,0.4)' : dark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)' }}
                 onFocus={(e) => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = 'rgba(34,197,94,0.5)'; }}
-                onBlur={(e)  => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)'; }}
+                onBlur={(e)  => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = dark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)'; }}
               />
               {/* Botón Aplicar / Quitar */}
               <button

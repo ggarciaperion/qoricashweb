@@ -43,7 +43,6 @@ import {
   Tag,
 } from 'lucide-react';
 import Image from 'next/image';
-import ReactCountryFlag from 'react-country-flag';
 
 function NuevaOperacionContent() {
   const router = useRouter();
@@ -2071,7 +2070,7 @@ function NuevaOperacionContent() {
                   <div className="px-4 py-3 flex items-center justify-between">
                     <span className="text-xs text-gray-500 font-medium">Usted paga</span>
                     <div className="flex items-center gap-2">
-                      <ReactCountryFlag countryCode={tipo === 'Compra' ? 'US' : 'PE'} svg style={{ width: 18, height: 18, borderRadius: '50%', overflow: 'hidden' }} />
+                      <span style={{ fontSize: 18, lineHeight: 1 }}>{tipo === 'Compra' ? '🇺🇸' : '🇵🇪'}</span>
                       <span className="text-base font-bold" style={{ color: '#0D1B2A' }}>
                         {tipo === 'Compra'
                           ? `$ ${parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -2083,7 +2082,7 @@ function NuevaOperacionContent() {
                   <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(34,197,94,0.03)' }}>
                     <span className="text-xs text-gray-500 font-medium">Usted recibe</span>
                     <div className="flex items-center gap-2">
-                      <ReactCountryFlag countryCode={tipo === 'Compra' ? 'PE' : 'US'} svg style={{ width: 18, height: 18, borderRadius: '50%', overflow: 'hidden' }} />
+                      <span style={{ fontSize: 18, lineHeight: 1 }}>{tipo === 'Compra' ? '🇵🇪' : '🇺🇸'}</span>
                       <span className="text-base font-bold" style={{ color: '#16A34A' }}>
                         {tipo === 'Compra'
                           ? `S/ ${parseFloat(amountOutput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
