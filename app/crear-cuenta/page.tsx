@@ -1039,6 +1039,7 @@ export default function CrearCuentaPage() {
                             onBlur={() => setDniTouched(true)}
                             onFocus={() => setDniTouched(false)}
                             maxLength={docLen}
+                            autoComplete="off"
                             className={inputInnerCls}
                           />
                         </fieldset>
@@ -1057,6 +1058,7 @@ export default function CrearCuentaPage() {
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleChange('email', e.target.value.toLowerCase())}
+                        autoComplete="off"
                         className={inputInnerCls}
                       />
                     </fieldset>
@@ -1069,6 +1071,7 @@ export default function CrearCuentaPage() {
                           type={showPassword ? 'text' : 'password'}
                           value={formData.password}
                           onChange={(e) => handleChange('password', e.target.value)}
+                          autoComplete="new-password"
                           className={`${inputInnerCls} flex-1`}
                         />
                         <button type="button" onClick={() => setShowPassword(!showPassword)} className="flex-shrink-0 text-slate-300 hover:text-slate-500 transition mb-1.5" tabIndex={-1}>
@@ -1211,19 +1214,19 @@ export default function CrearCuentaPage() {
                     {/* Nombres */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Nombre(s)</legend>
-                      <input type="text" value={formData.nombres} onChange={e => handleChange('nombres', e.target.value)} className={inpCls} placeholder="" />
+                      <input type="text" value={formData.nombres} onChange={e => handleChange('nombres', e.target.value)} autoComplete="off" className={inpCls} placeholder="" />
                     </fieldset>
 
                     {/* Apellido paterno */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Apellido paterno</legend>
-                      <input type="text" value={formData.apellidoPaterno} onChange={e => handleChange('apellidoPaterno', e.target.value)} className={inpCls} />
+                      <input type="text" value={formData.apellidoPaterno} onChange={e => handleChange('apellidoPaterno', e.target.value)} autoComplete="off" className={inpCls} />
                     </fieldset>
 
                     {/* Apellido materno */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Apellido materno</legend>
-                      <input type="text" value={formData.apellidoMaterno} onChange={e => handleChange('apellidoMaterno', e.target.value)} className={inpCls} />
+                      <input type="text" value={formData.apellidoMaterno} onChange={e => handleChange('apellidoMaterno', e.target.value)} autoComplete="off" className={inpCls} />
                     </fieldset>
 
                     {/* Teléfono */}
@@ -1399,14 +1402,17 @@ export default function CrearCuentaPage() {
                         <input type="text" value={formData.nombres}
                           onChange={e => handleChange('nombres', e.target.value)}
                           placeholder="Nombres"
+                          autoComplete="off"
                           className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
                         <input type="text" value={formData.apellidoPaterno}
                           onChange={e => handleChange('apellidoPaterno', e.target.value)}
                           placeholder="Apellido paterno"
+                          autoComplete="off"
                           className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
                         <input type="text" value={formData.apellidoMaterno}
                           onChange={e => handleChange('apellidoMaterno', e.target.value)}
                           placeholder="Apellido materno"
+                          autoComplete="off"
                           className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
                       </div>
                     )}
@@ -1417,6 +1423,7 @@ export default function CrearCuentaPage() {
                         <input type="text" value={formData.razonSocial}
                           onChange={e => handleChange('razonSocial', e.target.value)}
                           placeholder="Razón Social"
+                          autoComplete="off"
                           className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
                       </div>
                     )}
@@ -1433,6 +1440,7 @@ export default function CrearCuentaPage() {
                       <legend className={legCls} style={legSt}>Persona de contacto</legend>
                       <input type="text" value={formData.personaContacto}
                         onChange={e => handleChange('personaContacto', e.target.value)}
+                        autoComplete="off"
                         className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
                         placeholder="Nombre completo" />
                     </fieldset>
@@ -1454,7 +1462,8 @@ export default function CrearCuentaPage() {
                         if (isPeru && raw.length === 1 && raw !== '9') return;
                         if (isPeru) handleChange('telefono', raw.slice(0, 9));
                         else handleChange('telefono', raw);
-                      }} className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
+                      }} autoComplete="off"
+                        className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
                         placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                     </fieldset>
                   </div>
@@ -1706,6 +1715,7 @@ export default function CrearCuentaPage() {
               type="email"
               value={newEmailValue}
               onChange={(e) => setNewEmailValue(e.target.value.toLowerCase())}
+              autoComplete="off"
               className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-primary-400 focus:outline-none text-sm text-slate-700 mb-4"
               placeholder="nuevo@correo.com"
               autoFocus
