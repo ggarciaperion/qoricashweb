@@ -137,10 +137,11 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
       {/* Modal backdrop — renderizado via Portal para escapar del stacking context de la navbar */}
       {open && createPortal(
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="animate-modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/65 backdrop-blur-md"
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="animate-modal-enter w-full max-w-md bg-white rounded-2xl overflow-hidden"
+            style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}>
 
             {/* Header */}
             <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
@@ -158,8 +159,12 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
                   <p className="text-primary-400/70 text-[10px] font-medium mt-0.5">Recibe el aviso exacto cuando el dólar se mueva</p>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} className="relative text-gray-500 hover:text-white transition-colors p-1">
-                <X className="w-5 h-5" />
+              <button onClick={() => setOpen(false)}
+                className="relative p-1.5 rounded-lg transition-colors"
+                style={{ color: 'rgba(255,255,255,0.4)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}>
+                <X className="w-[18px] h-[18px]" />
               </button>
             </div>
 
@@ -297,7 +302,10 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
                       placeholder="Ej: 3.410"
                       value={form.valor}
                       onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
-                      className="w-full bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl px-4 py-3 text-base font-black text-gray-800 placeholder-gray-300 focus:outline-none transition-colors"
+                      className="w-full bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl px-4 py-3 text-base font-black text-gray-800 placeholder-gray-300 focus:outline-none transition-all"
+                      style={{ boxShadow: 'none' }}
+                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
+                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
                       required
                     />
                   </div>

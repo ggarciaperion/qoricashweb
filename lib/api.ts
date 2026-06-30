@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
 // API Base URL from environment variable or default
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
 
 // Create axios instance
 export const apiClient: AxiosInstance = axios.create({
@@ -43,10 +43,6 @@ apiClient.interceptors.response.use(
         window.location.href = '/login';
       }
     }
-
-    // Handle other errors
-    const errorMessage = error.response?.data || 'An error occurred';
-    console.error('API Error:', errorMessage);
 
     return Promise.reject(error);
   }

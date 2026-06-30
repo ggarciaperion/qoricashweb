@@ -200,14 +200,14 @@ export default function PerfilPage() {
         {message && (
           <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 shadow-sm animate-in fade-in duration-300 ${
             message.type === 'success'
-              ? 'bg-green-50/80 border-green-200/60 text-green-800'
+              ? 'bg-primary-50/80 border-primary-200/60 text-primary-800'
               : 'bg-red-50/80 border-red-200/60 text-red-800'
           }`}>
             <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-              message.type === 'success' ? 'bg-green-100' : 'bg-red-100'
+              message.type === 'success' ? 'bg-primary-100' : 'bg-red-100'
             }`}>
               {message.type === 'success'
-                ? <CheckCircle className="w-5 h-5 text-green-600" />
+                ? <CheckCircle className="w-5 h-5 text-primary-600" />
                 : <AlertCircle className="w-5 h-5 text-red-600" />
               }
             </div>
@@ -242,8 +242,8 @@ export default function PerfilPage() {
               {/* Account Status */}
               <div className="text-left sm:text-right">
                 <div className="flex items-center justify-end gap-2 mb-2">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 rounded-full">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-500/20 rounded-full">
+                    <div className="w-2 h-2 bg-primary-400 rounded-full animate-pulse"></div>
                     <span className="text-sm font-semibold text-white">
                       {user.estado || 'Activo'}
                     </span>

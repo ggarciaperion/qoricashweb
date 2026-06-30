@@ -6,13 +6,13 @@ import { notFound } from 'next/navigation';
 export const revalidate = 60;
 
 const CATEGORIA_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Nacional:       { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  Nacional:       { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
   Internacional:  { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
   Economía:       { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
   Tecnología:     { bg: 'bg-violet-50',  text: 'text-violet-700',  border: 'border-violet-200'  },
   Misceláneos:    { bg: 'bg-slate-50',   text: 'text-slate-600',   border: 'border-slate-200'   },
   // legacy fallbacks
-  'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Economía Peruana': { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
   'Mercado Forex':    { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
   Análisis:           { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
 };
@@ -108,7 +108,7 @@ export default async function NoticiaDetallePage({
 
             {/* Análisis QoriCash */}
             {noticia.analisis && (
-              <div className="bg-gradient-to-br from-primary-50 to-emerald-50 border border-primary-200 rounded-xl px-6 py-5 shadow-sm">
+              <div className="bg-gradient-to-br from-primary-50 to-primary-50 border border-primary-200 rounded-xl px-6 py-5 shadow-sm">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-lg bg-primary-500 flex items-center justify-center flex-shrink-0">
                     <TrendingUp className="w-4 h-4 text-white" />

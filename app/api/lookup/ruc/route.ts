@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com';
+const BACKEND_URL = 'https://app.qoricash.pe';
 
 export async function GET(request: NextRequest) {
   const numero = request.nextUrl.searchParams.get('numero') || '';

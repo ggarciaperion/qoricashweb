@@ -11,7 +11,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       title="Contactar por WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-lg hover:shadow-2xl hover:scale-110 transition-all duration-300"
+      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full shadow-lg hover:shadow-2xl hover:scale-110 transition-all duration-300"
       aria-label="Contactar por WhatsApp"
     >
       <span className="whatsapp-pulse-ring" aria-hidden="true"></span>

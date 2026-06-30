@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
@@ -12,6 +12,7 @@ import { getQoricashAccount } from '@/lib/config/qoricash-accounts';
 import type { BankAccount } from '@/lib/types';
 import AddBankAccountModal from '@/components/modals/AddBankAccountModal';
 import OffHoursModal from '@/components/modals/OffHoursModal';
+import Calculator from '@/components/Calculator';
 import {
   ArrowLeft,
   RefreshCw,
@@ -31,7 +32,7 @@ import {
   TrendingUp,
   TrendingDown,
   Building2,
-  Calculator,
+  Calculator as CalculatorIcon,
   Send,
   Wallet,
   Copy,
@@ -42,13 +43,14 @@ import {
   Tag,
 } from 'lucide-react';
 import Image from 'next/image';
+import ReactCountryFlag from 'react-country-flag';
 
 function NuevaOperacionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated, user, refreshUser } = useAuthStore();
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
-  const { clearReferral } = useReferralStore();
+  const { clearReferral, hasCoupon: storeCoupon, referralCode: storeReferralCode } = useReferralStore();
 
   // Form state
   const [tipo, setTipo] = useState<'Compra' | 'Venta'>('Compra');
@@ -60,6 +62,8 @@ function NuevaOperacionContent() {
   const [ownershipConfirmed, setOwnershipConfirmed] = useState(false);
 
   // Referral/Coupon state - Always start empty
+  const [originDropdownOpen, setOriginDropdownOpen] = useState(false);
+  const [destDropdownOpen, setDestDropdownOpen] = useState(false);
   const [showCouponField, setShowCouponField] = useState(false);
   const [referralCode, setReferralCode] = useState('');
   const [isValidatingCode, setIsValidatingCode] = useState(false);
@@ -70,7 +74,7 @@ function NuevaOperacionContent() {
   const [appliedDiscount, setAppliedDiscount] = useState(0); // 0.003 when code is valid
 
   // UI state
-  const [currentStep, setCurrentStep] = useState(1); // 1: Cotiza, 2: Transfiere, 3: Recibe
+  const [currentStep, setCurrentStep] = useState(1); // 1: Cotiza, 2: Selección cuentas, 3: Transfiere, 4: Adjunta y finaliza
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,8 +96,14 @@ function NuevaOperacionContent() {
   // Processing overlays
   const [showCreatingOverlay, setShowCreatingOverlay] = useState(false);
   const [showCreatingSuccess, setShowCreatingSuccess] = useState(false);
+  const createApiDoneRef = useRef(false);
+  const createAnimDoneRef = useRef(false);
   const [showCancelOverlay, setShowCancelOverlay] = useState(false);
   const [showCancelOverlaySuccess, setShowCancelOverlaySuccess] = useState(false);
+  const [showProofOverlay, setShowProofOverlay] = useState(false);
+  const [showProofSuccess, setShowProofSuccess] = useState(false);
+  const proofApiDoneRef = useRef(false);
+  const proofAnimDoneRef = useRef(false);
 
   // Confirm operation state
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -116,6 +126,9 @@ function NuevaOperacionContent() {
   const [showActivationToast, setShowActivationToast] = useState(false);
   const [rucFicha, setRucFicha] = useState<File | null>(null);
   const [isUploadingKYC, setIsUploadingKYC] = useState(false);
+  const [kycUploadDone, setKycUploadDone] = useState(false);
+  const [showVerifyOverlay, setShowVerifyOverlay] = useState(false);
+  const [verifyStillPending, setVerifyStillPending] = useState(false);
 
   // Formatted date for display - compute on client side only
   const [formattedDate, setFormattedDate] = useState<string>('');
@@ -275,10 +288,10 @@ function NuevaOperacionContent() {
         remainingSeconds: remaining % 60
       });
 
-      // Set operation data and jump to step 2
+      // Set operation data and jump to step 3 (Transfiere)
       setCreatedOperation(operation);
       setTimeRemaining(remaining);
-      setCurrentStep(2);
+      setCurrentStep(3);
 
       // Normalizar tipo de operación
       const operationType = (operation.tipo || operation.operation_type || '').toLowerCase();
@@ -590,109 +603,121 @@ function NuevaOperacionContent() {
     setIsConfirmModalOpen(true);
   };
 
+  const handleCreateProgressEnd = () => {
+    createAnimDoneRef.current = true;
+    if (createApiDoneRef.current) {
+      setShowCreatingSuccess(true);
+      setTimeout(() => {
+        setShowCreatingOverlay(false);
+        setShowCreatingSuccess(false);
+        setCurrentStep(3);
+      }, 3500);
+    }
+  };
+
+  const handleProofProgressEnd = () => {
+    proofAnimDoneRef.current = true;
+    if (proofApiDoneRef.current) {
+      setShowProofSuccess(true);
+      setTimeout(() => {
+        setShowProofOverlay(false);
+        setShowProofSuccess(false);
+        setCurrentStep(4);
+      }, 3000);
+    }
+  };
+
   const handleConfirmAndCreate = async () => {
     setError(null);
     setIsSubmitting(true);
     setIsConfirmModalOpen(false);
     setShowCreatingOverlay(true);
     setShowCreatingSuccess(false);
-    const startTime = Date.now();
+    createApiDoneRef.current = false;
+    createAnimDoneRef.current = false;
 
     try {
-      const accountIdToSend = selectedDestinationAccount!;
-      const accountIndex = bankAccounts.findIndex(acc => acc.id === accountIdToSend);
 
-      console.log('[Nueva Operación] Enviando operación:', {
-        tipo,
-        accountIdToSend,
-        accountIndex,
-        totalAccounts: bankAccounts.length,
-        selectedAccount: bankAccounts[accountIndex]
+      // ── MODO DEMO: simulación sin base de datos ──
+      const destAccount = bankAccounts.find(a => a.id === selectedDestinationAccount);
+      const originAccount = bankAccounts.find(a => a.id === selectedOriginAccount);
+      const now = new Date();
+      const mockOperation = {
+        id: 9999,
+        operation_id: 'DEMO-' + Math.floor(Math.random() * 90000 + 10000),
+        codigo_operacion: 'DEMO-' + Math.floor(Math.random() * 90000 + 10000),
+        operation_type: tipo.toLowerCase(),
+        status: 'Pendiente',
+        amount_usd: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
+        amount_pen: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
+        exchange_rate: getAdjustedRate(),
+        source_bank_name: originAccount?.banco || originAccount?.bank_name || '',
+        destination_bank_name: destAccount?.banco || destAccount?.bank_name || '',
+        source_account: originAccount?.numero_cuenta || originAccount?.account_number || '',
+        destination_account: destAccount?.numero_cuenta || destAccount?.account_number || '',
+        created_at: now.toISOString(),
+        // Datos de cuenta QoriCash para el paso 3
+        qoricash_account: getQoricashAccount(tipo === 'Compra' ? '$' : 'S/', 'Lima'),
+      };
+
+      const formattedDateString = now.toLocaleString('es-PE', {
+        timeZone: 'America/Lima', day: '2-digit', month: '2-digit',
+        year: 'numeric', hour: '2-digit', minute: '2-digit',
       });
 
-      if (accountIndex === -1) {
-        setShowCreatingOverlay(false);
-        setError('Cuenta bancaria no encontrada');
-        setIsSubmitting(false);
-        return;
-      }
+      setFormattedDate(formattedDateString);
+      setCreatedOperation(mockOperation);
+      setTimeRemaining(900);
+      setHasActiveOperation(true);
+      setActiveOperationMessage(`Tienes una operación en estado "Pendiente" (${mockOperation.codigo_operacion}). Debes completarla o cancelarla antes de crear una nueva.`);
+      setReferralCode('');
+      setCodeValidation(null);
+      setAppliedDiscount(0);
+      setShowCouponField(false);
+      clearReferral();
 
-      const response = await operationsApi.createOperation({
-        dni: user!.dni,
-        tipo: tipo.toLowerCase() as 'compra' | 'venta',
-        monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
-        monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
-        banco_cuenta_id: accountIndex,
-        ...(codeValidation?.isValid && referralCode ? { referral_code: referralCode } : {})
-      });
-
-      console.log('[Nueva Operación] Respuesta del servidor:', response);
-
-      if (response.success && response.data) {
-        console.log('[Nueva Operación] Operación creada:', response.data.operation);
-
-        const operation = response.data.operation;
-        const formattedDateString = operation.created_at
-          ? (parseSafeDate(operation.created_at) ?? new Date()).toLocaleString('es-PE', {
-              timeZone: 'America/Lima',
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          : 'Ahora';
-
-        setFormattedDate(formattedDateString);
-        setCreatedOperation(operation);
-        setTimeRemaining(900);
-        setHasActiveOperation(true);
-        setActiveOperationMessage(
-          `Tienes una operación en estado "Pendiente" (${operation.codigo_operacion || operation.operation_id}). Debes completarla o cancelarla antes de crear una nueva.`
-        );
-        setReferralCode('');
-        setCodeValidation(null);
-        setAppliedDiscount(0);
-        setShowCouponField(false);
-        clearReferral();
-
-        // Mostrar éxito en overlay mínimo 2.2s después del inicio
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, 2200 - elapsed);
+      // Sincronizar con animación
+      createApiDoneRef.current = true;
+      if (createAnimDoneRef.current) {
+        setShowCreatingSuccess(true);
         setTimeout(() => {
-          setShowCreatingSuccess(true);
-          setTimeout(() => {
-            setShowCreatingOverlay(false);
-            setShowCreatingSuccess(false);
-            setCurrentStep(2);
-          }, 2000);
-        }, remaining);
-      } else {
-        setShowCreatingOverlay(false);
-        setError(response.message || 'Error al crear la operación');
+          setShowCreatingOverlay(false);
+          setShowCreatingSuccess(false);
+          setCurrentStep(3);
+        }, 3500);
       }
-    } catch (error: any) {
-      console.error('Error creating operation:', error);
-      setShowCreatingOverlay(false);
-      setError(error.response?.data?.message || 'Error al crear la operación');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const getBankLogo = (banco: string): string | null => {
+    const name = banco.toLowerCase();
+    if (name.includes('bcp') || name.includes('credito')) return '/BCP.png';
+    if (name.includes('interbank')) return '/Interbank.png';
+    if (name.includes('banbif')) return '/BanBif.png';
+    if (name.includes('pichincha')) return '/Banco Pichincha.png';
+    if (name.includes('bbva') || name.includes('continental')) return '/BBVA.png';
+    if (name.includes('scotiabank')) return '/Scotiabank.png';
+    if (name.includes('gnb')) return '/bancognb.jpg';
+    if (name.includes('ripley')) return '/bancoripley.png';
+    if (name.includes('santander')) return '/bancosantander.png';
+    return null;
+  };
+
   const getOriginAccounts = () => {
     const currency = tipo === 'Compra' ? '$' : 'S/';
-    return bankAccounts.filter(acc => acc.moneda === currency);
+    return bankAccounts.filter(acc => (acc.moneda || acc.currency) === currency);
   };
 
   const getDestinationAccounts = () => {
     const currency = tipo === 'Compra' ? 'S/' : '$';
-    return bankAccounts.filter(acc => acc.moneda === currency);
+    return bankAccounts.filter(acc => (acc.moneda || acc.currency) === currency);
   };
 
-  // Timer countdown for Step 2
+  // Timer countdown for Step 3
   useEffect(() => {
-    if (currentStep === 2 && timeRemaining > 0) {
+    if (currentStep === 3 && timeRemaining > 0) {
       const timer = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -711,9 +736,9 @@ function NuevaOperacionContent() {
     }
   }, [currentStep, createdOperation]);
 
-  // Interceptar recarga/cierre cuando hay una operación en curso (Step 2)
+  // Interceptar recarga/cierre cuando hay una operación en curso (Step 3)
   useEffect(() => {
-    if (currentStep === 2 && createdOperation) {
+    if (currentStep === 3 && createdOperation) {
       // Marcar operación en curso en sessionStorage para detectar recarga
       sessionStorage.setItem('qc_op_in_progress', String(createdOperation.id || '1'));
 
@@ -777,6 +802,20 @@ function NuevaOperacionContent() {
     setShowCancelOverlay(true);
     setShowCancelOverlaySuccess(false);
     const startTime = Date.now();
+
+    // MODO DEMO: operación simulada, no llamar API
+    const isDemo = createdOperation.id === 9999 || String(createdOperation.codigo_operacion || '').startsWith('DEMO-');
+    if (isDemo) {
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, 2200 - elapsed);
+      setTimeout(() => {
+        setShowCancelOverlaySuccess(true);
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2500);
+      }, remaining);
+      return;
+    }
 
     try {
       const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
@@ -846,6 +885,22 @@ function NuevaOperacionContent() {
     setIsUploadingKYC(true);
     setError(null);
 
+    // Demo mode: simulate successful upload for demo user (dev only)
+    if (process.env.NODE_ENV !== 'production' && user.dni === '99999901') {
+      await new Promise(r => setTimeout(r, 3000));
+      setDocsSubmittedThisSession(true);
+      setIsUploadingKYC(false);
+      setKycUploadDone(true);
+      setTimeout(() => {
+        setIsKYCModalOpen(false);
+        setKycUploadDone(false);
+        setDnifront(null);
+        setDniBack(null);
+        setRucFicha(null);
+      }, 2800);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('dni', user.dni);
@@ -865,17 +920,17 @@ function NuevaOperacionContent() {
       const data = await response.json();
 
       if (data.success) {
-        // Marcar documentos como enviados en esta sesión (oculta botón "Subir" aunque el backend aún no actualice has_complete_documents)
         setDocsSubmittedThisSession(true);
-
-        // Actualizar el estado del usuario desde el backend
         await refreshUser();
-
-        setIsKYCModalOpen(false);
-        setDnifront(null);
-        setDniBack(null);
-        setRucFicha(null);
         setIsUploadingKYC(false);
+        setKycUploadDone(true);
+        setTimeout(() => {
+          setIsKYCModalOpen(false);
+          setKycUploadDone(false);
+          setDnifront(null);
+          setDniBack(null);
+          setRucFicha(null);
+        }, 2800);
       } else {
         setError(data.message || 'Error al subir documentos');
         setIsUploadingKYC(false);
@@ -894,26 +949,44 @@ function NuevaOperacionContent() {
       return;
     }
 
+    if (!voucherCode.trim()) {
+      setError('Ingresa el número de operación de tu transferencia');
+      return;
+    }
+
     setIsUploadingProof(true);
     setError(null);
 
+    // Cerrar modal y mostrar overlay animado
+    setIsUploadProofModalOpen(false);
+    setVoucherCode('');
+    setShowProofOverlay(true);
+    setShowProofSuccess(false);
+    proofApiDoneRef.current = false;
+    proofAnimDoneRef.current = false;
+
+    // MODO DEMO: simulación sin base de datos
+    const isDemo = createdOperation.id === 9999 || String(createdOperation.codigo_operacion || '').startsWith('DEMO-');
+    if (isDemo) {
+      proofApiDoneRef.current = true;
+      if (proofAnimDoneRef.current) {
+        setShowProofSuccess(true);
+        setTimeout(() => {
+          setShowProofOverlay(false);
+          setShowProofSuccess(false);
+          setCurrentStep(4);
+        }, 3000);
+      }
+      setIsUploadingProof(false);
+      return;
+    }
+
     try {
-      // Crear FormData para enviar archivos
       const formData = new FormData();
       formData.append('operation_id', createdOperation.id.toString());
+      formData.append('voucher_code', voucherCode.trim());
 
-      // Agregar código de voucher si fue proporcionado
-      if (voucherCode.trim()) {
-        formData.append('voucher_code', voucherCode.trim());
-      }
-
-      // Agregar archivos
-      uploadedFiles.forEach((file) => {
-        formData.append('files', file);
-      });
-
-      // Enviar al backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com'}/api/web/submit-proof`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/web/submit-proof`, {
         method: 'POST',
         body: formData,
       });
@@ -921,23 +994,26 @@ function NuevaOperacionContent() {
       const data = await response.json();
 
       if (data.success) {
-        // Cerrar modal
-        setIsUploadProofModalOpen(false);
-        setUploadedFiles([]);
-        setVoucherCode('');
-
-        // Mantener currentStep en 2 por 2 segundos para mostrar la animación
-        // de la línea 2→3 antes de avanzar al paso 3
-        setTimeout(() => {
-          setCurrentStep(3);
-        }, 2000);
+        proofApiDoneRef.current = true;
+        if (proofAnimDoneRef.current) {
+          setShowProofSuccess(true);
+          setTimeout(() => {
+            setShowProofOverlay(false);
+            setShowProofSuccess(false);
+            setCurrentStep(4);
+          }, 3000);
+        }
       } else {
+        setShowProofOverlay(false);
         setError(data.message || 'Error al enviar comprobante');
-        setIsUploadingProof(false);
+        setIsUploadProofModalOpen(true);
       }
     } catch (err: any) {
       console.error('Error al enviar comprobante:', err);
+      setShowProofOverlay(false);
       setError('Error al enviar comprobante. Por favor intenta nuevamente.');
+      setIsUploadProofModalOpen(true);
+    } finally {
       setIsUploadingProof(false);
     }
   };
@@ -959,58 +1035,34 @@ function NuevaOperacionContent() {
   };
 
   const resolveQoricashAccount = () => {
-    if (!createdOperation) {
-      console.log('[getQoricashAccount] No hay operación creada');
-      return null;
-    }
+    if (!createdOperation) return null;
 
-    // Obtener el banco de la cuenta de origen desde la operación creada
-    const sourceAccountInfo = createdOperation.source_account_info || createdOperation.source_account;
-
-    // Extraer el banco de la info de la cuenta - manejar tanto objetos como strings
-    let clientBankRaw;
-
-    if (sourceAccountInfo) {
-      if (typeof sourceAccountInfo === 'object') {
-        // Si es objeto, intentar obtener banco desde banco_nombre o banco
-        clientBankRaw = sourceAccountInfo.banco_nombre || sourceAccountInfo.banco || sourceAccountInfo.bank_name;
-      } else if (typeof sourceAccountInfo === 'string') {
-        clientBankRaw = sourceAccountInfo.split(' - ')[0];
-      }
-    }
-
-    // Si no se pudo obtener el banco desde sourceAccountInfo, intentar desde las cuentas bancarias
-    if (!clientBankRaw && bankAccounts && bankAccounts.length > 0) {
-      // Determinar la moneda de origen según el tipo de operación
-      const operationType = (createdOperation.operation_type || createdOperation.tipo || '').toLowerCase();
-      const sourceCurrency = operationType === 'compra' ? '$' : 'S/';
-
-      console.log('[getQoricashAccount] Tipo operación:', operationType, 'Moneda origen:', sourceCurrency);
-
-      // Buscar una cuenta bancaria del cliente que coincida con la moneda de origen
-      const originAccount = bankAccounts.find(acc => acc.currency === sourceCurrency);
-      if (originAccount) {
-        clientBankRaw = originAccount.bank_name;
-        console.log('[getQoricashAccount] Banco obtenido desde cuentas bancarias del usuario:', clientBankRaw);
-      } else {
-        console.log('[getQoricashAccount] No se encontró cuenta bancaria con moneda:', sourceCurrency, 'Cuentas disponibles:', bankAccounts);
-      }
-    }
-
-    if (!clientBankRaw) {
-      console.log('[getQoricashAccount] No se pudo determinar el banco. sourceAccountInfo:', sourceAccountInfo, 'bankAccounts:', bankAccounts);
-      return null;
-    }
-
-    // Normalizar el nombre del banco
-    const clientBank = normalizeBankName(clientBankRaw);
-
-    // Determinar moneda de destino (la cuenta QoriCash a usar)
     const operationType = (createdOperation.operation_type || createdOperation.tipo || '').toLowerCase();
+    // Moneda que el cliente envía: compra = $, venta = S/
     const currency = operationType === 'compra' ? '$' : 'S/';
 
-    console.log('[getQoricashAccount] Banco cliente (original):', clientBankRaw, '(normalizado):', clientBank, 'Moneda:', currency, 'Tipo operación:', operationType);
+    // 1. Fuente más directa: source_bank_name guardado en la operación
+    let clientBankRaw: string = createdOperation.source_bank_name || '';
 
+    // 2. Fallback: buscar la cuenta seleccionada en el estado local
+    if (!clientBankRaw && selectedOriginAccount !== null) {
+      const originAcc = bankAccounts.find(a => a.id === selectedOriginAccount);
+      if (originAcc) {
+        clientBankRaw = originAcc.banco || originAcc.bank_name || '';
+      }
+    }
+
+    // 3. Fallback: primera cuenta del cliente con la moneda de origen
+    if (!clientBankRaw) {
+      const originAcc = bankAccounts.find(acc => (acc.moneda || acc.currency) === currency);
+      if (originAcc) {
+        clientBankRaw = originAcc.banco || originAcc.bank_name || '';
+      }
+    }
+
+    if (!clientBankRaw) return null;
+
+    const clientBank = normalizeBankName(clientBankRaw);
     return getQoricashAccount(clientBank, currency);
   };
 
@@ -1024,7 +1076,7 @@ function NuevaOperacionContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando...</p>
@@ -1035,146 +1087,64 @@ function NuevaOperacionContent() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="min-h-screen bg-white">
       {/* Botón flotante WhatsApp - solo móvil */}
       <a
         href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
         target="_blank"
         rel="noopener noreferrer"
-        className="lg:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 bg-green-500 text-white px-4 py-3 rounded-full shadow-xl hover:bg-green-600 transition"
+        className="lg:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 bg-primary-500 text-white px-4 py-3 rounded-full shadow-xl hover:bg-primary-600 transition"
       >
         <MessageCircle className="w-5 h-5" />
         <span className="text-sm font-semibold">WhatsApp</span>
       </a>
 
-      {/* Header compacto */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="inline-flex items-center text-gray-600 hover:text-gray-900 transition text-sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            <span className="font-medium">Volver</span>
-          </button>
-
-          <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
-            <div className="relative flex items-center">
-              <div className={`w-2 h-2 rounded-full ${currentRates ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-              {currentRates && (
-                <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
-              )}
-            </div>
-            <span className={`text-xs font-semibold ${currentRates ? 'text-green-700' : 'text-gray-600'}`}>
-              {currentRates ? 'Tipos de cambio en vivo' : 'Cargando tipos de cambio...'}
-            </span>
-          </div>
-        </div>
-      </header>
-
       {/* Main Layout: Sidebar + Content */}
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-1 pb-4">
         <div className="grid grid-cols-12 gap-4 sm:gap-6">
-          {/* Sidebar izquierdo - Información de QoriCash (oculto en móvil) */}
-          <div className="hidden lg:block lg:col-span-3">
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-6 sticky top-6">
-              <div className="text-center mb-6">
-                <div className="w-24 h-24 mx-auto mb-3 relative">
-                  <Image
-                    src="/logo-principal.png"
-                    alt="QoriCash Logo"
-                    width={96}
-                    height={96}
-                    className="object-contain"
-                  />
-                </div>
-                <h3 className="font-bold text-lg text-gray-900">QoriCash</h3>
-                <p className="text-xs text-gray-600">Casa de cambio online</p>
-              </div>
-
-              <div className="space-y-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-gray-900">Teléfono</p>
-                    <p className="text-xs text-gray-600">926 011 920</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-gray-900">Email</p>
-                    <p className="text-xs text-gray-600">info@qoricash.pe</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-gray-900">Horario</p>
-                    <p className="text-xs text-gray-600">Lun - Vie: 9am - 6pm</p>
-                    <p className="text-xs text-gray-600">Sáb: 9am - 1pm</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-4 space-y-2">
-                <a
-                  href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-green-500 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-green-600 transition"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp
-                </a>
-                <button className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-semibold hover:bg-gray-200 transition">
-                  <HelpCircle className="w-4 h-4" />
-                  Ayuda
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-semibold hover:bg-gray-200 transition">
-                  <HeadphonesIcon className="w-4 h-4" />
-                  Soporte
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Contenido principal */}
-          <div className="col-span-12 lg:col-span-9">
-            <div className="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/60 p-4">
-              {/* Header */}
+          <div className="col-span-12">
+            <div className="p-1">
+              {/* Volver + Header */}
               <div className="mb-4">
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="inline-flex items-center mb-2 transition text-sm"
+                  style={{ color: 'rgba(30,41,59,0.45)' }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.45)')}
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1.5" />
+                  <span className="font-medium">Volver</span>
+                </button>
+              <div className="text-center">
                 <h1 className="text-xl font-bold text-gray-900 mb-1">
-                  {currentStep === 1 ? 'Nueva Operación' : currentStep === 2 ? 'Transfiere el dinero' : 'Recibe tu dinero'}
+                  {currentStep === 1 ? 'Nueva Operación' : currentStep === 2 ? 'Selección de cuentas' : currentStep === 3 ? 'Transfiere el dinero' : 'Operación en proceso'}
                 </h1>
                 <p className="text-xs text-gray-600">
                   {currentStep === 1
-                    ? 'Completa los datos para realizar tu cambio'
+                    ? 'Cotiza tu tipo de cambio'
                     : currentStep === 2
+                    ? 'Selecciona las cuentas para tu operación'
+                    : currentStep === 3
                     ? 'Realiza la transferencia a la cuenta de QoriCash'
                     : 'Tu operación está siendo procesada'}
                 </p>
               </div>
+              </div>
 
               {/* Progress Stepper */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between max-w-sm mx-auto">
+              <div className="mb-5">
+                <div className="flex items-center justify-between max-w-lg mx-auto">
                   {[
-                    { num: 1, icon: Calculator, label: 'Cotiza' },
-                    { num: 2, icon: Send, label: 'Transfiere' },
-                    { num: 3, icon: Wallet, label: 'Recibe' },
+                    { num: 1, icon: CalculatorIcon, label: 'Cotiza' },
+                    { num: 2, icon: CreditCard, label: 'Cuentas Bancarias' },
+                    { num: 3, icon: Send, label: 'Transfiere' },
+                    { num: 4, icon: Upload, label: 'Finaliza' },
                   ].map(({ num, icon: Icon, label }, idx) => (
                     <div key={num} className="flex items-center flex-1 last:flex-none">
                       <div className="flex flex-col items-center">
-                        <div className={`w-11 h-11 rounded-full flex items-center justify-center mb-1.5 transition-all duration-300 ${
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 transition-all duration-300 ${
                           currentStep > num
                             ? 'bg-gradient-to-br from-primary-500 to-primary-600 shadow-md shadow-primary-200'
                             : currentStep === num
@@ -1182,14 +1152,14 @@ function NuevaOperacionContent() {
                             : 'bg-gray-100 border-2 border-gray-200'
                         }`}>
                           {currentStep > num
-                            ? <CheckCircle className="w-5 h-5 text-white" />
-                            : <Icon className={`w-5 h-5 ${currentStep >= num ? 'text-white' : 'text-gray-400'}`} />
+                            ? <CheckCircle className="w-3.5 h-3.5 text-white" />
+                            : <Icon className={`w-3.5 h-3.5 ${currentStep >= num ? 'text-white' : 'text-gray-400'}`} />
                           }
                         </div>
-                        <p className={`text-[11px] font-semibold ${currentStep >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</p>
+                        <p className={`text-[10px] font-semibold ${currentStep >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</p>
                       </div>
-                      {idx < 2 && (
-                        <div className={`flex-1 h-1.5 mx-2 mb-4 rounded-full transition-all duration-500 ${
+                      {idx < 3 && (
+                        <div className={`flex-1 h-1.5 mx-1.5 mb-4 rounded-full transition-all duration-500 ${
                           currentStep > num ? 'bg-gradient-to-r from-primary-400 to-primary-500' : 'bg-gray-200'
                         }`} />
                       )}
@@ -1198,266 +1168,269 @@ function NuevaOperacionContent() {
                 </div>
               </div>
 
-              {/* STEP 2: Transfer Instructions */}
-              {currentStep === 2 && createdOperation ? (
-                <div className="space-y-4">
-                  {/* Operation ID and Timer */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-gradient-to-r from-secondary to-secondary-700 rounded-xl text-white">
-                    <div>
-                      <p className="text-xs opacity-90 mb-1">ID de Operación</p>
-                      <p className="text-xl sm:text-2xl font-bold">{createdOperation.codigo_operacion}</p>
-                    </div>
-                    <div className="flex items-center gap-3 bg-white/20 rounded-lg px-4 py-2 backdrop-blur-sm w-full sm:w-auto justify-between sm:justify-start">
-                      <Timer className={`w-6 h-6 ${timeRemaining < 300 ? 'animate-pulse' : ''}`} />
-                      <div className="text-right">
-                        <p className="text-xs opacity-90">Tiempo restante</p>
-                        <p className={`text-xl sm:text-2xl font-bold ${timeRemaining < 300 ? 'text-yellow-300' : ''}`}>
-                          {formatTime(timeRemaining)}
-                        </p>
+              {/* STEP 3: Transfer Instructions */}
+              {currentStep === 3 && createdOperation ? (
+                <div className="flex justify-center mt-4">
+                <div className="flex gap-5 w-full max-w-[680px] items-start">
+
+                {/* Panel derecho informativo */}
+                <div className="hidden lg:flex flex-col gap-3 w-[220px] flex-shrink-0 order-2">
+                  <div className="rounded-2xl p-4" style={{ background: '#1E293B' }}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(234,179,8,0.15)' }}>
+                        <Clock className="w-3.5 h-3.5 text-yellow-400" />
                       </div>
+                      <p className="text-xs font-bold text-white">¡No te demores!</p>
                     </div>
+                    <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                      Tienes <span className="text-yellow-400 font-bold">15 minutos</span> para completar tu transferencia. Si el tiempo vence, la operación se anulará automáticamente y deberás iniciar una nueva.
+                    </p>
                   </div>
 
-                  {/* Timer Warning */}
-                  {timeRemaining < 300 && timeRemaining > 0 && (
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <p className="text-sm text-yellow-800 flex items-start">
-                        <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
-                        <span>Quedan menos de 5 minutos. Completa la transferencia pronto.</span>
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Time Expired */}
-                  {timeRemaining === 0 && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-sm text-red-800 flex items-start">
-                        <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="font-semibold">El tiempo ha expirado. Por favor, contacta a soporte para continuar con tu operación.</span>
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Operation Summary and Transfer Instructions - Side by Side */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                    {/* Operation Summary */}
-                    <div className="bg-gray-50 rounded-lg p-2.5 border border-gray-200">
-                      <h3 className="text-xs font-bold text-gray-900 mb-1.5">Resumen de la Operación</h3>
-                      <div className="space-y-0.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Tipo:</span>
-                          <span className="font-semibold text-gray-900">{createdOperation.tipo}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Soles:</span>
-                          <span className="font-semibold text-gray-900">S/ {parseFloat(createdOperation.monto_soles).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Dólares:</span>
-                          <span className="font-semibold text-gray-900">$ {parseFloat(createdOperation.monto_dolares).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">T. Cambio:</span>
-                          <span className="font-semibold text-gray-900">S/ {parseFloat(createdOperation.tipo_cambio).toFixed(3)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-600">Fecha:</span>
-                          <span className="font-semibold text-gray-900">
-                            {formattedDate || 'Ahora'}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-xs pt-0.5 border-t border-gray-300">
-                          <span className="text-gray-600">Estado:</span>
-                          <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold ${
-                            timeRemaining === 0
-                              ? 'bg-red-100 text-red-800'
-                              : createdOperation.estado === 'Cancelado'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {timeRemaining === 0 ? 'Expirado' : createdOperation.estado}
-                          </span>
-                        </div>
+                  <div className="rounded-2xl p-4" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
+                        <CheckCircle className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />
                       </div>
+                      <p className="text-xs font-bold text-gray-800">Pasos a seguir</p>
                     </div>
+                    <ol className="space-y-2">
+                      {[
+                        'Copia el número de cuenta de QoriCash.',
+                        'Realiza la transferencia desde tu banco.',
+                        'Regresa aquí y haz clic en "Ya transferí".',
+                      ].map((step, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold text-white" style={{ background: '#22C55E' }}>{i + 1}</span>
+                          <p className="text-[11px] leading-relaxed text-gray-600">{step}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
 
-                    {/* Transfer Instructions */}
-                    {(() => {
-                      // Determinar moneda y cuentas según el tipo de operación
-                      const operationType = (createdOperation.tipo || createdOperation.operation_type || '').toLowerCase();
-                      const sourceCurrency = operationType === 'compra' ? '$' : 'S/';
-                      const destCurrency = operationType === 'compra' ? 'S/' : '$';
+                  <div className="rounded-2xl p-4" style={{ background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.08)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(30,41,59,0.4)' }}>¿Necesitas ayuda?</p>
+                    <a
+                      href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-xs font-semibold text-white px-3 py-2 rounded-xl transition"
+                      style={{ background: '#25D366' }}
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      Escribir por WhatsApp
+                    </a>
+                  </div>
+                </div>
 
-                      // Obtener cuenta de origen del cliente
-                      const sourceAccount = createdOperation.source_account || '';
-                      const destAccount = createdOperation.destination_account || '';
+                <div className="flex-1 min-w-0 space-y-3 order-1">
 
-                      // Obtener cuenta QoriCash
-                      const qoricashAccount = resolveQoricashAccount();
+                  {(() => {
+                    const opType = (createdOperation.operation_type || createdOperation.tipo || '').toLowerCase();
+                    const qoricashAccount = resolveQoricashAccount();
+                    const usd = createdOperation.amount_usd ?? createdOperation.monto_dolares ?? 0;
+                    const pen = createdOperation.amount_pen ?? createdOperation.monto_soles ?? 0;
+                    const tc  = createdOperation.exchange_rate ?? createdOperation.tipo_cambio ?? 0;
+                    const montoEnviar = opType === 'compra'
+                      ? `$ ${parseFloat(usd).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
+                      : `S/ ${parseFloat(pen).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
+                    const montoRecibir = opType === 'compra'
+                      ? `S/ ${parseFloat(pen).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
+                      : `$ ${parseFloat(usd).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
+                    const srcBank = createdOperation.source_bank_name || '';
+                    const srcAcc  = createdOperation.source_account || '';
+                    const dstBank = createdOperation.destination_bank_name || '';
+                    const dstAcc  = createdOperation.destination_account || '';
+                    const srcLogo = getBankLogo(srcBank);
+                    const dstLogo = getBankLogo(dstBank);
+                    const qcLogo  = qoricashAccount ? getBankLogo(qoricashAccount.banco) : null;
+                    const accountNumber = qoricashAccount ? (qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero) : '';
 
-                      console.log('[Transfer Instructions] Debug:', {
-                        operationType,
-                        sourceCurrency,
-                        destCurrency,
-                        sourceAccount,
-                        destAccount,
-                        qoricashAccount,
-                        bankAccounts
-                      });
-
-                      return (
-                        <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                          <h3 className="text-xs font-bold text-gray-900 mb-2">Instrucciones de Transferencia</h3>
-                          <div className="space-y-1">
-                            {/* Paso 1: Desde tu cuenta */}
-                            <div className="flex items-center gap-1.5">
-                              <div className="flex-shrink-0 w-5 h-5 rounded-full bg-secondary flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-white">1</span>
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-gray-600">Desde tu cuenta:</span>
-                                  <span className="font-semibold text-gray-900">{sourceAccount} ({sourceCurrency})</span>
-                                </div>
-                              </div>
+                    return (
+                      <>
+                        {/* ── Header: ID + Timer ── */}
+                        <div className="rounded-2xl overflow-hidden" style={{ background: '#1E293B' }}>
+                          <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Operación</p>
+                              <p className="text-lg font-bold text-white leading-none">{createdOperation.codigo_operacion}</p>
                             </div>
-
-                            {/* Paso 2: Transfiere a QoriCash */}
-                            {qoricashAccount && (
-                              <>
-                                <div className="flex items-start gap-1.5">
-                                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-secondary flex items-center justify-center">
-                                    <span className="text-[10px] font-bold text-white">2</span>
-                                  </div>
-                                  <div className="flex-1">
-                                    <span className="text-gray-600 text-xs font-semibold block mb-1">Transfiere a QoriCash:</span>
-                                    <div className="space-y-0.5">
-                                      <div className="flex justify-between text-xs">
-                                        <span className="text-gray-600">Banco:</span>
-                                        <span className="font-semibold text-gray-900">{qoricashAccount.banco}</span>
-                                      </div>
-                                      <div className="flex justify-between text-xs">
-                                        <span className="text-gray-600">Tipo:</span>
-                                        <span className="font-semibold text-gray-900">{qoricashAccount.tipo.replace('Cuenta Corriente ', '')}</span>
-                                      </div>
-                                      <div className="flex justify-between text-xs">
-                                        <span className="text-gray-600">Titular:</span>
-                                        <span className="font-semibold text-gray-900">{qoricashAccount.titular}</span>
-                                      </div>
-                                      <div className="flex justify-between text-xs">
-                                        <span className="text-gray-600">RUC:</span>
-                                        <span className="font-semibold text-gray-900">{qoricashAccount.ruc}</span>
-                                      </div>
-                                      <div className="flex justify-between text-xs items-center pt-0.5">
-                                        <span className="text-gray-600">{qoricashAccount.useCCI ? 'CCI:' : 'N° Cuenta:'}</span>
-                                        <div className="flex items-center gap-1">
-                                          <span className="font-semibold text-gray-900 text-[11px]">{qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero}</span>
-                                          <button
-                                            type="button"
-                                            onClick={() => copyToClipboard(qoricashAccount.useCCI ? qoricashAccount.cci : qoricashAccount.numero, 'account')}
-                                            className="p-0.5 bg-secondary text-white rounded hover:bg-blue-700"
-                                          >
-                                            {copiedField === 'account' ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <div className="flex justify-between text-xs pt-0.5 border-t border-gray-300">
-                                        <span className="text-gray-600">Monto exacto:</span>
-                                        <span className="font-bold text-gray-900">{operationType === 'compra' ? `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}` : `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}`}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </>
-                            )}
-
-                            {/* Paso 3: Recibirás */}
-                            <div className="flex items-center gap-1.5 pt-0.5 border-t border-gray-300">
-                              <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-600 flex items-center justify-center">
-                                <span className="text-[10px] font-bold text-white">3</span>
-                              </div>
-                              <div className="flex-1">
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-gray-600">Recibirás:</span>
-                                  <span className="font-semibold text-gray-900">{destAccount} ({operationType === 'compra' ? `S/${parseFloat(createdOperation.monto_soles).toFixed(2)}` : `$${parseFloat(createdOperation.monto_dolares).toFixed(2)}`})</span>
-                                </div>
+                            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: timeRemaining < 300 ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.12)', border: `1px solid ${timeRemaining < 300 ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.25)'}` }}>
+                              <Timer className={`w-4 h-4 flex-shrink-0 ${timeRemaining < 300 ? 'text-red-400 animate-pulse' : 'text-green-400'}`} />
+                              <div>
+                                <p className="text-[9px] font-semibold uppercase tracking-widest leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Tiempo</p>
+                                <p className={`text-base font-bold leading-none ${timeRemaining < 300 ? 'text-red-400' : 'text-white'}`}>{formatTime(timeRemaining)}</p>
                               </div>
                             </div>
                           </div>
+                          {/* Cotización strip */}
+                          <div className="mx-3 mb-3 rounded-xl flex divide-x overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                            <div className="flex-1 px-3 py-2 text-center">
+                              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>Usted paga</p>
+                              <p className="text-sm font-bold text-white mt-0.5">{montoEnviar}</p>
+                            </div>
+                            <div className="px-3 py-2 text-center" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>T.C.</p>
+                              <p className="text-sm font-bold text-white mt-0.5">{parseFloat(tc).toFixed(3)}</p>
+                            </div>
+                            <div className="flex-1 px-3 py-2 text-center" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                              <p className="text-[9px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>Usted recibe</p>
+                              <p className="text-sm font-bold mt-0.5" style={{ color: '#4ade80' }}>{montoRecibir}</p>
+                            </div>
+                          </div>
                         </div>
-                      );
-                    })()}
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (timeRemaining > 0) {
-                          setIsCancelModalOpen(true);
-                          setError(null);
-                        }
-                      }}
-                      disabled={timeRemaining === 0}
-                      className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100"
-                    >
-                      Cancelar operación
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsUploadProofModalOpen(true);
-                      }}
-                      disabled={timeRemaining === 0}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg font-bold hover:shadow-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center"
-                    >
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      Ya transferí
-                    </button>
-                  </div>
+                        {/* ── Alertas de tiempo ── */}
+                        {timeRemaining < 300 && timeRemaining > 0 && (
+                          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}>
+                            <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                            <p className="text-xs text-yellow-700 font-medium">Menos de 5 minutos. Completa la transferencia pronto.</p>
+                          </div>
+                        )}
+                        {timeRemaining === 0 && (
+                          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}>
+                            <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                            <p className="text-xs text-red-700 font-semibold">El tiempo ha expirado. Contacta a soporte para continuar.</p>
+                          </div>
+                        )}
 
-                  <p className="text-xs text-center text-gray-500">
-                    Una vez que hayas realizado la transferencia, haz clic en "Ya transferí" para continuar
-                  </p>
-                </div>
-              ) : currentStep === 1 ? (
-                /* STEP 1: Form */
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Validación de estado del cliente (KYC) */}
-                  {user?.status === 'Inactivo' && !user?.has_complete_documents && !docsSubmittedThisSession && (
-                    <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
-                      <div className="flex items-start">
-                        <AlertCircle className="w-6 h-6 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-red-900 mb-2">
-                            Cuenta Inactiva - Validación Pendiente
-                          </p>
-                          <p className="text-sm text-red-800 mb-3">
-                            Para iniciar operaciones necesitamos validar tu información. Por favor, adjunta tus documentos para activar tu cuenta.
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsKYCModalOpen(true);
-                              setError(null);
-                            }}
-                            className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-700 transition"
-                          >
-                            <Upload className="w-4 h-4" />
-                            Subir Documentos
+                        {/* ── HERO: Cuenta QoriCash ── */}
+                        <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid #22C55E', boxShadow: '0 4px 24px rgba(34,197,94,0.15)' }}>
+
+                          {/* Header de la card */}
+                          <div className="px-4 py-3 flex items-center gap-2" style={{ background: '#1E293B' }}>
+                            <img src="/logo-principal.png" alt="QoriCash" className="w-6 h-6 object-contain flex-shrink-0" />
+                            <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>Transfiere a esta cuenta —</p>
+                            <p className="text-sm font-bold text-white">QoriCash</p>
+                          </div>
+
+                          {/* Datos de la cuenta */}
+                          {qoricashAccount ? (
+                            <div className="px-4 py-3 space-y-2.5" style={{ background: '#fff' }}>
+
+                              {/* Banco */}
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Banco</span>
+                                {qcLogo && <img src={qcLogo} alt={qoricashAccount.banco} className="w-10 h-10 object-contain rounded-lg" />}
+                              </div>
+
+                              <div className="border-t" style={{ borderColor: 'rgba(30,41,59,0.07)' }} />
+
+                              {/* Titular */}
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Titular</span>
+                                <span className="text-sm font-semibold text-gray-800 text-right max-w-[200px]">{qoricashAccount.titular}</span>
+                              </div>
+
+                              {/* RUC */}
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">RUC</span>
+                                <span className="text-sm font-semibold text-gray-800">{qoricashAccount.ruc}</span>
+                              </div>
+
+                              <div className="border-t" style={{ borderColor: 'rgba(30,41,59,0.07)' }} />
+
+                              {/* Número de cuenta con botón copiar grande */}
+                              <div>
+                                <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1.5">{qoricashAccount.useCCI ? 'CCI' : 'N° de Cuenta'}</p>
+                                <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.1)' }}>
+                                  <span className="flex-1 text-base font-bold tracking-wider text-gray-900 select-all">{accountNumber}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(accountNumber, 'account')}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition flex-shrink-0"
+                                    style={{ background: copiedField === 'account' ? '#16A34A' : '#1E293B' }}
+                                  >
+                                    {copiedField === 'account'
+                                      ? <><CheckCircle className="w-3.5 h-3.5" /> Copiado</>
+                                      : <><Copy className="w-3.5 h-3.5" /> Copiar</>
+                                    }
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Monto exacto a transferir */}
+                              <div className="rounded-xl px-3 py-2.5" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)' }}>
+                                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(22,163,74,0.7)' }}>Monto exacto a transferir</p>
+                                <p className="text-xl font-bold mt-0.5" style={{ color: '#15803d' }}>{montoEnviar}</p>
+                              </div>
+
+                            </div>
+                          ) : (
+                            <div className="px-4 py-4 text-center" style={{ background: '#fff' }}>
+                              <p className="text-sm text-gray-500">No se pudo determinar la cuenta de destino. Contacta a soporte.</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* ── Resumen del flujo ── */}
+                        <div className="rounded-xl px-4 py-3" style={{ background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.08)' }}>
+                          <div className="flex items-center gap-2">
+                            {/* Origen */}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[9px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(30,41,59,0.4)' }}>Transfieres desde:</p>
+                              <div className="flex items-center gap-1.5">
+                                {srcLogo && <img src={srcLogo} alt={srcBank} className="w-5 h-5 object-contain rounded flex-shrink-0" />}
+                                <span className="text-xs font-semibold text-gray-700 truncate">{srcAcc || srcBank || '—'}</span>
+                              </div>
+                              <p className="text-xs font-bold mt-1" style={{ color: '#0D1B2A' }}>{montoEnviar}</p>
+                            </div>
+                            {/* Flecha */}
+                            <div className="flex-shrink-0">
+                              <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path d="M1 7h18M13 1l6 6-6 6" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                            </div>
+                            {/* Destino */}
+                            <div className="flex-1 min-w-0 text-right">
+                              <p className="text-[9px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'rgba(30,41,59,0.4)' }}>Recibirás en</p>
+                              <div className="flex items-center gap-1.5 justify-end">
+                                {dstLogo && <img src={dstLogo} alt={dstBank} className="w-5 h-5 object-contain rounded flex-shrink-0" />}
+                                <span className="text-xs font-semibold text-gray-700 truncate">{dstAcc || dstBank || '—'}</span>
+                              </div>
+                              <p className="text-xs font-bold mt-1" style={{ color: '#16A34A' }}>{montoRecibir}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* ── Botones ── */}
+                        <div className="flex gap-3 pt-1">
+                          <button type="button"
+                            onClick={() => { if (timeRemaining > 0) { setIsCancelModalOpen(true); setError(null); } }}
+                            disabled={timeRemaining === 0}
+                            className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-40"
+                            style={{ background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}>
+                            Cancelar
+                          </button>
+                          <button type="button"
+                            onClick={() => setIsUploadProofModalOpen(true)}
+                            disabled={timeRemaining === 0}
+                            className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white transition disabled:opacity-40 flex items-center justify-center gap-2"
+                            style={{ background: '#22C55E', boxShadow: '0 4px 14px rgba(34,197,94,0.35)' }}>
+                            <CheckCircle className="w-4 h-4" />
+                            Ya transferí
                           </button>
                         </div>
-                      </div>
-                    </div>
-                  )}
+
+                        <p className="text-[11px] text-center" style={{ color: 'rgba(30,41,59,0.35)' }}>
+                          Una vez realizada la transferencia, haz clic en "Ya transferí"
+                        </p>
+                      </>
+                    );
+                  })()}
+
+                </div>
+                </div>
+                </div>
+              ) : currentStep === 1 ? (
+                /* STEP 1: Cotiza */
+                <div className="space-y-4">
+                  {/* Validación de estado del cliente (KYC) */}
 
                   {/* Toast de cuenta activada */}
                   {showActivationToast && (
                     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
-                      <div className="bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-md">
+                      <div className="bg-primary-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 max-w-md">
                         <div className="flex-shrink-0 w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <CheckCircle className="w-5 h-5 text-primary-600" />
                         </div>
                         <div className="flex-1">
                           <p className="font-bold text-sm mb-1">¡Cuenta Activada!</p>
@@ -1500,40 +1473,178 @@ function NuevaOperacionContent() {
                   )}
 
                   {user?.status === 'Inactivo' && (user?.has_complete_documents || docsSubmittedThisSession) && (
-                    <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                      <div className="flex items-start">
-                        <Clock className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-blue-900 mb-2">
-                            Documentos en Proceso de Validación
-                          </p>
-                          <p className="text-sm text-blue-800 mb-3">
-                            Tus documentos están siendo revisados por nuestro equipo. Te notificaremos cuando tu cuenta sea activada. Generalmente este proceso toma menos de 10 minutos.
+                    <div className="flex justify-center">
+                      <style>{`
+                        @keyframes clockTick {
+                          0%   { transform: rotate(0deg); }
+                          8%   { transform: rotate(30deg); }
+                          16%  { transform: rotate(60deg); }
+                          25%  { transform: rotate(90deg); }
+                          33%  { transform: rotate(120deg); }
+                          41%  { transform: rotate(150deg); }
+                          50%  { transform: rotate(180deg); }
+                          58%  { transform: rotate(210deg); }
+                          66%  { transform: rotate(240deg); }
+                          75%  { transform: rotate(270deg); }
+                          83%  { transform: rotate(300deg); }
+                          91%  { transform: rotate(330deg); }
+                          100% { transform: rotate(360deg); }
+                        }
+                        @keyframes clockSweep {
+                          0%   { transform: rotate(-60deg); }
+                          100% { transform: rotate(300deg); }
+                        }
+                      `}</style>
+                      <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid #bfdbfe', boxShadow: '0 2px 12px rgba(59,130,246,0.08)' }}>
+                        {/* Header */}
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#0D1B2A' }}>
+                          {/* Animated clock icon */}
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(96,165,250,0.15)' }}>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <circle cx="7" cy="7" r="6" stroke="#93c5fd" strokeWidth="1.2" />
+                              {/* hour hand - slow tick */}
+                              <line x1="7" y1="7" x2="7" y2="3.5" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round"
+                                style={{ transformOrigin: '7px 7px', animation: 'clockTick 6s steps(12) infinite' }} />
+                              {/* minute hand - fast sweep */}
+                              <line x1="7" y1="7" x2="7" y2="2.2" stroke="#60a5fa" strokeWidth="0.9" strokeLinecap="round"
+                                style={{ transformOrigin: '7px 7px', animation: 'clockSweep 1.2s linear infinite' }} />
+                              <circle cx="7" cy="7" r="0.8" fill="#93c5fd" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold" style={{ color: '#93c5fd' }}>En revisión</p>
+                            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Documentos recibidos · menos de 10 min</p>
+                          </div>
+                          {/* pulse dot */}
+                          <div className="ml-auto flex-shrink-0 relative w-2.5 h-2.5">
+                            <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(96,165,250,0.5)' }} />
+                            <span className="relative block w-2.5 h-2.5 rounded-full" style={{ background: '#60a5fa' }} />
+                          </div>
+                        </div>
+                        {/* Body */}
+                        <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: '#eff6ff' }}>
+                          <p className="text-xs text-blue-700 leading-relaxed">
+                            Nuestro equipo está revisando tus documentos. Te avisaremos cuando tu cuenta esté activa.
                           </p>
                           <button
                             onClick={async () => {
-                              setIsCheckingStatus(true);
-                              try {
-                                await refreshUser();
-                              } finally {
-                                setIsCheckingStatus(false);
-                              }
+                              setShowVerifyOverlay(true);
+                              setVerifyStillPending(false);
+                              try { await refreshUser(); } catch {}
+                              // If still inactive after refresh, show pending state
+                              setTimeout(() => {
+                                setShowVerifyOverlay(false);
+                                if (user?.status === 'Inactivo') setVerifyStillPending(true);
+                              }, 2200);
                             }}
                             disabled={isCheckingStatus}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition"
+                            className="flex-shrink-0 flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-2 rounded-xl transition disabled:opacity-50"
+                            style={{ background: '#1d4ed8' }}
                           >
-                            {isCheckingStatus ? (
-                              <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                                Verificando...
-                              </>
-                            ) : (
-                              <>
-                                <RefreshCw className="w-4 h-4" />
-                                Verificar Estado
-                              </>
-                            )}
+                            <RefreshCw className="w-3 h-3" />Verificar
                           </button>
+                        </div>
+                        {/* Still pending message */}
+                        {verifyStillPending && (
+                          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: '#dbeafe', borderTop: '1px solid #bfdbfe' }}>
+                            <Clock className="w-3 h-3 text-blue-500 flex-shrink-0" />
+                            <p className="text-[10px] font-semibold text-blue-700">Documentos en verificación — en breve recibirás confirmación</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Calculadora oficial */}
+                  <div className="relative flex justify-center mt-12">
+                  {/* KYC side banner — fuera del calc, flotando a la derecha */}
+                  {user?.status === 'Inactivo' && !user?.has_complete_documents && !docsSubmittedThisSession && !verifyStillPending && (
+                    <div
+                      className="absolute top-0 flex flex-col items-center gap-2.5 rounded-2xl p-3 text-center w-[96px]"
+                      style={{ left: 'calc(50% + 212px)', background: '#fff5f5', border: '1px solid #fecaca' }}
+                    >
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: '#fee2e2' }}>
+                        <AlertCircle className="w-3.5 h-3.5 text-red-500" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-red-600 leading-tight">Cuenta<br/>inactiva</p>
+                        <p className="text-[9px] text-gray-400 mt-1 leading-snug">Sube tus docs para operar</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                        className="w-full text-white text-[9px] font-bold py-1.5 rounded-lg transition-all hover:brightness-110 active:scale-[0.97]"
+                        style={{ background: '#dc2626' }}
+                      >
+                        Activar
+                      </button>
+                    </div>
+                  )}
+                  <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]">
+                    <Calculator
+                      showContinueButton
+                      compact
+                      onOperationReady={(opType, amountRaw, rate) => {
+                        if (hasActiveOperation || user?.status === 'Inactivo') return;
+                        setTipo(opType);
+                        setAmountInput(amountRaw);
+                        setSelectedOriginAccount(null);
+                        setSelectedDestinationAccount(null);
+                        const computed = opType === 'Compra'
+                          ? (parseFloat(amountRaw) * rate).toFixed(2)
+                          : (parseFloat(amountRaw) / rate).toFixed(2);
+                        setAmountOutput(computed);
+                        setCurrentStep(2);
+                      }}
+                    />
+                  </div>
+                  </div>
+                </div>
+              ) : currentStep === 2 ? (
+                /* STEP 2: Selección de cuentas */
+                <form onSubmit={handleSubmit} className="flex justify-center mt-6">
+                <div className="w-full max-w-[400px] space-y-4">
+
+                  {/* Resumen de cotización */}
+                  {amountInput && amountOutput && (
+                    <div>
+                      {/* Label LIVE */}
+                      <div className="flex items-center gap-1.5 mb-1.5 px-0.5">
+                        <span className="relative flex items-center justify-center w-3 h-3">
+                          <span className="absolute w-3 h-3 rounded-full animate-ping" style={{ background: 'rgba(239,68,68,0.4)' }} />
+                          <span className="w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
+                        </span>
+                        <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#ef4444' }}>Tu cotización</span>
+                      </div>
+
+                      {/* Card oscura */}
+                      <div className="rounded-xl overflow-hidden flex items-stretch" style={{ background: '#1E293B' }}>
+                        {/* Tipo */}
+                        <div className="flex items-center gap-2 px-3 py-2.5 border-r" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-0.5" style={{ background: '#22C55E' }} />
+                          <div className="flex flex-col leading-tight">
+                            <span className="text-[8px] font-semibold whitespace-nowrap" style={{ color: 'rgba(255,255,255,0.45)' }}>QoriCash</span>
+                            <span className="text-[10px] font-bold text-white whitespace-nowrap">{tipo === 'Compra' ? 'Compra USD' : 'Vende USD'}</span>
+                          </div>
+                        </div>
+                        {/* Importe */}
+                        <div className="flex-1 px-3 py-2.5 text-center border-r" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                          <p className="text-[8px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Importe</p>
+                          <p className="text-xs font-bold text-white">
+                            {tipo === 'Compra' ? '$' : 'S/'} {parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                        {/* TC */}
+                        <div className="flex-1 px-3 py-2.5 text-center border-r" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                          <p className="text-[8px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>T.C.</p>
+                          <p className="text-xs font-bold text-white">{currentRate.toFixed(3)}</p>
+                        </div>
+                        {/* Contravalor */}
+                        <div className="flex-1 px-3 py-2.5 text-center">
+                          <p className="text-[8px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Contravalor</p>
+                          <p className="text-xs font-bold" style={{ color: tipo === 'Compra' ? '#4ade80' : '#38bdf8' }}>
+                            {tipo === 'Compra' ? 'S/' : '$'} {parseFloat(amountOutput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -1549,245 +1660,11 @@ function NuevaOperacionContent() {
                     </div>
                   )}
 
-                  {/* Paso 1: Tipo de operación */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      1. Tipo de operación
-                    </label>
-
-                    {/* Botones de Compra y Venta */}
-                    <style jsx>{`
-                      @keyframes pulse-green {
-                        0%, 100% {
-                          opacity: 1;
-                          transform: scale(1);
-                        }
-                        50% {
-                          opacity: 0.8;
-                          transform: scale(1.05);
-                        }
-                      }
-
-                      .live-rate {
-                        animation: pulse-green 2s ease-in-out infinite;
-                      }
-                    `}</style>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTipo('Compra');
-                          setSelectedOriginAccount(null);
-                          setSelectedDestinationAccount(null);
-                        }}
-                        className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
-                          tipo === 'Compra'
-                            ? 'border-secondary bg-secondary text-white'
-                            : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                        }`}
-                      >
-                        <TrendingDown className="w-4 h-4" />
-                        <div className="text-left">
-                          <div className="text-sm font-bold">QoriCash Compra</div>
-                          {appliedDiscount > 0 ? (
-                            <div className="flex flex-col gap-0.5">
-                              <div className="text-xs opacity-60 line-through">
-                                S/ {exchangeRates.compra.toFixed(4)}
-                              </div>
-                              <div className={`text-xs font-bold ${tipo === 'Compra' ? 'text-green-200' : 'text-green-600'} live-rate`}>
-                                S/ {(exchangeRates.compra + appliedDiscount).toFixed(4)}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="text-xs opacity-90">S/ {exchangeRates.compra.toFixed(4)}</div>
-                          )}
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTipo('Venta');
-                          setSelectedOriginAccount(null);
-                          setSelectedDestinationAccount(null);
-                        }}
-                        className={`p-3 rounded-lg border-2 transition-all flex items-center justify-center gap-2 ${
-                          tipo === 'Venta'
-                            ? 'border-secondary bg-secondary text-white'
-                            : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
-                        }`}
-                      >
-                        <TrendingUp className="w-4 h-4" />
-                        <div className="text-left">
-                          <div className="text-sm font-bold">QoriCash Vende</div>
-                          {appliedDiscount > 0 ? (
-                            <div className="flex flex-col gap-0.5">
-                              <div className="text-xs opacity-60 line-through">
-                                S/ {exchangeRates.venta.toFixed(4)}
-                              </div>
-                              <div className={`text-xs font-bold ${tipo === 'Venta' ? 'text-green-200' : 'text-green-600'} live-rate`}>
-                                S/ {(exchangeRates.venta - appliedDiscount).toFixed(4)}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="text-xs opacity-90">S/ {exchangeRates.venta.toFixed(4)}</div>
-                          )}
-                        </div>
-                      </button>
-                    </div>
-
-                    {/* Checkbox y Campo de Cupón (debajo de los botones) */}
-                    <div className="space-y-3">
-                      <label className="flex items-center gap-2 cursor-pointer group">
-                        <input
-                          type="checkbox"
-                          checked={showCouponField}
-                          onChange={(e) => {
-                            setShowCouponField(e.target.checked);
-                            if (!e.target.checked) {
-                              // Clear all coupon-related state
-                              setReferralCode('');
-                              setCodeValidation(null);
-                              setAppliedDiscount(0);
-                              clearReferral(); // Clear from persistent storage
-                            }
-                          }}
-                          className="w-4 h-4 text-success border-gray-300 rounded focus:ring-success cursor-pointer accent-success"
-                        />
-                        <div className="flex items-center gap-2 text-sm font-medium text-gray-700 group-hover:text-success-600 transition">
-                          <Tag className="w-4 h-4" />
-                          <span>Tengo un cupón promocional</span>
-                        </div>
-                      </label>
-
-                      {/* Campo de código (se muestra cuando checkbox está marcado) */}
-                      {showCouponField && (
-                        <div className="bg-success-50 border-2 border-success-200 rounded-lg p-4 space-y-3">
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-900 mb-2">
-                              Ingresa tu cupón aquí
-                            </label>
-                            <div className="flex gap-2">
-                              <input
-                                type="text"
-                                value={referralCode}
-                                onChange={(e) => {
-                                  const value = e.target.value.toUpperCase();
-                                  setReferralCode(value);
-                                  setCodeValidation(null);
-                                  setAppliedDiscount(0);
-                                }}
-                                onBlur={() => {
-                                  if (referralCode && referralCode.length === 6) {
-                                    validateReferralCode(referralCode);
-                                  }
-                                }}
-                                placeholder="Ej: ABC123"
-                                maxLength={6}
-                                className="flex-1 px-4 py-2 text-sm font-mono font-bold uppercase border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-success focus:border-transparent bg-white"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => validateReferralCode(referralCode)}
-                                disabled={isValidatingCode || !referralCode || referralCode.length !== 6}
-                                className="px-4 py-2 bg-success text-white rounded-lg hover:bg-success-600 transition font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-md"
-                              >
-                                {isValidatingCode ? (
-                                  <>
-                                    <RefreshCw className="w-4 h-4 animate-spin" />
-                                    Validando...
-                                  </>
-                                ) : (
-                                  'Validar'
-                                )}
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Mensaje de validación */}
-                          {codeValidation && (
-                            <div className={`p-3 rounded-lg border-2 ${
-                              codeValidation.isValid
-                                ? 'bg-white border-success-300'
-                                : 'bg-red-50 border-red-300'
-                            }`}>
-                              <p className={`text-sm flex items-start font-medium ${
-                                codeValidation.isValid ? 'text-success-800' : 'text-red-800'
-                              }`}>
-                                {codeValidation.isValid ? (
-                                  <CheckCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
-                                ) : (
-                                  <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
-                                )}
-                                <span>{codeValidation.message}</span>
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Información sobre el beneficio */}
-                          {!codeValidation && (
-                            <div className="flex items-start gap-2 text-xs text-success-800">
-                              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                              <p>
-                                Al usar un código de promoción, obtendrás un mejor tipo de cambio.
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Paso 2: Calculadora compacta */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      2. Ingresa el monto
-                    </label>
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="grid grid-cols-2 gap-3 mb-2">
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">
-                            Usted paga
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">
-                              {inputCurrency === 'USD' ? '$' : 'S/'}
-                            </span>
-                            <input
-                              type="number"
-                              value={amountInput}
-                              onChange={(e) => setAmountInput(e.target.value)}
-                              placeholder="0.00"
-                              className="w-full pl-8 pr-3 py-2 text-lg font-bold text-gray-900 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
-                              step="0.01"
-                              min="0"
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-xs text-gray-600 mb-1">Usted recibe</label>
-                          <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">
-                              {outputCurrency === 'USD' ? '$' : 'S/'}
-                            </span>
-                            <div className="w-full pl-8 pr-3 py-2 text-lg font-bold text-gray-900 bg-white border-2 border-gray-300 rounded-lg">
-                              {amountOutput || '0.00'}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      {amountOutput && (
-                        <div className="flex justify-between text-xs text-gray-600 px-1">
-                          <span>TC: {currentRate.toFixed(3)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Paso 3: Cuenta de cargo */}
+                  {/* Cuenta de cargo */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-sm font-semibold text-gray-900">
-                        3. Su cuenta de origen
+                        1. Su cuenta de origen
                         <span className="text-xs font-normal text-gray-600 ml-2">
                           (desde donde usted paga)
                         </span>
@@ -1798,31 +1675,80 @@ function NuevaOperacionContent() {
                           setAccountContext('cargo');
                           setIsAddAccountModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition px-2.5 py-1 rounded-lg border border-secondary/30 hover:border-secondary/60 hover:bg-secondary/5"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-3.5 h-3.5" />
                         Añadir
                       </button>
                     </div>
                     <div className="relative">
-                      <select
-                        value={selectedOriginAccount ?? ''}
-                        onChange={(e) => setSelectedOriginAccount(e.target.value ? Number(e.target.value) : null)}
-                        className="w-full pl-10 pr-4 py-3 text-sm border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent appearance-none bg-white"
+                      {/* Custom origin account dropdown */}
+                      <button
+                        type="button"
+                        onClick={() => { setOriginDropdownOpen(o => !o); setDestDropdownOpen(false); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm border-2 border-gray-300 rounded-lg bg-white hover:border-gray-400 transition-colors text-left"
+                        style={{ minHeight: '46px' }}
                       >
-                        <option value="">Selecciona una cuenta</option>
-                        {getOriginAccounts().map((account) => (
-                          <option key={account.id} value={account.id}>
-                            {account.banco} - {account.numero_cuenta} ({account.moneda} - {account.tipo_cuenta})
-                          </option>
-                        ))}
-                      </select>
-                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        {selectedOriginAccount !== null ? (() => {
+                          const acc = bankAccounts.find(a => a.id === selectedOriginAccount);
+                          if (!acc) return <span className="text-gray-400">Selecciona una cuenta</span>;
+                          const logo = getBankLogo(acc.banco || acc.bank_name || '');
+                          const numero = acc.numero_cuenta || acc.account_number || '';
+                          const moneda = acc.moneda || acc.currency || '';
+                          return (
+                            <>
+                              {logo ? (
+                                <img src={logo} alt={acc.banco || acc.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
+                              ) : (
+                                <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                              )}
+                              <span className="text-gray-700 text-xs truncate flex-1 font-medium">{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                            </>
+                          );
+                        })() : (
+                          <>
+                            <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                            <span className="text-gray-400 flex-1">Selecciona una cuenta</span>
+                          </>
+                        )}
+                        <svg className="w-4 h-4 text-gray-400 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={originDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
                         </svg>
-                      </div>
+                      </button>
+                      {originDropdownOpen && (
+                        <>
+                        <div className="fixed inset-0 z-10" onClick={() => setOriginDropdownOpen(false)} />
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                          {getOriginAccounts().length === 0 ? (
+                            <div className="px-4 py-3 text-sm text-gray-400">No hay cuentas disponibles</div>
+                          ) : getOriginAccounts().map((account) => {
+                            const logo = getBankLogo(account.banco || account.bank_name || '');
+                            const numero = account.numero_cuenta || account.account_number || '';
+                            const moneda = account.moneda || account.currency || '';
+                            const isSelected = selectedOriginAccount === account.id;
+                            return (
+                              <button
+                                key={account.id}
+                                type="button"
+                                onClick={() => { setSelectedOriginAccount(account.id ?? null); setOriginDropdownOpen(false); }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors text-left"
+                                style={isSelected ? { background: 'rgba(34,197,94,0.07)' } : {}}
+                              >
+                                {logo ? (
+                                  <img src={logo} alt={account.banco || account.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
+                                ) : (
+                                  <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                )}
+                                <span className="text-gray-700 text-xs truncate flex-1 font-medium">{numero}</span>
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#22C55E' }} />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        </>
+                      )}
                     </div>
                     {getOriginAccounts().length === 0 && (
                       <p className="text-xs text-amber-600 mt-2 flex items-center">
@@ -1842,11 +1768,11 @@ function NuevaOperacionContent() {
                     )}
                   </div>
 
-                  {/* Paso 4: Cuenta de destino */}
+                  {/* Cuenta de destino */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-sm font-semibold text-gray-900">
-                        4. Su cuenta de destino
+                        2. Su cuenta de destino
                         <span className="text-xs font-normal text-gray-600 ml-2">
                           (donde usted recibe)
                         </span>
@@ -1857,31 +1783,80 @@ function NuevaOperacionContent() {
                           setAccountContext('destino');
                           setIsAddAccountModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition px-2.5 py-1 rounded-lg border border-secondary/30 hover:border-secondary/60 hover:bg-secondary/5"
                       >
-                        <Plus className="w-4 h-4" />
+                        <Plus className="w-3.5 h-3.5" />
                         Añadir
                       </button>
                     </div>
                     <div className="relative">
-                      <select
-                        value={selectedDestinationAccount ?? ''}
-                        onChange={(e) => setSelectedDestinationAccount(e.target.value ? Number(e.target.value) : null)}
-                        className="w-full pl-10 pr-4 py-3 text-sm border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent appearance-none bg-white"
+                      {/* Custom destination account dropdown */}
+                      <button
+                        type="button"
+                        onClick={() => { setDestDropdownOpen(o => !o); setOriginDropdownOpen(false); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm border-2 border-gray-300 rounded-lg bg-white hover:border-gray-400 transition-colors text-left"
+                        style={{ minHeight: '46px' }}
                       >
-                        <option value="">Selecciona una cuenta</option>
-                        {getDestinationAccounts().map((account) => (
-                          <option key={account.id} value={account.id}>
-                            {account.banco} - {account.numero_cuenta} ({account.moneda} - {account.tipo_cuenta})
-                          </option>
-                        ))}
-                      </select>
-                      <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        {selectedDestinationAccount !== null ? (() => {
+                          const acc = bankAccounts.find(a => a.id === selectedDestinationAccount);
+                          if (!acc) return <span className="text-gray-400">Selecciona una cuenta</span>;
+                          const logo = getBankLogo(acc.banco || acc.bank_name || '');
+                          const numero = acc.numero_cuenta || acc.account_number || '';
+                          const moneda = acc.moneda || acc.currency || '';
+                          return (
+                            <>
+                              {logo ? (
+                                <img src={logo} alt={acc.banco || acc.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
+                              ) : (
+                                <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                              )}
+                              <span className="text-gray-700 text-xs truncate flex-1 font-medium">{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                            </>
+                          );
+                        })() : (
+                          <>
+                            <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                            <span className="text-gray-400 flex-1">Selecciona una cuenta</span>
+                          </>
+                        )}
+                        <svg className="w-4 h-4 text-gray-400 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={destDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
                         </svg>
-                      </div>
+                      </button>
+                      {destDropdownOpen && (
+                        <>
+                        <div className="fixed inset-0 z-10" onClick={() => setDestDropdownOpen(false)} />
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                          {getDestinationAccounts().length === 0 ? (
+                            <div className="px-4 py-3 text-sm text-gray-400">No hay cuentas disponibles</div>
+                          ) : getDestinationAccounts().map((account) => {
+                            const logo = getBankLogo(account.banco || account.bank_name || '');
+                            const numero = account.numero_cuenta || account.account_number || '';
+                            const moneda = account.moneda || account.currency || '';
+                            const isSelected = selectedDestinationAccount === account.id;
+                            return (
+                              <button
+                                key={account.id}
+                                type="button"
+                                onClick={() => { setSelectedDestinationAccount(account.id ?? null); setDestDropdownOpen(false); }}
+                                className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 transition-colors text-left"
+                                style={isSelected ? { background: 'rgba(34,197,94,0.07)' } : {}}
+                              >
+                                {logo ? (
+                                  <img src={logo} alt={account.banco || account.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
+                                ) : (
+                                  <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                )}
+                                <span className="text-gray-700 text-xs truncate flex-1 font-medium">{numero}</span>
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#22C55E' }} />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        </>
+                      )}
                     </div>
                     {getDestinationAccounts().length === 0 && (
                       <p className="text-xs text-amber-600 mt-2 flex items-center">
@@ -1901,22 +1876,25 @@ function NuevaOperacionContent() {
                     )}
                   </div>
 
-                  {/* Paso 5: Confirmación de titularidad */}
+                  {/* Confirmación de titularidad */}
                   <div>
-                    <label className="flex items-start cursor-pointer bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <label className="flex items-center cursor-pointer bg-blue-50 border border-blue-200 rounded-lg p-3">
                       <input
                         type="checkbox"
                         checked={ownershipConfirmed}
                         onChange={(e) => setOwnershipConfirmed(e.target.checked)}
-                        className="w-5 h-5 text-secondary focus:ring-secondary border-gray-300 rounded mt-0.5 flex-shrink-0"
+                        className="w-5 h-5 text-secondary focus:ring-secondary border-gray-300 rounded flex-shrink-0"
                       />
-                      <div className="ml-3">
-                        <span className="text-sm font-semibold text-gray-900 block">
-                          Confirmo que soy titular de las cuentas bancarias
-                        </span>
-                        <p className="text-xs text-gray-600 mt-1">
+                      <span className="ml-3 text-sm font-semibold text-gray-900 flex-1">
+                        Soy titular de las cuentas bancarias
+                      </span>
+                      <div className="relative ml-2 flex-shrink-0 group">
+                        <HelpCircle className="w-4 h-4 text-blue-400 cursor-help" />
+                        <div className="absolute bottom-full right-0 mb-2 w-64 p-2.5 rounded-lg text-xs text-gray-600 leading-relaxed opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-10"
+                          style={{ background: '#1E293B', color: 'rgba(255,255,255,0.8)', boxShadow: '0 8px 24px rgba(0,0,0,0.2)' }}>
                           Declaro que las cuentas bancarias registradas son de mi titularidad y que la información proporcionada es verídica.
-                        </p>
+                          <div className="absolute top-full right-3 w-2 h-2 rotate-45 -mt-1" style={{ background: '#1E293B' }} />
+                        </div>
                       </div>
                     </label>
                   </div>
@@ -1963,9 +1941,10 @@ function NuevaOperacionContent() {
                   <p className="text-xs text-center text-gray-500 mt-3">
                     Tu dinero será transferido en menos de 10 minutos
                   </p>
+                </div>
                 </form>
               ) : (
-                /* STEP 3: Receive (placeholder) */
+                /* STEP 4: Adjunta y finaliza */
                 <div className="text-center py-8">
                   <style jsx>{`
                     @keyframes pulse-ring {
@@ -1989,16 +1968,17 @@ function NuevaOperacionContent() {
                       animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                     }
                   `}</style>
-                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 processing-icon">
-                    <RefreshCw className="w-10 h-10 text-green-600 animate-spin" style={{ animationDuration: '2s' }} />
+                  <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4 processing-icon">
+                    <RefreshCw className="w-10 h-10 text-primary-600 animate-spin" style={{ animationDuration: '2s' }} />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Procesando tu operación</h3>
                   <p className="text-gray-600 mb-6">Estamos verificando tu transferencia. Recibirás tu dinero pronto.</p>
                   <button
                     onClick={() => router.push('/dashboard')}
-                    className="bg-secondary text-white py-3 px-6 rounded-lg font-semibold hover:bg-secondary-700 transition"
+                    className="bg-primary-600 text-white py-3 px-8 rounded-lg font-semibold hover:bg-primary-700 transition flex items-center gap-2 mx-auto"
                   >
-                    Volver al Dashboard
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Ver mi operación
                   </button>
                 </div>
               )}
@@ -2111,290 +2091,267 @@ function NuevaOperacionContent() {
 
       {/* Confirm Operation Modal */}
       {isConfirmModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Confirmar Operación</h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(13,27,42,0.6)', backdropFilter: 'blur(2px)' }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full" style={{ maxWidth: 380 }}>
+
+            {/* Header — dark institutional */}
+            <div style={{ background: 'rgba(30,41,59,1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }} className="px-5 py-4 flex items-center justify-between rounded-t-2xl">
+              <div className="flex items-center gap-2.5">
+                <img src="/logo-principal.png" alt="QoriCash" className="w-7 h-7 object-contain flex-shrink-0" />
+                <h3 className="text-base font-bold text-white">Confirmar Operación</h3>
+              </div>
               <button
-                onClick={() => {
-                  setIsConfirmModalOpen(false);
-                  setError(null);
-                }}
-                className="text-gray-400 hover:text-gray-600 transition"
+                onClick={() => { setIsConfirmModalOpen(false); setError(null); }}
                 disabled={isSubmitting}
+                className="text-white/40 hover:text-white/80 transition disabled:opacity-30"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-gray-700 text-center mb-4">
-                  ¿Está seguro que desea crear la operación{' '}
-                  <strong>{tipo === 'Compra' ? 'QoriCash Compra' : 'QoriCash Vende'}</strong> por{' '}
-                  <strong>
-                    {tipo === 'Compra'
-                      ? `${parseFloat(amountInput).toFixed(2)} USD`
-                      : `${parseFloat(amountOutput).toFixed(2)} USD`}
-                  </strong>{' '}
-                  al tipo de cambio{' '}
-                  <strong>S/ {getAdjustedRate()?.toFixed(3)}</strong>?
-                </p>
+            <div className="px-5 py-5 space-y-4">
 
-                <div className="bg-white rounded-lg p-3 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Operación:</span>
-                    <span className="font-semibold text-gray-900">{tipo === 'Compra' ? 'QoriCash Compra' : 'QoriCash Vende'}</span>
+              {/* Summary card */}
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(30,41,59,0.1)' }}>
+                {/* Operation type banner */}
+                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(13,27,42,0.04)' }}>
+                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(30,41,59,0.45)' }}>Operación</span>
+                  <span className="text-sm font-bold" style={{ color: '#0D1B2A' }}>
+                    {tipo === 'Compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
+                  </span>
+                </div>
+
+                {/* Amount rows */}
+                <div className="divide-y" style={{ borderColor: 'rgba(30,41,59,0.07)' }}>
+                  {/* Usted paga */}
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">Usted paga</span>
+                    <div className="flex items-center gap-2">
+                      <ReactCountryFlag countryCode={tipo === 'Compra' ? 'US' : 'PE'} svg style={{ width: 18, height: 18, borderRadius: '50%', overflow: 'hidden' }} />
+                      <span className="text-base font-bold" style={{ color: '#0D1B2A' }}>
+                        {tipo === 'Compra'
+                          ? `$ ${parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : `S/ ${parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Usted paga:</span>
-                    <span className="font-semibold text-gray-900">
-                      {tipo === 'Compra'
-                        ? `$ ${parseFloat(amountInput).toFixed(2)}`
-                        : `S/ ${parseFloat(amountInput).toFixed(2)}`}
-                    </span>
+                  {/* Usted recibe */}
+                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(34,197,94,0.03)' }}>
+                    <span className="text-xs text-gray-500 font-medium">Usted recibe</span>
+                    <div className="flex items-center gap-2">
+                      <ReactCountryFlag countryCode={tipo === 'Compra' ? 'PE' : 'US'} svg style={{ width: 18, height: 18, borderRadius: '50%', overflow: 'hidden' }} />
+                      <span className="text-base font-bold" style={{ color: '#16A34A' }}>
+                        {tipo === 'Compra'
+                          ? `S/ ${parseFloat(amountOutput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : `$ ${parseFloat(amountOutput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Usted recibe:</span>
-                    <span className="font-semibold text-gray-900">
-                      {tipo === 'Compra'
-                        ? `S/ ${parseFloat(amountOutput).toFixed(2)}`
-                        : `$ ${parseFloat(amountOutput).toFixed(2)}`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tipo de cambio:</span>
-                    <span className="font-semibold text-gray-900">
+                  {/* TC */}
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">Tipo de cambio</span>
+                    <span className="text-sm font-semibold" style={{ color: '#0D1B2A' }}>
                       S/ {getAdjustedRate()?.toFixed(3)}
                     </span>
                   </div>
+                  {/* Descuento referido */}
                   {appliedDiscount > 0 && (
-                    <div className="flex justify-between text-sm pt-2 border-t border-gray-200">
-                      <span className="text-green-600">🎉 Descuento por referido:</span>
-                      <span className="font-semibold text-green-600">
-                        {appliedDiscount.toFixed(3)}
-                      </span>
+                    <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(34,197,94,0.04)' }}>
+                      <span className="text-xs font-semibold" style={{ color: '#16A34A' }}>🎉 Descuento referido</span>
+                      <span className="text-sm font-bold" style={{ color: '#16A34A' }}>{appliedDiscount.toFixed(3)}</span>
                     </div>
                   )}
                 </div>
               </div>
 
+              {/* Cuentas seleccionadas */}
+              {(() => {
+                const origin = bankAccounts.find(a => a.id === selectedOriginAccount);
+                const dest   = bankAccounts.find(a => a.id === selectedDestinationAccount);
+                if (!origin && !dest) return null;
+                return (
+                  <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.07)' }}>
+                    {origin && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'rgba(30,41,59,0.4)' }}>Cuenta de cargo</span>
+                        <div className="flex items-center gap-1.5">
+                          {getBankLogo(origin.banco) && (
+                            <img src={getBankLogo(origin.banco)!} alt={origin.banco} className="w-4 h-4 object-contain rounded" />
+                          )}
+                          <span className="text-xs font-medium" style={{ color: 'rgba(30,41,59,0.6)' }}>{origin.numero_cuenta}</span>
+                          <span className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{origin.moneda}</span>
+                        </div>
+                      </div>
+                    )}
+                    {dest && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'rgba(30,41,59,0.4)' }}>Cuenta de destino</span>
+                        <div className="flex items-center gap-1.5">
+                          {getBankLogo(dest.banco) && (
+                            <img src={getBankLogo(dest.banco)!} alt={dest.banco} className="w-4 h-4 object-contain rounded" />
+                          )}
+                          <span className="text-xs font-medium" style={{ color: 'rgba(30,41,59,0.6)' }}>{dest.numero_cuenta}</span>
+                          <span className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{dest.moneda}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Disclaimer */}
+              <div className="flex items-center justify-center gap-1.5">
+                <span className="text-xs" style={{ color: 'rgba(30,41,59,0.4)' }}>
+                  Al confirmar, aceptas las condiciones de la operación.
+                </span>
+                <div className="relative group flex-shrink-0">
+                  <HelpCircle className="w-3.5 h-3.5 cursor-help" style={{ color: 'rgba(30,41,59,0.35)' }} />
+                  <div className="absolute bottom-full mb-2 w-72 p-3 rounded-xl text-xs leading-relaxed opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 z-20"
+                    style={{ background: '#1E293B', color: 'rgba(255,255,255,0.82)', boxShadow: '0 8px 24px rgba(0,0,0,0.25)', left: '50%', transform: 'translateX(-50%)' }}>
+                    <p className="font-semibold text-white mb-1.5">Condiciones de la operación</p>
+                    <ul className="space-y-1" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                      <li>• El tipo de cambio es válido por 15 minutos desde la confirmación.</li>
+                      <li>• Debes realizar la transferencia dentro del tiempo establecido.</li>
+                      <li>• QoriCash procesará tu operación una vez verificado el pago.</li>
+                      <li>• Si no se completa en 15 minutos, la operación será anulada automáticamente.</li>
+                    </ul>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 -mt-1" style={{ background: '#1E293B' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Error */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-2.5 rounded-lg text-sm">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   {error}
                 </div>
               )}
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => { setIsConfirmModalOpen(false); setError(null); }}
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-50"
+                  style={{ background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
+                >
+                  Volver
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmAndCreate}
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  style={{ background: isSubmitting ? '#16A34A' : '#22C55E', boxShadow: '0 4px 14px rgba(34,197,94,0.35)' }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      Confirmar
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-3 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsConfirmModalOpen(false);
-                  setError(null);
-                }}
-                disabled={isSubmitting}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition disabled:opacity-50"
-              >
-                Volver
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmAndCreate}
-                disabled={isSubmitting}
-                className="flex-1 bg-secondary text-white py-3 px-4 rounded-lg font-semibold hover:bg-secondary-700 transition disabled:opacity-50 flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    Procesando...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Confirmar Operación
-                  </>
-                )}
-              </button>
-            </div>
           </div>
         </div>
       )}
 
       {/* Upload Proof Modal */}
       {isUploadProofModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 animate-in fade-in duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Agregar Comprobante</h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(13,27,42,0.65)', backdropFilter: 'blur(2px)' }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420 }}>
+
+            {/* Header institucional */}
+            <div className="px-5 py-4 flex items-center justify-between rounded-t-2xl" style={{ background: '#1E293B' }}>
+              <div className="flex items-center gap-2.5">
+                <img src="/logo-principal.png" alt="QoriCash" className="w-6 h-6 object-contain flex-shrink-0" />
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Paso final</p>
+                  <h3 className="text-sm font-bold text-white leading-none">Confirmar transferencia</h3>
+                </div>
+              </div>
               <button
-                onClick={() => {
-                  setIsUploadProofModalOpen(false);
-                  setUploadedFiles([]);
-                  setVoucherCode('');
-                  setError(null);
-                }}
-                className="text-gray-400 hover:text-gray-600 transition"
+                onClick={() => { setIsUploadProofModalOpen(false); setUploadedFiles([]); setVoucherCode(''); setError(null); }}
                 disabled={isUploadingProof}
+                className="text-white/40 hover:text-white/80 transition disabled:opacity-30"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4.5 h-4.5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="space-y-4">
-              {/* Info Text */}
-              <p className="text-sm text-gray-600">
-                Sube tu comprobante de transferencia para que podamos procesar tu operación.
-              </p>
+            <div className="px-5 py-5 space-y-4">
 
-              {/* File Upload */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Comprobante de pago (máximo 4 archivos)
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-secondary transition">
-                  <input
-                    type="file"
-                    id="file-upload"
-                    multiple
-                    accept="image/*,.pdf"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    disabled={isUploadingProof || uploadedFiles.length >= 4}
-                  />
-                  <label
-                    htmlFor="file-upload"
-                    className="cursor-pointer flex flex-col items-center"
-                  >
-                    <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                    <p className="text-sm font-medium text-gray-700">
-                      {uploadedFiles.length >= 4
-                        ? 'Máximo de archivos alcanzado'
-                        : 'Haz clic para seleccionar archivos'}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      PNG, JPG, PDF ({uploadedFiles.length}/4 archivos)
-                    </p>
-                  </label>
-                </div>
-
-                {/* Uploaded Files List */}
-                {uploadedFiles.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    {uploadedFiles.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-200"
-                      >
-                        <div className="flex items-center gap-2">
-                          <FileImage className="w-5 h-5 text-gray-400" />
-                          <span className="text-sm text-gray-700 truncate max-w-xs">
-                            {file.name}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleRemoveFile(index)}
-                          className="text-red-500 hover:text-red-700 transition"
-                          disabled={isUploadingProof}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              {/* Info strip */}
+              <div className="flex items-start gap-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#22C55E' }} />
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Ingresa el número de operación que aparece en el comprobante de tu transferencia. Con eso podemos identificar tu pago al instante.
+                </p>
               </div>
 
-              {/* Voucher Code */}
+              {/* Número de operación — campo principal */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Código / Número de operación
+                <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(30,41,59,0.5)' }}>
+                  N° de operación de tu transferencia
                 </label>
                 <input
                   type="text"
                   value={voucherCode}
                   onChange={(e) => setVoucherCode(e.target.value)}
-                  placeholder="Ej: 123456789"
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-transparent"
+                  placeholder="Ej: 00123456789"
                   disabled={isUploadingProof}
+                  autoFocus
+                  className="w-full px-4 py-3 text-sm font-semibold rounded-xl outline-none transition"
+                  style={{ border: '1.5px solid rgba(30,41,59,0.15)', background: 'rgba(30,41,59,0.02)', color: '#1E293B', letterSpacing: '0.04em' }}
+                  onFocus={e => (e.currentTarget.style.borderColor = '#22C55E')}
+                  onBlur={e => (e.currentTarget.style.borderColor = 'rgba(30,41,59,0.15)')}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Ingresa el número de operación o código de tu comprobante de transferencia
+                <p className="text-[11px] mt-1.5" style={{ color: 'rgba(30,41,59,0.4)' }}>
+                  Este número aparece en el voucher o constancia de tu banco tras realizar la transferencia.
                 </p>
               </div>
 
-              {/* Alternative Channels */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-gray-700 mb-2">
-                  <strong>También puedes enviar tu comprobante a:</strong>
-                </p>
-                <div className="space-y-2">
-                  <a
-                    href="mailto:info@qoricash.pe"
-                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition"
-                  >
-                    <Mail className="w-4 h-4" />
-                    info@qoricash.pe
-                  </a>
-                  <a
-                    href="https://wa.me/51940825008"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-green-600 hover:text-green-800 transition"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    WhatsApp
-                  </a>
-                </div>
-              </div>
-
-              {/* Error Message */}
+              {/* Error */}
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800 flex items-start">
-                    <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
-                    <span>{error}</span>
-                  </p>
+                <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', color: '#b91c1c' }}>
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  {error}
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="flex gap-3 pt-2">
+              {/* Botones */}
+              <div className="flex gap-3 pt-1">
                 <button
-                  onClick={() => {
-                    setIsUploadProofModalOpen(false);
-                    setUploadedFiles([]);
-                    setVoucherCode('');
-                    setError(null);
-                  }}
-                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
+                  onClick={() => { setIsUploadProofModalOpen(false); setVoucherCode(''); setError(null); }}
                   disabled={isUploadingProof}
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-40"
+                  style={{ background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSubmitProof}
-                  disabled={isUploadingProof}
-                  className="flex-1 bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  disabled={isUploadingProof || !voucherCode.trim()}
+                  className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  style={{ background: '#22C55E', boxShadow: '0 4px 14px rgba(34,197,94,0.35)' }}
                 >
                   {isUploadingProof ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                      Enviando...
-                    </>
+                    <><RefreshCw className="w-4 h-4 animate-spin" /> Procesando...</>
                   ) : (
-                    <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Enviar
-                    </>
+                    <><CheckCircle className="w-4 h-4" /> Confirmar transferencia</>
                   )}
                 </button>
               </div>
+
             </div>
           </div>
         </div>
@@ -2402,194 +2359,202 @@ function NuevaOperacionContent() {
 
       {/* KYC Document Upload Modal */}
       {isKYCModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 animate-in fade-in duration-200">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900">Validación de Documentos</h3>
-              <button
-                onClick={() => {
-                  setIsKYCModalOpen(false);
-                  setDnifront(null);
-                  setDniBack(null);
-                  setRucFicha(null);
-                  setError(null);
-                }}
-                className="text-gray-400 hover:text-gray-600 transition"
-                disabled={isUploadingKYC}
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
 
-            {/* Content */}
-            <div className="space-y-4">
-              {/* Info Text */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
-                  {user?.document_type === 'RUC'
-                    ? 'Para activar tu cuenta, necesitamos que subas la Ficha RUC de tu empresa.'
-                    : 'Para activar tu cuenta, necesitamos que subas ambas caras de tu documento de identidad.'}
-                </p>
-                <p className="text-sm text-blue-800 mt-2 font-semibold">
-                  Nuestro equipo validará tus documentos en aproximadamente 10 minutos.
-                </p>
-              </div>
-
-              {/* DNI Front/Back Upload (only for PN) */}
-              {user?.document_type !== 'RUC' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      DNI/CE - Anverso *
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
-                      <input
-                        type="file"
-                        id="dni-front-upload"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setDnifront(e.target.files[0]);
-                          }
-                        }}
-                        className="hidden"
-                        disabled={isUploadingKYC}
-                      />
-                      <label htmlFor="dni-front-upload" className="cursor-pointer flex flex-col items-center">
-                        {dniFront ? (
-                          <div className="flex items-center gap-2">
-                            <FileImage className="w-6 h-6 text-green-600" />
-                            <span className="text-sm font-medium text-green-700">{dniFront.name}</span>
-                          </div>
-                        ) : (
-                          <>
-                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
-                            <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
-                          </>
-                        )}
-                      </label>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      DNI/CE - Reverso *
-                    </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
-                      <input
-                        type="file"
-                        id="dni-back-upload"
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setDniBack(e.target.files[0]);
-                          }
-                        }}
-                        className="hidden"
-                        disabled={isUploadingKYC}
-                      />
-                      <label htmlFor="dni-back-upload" className="cursor-pointer flex flex-col items-center">
-                        {dniBack ? (
-                          <div className="flex items-center gap-2">
-                            <FileImage className="w-6 h-6 text-green-600" />
-                            <span className="text-sm font-medium text-green-700">{dniBack.name}</span>
-                          </div>
-                        ) : (
-                          <>
-                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                            <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar imagen</p>
-                            <p className="text-xs text-gray-500 mt-1">PNG, JPG (máx. 5MB)</p>
-                          </>
-                        )}
-                      </label>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* RUC Ficha Upload (only for RUC) */}
-              {user?.document_type === 'RUC' && (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Ficha RUC *
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-secondary transition">
-                    <input
-                      type="file"
-                      id="ruc-ficha-upload"
-                      accept="image/*,.pdf"
-                      onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          setRucFicha(e.target.files[0]);
-                        }
-                      }}
-                      className="hidden"
-                      disabled={isUploadingKYC}
-                    />
-                    <label htmlFor="ruc-ficha-upload" className="cursor-pointer flex flex-col items-center">
-                      {rucFicha ? (
-                        <div className="flex items-center gap-2">
-                          <FileImage className="w-6 h-6 text-green-600" />
-                          <span className="text-sm font-medium text-green-700">{rucFicha.name}</span>
-                        </div>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                          <p className="text-sm font-medium text-gray-700">Haz clic para seleccionar archivo</p>
-                          <p className="text-xs text-gray-500 mt-1">PNG, JPG, PDF (máx. 5MB)</p>
-                        </>
+            {/* ── LOADING / SUCCESS STATE ── */}
+            {(isUploadingKYC || kycUploadDone) && (
+              <>
+                <style>{`
+                  @keyframes kycProgress {
+                    from { stroke-dashoffset: 327; }
+                    to   { stroke-dashoffset: 0; }
+                  }
+                  @keyframes kycFadeUp {
+                    from { opacity: 0; transform: translateY(8px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                  }
+                  @keyframes kycScaleIn {
+                    0%   { transform: scale(0); opacity: 0; }
+                    65%  { transform: scale(1.15); opacity: 1; }
+                    100% { transform: scale(1); opacity: 1; }
+                  }
+                  @keyframes kycCheck {
+                    from { stroke-dashoffset: 60; }
+                    to   { stroke-dashoffset: 0; }
+                  }
+                  @keyframes kycShimmer {
+                    0%   { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                  }
+                  @keyframes kycPulse {
+                    0%, 100% { transform: scale(1);    opacity: 1; }
+                    50%       { transform: scale(0.94); opacity: 0.8; }
+                  }
+                `}</style>
+                <div className="flex flex-col items-center justify-center gap-7" style={{ width: '100%', height: 300 }}>
+                  <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                      <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(34,197,94,0.15)" strokeWidth="7" />
+                      {isUploadingKYC && (
+                        <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                          strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
+                          style={{ animation: 'kycProgress 5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                        />
                       )}
-                    </label>
+                      {kycUploadDone && (
+                        <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                          strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                      )}
+                    </svg>
+                    <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                      {isUploadingKYC ? (
+                        <Image src="/logo-principal.png" alt="QoriCash" width={56} height={56}
+                          style={{ objectFit: 'contain', animation: 'kycPulse 1.8s ease-in-out infinite' }} />
+                      ) : (
+                        <div style={{ animation: 'kycScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                            <circle cx="22" cy="22" r="22" fill="#22C55E" />
+                            <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
+                              strokeLinecap="round" strokeLinejoin="round"
+                              strokeDasharray="60" strokeDashoffset="60"
+                              style={{ animation: 'kycCheck 0.5s ease-out 0.15s forwards' }} />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Error Message */}
-              {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800 flex items-start">
-                    <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" />
-                    <span>{error}</span>
-                  </p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-2">
-                <button
-                  onClick={() => {
-                    setIsKYCModalOpen(false);
-                    setDnifront(null);
-                    setDniBack(null);
-                    setRucFicha(null);
-                    setError(null);
-                  }}
-                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition"
-                  disabled={isUploadingKYC}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleUploadKYCDocuments}
-                  disabled={isUploadingKYC || (user?.document_type === 'RUC' ? !rucFicha : (!dniFront || !dniBack))}
-                  className="flex-1 bg-gradient-to-r from-secondary to-secondary-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-secondary-700 hover:to-secondary-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
                   {isUploadingKYC ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                      Enviando...
-                    </>
+                    <div style={{ textAlign: 'center', animation: 'kycFadeUp 0.35s ease-out both' }}>
+                      <p style={{
+                        fontSize: 14, fontWeight: 700, margin: 0,
+                        background: 'linear-gradient(90deg,#16A34A 0%,#22C55E 45%,#16A34A 90%)',
+                        backgroundSize: '200% auto',
+                        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        animation: 'kycShimmer 1.8s linear infinite',
+                      }}>Enviando documentos...</p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera un momento</p>
+                    </div>
                   ) : (
-                    <>
-                      <Upload className="w-4 h-4 mr-2" />
-                      Enviar Documentos
-                    </>
+                    <div style={{ textAlign: 'center', animation: 'kycFadeUp 0.4s ease-out both' }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Documentos enviados!</p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Los revisaremos en aprox. 10 minutos</p>
+                    </div>
                   )}
-                </button>
-              </div>
-            </div>
+                </div>
+              </>
+            )}
+
+            {/* ── FORM STATE ── */}
+            {!isUploadingKYC && !kycUploadDone && (
+              <>
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 py-4" style={{ background: '#0D1B2A' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                      <FileImage className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white leading-tight">Validación de Documentos</h3>
+                      <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.45)' }}>Proceso único · aprox. 10 minutos</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setIsKYCModalOpen(false); setDnifront(null); setDniBack(null); setRucFicha(null); setError(null); }}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:bg-white/10"
+                  >
+                    <X className="w-4 h-4 text-white/60" />
+                  </button>
+                </div>
+
+                {/* Body */}
+                <div className="px-5 py-4 space-y-3">
+                  {/* Info pill */}
+                  <div className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: '#f0f9ff', border: '1px solid #bae6fd' }}>
+                    <div className="w-4 h-4 mt-0.5 flex-shrink-0 text-sky-500">
+                      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 3a.75.75 0 1 1 0 1.5A.75.75 0 0 1 8 4Zm-.25 3h.5a.75.75 0 0 1 0 1.5v2.25a.75.75 0 0 1-1.5 0V8.5A.75.75 0 0 1 7.75 7Z"/></svg>
+                    </div>
+                    <p className="text-xs text-sky-800 leading-relaxed">
+                      {user?.document_type === 'RUC'
+                        ? 'Adjunta la Ficha RUC de tu empresa para activar tu cuenta.'
+                        : 'Adjunta ambas caras de tu DNI o CE para activar tu cuenta.'}
+                    </p>
+                  </div>
+
+                  {/* DNI uploads */}
+                  {user?.document_type !== 'RUC' && (
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { id: 'dni-front-upload', label: 'Anverso', file: dniFront, setter: setDnifront },
+                        { id: 'dni-back-upload',  label: 'Reverso',  file: dniBack,  setter: setDniBack  },
+                      ].map(({ id, label, file, setter }) => (
+                        <div key={id}>
+                          <p className="text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">DNI · {label}</p>
+                          <input type="file" id={id} accept="image/*" onChange={(e) => { if (e.target.files?.[0]) setter(e.target.files[0]); }} className="hidden" disabled={isUploadingKYC} />
+                          <label htmlFor={id} className="flex flex-col items-center justify-center gap-1.5 rounded-xl cursor-pointer transition-all py-4 px-2 text-center"
+                            style={{ border: file ? '1.5px solid #22c55e' : '1.5px dashed #d1d5db', background: file ? '#f0fdf4' : '#fafafa' }}>
+                            {file ? (
+                              <>
+                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                <span className="text-[10px] font-medium text-green-700 truncate w-full text-center px-1">{file.name}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-5 h-5 text-gray-300" />
+                                <span className="text-[10px] text-gray-400">Toca para subir</span>
+                              </>
+                            )}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* RUC upload */}
+                  {user?.document_type === 'RUC' && (
+                    <div>
+                      <p className="text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Ficha RUC</p>
+                      <input type="file" id="ruc-ficha-upload" accept="image/*,.pdf" onChange={(e) => { if (e.target.files?.[0]) setRucFicha(e.target.files[0]); }} className="hidden" disabled={isUploadingKYC} />
+                      <label htmlFor="ruc-ficha-upload" className="flex items-center gap-3 rounded-xl cursor-pointer transition-all px-4 py-3"
+                        style={{ border: rucFicha ? '1.5px solid #22c55e' : '1.5px dashed #d1d5db', background: rucFicha ? '#f0fdf4' : '#fafafa' }}>
+                        {rucFicha ? <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" /> : <Upload className="w-5 h-5 text-gray-300 flex-shrink-0" />}
+                        <span className="text-xs text-gray-500 truncate">{rucFicha ? rucFicha.name : 'PNG, JPG o PDF (máx. 5MB)'}</span>
+                      </label>
+                    </div>
+                  )}
+
+                  {/* Error */}
+                  {error && (
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2.5" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
+                      <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-red-700">{error}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="flex gap-2.5 px-5 pb-5">
+                  <button
+                    onClick={() => { setIsKYCModalOpen(false); setDnifront(null); setDniBack(null); setRucFicha(null); setError(null); }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-gray-600 transition hover:bg-gray-100"
+                    style={{ border: '1px solid #e5e7eb' }}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleUploadKYCDocuments}
+                    disabled={user?.document_type === 'RUC' ? !rucFicha : (!dniFront || !dniBack)}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    style={{ background: '#0D1B2A' }}
+                  >
+                    <Upload className="w-4 h-4" />
+                    Enviar Documentos
+                  </button>
+                </div>
+              </>
+            )}
+
           </div>
         </div>
       )}
@@ -2621,22 +2586,198 @@ function NuevaOperacionContent() {
 
       {/* ── Overlay: Creando operación ── */}
       {showCreatingOverlay && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center">
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
+          <style>{`
+            @keyframes opProgress {
+              from { stroke-dashoffset: 327; }
+              to   { stroke-dashoffset: 0; }
+            }
+            @keyframes opFadeUp {
+              from { opacity: 0; transform: translateY(8px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes opScaleIn {
+              0%   { transform: scale(0); opacity: 0; }
+              65%  { transform: scale(1.15); opacity: 1; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+            @keyframes opCheck {
+              from { stroke-dashoffset: 60; }
+              to   { stroke-dashoffset: 0; }
+            }
+            @keyframes opShimmer {
+              0%   { background-position: -200% center; }
+              100% { background-position: 200% center; }
+            }
+            @keyframes opPulse {
+              0%, 100% { transform: scale(1);    opacity: 1; }
+              50%       { transform: scale(0.94); opacity: 0.8; }
+            }
+          `}</style>
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300 }}>
+
+            {/* Ring + center */}
+            <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(34,197,94,0.15)" strokeWidth="7" />
+                {!showCreatingSuccess && (
+                  <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                    strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
+                    style={{ animation: 'opProgress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                    onAnimationEnd={handleCreateProgressEnd}
+                  />
+                )}
+                {showCreatingSuccess && (
+                  <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                    strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                )}
+              </svg>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                {!showCreatingSuccess ? (
+                  <Image src="/logo-principal.png" alt="QoriCash" width={64} height={64}
+                    style={{ objectFit: 'contain', animation: 'opPulse 1.8s ease-in-out infinite' }} />
+                ) : (
+                  <div style={{ animation: 'opScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                      <circle cx="22" cy="22" r="22" fill="#22C55E" />
+                      <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
+                        strokeLinecap="round" strokeLinejoin="round"
+                        strokeDasharray="60" strokeDashoffset="60"
+                        style={{ animation: 'opCheck 0.5s ease-out 0.15s forwards' }} />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Text */}
             {!showCreatingSuccess ? (
-              <>
-                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-5" />
-                <p className="text-lg font-bold text-gray-900">Creando operación...</p>
-                <p className="text-sm text-gray-500 mt-1">Estamos procesando tu solicitud</p>
-              </>
+              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.35s ease-out both' }}>
+                <p style={{
+                  fontSize: 14, fontWeight: 700, margin: 0,
+                  background: 'linear-gradient(90deg,#16A34A 0%,#22C55E 45%,#16A34A 90%)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  animation: 'opShimmer 1.8s linear infinite',
+                }}>Creando operación...</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera</p>
+              </div>
             ) : (
-              <>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce-once">
-                  <CheckCircle2 className="w-9 h-9 text-green-600" />
-                </div>
-                <p className="text-lg font-bold text-gray-900 mb-1">¡Operación generada!</p>
-                <p className="text-sm text-gray-500">Ya puedes realizar la transferencia</p>
-              </>
+              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.4s ease-out both' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Operación generada!</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Preparando transferencia...</p>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ── Overlay: Verificando estado KYC ── */}
+      {showVerifyOverlay && (
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-6" style={{ width: 260, height: 260 }}>
+            <div style={{ position: 'relative', width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(96,165,250,0.15)" strokeWidth="6" />
+                <circle cx="55" cy="55" r="46" fill="none" stroke="#3b82f6" strokeWidth="6"
+                  strokeLinecap="round" strokeDasharray="289" strokeDashoffset="289"
+                  style={{ animation: 'kycProgress 2s cubic-bezier(0.4,0,0.6,1) forwards' }} />
+              </svg>
+              <div style={{ width: 76, height: 76, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                <Image src="/logo-principal.png" alt="QoriCash" width={48} height={48}
+                  style={{ objectFit: 'contain', animation: 'kycPulse 1.2s ease-in-out infinite' }} />
+              </div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#1d4ed8', margin: 0 }}>Verificando estado...</p>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 3 }}>Consultando tu cuenta</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Overlay: Procesando comprobante ── */}
+      {showProofOverlay && (
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
+          <style>{`
+            @keyframes opProgress {
+              from { stroke-dashoffset: 327; }
+              to   { stroke-dashoffset: 0; }
+            }
+            @keyframes opFadeUp {
+              from { opacity: 0; transform: translateY(8px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes opScaleIn {
+              0%   { transform: scale(0); opacity: 0; }
+              65%  { transform: scale(1.15); opacity: 1; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+            @keyframes opCheck {
+              from { stroke-dashoffset: 60; }
+              to   { stroke-dashoffset: 0; }
+            }
+            @keyframes opShimmer {
+              0%   { background-position: -200% center; }
+              100% { background-position: 200% center; }
+            }
+            @keyframes opPulse {
+              0%, 100% { transform: scale(1);    opacity: 1; }
+              50%       { transform: scale(0.94); opacity: 0.8; }
+            }
+          `}</style>
+          <div className="bg-white rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300 }}>
+            <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(34,197,94,0.15)" strokeWidth="7" />
+                {!showProofSuccess && (
+                  <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                    strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
+                    style={{ animation: 'opProgress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                    onAnimationEnd={handleProofProgressEnd}
+                  />
+                )}
+                {showProofSuccess && (
+                  <circle cx="64" cy="64" r="52" fill="none" stroke="#22C55E" strokeWidth="7"
+                    strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                )}
+              </svg>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                {!showProofSuccess ? (
+                  <Image src="/logo-principal.png" alt="QoriCash" width={64} height={64}
+                    style={{ objectFit: 'contain', animation: 'opPulse 1.8s ease-in-out infinite' }} />
+                ) : (
+                  <div style={{ animation: 'opScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                      <circle cx="22" cy="22" r="22" fill="#22C55E" />
+                      <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
+                        strokeLinecap="round" strokeLinejoin="round"
+                        strokeDasharray="60" strokeDashoffset="60"
+                        style={{ animation: 'opCheck 0.5s ease-out 0.15s forwards' }} />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+            {!showProofSuccess ? (
+              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.35s ease-out both' }}>
+                <p style={{
+                  fontSize: 14, fontWeight: 700, margin: 0,
+                  background: 'linear-gradient(90deg,#16A34A 0%,#22C55E 45%,#16A34A 90%)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  animation: 'opShimmer 1.8s linear infinite',
+                }}>Operación en proceso...</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Registrando tu transferencia</p>
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.4s ease-out both' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Transferencia registrada!</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Procesando tu operación...</p>
+              </div>
             )}
           </div>
         </div>

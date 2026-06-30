@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
 
 export interface LoginRequest {
   dni: string;
@@ -55,24 +55,13 @@ export const authService = {
    */
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
-      console.log('🔐 [authService] Attempting login with:', { dni: credentials.dni });
-      console.log('🔐 [authService] API URL:', `${API_BASE_URL}/api/client/login`);
-
       const response = await axios.post(
         `${API_BASE_URL}/api/client/login`,
         credentials,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        { headers: { 'Content-Type': 'application/json' } }
       );
-
-      console.log('✅ [authService] Login response:', response.data);
       return response.data;
     } catch (error: any) {
-      console.error('❌ [authService] Login error:', error);
-      console.error('❌ [authService] Error response:', error.response?.data);
 
       if (error.response?.data) {
         return error.response.data;

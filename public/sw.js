@@ -3,7 +3,7 @@
  * www.qoricash.pe — Marketing + Client Portal
  */
 
-const CACHE_VERSION = 'v2.1';
+const CACHE_VERSION = 'v2.2';
 const CACHE_STATIC  = `qcweb-static-${CACHE_VERSION}`;
 const CACHE_PAGES   = `qcweb-pages-${CACHE_VERSION}`;
 const OFFLINE_URL   = '/offline';
@@ -60,7 +60,9 @@ self.addEventListener('fetch', event => {
   if (NEVER_CACHE.some(p => url.pathname.startsWith(p))) return;
 
   // Static assets from Next.js (_next/static) — cache forever
-  if (url.pathname.startsWith('/_next/static/')) {
+  // Exclude JS chunks: in production they are content-hashed (HTTP cache handles them),
+  // in development they change without hash changes and would serve stale code.
+  if (url.pathname.startsWith('/_next/static/') && !url.pathname.startsWith('/_next/static/chunks/')) {
     event.respondWith(cacheFirst(request, CACHE_STATIC));
     return;
   }

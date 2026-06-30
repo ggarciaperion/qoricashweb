@@ -114,7 +114,7 @@ export default function ReferralCouponField({
 
       {/* Coupon Field */}
       {showField && (
-        <div className="bg-gradient-to-r from-green-50 to-primary-50 border-2 border-primary-300 rounded-xl p-4">
+        <div className="bg-gradient-to-r from-primary-50 to-primary-50 border-2 border-primary-300 rounded-xl p-4">
           <label className="block text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
             <Tag className="w-4 h-4 text-primary-600" />
             Código de Cupón
@@ -154,7 +154,7 @@ export default function ReferralCouponField({
           {validation && (
             <div className={`mt-3 p-3 rounded-lg flex items-start gap-2 ${
               validation.isValid
-                ? 'bg-green-100 text-green-800 border border-green-300'
+                ? 'bg-primary-100 text-primary-800 border border-primary-300'
                 : 'bg-red-100 text-red-800 border border-red-300'
             }`}>
               {validation.isValid ? (

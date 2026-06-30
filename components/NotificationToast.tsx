@@ -45,21 +45,21 @@ export default function NotificationToast({ notification, onClose }: Notificatio
   if (!notification || !isVisible) return null;
 
   const icons = {
-    success: <CheckCircle className="w-6 h-6 text-green-600" />,
+    success: <CheckCircle className="w-6 h-6 text-primary-600" />,
     error: <AlertCircle className="w-6 h-6 text-red-600" />,
     warning: <AlertCircle className="w-6 h-6 text-yellow-600" />,
     info: <Clock className="w-6 h-6 text-blue-600" />,
   };
 
   const colors = {
-    success: 'bg-green-50 border-green-200',
+    success: 'bg-primary-50 border-primary-200',
     error: 'bg-red-50 border-red-200',
     warning: 'bg-yellow-50 border-yellow-200',
     info: 'bg-blue-50 border-blue-200',
   };
 
   const textColors = {
-    success: 'text-green-900',
+    success: 'text-primary-900',
     error: 'text-red-900',
     warning: 'text-yellow-900',
     info: 'text-blue-900',
@@ -68,7 +68,7 @@ export default function NotificationToast({ notification, onClose }: Notificatio
   const duration = notification.duration || 8000;
 
   const progressColors = {
-    success: 'bg-green-500',
+    success: 'bg-primary-500',
     error: 'bg-red-500',
     warning: 'bg-yellow-500',
     info: 'bg-blue-500',

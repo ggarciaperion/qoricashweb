@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { google } from 'googleapis'
 
-const VERIFY_TOKEN   = process.env.WA_VERIFY_TOKEN   ?? 'qoricash_wa_verify_2026'
-const SPREADSHEET_ID = process.env.WA_SHEETS_ID       ?? '1JERPeGFzZPkgB9of22gFGf6_ckJjAOnnR0bxDA55c-A'
+const VERIFY_TOKEN   = process.env.WA_VERIFY_TOKEN   ?? ''
+const SPREADSHEET_ID = process.env.WA_SHEETS_ID       ?? ''
 const SHEET_NAME     = 'WA_Respuestas'
 
 function getSheets() {
@@ -31,8 +31,7 @@ export async function GET(req: NextRequest) {
   const token     = searchParams.get('hub.verify_token')
   const challenge = searchParams.get('hub.challenge')
 
-  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-    console.log('[WA Webhook] Verificación OK')
+  if (mode === 'subscribe' && VERIFY_TOKEN && token === VERIFY_TOKEN) {
     return new NextResponse(challenge, { status: 200 })
   }
   return new NextResponse('Forbidden', { status: 403 })

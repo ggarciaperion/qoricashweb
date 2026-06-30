@@ -1,0 +1,49 @@
+services:
+  # ── Next.js Web Service ────────────────────────────────────────────────────
+  - type: web
+    name: qoricash-web
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      - key: ADMIN_SECRET
+        sync: false
+      - key: TICKER_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: WA_VERIFY_TOKEN
+        sync: false
+      - key: WA_SHEETS_ID
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
+
+  # ── Cron Job: Alertas de Tipo de Cambio (cada 5 min) ──────────────────────
+  - type: cron
+    name: alertas-tc-check
+    runtime: node
+    schedule: "*/5 * * * *"
+    buildCommand: npm install
+    startCommand: node scripts/alertas-check.mjs
+    envVars:
+      - key: APP_URL
+        value: https://www.qoricash.pe
+      - key: CRON_SECRET
+        sync: false

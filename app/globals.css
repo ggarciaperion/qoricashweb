@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes clockOrganic {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(60deg); }
+  30%  { transform: rotate(140deg); }
+  50%  { transform: rotate(220deg); }
+  70%  { transform: rotate(300deg); }
+  85%  { transform: rotate(340deg); }
+  100% { transform: rotate(360deg); }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,6 +20,7 @@
 
 body {
   font-feature-settings: "rlig" 1, "calt" 1;
+  background: #ffffff;
 }
 
 @layer utilities {
@@ -36,6 +47,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #9ca3af;
 }
+
 
 /* Animations */
 @keyframes float {
@@ -399,8 +411,9 @@ body {
    NAVBAR SCROLL SHADOW
    =================================== */
 .nav-scrolled {
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background: rgba(30,41,59,0.99) !important;
+  border-bottom: none;
 }
 
 /* ===================================
@@ -569,6 +582,19 @@ body {
   animation: shimmer-bg 1.2s ease infinite;
 }
 
+/* Marquee bancos */
+@keyframes marquee-banks {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee-banks {
+  animation: marquee-banks 22s linear infinite;
+  will-change: transform;
+}
+.animate-marquee-banks:hover {
+  animation-play-state: paused;
+}
+
 /* Card lift — genérico */
 .card-lift {
   transition: transform 0.25s cubic-bezier(0.22, 0.68, 0, 1.1),
@@ -577,4 +603,42 @@ body {
 .card-lift:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+}
+
+/* ===================================
+   MODAL PREMIUM ANIMATIONS
+   =================================== */
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modal-backdrop-enter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-modal-enter {
+  animation: modal-enter 0.3s cubic-bezier(0.22, 0.68, 0, 1.1) forwards;
+}
+.animate-modal-backdrop {
+  animation: modal-backdrop-enter 0.25s ease forwards;
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-modal-slide-up {
+  animation: modal-slide-up 0.32s cubic-bezier(0.22, 0.68, 0, 1.1) forwards;
 }

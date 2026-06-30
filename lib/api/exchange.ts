@@ -6,21 +6,21 @@ import type { ExchangeRate } from '../types';
  */
 export const exchangeApi = {
   /**
-   * Get current exchange rates from backend (public endpoint, no auth required)
+   * Get current exchange rates via Next.js proxy route (avoids CORS in browser)
    */
   async getCurrentRates(): Promise<ApiResponse<ExchangeRate>> {
     try {
-      const response = await apiClient.get<{ success: boolean; data: any }>('/api/platform/public/exchange-rates');
+      const res = await fetch('/api/rates');
+      const json = await res.json();
 
-      if (response.data.success && response.data.data) {
-        // Transform backend response to ExchangeRate format
+      if (json.success && json.data) {
         return {
           success: true,
           data: {
             id: 0,
-            tipo_compra: response.data.data.tipo_compra,
-            tipo_venta: response.data.data.tipo_venta,
-            fecha_actualizacion: response.data.data.fecha_actualizacion || new Date().toISOString(),
+            tipo_compra: json.data.tipo_compra,
+            tipo_venta: json.data.tipo_venta,
+            fecha_actualizacion: json.data.fecha_actualizacion || new Date().toISOString(),
             updated_by: 0,
           },
           message: 'Tipos de cambio obtenidos exitosamente',
@@ -32,10 +32,9 @@ export const exchangeApi = {
         message: 'Error al obtener tipos de cambio',
       };
     } catch (error: any) {
-      console.error('Error fetching exchange rates:', error);
       return {
         success: false,
-        message: error.response?.data?.message || 'Error al obtener tipos de cambio',
+        message: 'Error al obtener tipos de cambio',
       };
     }
   },

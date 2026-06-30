@@ -1,26 +1,121 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronRight, User, Building2, CheckCircle2, AlertCircle, Search, Loader2, Eye, EyeOff } from 'lucide-react';
+import { User, Building2, CheckCircle2, AlertCircle, Search, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
+import { useAuthStore } from '@/lib/store';
 
 type TipoPersona = 'natural' | 'juridica';
 type TipoDocumento = 'DNI' | 'CE' | 'RUC';
 
+const PHONE_CODES = [
+  { code: '+51', iso: 'PE', country: 'Perú', flag: '🇵🇪' },
+  { code: '+54', iso: 'AR', country: 'Argentina', flag: '🇦🇷' },
+  { code: '+591', iso: 'BO', country: 'Bolivia', flag: '🇧🇴' },
+  { code: '+55', iso: 'BR', country: 'Brasil', flag: '🇧🇷' },
+  { code: '+56', iso: 'CL', country: 'Chile', flag: '🇨🇱' },
+  { code: '+57', iso: 'CO', country: 'Colombia', flag: '🇨🇴' },
+  { code: '+506', iso: 'CR', country: 'Costa Rica', flag: '🇨🇷' },
+  { code: '+53', iso: 'CU', country: 'Cuba', flag: '🇨🇺' },
+  { code: '+593', iso: 'EC', country: 'Ecuador', flag: '🇪🇨' },
+  { code: '+503', iso: 'SV', country: 'El Salvador', flag: '🇸🇻' },
+  { code: '+502', iso: 'GT', country: 'Guatemala', flag: '🇬🇹' },
+  { code: '+504', iso: 'HN', country: 'Honduras', flag: '🇭🇳' },
+  { code: '+52', iso: 'MX', country: 'México', flag: '🇲🇽' },
+  { code: '+505', iso: 'NI', country: 'Nicaragua', flag: '🇳🇮' },
+  { code: '+507', iso: 'PA', country: 'Panamá', flag: '🇵🇦' },
+  { code: '+595', iso: 'PY', country: 'Paraguay', flag: '🇵🇾' },
+  { code: '+1787', iso: 'PR', country: 'Puerto Rico', flag: '🇵🇷' },
+  { code: '+1809', iso: 'DO', country: 'Rep. Dominicana', flag: '🇩🇴' },
+  { code: '+598', iso: 'UY', country: 'Uruguay', flag: '🇺🇾' },
+  { code: '+58', iso: 'VE', country: 'Venezuela', flag: '🇻🇪' },
+  { code: '+1', iso: 'US', country: 'EE.UU. / Canadá', flag: '🇺🇸' },
+  { code: '+34', iso: 'ES', country: 'España', flag: '🇪🇸' },
+  { code: '+39', iso: 'IT', country: 'Italia', flag: '🇮🇹' },
+  { code: '+33', iso: 'FR', country: 'Francia', flag: '🇫🇷' },
+  { code: '+49', iso: 'DE', country: 'Alemania', flag: '🇩🇪' },
+  { code: '+44', iso: 'GB', country: 'Reino Unido', flag: '🇬🇧' },
+  { code: '+351', iso: 'PT', country: 'Portugal', flag: '🇵🇹' },
+  { code: '+81', iso: 'JP', country: 'Japón', flag: '🇯🇵' },
+  { code: '+86', iso: 'CN', country: 'China', flag: '🇨🇳' },
+  { code: '+82', iso: 'KR', country: 'Corea del Sur', flag: '🇰🇷' },
+  { code: '+91', iso: 'IN', country: 'India', flag: '🇮🇳' },
+  { code: '+971', iso: 'AE', country: 'Emiratos Árabes', flag: '🇦🇪' },
+  { code: '+966', iso: 'SA', country: 'Arabia Saudita', flag: '🇸🇦' },
+  { code: '+61', iso: 'AU', country: 'Australia', flag: '🇦🇺' },
+  { code: '+64', iso: 'NZ', country: 'Nueva Zelanda', flag: '🇳🇿' },
+  { code: '+27', iso: 'ZA', country: 'Sudáfrica', flag: '🇿🇦' },
+  { code: '+20', iso: 'EG', country: 'Egipto', flag: '🇪🇬' },
+  { code: '+234', iso: 'NG', country: 'Nigeria', flag: '🇳🇬' },
+  { code: '+7', iso: 'RU', country: 'Rusia', flag: '🇷🇺' },
+];
+
+const OCUPACIONES = [
+  'Abogado/a', 'Actor / Actriz', 'Actuario/a', 'Administrador/a', 'Aduanero/a',
+  'Agente de aduanas', 'Agente de seguros', 'Agente de viajes', 'Agrónomo/a', 'Analista financiero/a',
+  'Analista de sistemas', 'Antropólogo/a', 'Arquitecto/a', 'Artista', 'Asistente administrativo/a',
+  'Auditor/a', 'Bacteriólogo/a', 'Biólogo/a', 'Bombero/a', 'Bróker', 'Cajero/a',
+  'Chef / Cocinero/a', 'Cirujano/a', 'Coach', 'Comerciante', 'Comunicador/a social',
+  'Conductor/a', 'Consultor/a', 'Contador/a', 'Dentista', 'Deportista', 'Diseñador/a gráfico/a',
+  'Diseñador/a de interiores', 'Doctor/a', 'Economista', 'Editor/a', 'Educador/a',
+  'Electricista', 'Empresario/a', 'Enfermero/a', 'Escritor/a', 'Estadístico/a',
+  'Estudiante', 'Farmacéutico/a', 'Fotógrafo/a', 'Funcionario/a público/a', 'Gastrónomo/a',
+  'Geógrafo/a', 'Geólogo/a', 'Gerente', 'Gestor/a de proyectos', 'Importador/a / Exportador/a',
+  'Ingeniero/a civil', 'Ingeniero/a de sistemas', 'Ingeniero/a industrial', 'Ingeniero/a mecánico/a',
+  'Ingeniero/a electrónico/a', 'Intérprete / Traductor/a', 'Inversionista', 'Jubilado/a',
+  'Joyero/a', 'Juez / Magistrado/a', 'Logístico/a', 'Marketing / Publicidad',
+  'Médico/a general', 'Militar / Policía', 'Notario/a', 'Nutricionista', 'Odontólogo/a',
+  'Optometrista', 'Periodista', 'Piloto', 'Planificador/a', 'Productor/a',
+  'Programador/a', 'Psicólogo/a', 'Publicista', 'Químico/a', 'Radiólogo/a',
+  'Relacionista público/a', 'Representante de ventas', 'Sociólogo/a', 'Técnico/a',
+  'Terapeuta', 'Trader / Operador financiero', 'Transportista', 'Veterinario/a',
+  'Trabajador/a independiente', 'Otro',
+];
+
+const RELACIONES_EMPRESA = [
+  'Representante Legal', 'Gerente', 'Gerente General', 'Accionista',
+  'Encargado/a de Finanzas', 'Encargado/a de Tesorería', 'Contador/a',
+  'Empleado/a', 'Otro',
+];
+
+const NACIONALIDADES = [
+  'Argentina', 'Boliviana', 'Brasileña', 'Chilena', 'Colombiana',
+  'Costarricense', 'Cubana', 'Dominicana', 'Ecuatoriana', 'Española',
+  'Estadounidense', 'Francesa', 'Guatemalteca', 'Hondureña', 'Italiana',
+  'Japonesa', 'Mexicana', 'Nicaragüense', 'Panameña', 'Paraguaya',
+  'Portuguesa', 'Puertorriqueña', 'Salvadoreña', 'Uruguaya', 'Venezolana',
+  'Alemana', 'Australiana', 'Británica', 'Canadiense', 'China', 'Coreana',
+  'India', 'Rusa', 'Otra',
+];
+
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const DIAS = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'));
+const ANIOS = Array.from({ length: 85 }, (_, i) => 2010 - i);
+
+const SELECT_ARROW_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`;
+const SELECT_ARROW_STYLE: React.CSSProperties = {
+  backgroundImage: SELECT_ARROW_BG,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'right 8px center',
+  paddingRight: '24px',
+};
+
 export default function CrearCuentaPage() {
   const router = useRouter();
+  const loginStore = useAuthStore((state) => state.login);
   const errorRef = useRef<HTMLDivElement>(null);
 
   // Estado del flujo
-  const [paso, setPaso] = useState(1);
+  const [paso, setPaso] = useState(0);
   const [tipoPersona, setTipoPersona] = useState<TipoPersona>('natural');
 
   // Datos del formulario
   const [formData, setFormData] = useState({
     // Documento
-    tipoDocumento: 'DNI' as TipoDocumento,
+    tipoDocumento: '' as TipoDocumento,
     dni: '',
 
     // Persona Natural
@@ -31,10 +126,13 @@ export default function CrearCuentaPage() {
     // Persona Jurídica
     razonSocial: '',
     personaContacto: '',
+    relacionEmpresa: '',
 
     // Contacto
     email: '',
     telefono: '',
+    telefonoCodigo: '+51',
+    ocupacion: '',
 
     // Ubicación
     direccion: '',
@@ -45,6 +143,13 @@ export default function CrearCuentaPage() {
     // Seguridad
     password: '',
     confirmPassword: '',
+
+    // CE — campos adicionales
+    nacionalidad: '',
+    diaNac: '',
+    mesNac: '',
+    anioNac: '',
+    paisResidencia: 'Perú',
 
     // Términos
     acceptTerms: false,
@@ -61,23 +166,34 @@ export default function CrearCuentaPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [regStage, setRegStage] = useState<'processing' | 'confirmed' | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [captchaChecked, setCaptchaChecked] = useState(false);
+  const [captchaLoading, setCaptchaLoading] = useState(false);
+  const [editingDni, setEditingDni] = useState(false);
+  const [dniEditValue, setDniEditValue] = useState('');
+  const [intentoContinuar, setIntentoContinuar] = useState(false);
+  const [transicionando, setTransicionando] = useState(false);
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [codigoEnviando, setCodigoEnviando] = useState(false);
+  const [codigoValue, setCodigoValue] = useState('');
+  const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
+  const [newEmailValue, setNewEmailValue] = useState('');
+  const [countdown, setCountdown] = useState(0);
+  const [codigoValidando, setCodigoValidando] = useState(false);
+  const [codigoValido, setCodigoValido] = useState<boolean | null>(null);
+  const [dniTouched, setDniTouched] = useState(false);
+  const [documentoRegistrado, setDocumentoRegistrado] = useState(false);
+  const [checkingDoc, setCheckingDoc] = useState(false);
 
-  // Password strength
-  const getPasswordStrength = (pwd: string) => {
-    if (!pwd) return { score: 0, label: '', color: '' };
-    let score = 0;
-    if (pwd.length >= 8) score++;
-    if (pwd.length >= 12) score++;
-    if (/[A-Z]/.test(pwd)) score++;
-    if (/[0-9]/.test(pwd)) score++;
-    if (/[^A-Za-z0-9]/.test(pwd)) score++;
-    if (score <= 1) return { score, label: 'Débil', color: 'bg-red-500' };
-    if (score <= 3) return { score, label: 'Media', color: 'bg-yellow-500' };
-    return { score, label: 'Fuerte', color: 'bg-green-500' };
-  };
-  const pwdStrength = getPasswordStrength(formData.password);
+  // Password requirements
+  const pwdReqs = [
+    { label: 'Mínimo 8 caracteres',      met: formData.password.length >= 8 },
+    { label: 'Al menos 1 letra',         met: /[a-zA-Z]/.test(formData.password) },
+    { label: 'Al menos 1 número',        met: /[0-9]/.test(formData.password) },
+    { label: 'Al menos 1 carácter especial (!@#$...)', met: /[!@#$%^&*()\,\.?\"\:\<\>\-\_\/\+=]/.test(formData.password) },
+  ];
+  const pwdValid = pwdReqs.every(r => r.met);
 
   // Estado lookup RENIEC / SUNAT
   const [lookupLoading, setLookupLoading] = useState(false);
@@ -88,6 +204,7 @@ export default function CrearCuentaPage() {
   useEffect(() => {
     setDepartamentos(getDepartamentos());
   }, []);
+
 
   // Cargar opciones de provincias cuando cambia el departamento (sin resetear valores)
   useEffect(() => {
@@ -113,6 +230,29 @@ export default function CrearCuentaPage() {
       errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [error]);
+
+  // Contador de reenvío de código
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  // Auto-validación del código al completar 6 caracteres
+  useEffect(() => {
+    if (codigoValue.length === 6) {
+      setCodigoValidando(true);
+      setCodigoValido(null);
+      const t = setTimeout(() => {
+        setCodigoValidando(false);
+        setCodigoValido(true); // validación real ocurre en el submit
+      }, 1300);
+      return () => clearTimeout(t);
+    } else {
+      setCodigoValidando(false);
+      setCodigoValido(null);
+    }
+  }, [codigoValue]);
 
   // Función para validar y convertir a mayúsculas campos de nombres (solo letras)
   const validateAndUppercaseNames = (value: string): string => {
@@ -146,6 +286,7 @@ export default function CrearCuentaPage() {
     if (field === 'dni') {
       setLookupMsg(null);
       setLookupLocked(false);
+      setDocumentoRegistrado(false);
     }
 
     // Cascada de resets para campos de ubicación (solo cuando el usuario cambia manualmente)
@@ -172,11 +313,11 @@ export default function CrearCuentaPage() {
   };
 
   // ── Consulta RENIEC (DNI) / SUNAT (RUC) ─────────────────────────────────
-  const handleLookup = async () => {
+  const handleLookup = async (overrideDni?: string) => {
     setLookupMsg(null);
     setLookupLocked(false);
 
-    const docNum = formData.dni.trim();
+    const docNum = (overrideDni ?? formData.dni).trim();
     const isRuc  = tipoPersona === 'juridica';
     const isDni  = formData.tipoDocumento === 'DNI';
     const expectedLen = formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11;
@@ -195,6 +336,7 @@ export default function CrearCuentaPage() {
 
         if (!data.success) {
           setLookupMsg({ type: 'error', text: data.message || 'No se encontró el RUC en SUNAT.' });
+          setFormData(prev => ({ ...prev, razonSocial: '' }));
           return;
         }
 
@@ -237,6 +379,7 @@ export default function CrearCuentaPage() {
 
         if (!data.success) {
           setLookupMsg({ type: 'error', text: data.message || 'No se encontró el DNI en RENIEC.' });
+          setFormData(prev => ({ ...prev, nombres: '', apellidoPaterno: '', apellidoMaterno: '' }));
           return;
         }
 
@@ -265,73 +408,98 @@ export default function CrearCuentaPage() {
       formData.tipoDocumento === 'DNI' ? 8 :
       formData.tipoDocumento === 'CE' ? 9 : 11;
 
+    if (!formData.tipoDocumento) {
+      setError('Selecciona el tipo de documento');
+      return false;
+    }
     if (!formData.dni || formData.dni.length !== longitudEsperada) {
       setError(`${formData.tipoDocumento} debe tener ${longitudEsperada} dígitos`);
       return false;
     }
-
-    if (tipoPersona === 'natural') {
-      if (!formData.nombres || !formData.apellidoPaterno || !formData.apellidoMaterno) {
-        setError('Todos los campos son obligatorios');
-        return false;
-      }
-    } else {
-      if (!formData.razonSocial || !formData.personaContacto) {
-        setError('Todos los campos son obligatorios');
-        return false;
-      }
+    if (!formData.email || !formData.email.includes('@')) {
+      setError('Ingresa un correo electrónico válido');
+      return false;
     }
-
+    if (!pwdValid) {
+      setError('La contraseña no cumple todos los requisitos');
+      return false;
+    }
+    if (!formData.acceptTerms) {
+      setError('Acepta los Términos y Condiciones');
+      return false;
+    }
+    if (!captchaChecked) {
+      setError('Completa la verificación "No soy un robot"');
+      return false;
+    }
     return true;
   };
 
   const validarPaso2 = () => {
-    if (!formData.email || !formData.email.includes('@')) {
-      setError('Email inválido');
-      return false;
+    if (tipoPersona === 'natural') {
+      if (formData.tipoDocumento === 'CE') {
+        if (!formData.nombres.trim()) { setError('Ingresa tu nombre'); return false; }
+        if (!formData.apellidoPaterno.trim()) { setError('Ingresa tu apellido paterno'); return false; }
+        if (!formData.apellidoMaterno.trim()) { setError('Ingresa tu apellido materno'); return false; }
+        const isPeru = formData.telefonoCodigo === '+51';
+        if (!formData.telefono || (isPeru && (formData.telefono.length !== 9 || !formData.telefono.startsWith('9')))) {
+          setError('Ingresa un número de celular válido'); return false;
+        }
+        if (!formData.nacionalidad) { setError('Selecciona tu nacionalidad'); return false; }
+        if (!formData.ocupacion) { setError('Selecciona tu ocupación'); return false; }
+        if (!formData.diaNac || !formData.mesNac || !formData.anioNac) { setError('Ingresa tu fecha de nacimiento completa'); return false; }
+        if (!formData.departamento) { setError('Selecciona tu departamento'); return false; }
+        if (!formData.provincia) { setError('Selecciona tu provincia'); return false; }
+        if (!formData.distrito) { setError('Selecciona tu distrito'); return false; }
+        if (!formData.direccion.trim()) { setError('Ingresa tu dirección'); return false; }
+      } else {
+        if (!lookupLocked) {
+          // Lookup falló — validar campos manuales
+          if (!formData.nombres.trim()) { setError('Ingresa tu nombre'); return false; }
+          if (!formData.apellidoPaterno.trim()) { setError('Ingresa tu apellido paterno'); return false; }
+        }
+        const isPeru = formData.telefonoCodigo === '+51';
+        if (!formData.telefono || (isPeru && (formData.telefono.length !== 9 || !formData.telefono.startsWith('9')))) {
+          setError('Ingresa un número de celular válido'); return false;
+        }
+        if (!formData.ocupacion) { setError('Selecciona tu ocupación'); return false; }
+      }
+    } else {
+      // Jurídica
+      if (!lookupLocked && !formData.razonSocial.trim()) {
+        setError('Ingresa la razón social de la empresa');
+        return false;
+      }
+      if (!formData.personaContacto.trim()) { setError('Ingresa el nombre de la persona de contacto'); return false; }
+      const isPeru = formData.telefonoCodigo === '+51';
+      if (!formData.telefono || (isPeru && (formData.telefono.length !== 9 || !formData.telefono.startsWith('9')))) {
+        setError('Ingresa un número de celular válido'); return false;
+      }
+      if (!formData.relacionEmpresa) { setError('Selecciona tu relación con la empresa'); return false; }
     }
-
-    if (!formData.telefono || formData.telefono.length !== 9) {
-      setError('Teléfono debe tener 9 dígitos');
-      return false;
-    }
-
-    if (!formData.direccion || !formData.departamento || !formData.provincia || !formData.distrito) {
-      setError('Complete todos los campos de ubicación');
-      return false;
-    }
-
     return true;
   };
 
-  const validarPaso3 = () => {
-    if (!formData.password || formData.password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres');
-      return false;
-    }
+  const validarPaso3 = () => true;
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      return false;
-    }
-
-    if (!formData.acceptTerms || !formData.acceptPrivacy) {
-      setError('Debes aceptar los Términos y Condiciones y la Política de Privacidad');
-      return false;
-    }
-
-    return true;
-  };
-
-  const siguientePaso = () => {
+  const siguientePaso = async () => {
     if (paso === 1 && !validarPaso1()) return;
     if (paso === 2 && !validarPaso2()) return;
+    setTransicionando(true);
+    await new Promise(r => setTimeout(r, 550));
+    setTransicionando(false);
     setPaso(paso + 1);
   };
 
   const anteriorPaso = () => {
-    setPaso(paso - 1);
+    const prev = paso - 1;
+    setPaso(prev);
     setError('');
+    setLookupMsg(null);
+    // Solo resetear el lookup si se regresa al paso 1 o 0 (donde se puede cambiar el documento)
+    if (prev <= 1) setLookupLocked(false);
+    if (prev <= 1) { setCaptchaChecked(false); setCaptchaLoading(false); }
+    setIntentoContinuar(false);
   };
 
   const handleSubmit = async () => {
@@ -360,6 +528,7 @@ export default function CrearCuentaPage() {
         } : {
           razon_social: formData.razonSocial,
           persona_contacto: formData.personaContacto,
+          relacion_empresa: formData.relacionEmpresa,
         })
       };
 
@@ -372,8 +541,12 @@ export default function CrearCuentaPage() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess(true);
-        setTimeout(() => router.push('/login'), 3000);
+        // Auto-login tras registro exitoso
+        await loginStore({ dni: formData.dni, password: formData.password });
+        // Secuencia de transición animada antes de mostrar bienvenida
+        setRegStage('processing');
+        setTimeout(() => setRegStage('confirmed'), 3000);
+        setTimeout(() => { setRegStage(null); setSuccess(true); }, 5200);
       } else {
         setError(data.message || 'Error al registrar. Intenta nuevamente.');
       }
@@ -384,78 +557,435 @@ export default function CrearCuentaPage() {
     }
   };
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-8 text-center border-2 border-white/60">
-          <div className="w-20 h-20 bg-green-50/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-green-200/50">
-            <CheckCircle2 className="w-12 h-12 text-green-600" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Cuenta Creada!</h2>
-          <p className="text-gray-600 mb-2">Tu registro se completó exitosamente.</p>
-          <p className="text-gray-600 mb-6">Revisa tu email para más información.</p>
-          <p className="text-sm text-gray-500">Redirigiendo al login...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen">
+    <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <header className="sticky top-0 z-50" style={{ background: 'rgba(30,41,59,1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+        <div className="w-full max-w-[960px] mx-auto px-10 py-3.5">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition" style={{ transform: 'translateX(-30px)' }}>
               <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
-              <span className="text-xl font-bold text-gray-900">QoriCash</span>
+              <span className="text-xl font-display font-black tracking-tight text-white">Qoricash</span>
             </Link>
-            <a href="/login" className="text-sm text-gray-500 hover:text-primary transition">
-              ¿Ya tienes cuenta? <span className="font-semibold text-primary">Inicia sesión</span>
-            </a>
+            <Link href="/login" className="text-sm transition" style={{ color: 'rgba(255,255,255,0.6)' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}>
+              ¿Ya tienes cuenta? <span className="font-semibold text-primary-400">Inicia sesión</span>
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Contenido */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Título */}
-        <div className="text-center mb-4">
-          <h1 className="text-3xl font-display font-bold text-gray-900 mb-1">Crear Cuenta</h1>
-          <p className="text-base text-gray-600">Únete a QoriCash en 3 simples pasos</p>
-        </div>
+      {/* Layout centrado */}
+      <div className="flex flex-1 overflow-y-auto" style={{ backgroundColor: '#FAFAF8', backgroundImage: 'radial-gradient(rgba(30,41,59,0.08) 1.5px, transparent 1.5px)', backgroundSize: '22px 22px' }}>
+        <div className="flex items-center gap-4 w-full max-w-6xl mx-auto px-10 py-6 min-h-full" style={{ position: 'relative' }}>
 
-        {/* Indicador de pasos mejorado */}
-        <div className="flex items-center justify-center mb-6">
+
+
+          {/* Imagen hero — solo desktop */}
+          <div className={`hidden lg:flex flex-[1.3] items-center justify-start${tipoPersona === 'juridica' ? ' self-stretch' : ''}`}>
+            <div
+              className={`relative w-full${tipoPersona === 'juridica' ? ' h-full flex items-center' : ''}`}
+              style={{ transform: 'translateX(-60px)' }}
+            >
+              {/* Blob verde orgánico */}
+              <div style={{
+                position: 'absolute',
+                ...(tipoPersona === 'juridica'
+                  ? { top: '8%', bottom: '8%', left: '-2%', right: '-2%' }
+                  : { inset: '-1% 0%' }),
+                background: '#22C55E',
+                borderRadius: tipoPersona === 'juridica'
+                  ? '42% 58% 30% 70% / 35% 55% 45% 65%'
+                  : '30% 70% 40% 60% / 50% 30% 70% 50%',
+                zIndex: 0,
+                pointerEvents: 'none',
+              }} />
+              <img
+                src={tipoPersona === 'juridica' ? '/qq.png' : '/registro-hero.png'}
+                alt="QoriCash"
+                className="w-full object-contain"
+                style={{ position: 'relative', zIndex: 1 }}
+              />
+            </div>
+          </div>
+
+          {/* Línea divisoria difuminada — fija al centro */}
+          <div className="hidden lg:block" style={{ position: 'absolute', left: '50%', top: '5%', height: '90%', width: '1px', background: 'linear-gradient(to bottom, transparent 0%, rgba(30,41,59,0.15) 20%, rgba(30,41,59,0.15) 80%, transparent 100%)', pointerEvents: 'none' }} />
+
+          {/* Formulario — centrado al mismo nivel que la imagen */}
+          <div className="flex-1 flex flex-col items-start justify-start self-stretch pl-10 pt-8 pb-10">
+          <div className="w-full max-w-[340px]">
+
+          {/* ── PANTALLA DE ÉXITO ── */}
+          {success && (
+            <>
+              <style>{`
+                @keyframes successFadeUp {
+                  from { opacity: 0; transform: translateY(22px); }
+                  to   { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes checkPop {
+                  0%   { opacity: 0; transform: scale(0.55); }
+                  65%  { transform: scale(1.1); }
+                  82%  { transform: scale(0.95); }
+                  100% { opacity: 1; transform: scale(1); }
+                }
+                @keyframes ringInner {
+                  0%, 100% { transform: scale(1);    opacity: 0.5; }
+                  50%       { transform: scale(1.22); opacity: 0.15; }
+                }
+                @keyframes ringOuter {
+                  0%, 100% { transform: scale(1.42); opacity: 0.25; }
+                  50%       { transform: scale(1.68); opacity: 0.06; }
+                }
+              `}</style>
+              <div
+                className="flex flex-col items-center text-center pt-2"
+                style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both' }}
+              >
+                {/* Icono check con anillos palpitantes */}
+                <div
+                  className="relative mb-4"
+                  style={{ animation: 'checkPop 0.65s cubic-bezier(0.22,1,0.36,1) 0.08s both' }}
+                >
+                  {/* Anillo interior — palpita */}
+                  <div className="absolute inset-0 rounded-full" style={{
+                    border: '1.5px solid rgba(34,197,94,0.38)',
+                    animation: 'ringInner 2.4s ease-in-out 0.75s infinite',
+                  }} />
+                  {/* Anillo exterior — palpita desfasado */}
+                  <div className="absolute rounded-full" style={{
+                    inset: '-10px',
+                    border: '1px solid rgba(34,197,94,0.18)',
+                    animation: 'ringOuter 2.4s ease-in-out 1.05s infinite',
+                  }} />
+                  {/* Círculo central con check */}
+                  <div className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center" style={{
+                    background: 'rgba(34,197,94,0.10)',
+                    border: '1.5px solid rgba(34,197,94,0.35)',
+                  }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Título */}
+                <div className="mb-4" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.22s both' }}>
+                  <h1 className="text-xl font-black mb-1" style={{ color: '#1E293B' }}>
+                    ¡Bienvenido a <span style={{ color: '#22C55E' }}>QoriCash</span>!
+                  </h1>
+                  <p className="text-xs" style={{ color: 'rgba(30,41,59,0.5)' }}>Tu cuenta ha sido creada exitosamente</p>
+                </div>
+
+                {/* Pill + Card QoriCoins */}
+                <div className="w-full" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.38s both' }}>
+                  <div className="flex justify-center mb-2">
+                    <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide"
+                      style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', color: '#22C55E' }}>
+                      Ganaste
+                    </span>
+                  </div>
+                  <div className="rounded-2xl px-5 py-4 text-center bg-white"
+                    style={{ border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 6px 28px rgba(30,41,59,0.07)' }}>
+                    <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto mx-auto mb-3" />
+                    <p className="font-black leading-none mb-0.5" style={{ fontSize: '3rem', color: '#D4AF37' }}>40</p>
+                    <p className="text-[10px] font-black tracking-[0.3em] mb-3" style={{ color: '#D4AF37' }}>QORICOINS</p>
+                    <div className="mb-3" style={{ height: '1px', background: 'rgba(30,41,59,0.08)' }} />
+                    <p className="text-[9px] font-semibold tracking-widest" style={{ color: 'rgba(30,41,59,0.4)' }}>
+                      PUNTOS DE MEJORA PARA TU PRIMERA OPERACIÓN
+                    </p>
+                  </div>
+                </div>
+
+                {/* Botón */}
+                <button
+                  type="button"
+                  onClick={() => router.push('/dashboard/nueva-operacion')}
+                  className="mt-4 w-full py-3 rounded-2xl text-sm font-black text-white tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+                  style={{
+                    background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
+                    boxShadow: '0 6px 24px rgba(34,197,94,0.25)',
+                    animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.52s both',
+                  }}
+                >
+                  INICIAR CAMBIO →
+                </button>
+
+                <p className="mt-3 text-[10px] tracking-widest" style={{
+                  color: 'rgba(30,41,59,0.25)',
+                  animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.62s both',
+                }}>
+                  QORICASH · FOREX EXCHANGE
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* ── TRANSICIÓN ANIMADA: procesando → cuenta creada ── */}
+          {regStage !== null && (
+            <>
+              <style>{`
+                @keyframes arcSpin {
+                  to { transform: rotate(360deg); }
+                }
+                @keyframes particleFloat {
+                  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+                  25%  { opacity: 1; transform: translateY(-14px) scale(1); }
+                  75%  { opacity: 0.5; transform: translateY(-36px) scale(0.85); }
+                  100% { opacity: 0; transform: translateY(-52px) scale(0.6); }
+                }
+                @keyframes stageEnter {
+                  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+                  to   { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                @keyframes circleTrace {
+                  from { stroke-dashoffset: 213.6; }
+                  to   { stroke-dashoffset: 0; }
+                }
+                @keyframes checkTrace {
+                  from { stroke-dashoffset: 58; }
+                  to   { stroke-dashoffset: 0; }
+                }
+                @keyframes confirmBg {
+                  from { opacity: 0; }
+                  to   { opacity: 1; }
+                }
+                @keyframes confirmText {
+                  from { opacity: 0; transform: translateY(8px); }
+                  to   { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes dotBlink {
+                  0%, 70%, 100% { opacity: 0.2; transform: scale(0.7); }
+                  35%           { opacity: 1;   transform: scale(1); }
+                }
+              `}</style>
+
+              <div className="flex flex-col items-center justify-center text-center" style={{ minHeight: '460px' }}>
+
+                {/* ── Fase 1: Procesando ── */}
+                {regStage === 'processing' && (
+                  <div style={{ animation: 'stageEnter 0.4s cubic-bezier(0.22,1,0.36,1) both' }}>
+                    {/* Arco giratorio + icono servidor */}
+                    <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 24px' }}>
+                      {/* Arco spinner */}
+                      <svg width="88" height="88" style={{ position: 'absolute', inset: 0, animation: 'arcSpin 1.1s linear infinite' }}>
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(34,197,94,0.12)" strokeWidth="2.5"/>
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="#22C55E" strokeWidth="2.5"
+                          strokeDasharray="90 149" strokeLinecap="round"/>
+                      </svg>
+                      {/* Icono servidor centrado */}
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(34,197,94,0.75)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="2" width="20" height="8" rx="2"/>
+                          <rect x="2" y="14" width="20" height="8" rx="2"/>
+                          <circle cx="6" cy="6"  r="1" fill="rgba(34,197,94,0.75)" stroke="none"/>
+                          <circle cx="6" cy="18" r="1" fill="rgba(34,197,94,0.75)" stroke="none"/>
+                          <line x1="10" y1="6"  x2="18" y2="6"/>
+                          <line x1="10" y1="18" x2="18" y2="18"/>
+                        </svg>
+                      </div>
+                      {/* Partículas flotando hacia arriba */}
+                      {[0, 1, 2, 3].map(i => (
+                        <div key={i} style={{
+                          position: 'absolute',
+                          width: '5px', height: '5px',
+                          borderRadius: '50%',
+                          background: '#22C55E',
+                          bottom: '4px',
+                          left: `${16 + i * 16}px`,
+                          animation: `particleFloat 1.35s ease-in-out ${i * 0.3}s infinite`,
+                        }}/>
+                      ))}
+                    </div>
+                    <p className="text-sm font-semibold mb-3" style={{ color: '#1E293B' }}>Creando tu cuenta…</p>
+                    {/* 3 dots parpadeantes */}
+                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                      {[0, 1, 2].map(i => (
+                        <div key={i} style={{
+                          width: '6px', height: '6px', borderRadius: '50%',
+                          background: '#22C55E',
+                          animation: `dotBlink 1.2s ease-in-out ${i * 0.2}s infinite`,
+                        }}/>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Fase 2: Cuenta creada ── */}
+                {regStage === 'confirmed' && (
+                  <div style={{ animation: 'stageEnter 0.35s cubic-bezier(0.22,1,0.36,1) both' }}>
+                    <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 20px' }}>
+                      <svg width="88" height="88" viewBox="0 0 88 88">
+                        {/* Fondo del círculo — aparece al completarse el trazo */}
+                        <circle cx="44" cy="44" r="38"
+                          style={{ fill: 'rgba(34,197,94,0.10)', animation: 'confirmBg 0.3s 0.68s ease both', opacity: 0 }}/>
+                        {/* Círculo que se traza */}
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="#22C55E" strokeWidth="2.5"
+                          strokeDasharray="238.8" strokeDashoffset="238.8" strokeLinecap="round"
+                          transform="rotate(-90 44 44)"
+                          style={{ animation: 'circleTrace 0.65s cubic-bezier(0.4,0,0.2,1) 0.08s forwards' }}/>
+                        {/* Checkmark que se dibuja */}
+                        <polyline points="24,44 37,57 64,30" fill="none" stroke="#22C55E" strokeWidth="3.2"
+                          strokeLinecap="round" strokeLinejoin="round"
+                          strokeDasharray="58" strokeDashoffset="58"
+                          style={{ animation: 'checkTrace 0.42s cubic-bezier(0.4,0,0.2,1) 0.7s forwards' }}/>
+                      </svg>
+                    </div>
+                    <p className="text-base font-black mb-1" style={{ color: '#1E293B', animation: 'confirmText 0.4s 0.85s ease both', opacity: 0 }}>
+                      ¡Cuenta creada!
+                    </p>
+                    <p className="text-xs" style={{ color: 'rgba(30,41,59,0.45)', animation: 'confirmText 0.4s 1.0s ease both', opacity: 0 }}>
+                      Preparando tu bienvenida…
+                    </p>
+                  </div>
+                )}
+
+              </div>
+            </>
+          )}
+
+          {/* ── FORMULARIO (oculto cuando success o en transición) ── */}
+          {!success && regStage === null && <>
+          {/* Flecha retroceso (visible solo en pasos > 0) */}
+          <div className="mb-3" style={{ minHeight: '32px' }}>
+            {paso > 0 && (
+              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: 'rgba(30,41,59,0.5)' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                Volver
+              </button>
+            )}
+          </div>
+
+          {/* Título */}
+          <div className="text-center mb-5">
+            <h1 className="text-2xl font-display font-black mb-1">
+              {paso === 0 ? (
+                <><span style={{ color: '#1E293B' }}>Crear </span><span style={{ color: '#22C55E' }}>Cuenta</span></>
+
+              ) : (
+                <>
+                  <span style={{ color: '#1E293B' }}>Crear cuenta </span>
+                  <span style={{ color: '#22C55E' }}>{tipoPersona === 'natural' ? 'Persona Natural' : 'Empresa'}</span>
+                </>
+              )}
+            </h1>
+            <p className="text-sm" style={{ color: 'rgba(30,41,59,0.50)' }}>Únete a QoriCash en 3 simples pasos</p>
+          </div>
+
+          {/* PASO 0 — Selección tipo de cliente */}
+          {paso === 0 && (
+            <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <h2 className="text-base font-bold text-center mb-4" style={{ color: 'rgba(30,41,59,0.6)' }}>Elige el tipo de cliente</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Persona Natural */}
+                <button
+                  type="button"
+                  onClick={() => { setTipoPersona('natural'); setFormData(prev => ({ ...prev, tipoDocumento: 'DNI' })); setPaso(1); }}
+                  className="group flex flex-col items-center p-5 bg-white rounded-2xl border-2 border-slate-200 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                    <User className="w-6 h-6 text-primary" />
+                  </div>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#1E293B' }}>Persona Natural</p>
+                  <p className="text-xs text-center" style={{ color: 'rgba(30,41,59,0.45)' }}>DNI · Carnet de Extranjería</p>
+                </button>
+
+                {/* Empresa */}
+                <button
+                  type="button"
+                  onClick={() => { setTipoPersona('juridica'); setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' })); setPaso(1); }}
+                  className="group flex flex-col items-center p-5 bg-white rounded-2xl border-2 border-slate-200 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                >
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                    <Building2 className="w-6 h-6 text-primary" />
+                  </div>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#1E293B' }}>Empresa</p>
+                  <p className="text-xs text-center" style={{ color: 'rgba(30,41,59,0.45)' }}>Ficha RUC</p>
+                </button>
+              </div>
+            </div>
+          )}
+
+        {/* Indicador de pasos */}
+        {paso > 0 && <div className="flex items-center justify-center mb-4">
           {[
             { num: 1, label: 'Identidad' },
             { num: 2, label: 'Contacto' },
-            { num: 3, label: 'Seguridad' },
+            { num: 3, label: 'Verificación' },
           ].map(({ num, label }) => (
             <div key={num} className="flex items-center">
               <div className="flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                   paso > num
-                    ? 'bg-primary text-white shadow-md shadow-primary/30'
+                    ? 'bg-primary text-white'
                     : paso === num
-                      ? 'bg-primary text-white step-circle-active shadow-md shadow-primary/30'
+                      ? 'bg-primary text-white shadow-md shadow-primary/30'
                       : 'bg-gray-100 text-gray-400'
                 }`}>
-                  {paso > num ? <CheckCircle2 className="w-5 h-5" /> : num}
+                  {paso > num ? <CheckCircle2 className="w-4 h-4" /> : num}
                 </div>
-                <span className={`text-xs mt-1.5 font-semibold transition-colors ${paso >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</span>
+                <span className={`text-xs mt-1 font-semibold transition-colors ${paso >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</span>
               </div>
               {num < 3 && (
-                <div className={`w-16 sm:w-20 h-1 mx-2 mb-5 rounded-full transition-all duration-500 ${
+                <div className={`w-12 sm:w-16 h-0.5 mx-2 mb-4 rounded-full transition-all duration-500 ${
                   paso > num ? 'bg-primary' : 'bg-gray-200'
                 }`} />
               )}
             </div>
           ))}
-        </div>
+        </div>}
 
         {/* Card del formulario */}
-        <div className="bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl p-6 border-2 border-white/60">
+        {paso > 0 && <div className="bg-white rounded-2xl px-6 py-5" style={{ boxShadow: '0 2px 12px rgba(30,41,59,0.05)', border: '1px solid rgba(30,41,59,0.06)' }}>
+
+          {/* Animación creando cuenta (reemplaza contenido del card) */}
+          {loading && (
+            <div className="flex flex-col items-center justify-center gap-4 py-8 animate-in fade-in duration-300">
+              <div className="relative w-16 h-16">
+                <svg className="w-16 h-16 animate-spin" viewBox="0 0 80 80" fill="none">
+                  <circle cx="40" cy="40" r="34" stroke="#e2e8f0" strokeWidth="6" />
+                  <circle cx="40" cy="40" r="34" stroke="#22C55E" strokeWidth="6" strokeLinecap="round" strokeDasharray="80 140" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-bold" style={{ color: '#1E293B' }}>Creando tu cuenta</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Esto solo tomará un momento...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Contenido del formulario (oculto mientras carga) */}
+          {!loading && <>
+
+          {/* Alerta: documento ya registrado */}
+          {documentoRegistrado && (
+            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-amber-800 mb-0.5">Documento ya registrado</p>
+                <p className="text-sm text-amber-700">Este número de documento ya tiene una cuenta en QoriCash.{' '}
+                  <a
+                    href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20en%20QoriCash"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold underline hover:opacity-80 transition"
+                    style={{ color: '#92400e' }}
+                  >
+                    Contactar con soporte
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Mensaje de error */}
           {error && (
             <div ref={errorRef} className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
@@ -469,449 +999,746 @@ export default function CrearCuentaPage() {
             </div>
           )}
 
-          {/* PASO 1: Selección de tipo y datos básicos */}
+          {/* PASO 1: Datos básicos */}
           {paso === 1 && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-right duration-300">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Paso 1: Información Básica</h3>
+            <div className="space-y-3 animate-in fade-in slide-in-from-right duration-300">
 
-              {/* Tipo de persona */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Persona</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTipoPersona('natural');
-                      setFormData(prev => ({ ...prev, tipoDocumento: 'DNI' }));
-                    }}
-                    className={`p-4 rounded-xl border-2 transition ${
-                      tipoPersona === 'natural'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-primary/50'
-                    }`}
-                  >
-                    <User className={`w-6 h-6 mx-auto mb-1.5 ${tipoPersona === 'natural' ? 'text-primary' : 'text-gray-400'}`} />
-                    <p className="font-semibold text-gray-900 text-sm">Persona Natural</p>
-                    <p className="text-xs text-gray-500 mt-0.5">DNI o CE</p>
-                  </button>
+              {(() => {
+                const isNatural = tipoPersona === 'natural';
+                const docLen = isNatural ? (formData.tipoDocumento === 'DNI' ? 8 : 9) : 11;
+                const valid = formData.dni.length === docLen && formData.email.includes('@') && pwdValid && formData.acceptTerms && captchaChecked;
+                const fieldsetCls = { border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0' };
+                const legendCls = "ml-3 px-1";
+                const legendStyle = { color: 'rgba(30,41,59,0.45)', fontSize: '10px' };
+                const inputInnerCls = "w-full px-3 pb-2 bg-transparent text-sm text-slate-700 focus:outline-none";
+                return (
+                  <div className="space-y-2.5">
+                    {/* Documento */}
+                    <div className="flex gap-2 items-start">
+                      {isNatural ? (
+                        <fieldset style={{ ...fieldsetCls, minWidth: '90px', flexShrink: 0 }}>
+                          <legend className={legendCls} style={legendStyle}>Tipo</legend>
+                          <select
+                            value={formData.tipoDocumento}
+                            onChange={(e) => handleChange('tipoDocumento', e.target.value as TipoDocumento)}
+                            className="w-full px-2 pb-2 bg-transparent text-sm text-slate-700 appearance-none cursor-pointer focus:outline-none"
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', paddingRight: '24px' }}
+                          >
+                            <option value="DNI">DNI</option>
+                            <option value="CE">Carnet Ext.</option>
+                          </select>
+                        </fieldset>
+                      ) : null}
+                      <div className="flex-1 flex flex-col">
+                        <fieldset style={fieldsetCls}>
+                          <legend className={legendCls} style={legendStyle}>{isNatural ? 'Número de documento' : 'RUC'}</legend>
+                          <input
+                            type="text"
+                            value={formData.dni}
+                            onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
+                            onBlur={() => setDniTouched(true)}
+                            onFocus={() => setDniTouched(false)}
+                            maxLength={docLen}
+                            className={inputInnerCls}
+                          />
+                        </fieldset>
+                        {dniTouched && formData.dni.length > 0 && formData.dni.length < docLen && (
+                          <p className="text-[10px] text-red-500 mt-0.5 ml-1">
+                            Coloca los {docLen} dígitos del {formData.tipoDocumento}
+                          </p>
+                        )}
+                      </div>
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTipoPersona('juridica');
-                      setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' }));
-                    }}
-                    className={`p-4 rounded-xl border-2 transition ${
-                      tipoPersona === 'juridica'
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-primary/50'
-                    }`}
-                  >
-                    <Building2 className={`w-6 h-6 mx-auto mb-1.5 ${tipoPersona === 'juridica' ? 'text-primary' : 'text-gray-400'}`} />
-                    <p className="font-semibold text-gray-900 text-sm">Persona Jurídica</p>
-                    <p className="text-xs text-gray-500 mt-0.5">RUC</p>
-                  </button>
-                </div>
-              </div>
+                    {/* Email */}
+                    <fieldset style={fieldsetCls}>
+                      <legend className={legendCls} style={legendStyle}>Correo electrónico</legend>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleChange('email', e.target.value.toLowerCase())}
+                        className={inputInnerCls}
+                      />
+                    </fieldset>
 
-              {/* Tipo de documento (solo para Natural) */}
-              {tipoPersona === 'natural' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Documento</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {(['DNI', 'CE'] as TipoDocumento[]).map((tipo) => (
-                      <button
-                        key={tipo}
-                        type="button"
-                        onClick={() => handleChange('tipoDocumento', tipo)}
-                        className={`py-2 px-4 rounded-xl font-semibold transition text-sm ${
-                          formData.tipoDocumento === tipo
-                            ? 'bg-primary text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        {tipo === 'DNI' ? 'DNI' : 'Carné de Extranjería'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+                    {/* Contraseña */}
+                    <fieldset style={fieldsetCls}>
+                      <legend className={legendCls} style={legendStyle}>Contraseña</legend>
+                      <div className="flex items-center pr-2">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={formData.password}
+                          onChange={(e) => handleChange('password', e.target.value)}
+                          className={`${inputInnerCls} flex-1`}
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="flex-shrink-0 text-slate-300 hover:text-slate-500 transition mb-1.5" tabIndex={-1}>
+                          {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </fieldset>
+                    {formData.password && (
+                      <div className="grid grid-cols-1 gap-0.5 pt-0.5">
+                        {pwdReqs.map((req, i) => (
+                          <div key={i} className="flex items-center gap-1.5">
+                            {req.met ? (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            )}
+                            <span className="text-xs" style={{ color: req.met ? '#22C55E' : '#EF4444' }}>{req.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-              {/* Número de documento + botón búsqueda */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {formData.tipoDocumento} *
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={formData.dni}
-                    onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
-                    maxLength={formData.tipoDocumento === 'DNI' ? 8 : formData.tipoDocumento === 'CE' ? 9 : 11}
-                    className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                    placeholder={formData.tipoDocumento === 'DNI' ? '12345678' : formData.tipoDocumento === 'CE' ? '123456789' : '20123456789'}
-                  />
-                  {/* Solo mostrar lupa para DNI (RENIEC) y RUC (SUNAT) */}
-                  {(formData.tipoDocumento === 'DNI' || tipoPersona === 'juridica') && (
+                    {/* Términos */}
+                    <label className="flex items-start gap-2.5 cursor-pointer pt-0.5">
+                      <input type="checkbox" checked={formData.acceptTerms} onChange={(e) => handleChange('acceptTerms', e.target.checked)} className="mt-0.5 h-3.5 w-3.5 text-primary border-slate-300 rounded" />
+                      <span className="text-xs" style={{ color: 'rgba(30,41,59,0.55)' }}>
+                        Acepto los <a href="/terminos-condiciones" target="_blank" className="text-primary hover:underline">Términos y Condiciones</a> y la <a href="/politica-privacidad" target="_blank" className="text-primary hover:underline">Política de Privacidad</a>
+                      </span>
+                    </label>
+
+                    {/* Captcha */}
+                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg" style={{ border: '1px solid rgba(30,41,59,0.1)' }}>
+                      <div onClick={() => { if (!captchaChecked) { setCaptchaLoading(true); setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200); }}} className="flex-shrink-0 w-5 h-5 cursor-pointer flex items-center justify-center">
+                        {captchaLoading ? <Loader2 className="w-5 h-5 animate-spin text-primary" /> : captchaChecked ? <CheckCircle2 className="w-5 h-5 text-primary" /> : <div className="w-5 h-5 border border-slate-300 rounded hover:border-primary transition" />}
+                      </div>
+                      <span className="text-xs flex-1" style={{ color: 'rgba(30,41,59,0.6)' }}>No soy un robot</span>
+                      <div className="flex flex-col items-center gap-0.5 opacity-50">
+                        <img src="/logo-principal.png" alt="" className="h-5 w-auto" />
+                        <span className="text-[8px]" style={{ color: 'rgba(30,41,59,0.4)' }}>reCAPTCHA</span>
+                      </div>
+                    </div>
+
+                    {/* Errores al intentar continuar */}
+                    {intentoContinuar && !valid && (
+                      <div className="space-y-0.5">
+                        {!formData.tipoDocumento && <p className="text-xs text-red-500">• Selecciona el tipo de documento (DNI o Carnet)</p>}
+                        {formData.tipoDocumento && formData.dni.length !== docLen && <p className="text-xs text-red-500">• Ingresa tu número de {formData.tipoDocumento} completo ({docLen} dígitos)</p>}
+                        {!formData.email.includes('@') && <p className="text-xs text-red-500">• Ingresa un correo electrónico válido</p>}
+                        {!pwdValid && <p className="text-xs text-red-500">• La contraseña no cumple todos los requisitos</p>}
+                        {!formData.acceptTerms && <p className="text-xs text-red-500">• Acepta los Términos y Condiciones</p>}
+                        {!captchaChecked && <p className="text-xs text-red-500">• Completa la verificación "No soy un robot"</p>}
+                      </div>
+                    )}
+
+                    {/* Botón */}
                     <button
                       type="button"
-                      onClick={handleLookup}
-                      disabled={lookupLoading}
-                      title={tipoPersona === 'juridica' ? 'Buscar en SUNAT' : 'Buscar en RENIEC'}
-                      className="flex items-center gap-1.5 px-4 py-2.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition disabled:opacity-60 whitespace-nowrap text-sm"
+                      onClick={async () => {
+                        if (!valid) { setIntentoContinuar(true); return; }
+                        setIntentoContinuar(false);
+                        setDocumentoRegistrado(false);
+                        setCheckingDoc(true);
+
+                        // Verificar si el documento ya está registrado
+                        try {
+                          const res = await fetch(`/api/check-document?dni=${encodeURIComponent(formData.dni)}`);
+                          const checkData = await res.json();
+                          if (checkData.exists) {
+                            setDocumentoRegistrado(true);
+                            setCheckingDoc(false);
+                            return;
+                          }
+                        } catch {
+                          // Si falla el check continuar normal
+                        }
+
+                        setCheckingDoc(false);
+
+                        if (
+                          (tipoPersona === 'natural' && formData.tipoDocumento === 'DNI' && formData.dni.length === 8) ||
+                          (tipoPersona === 'juridica' && formData.tipoDocumento === 'RUC' && formData.dni.length === 11)
+                        ) {
+                          await handleLookup();
+                        }
+                        await siguientePaso();
+                      }}
+                      disabled={checkingDoc || lookupLoading || transicionando}
+                      className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
+                      style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.18)', cursor: valid ? 'pointer' : 'default' }}
                     >
-                      {lookupLoading
-                        ? <Loader2 className="w-4 h-4 animate-spin" />
-                        : <Search className="w-4 h-4" />
-                      }
-                      {tipoPersona === 'juridica' ? 'SUNAT' : 'RENIEC'}
+                      {checkingDoc || lookupLoading || transicionando
+                        ? <><Loader2 className="w-4 h-4 animate-spin" />Verificando...</>
+                        : 'Continuar'}
+                    </button>
+                  </div>
+                );
+              })()}
+
+              <div className="hidden">dummy</div>
+            </div>
+          )}
+
+          {/* PASO 2: Datos personales */}
+          {paso === 2 && (
+            <div className="space-y-3 animate-in fade-in slide-in-from-right duration-300">
+
+            {(() => {
+              const fsCls = { border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0' };
+              const legCls = "ml-2 px-1";
+              const legSt = { color: 'rgba(30,41,59,0.45)', fontSize: '10px' };
+              const inpCls = "w-full px-3 pb-2 bg-transparent text-sm text-slate-700 focus:outline-none";
+              const arrSt = SELECT_ARROW_STYLE;
+              const telefonoValido = formData.telefonoCodigo === '+51'
+                ? formData.telefono.length === 9 && formData.telefono.startsWith('9')
+                : formData.telefono.length > 0;
+
+              if (formData.tipoDocumento === 'CE') {
+                // ── FORMULARIO CE (manual) ──────────────────────────────
+                const valid = !!formData.nombres.trim() && !!formData.apellidoPaterno.trim() && !!formData.apellidoMaterno.trim()
+                  && telefonoValido && !!formData.nacionalidad && !!formData.ocupacion
+                  && !!formData.diaNac && !!formData.mesNac && !!formData.anioNac
+                  && !!formData.departamento && !!formData.provincia && !!formData.distrito && !!formData.direccion.trim();
+
+                return (
+                  <div className="space-y-2.5">
+                    {/* Documento — solo lectura */}
+                    <div className="rounded-xl border border-slate-200 overflow-hidden">
+                      <div className="px-4 py-3 flex gap-8">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>Documento</p>
+                          <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>CE</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>Número</p>
+                          <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{formData.dni}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Nombres */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Nombre(s)</legend>
+                      <input type="text" value={formData.nombres} onChange={e => handleChange('nombres', e.target.value)} className={inpCls} placeholder="" />
+                    </fieldset>
+
+                    {/* Apellido paterno */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Apellido paterno</legend>
+                      <input type="text" value={formData.apellidoPaterno} onChange={e => handleChange('apellidoPaterno', e.target.value)} className={inpCls} />
+                    </fieldset>
+
+                    {/* Apellido materno */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Apellido materno</legend>
+                      <input type="text" value={formData.apellidoMaterno} onChange={e => handleChange('apellidoMaterno', e.target.value)} className={inpCls} />
+                    </fieldset>
+
+                    {/* Teléfono */}
+                    <div className="flex gap-2">
+                      <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
+                        <legend className={legCls} style={legSt}>Código</legend>
+                        <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                          {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
+                        </select>
+                      </fieldset>
+                      <fieldset className="flex-1" style={fsCls}>
+                        <legend className={legCls} style={legSt}>Número de celular</legend>
+                        <input type="text" value={formData.telefono} onChange={e => {
+                          const raw = e.target.value.replace(/\D/g, '');
+                          const isPeru = formData.telefonoCodigo === '+51';
+                          if (isPeru && raw.length === 1 && raw !== '9') return;
+                          if (isPeru) handleChange('telefono', raw.slice(0, 9));
+                          else handleChange('telefono', raw);
+                        }} className={inpCls} placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
+                      </fieldset>
+                    </div>
+                    {formData.telefonoCodigo === '+51' && formData.telefono && !formData.telefono.startsWith('9') && (
+                      <p className="text-xs text-red-500 -mt-0.5">El número debe empezar por 9</p>
+                    )}
+
+                    {/* Nacionalidad */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Nacionalidad</legend>
+                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#334155' : '#CBD5E1' }}>
+                        <option value="" disabled>Seleccionar</option>
+                        {NACIONALIDADES.map(n => <option key={n} value={n}>{n}</option>)}
+                      </select>
+                    </fieldset>
+
+                    {/* Ocupación */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Ocupación</legend>
+                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
+                        <option value="" disabled>Seleccionar</option>
+                        {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    </fieldset>
+
+                    {/* Fecha de nacimiento */}
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5 ml-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Fecha de nacimiento</p>
+                      <div className="flex gap-2">
+                        <fieldset style={{ ...fsCls, flex: 1 }}>
+                          <legend className={legCls} style={legSt}>Día</legend>
+                          <select value={formData.diaNac} onChange={e => handleChange('diaNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.diaNac ? '#334155' : '#CBD5E1' }}>
+                            <option value="">DD</option>
+                            {DIAS.map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </fieldset>
+                        <fieldset style={{ ...fsCls, flex: 2 }}>
+                          <legend className={legCls} style={legSt}>Mes</legend>
+                          <select value={formData.mesNac} onChange={e => handleChange('mesNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.mesNac ? '#334155' : '#CBD5E1' }}>
+                            <option value="">MM</option>
+                            {MESES.map((m, i) => <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>)}
+                          </select>
+                        </fieldset>
+                        <fieldset style={{ ...fsCls, flex: 1.5 }}>
+                          <legend className={legCls} style={legSt}>Año</legend>
+                          <select value={formData.anioNac} onChange={e => handleChange('anioNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.anioNac ? '#334155' : '#CBD5E1' }}>
+                            <option value="">AAAA</option>
+                            {ANIOS.map(y => <option key={y} value={String(y)}>{y}</option>)}
+                          </select>
+                        </fieldset>
+                      </div>
+                    </div>
+
+                    {/* Datos de ubicación */}
+                    <p className="text-[10px] font-semibold uppercase tracking-wide pt-1 ml-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Datos de ubicación</p>
+
+                    {/* País de residencia */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>País de residencia</legend>
+                      <input type="text" value={formData.paisResidencia} onChange={e => handleChange('paisResidencia', e.target.value)} className={inpCls} />
+                    </fieldset>
+
+                    {/* Departamento */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Departamento</legend>
+                      <select value={formData.departamento} onChange={e => handleChange('departamento', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.departamento ? '#334155' : '#CBD5E1' }}>
+                        <option value="">Seleccionar</option>
+                        {departamentos.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    </fieldset>
+
+                    {/* Provincia */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Provincia</legend>
+                      <select value={formData.provincia} onChange={e => handleChange('provincia', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.provincia ? '#334155' : '#CBD5E1' }} disabled={!formData.departamento}>
+                        <option value="">Seleccionar</option>
+                        {provincias.map(p => <option key={p} value={p}>{p}</option>)}
+                      </select>
+                    </fieldset>
+
+                    {/* Distrito */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Distrito</legend>
+                      <select value={formData.distrito} onChange={e => handleChange('distrito', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.distrito ? '#334155' : '#CBD5E1' }} disabled={!formData.provincia}>
+                        <option value="">Seleccionar</option>
+                        {distritos.map(d => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    </fieldset>
+
+                    {/* Dirección */}
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Dirección</legend>
+                      <input type="text" value={formData.direccion} onChange={e => handleChange('direccion', e.target.value)} className={inpCls} />
+                    </fieldset>
+
+                    {/* Botón continuar */}
+                    <button type="button" onClick={siguientePaso} disabled={!valid || transicionando}
+                      className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
+                      style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.12)', cursor: valid ? 'pointer' : 'not-allowed' }}>
+                      {transicionando ? <><Loader2 className="w-4 h-4 animate-spin" />Cargando...</> : 'Continuar'}
+                    </button>
+                  </div>
+                );
+              }
+
+              // ── FORMULARIO DNI / RUC (existente) ───────────────────────
+              // CE nunca tiene lookup disponible → campos manuales siempre visibles
+              // DNI → campos manuales solo cuando el lookup fue intentado y falló (lookupMsg set)
+              const dniLookupFailed = tipoPersona === 'natural' && !lookupLocked && !editingDni && (
+                formData.tipoDocumento !== 'DNI' || !!lookupMsg
+              );
+              const rucLookupFailed = tipoPersona === 'juridica' && !lookupLocked && !editingDni && !!lookupMsg;
+              const namesManual = dniLookupFailed && !!formData.nombres.trim() && !!formData.apellidoPaterno.trim();
+              const rucManual = rucLookupFailed && !!formData.razonSocial.trim();
+              const valid = tipoPersona === 'juridica'
+                ? !editingDni && (lookupLocked || rucManual) && telefonoValido && !!formData.personaContacto.trim() && !!formData.relacionEmpresa
+                : !editingDni && (lookupLocked || namesManual) && telefonoValido && !!formData.ocupacion;
+              return (
+                <div className="space-y-2.5">
+                  {/* Card DNI + Nombres */}
+                  <div className="rounded-xl border border-slate-200 overflow-hidden">
+                    <div className="px-4 py-3">
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>{formData.tipoDocumento}</p>
+                      {editingDni ? (
+                        <div className="flex gap-2 mt-1">
+                          <input type="text" value={dniEditValue} onChange={e => setDniEditValue(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                            className="flex-1 px-2 py-1 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary-400 focus:outline-none"
+                            placeholder="Ingresa tu número de documento" autoFocus />
+                          <button type="button" onClick={async () => { setFormData(prev => ({ ...prev, dni: dniEditValue })); await handleLookup(dniEditValue); setEditingDni(false); }}
+                            className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition">
+                            {lookupLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      ) : (
+                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{formData.dni}</p>
+                      )}
+                    </div>
+                    {!editingDni && (
+                      <div className="px-4 py-3">
+                        <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>
+                          {tipoPersona === 'juridica' ? 'Razón Social' : 'Nombres y Apellidos'}
+                        </p>
+                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>
+                          {tipoPersona === 'juridica'
+                            ? (formData.razonSocial || <span style={{ color: 'rgba(30,41,59,0.3)' }}>No encontrado</span>)
+                            : (`${formData.apellidoPaterno} ${formData.apellidoMaterno} ${formData.nombres}`.trim() || <span style={{ color: 'rgba(30,41,59,0.3)' }}>No encontrado</span>)
+                          }
+                        </p>
+                      </div>
+                    )}
+                    {/* Campos manuales si el lookup DNI falló */}
+                    {dniLookupFailed && (
+                      <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
+                        <p className="text-[10px]" style={{ color: 'rgba(30,41,59,0.45)' }}>No pudimos obtener tus datos automáticamente. Ingrésalos manualmente:</p>
+                        <input type="text" value={formData.nombres}
+                          onChange={e => handleChange('nombres', e.target.value)}
+                          placeholder="Nombres"
+                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                        <input type="text" value={formData.apellidoPaterno}
+                          onChange={e => handleChange('apellidoPaterno', e.target.value)}
+                          placeholder="Apellido paterno"
+                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                        <input type="text" value={formData.apellidoMaterno}
+                          onChange={e => handleChange('apellidoMaterno', e.target.value)}
+                          placeholder="Apellido materno"
+                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                      </div>
+                    )}
+                    {/* Campo manual Razón Social si el lookup RUC falló */}
+                    {rucLookupFailed && (
+                      <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
+                        <p className="text-[10px]" style={{ color: 'rgba(30,41,59,0.45)' }}>No pudimos obtener la razón social. Ingrésala manualmente:</p>
+                        <input type="text" value={formData.razonSocial}
+                          onChange={e => handleChange('razonSocial', e.target.value)}
+                          placeholder="Razón Social"
+                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                      </div>
+                    )}
+                  </div>
+                  {!editingDni && (
+                    <button type="button" onClick={() => { setEditingDni(true); setDniEditValue(formData.dni); }} className="text-xs underline" style={{ color: 'rgba(30,41,59,0.45)' }}>
+                      ¿No son tus datos?
+                    </button>
+                  )}
+
+                  {/* Persona de Contacto (solo Empresa) */}
+                  {tipoPersona === 'juridica' && (
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Persona de contacto</legend>
+                      <input type="text" value={formData.personaContacto}
+                        onChange={e => handleChange('personaContacto', e.target.value)}
+                        className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
+                        placeholder="Nombre completo" />
+                    </fieldset>
+                  )}
+
+                  {/* Teléfono */}
+                  <div className="flex gap-2 pt-1">
+                    <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
+                      <legend className={legCls} style={legSt}>Código</legend>
+                      <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                        {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
+                      </select>
+                    </fieldset>
+                    <fieldset className="flex-1" style={fsCls}>
+                      <legend className={legCls} style={legSt}>Número de teléfono</legend>
+                      <input type="text" value={formData.telefono} onChange={e => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const isPeru = formData.telefonoCodigo === '+51';
+                        if (isPeru && raw.length === 1 && raw !== '9') return;
+                        if (isPeru) handleChange('telefono', raw.slice(0, 9));
+                        else handleChange('telefono', raw);
+                      }} className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
+                        placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
+                    </fieldset>
+                  </div>
+                  {formData.telefonoCodigo === '+51' && formData.telefono && !formData.telefono.startsWith('9') && (
+                    <p className="text-xs text-red-500">El número debe empezar por 9</p>
+                  )}
+
+                  {/* Relación con la empresa (Empresa) / Ocupación (Natural) */}
+                  {tipoPersona === 'juridica' ? (
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Relación con la empresa</legend>
+                      <select value={formData.relacionEmpresa} onChange={e => handleChange('relacionEmpresa', e.target.value)}
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
+                        style={{ ...arrSt, color: formData.relacionEmpresa ? '#334155' : '#CBD5E1' }}>
+                        <option value="" disabled>Seleccionar</option>
+                        {RELACIONES_EMPRESA.map(r => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                    </fieldset>
+                  ) : (
+                    <fieldset style={fsCls}>
+                      <legend className={legCls} style={legSt}>Ocupación</legend>
+                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)}
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
+                        style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
+                        <option value="" disabled>Seleccionar</option>
+                        {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    </fieldset>
+                  )}
+
+                  {/* Botón continuar */}
+                  <button type="button" onClick={siguientePaso} disabled={!valid || transicionando}
+                    className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
+                    style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.12)', cursor: valid ? 'pointer' : 'not-allowed' }}>
+                    {transicionando ? <><Loader2 className="w-4 h-4 animate-spin" />Cargando...</> : 'Continuar'}
+                  </button>
+
+                  {/* Soporte */}
+                  <p className="text-center pt-1">
+                    <a href="https://wa.me/51999999999?text=Hola%2C%20necesito%20ayuda%20con%20mi%20registro%20en%20QoriCash" target="_blank" rel="noopener noreferrer" className="text-xs underline transition" style={{ color: '#22C55E' }}>
+                      Contactar con soporte
+                    </a>
+                  </p>
+                </div>
+              );
+            })()}
+
+            </div>
+          )}
+
+          {/* PASO 3: Verificación */}
+          {paso === 3 && (
+            <div className="space-y-4 animate-in fade-in slide-in-from-right duration-300">
+
+              {/* Encabezado */}
+              <div className="text-center pb-1">
+                <h2 className="text-base font-black mb-1" style={{ color: '#1E293B' }}>Verificamos que eres tú</h2>
+                <p className="text-xs" style={{ color: 'rgba(30,41,59,0.5)' }}>Ingresa el código que te enviaremos a tu correo</p>
+              </div>
+
+              {/* Card correo */}
+              <fieldset style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '0' }}>
+                <legend className="px-1" style={{ color: 'rgba(30,41,59,0.45)', fontSize: '10px', marginLeft: '56px' }}>Correo</legend>
+                <div className="px-3 pb-3 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+                  </div>
+                  <p className="text-sm font-semibold flex-1" style={{ color: '#1E293B', wordBreak: 'break-all' }}>{formData.email}</p>
+                </div>
+                {codigoEnviado && (
+                  <div className="flex items-center justify-center gap-1.5 pb-3 animate-in fade-in duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span className="text-xs font-semibold" style={{ color: '#22C55E' }}>Código enviado</span>
+                  </div>
+                )}
+              </fieldset>
+
+              {/* Botón enviar código (debajo de la card) */}
+              {!codigoEnviado && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setCodigoEnviando(true);
+                    await new Promise(r => setTimeout(r, 1800));
+                    setCodigoEnviando(false);
+                    setCodigoEnviado(true);
+                    setCountdown(90);
+                  }}
+                  disabled={codigoEnviando}
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold text-white transition"
+                  style={{ background: '#22C55E' }}
+                >
+                  {codigoEnviando ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" />Enviando...</>
+                  ) : 'Enviar código'}
+                </button>
+              )}
+
+              {/* Contador reenvío */}
+              {codigoEnviado && (
+                <div className="text-center animate-in fade-in duration-300">
+                  {countdown > 0 ? (
+                    <p className="text-xs" style={{ color: 'rgba(30,41,59,0.45)' }}>
+                      Puedes reenviar el código en{' '}
+                      <span className="font-semibold tabular-nums" style={{ color: '#1E293B' }}>
+                        {Math.floor(countdown / 60) > 0
+                          ? `${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')} min`
+                          : `${countdown}s`}
+                      </span>
+                    </p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setCodigoEnviando(true);
+                        setCodigoValue('');
+                        await new Promise(r => setTimeout(r, 1800));
+                        setCodigoEnviando(false);
+                        setCountdown(90);
+                      }}
+                      disabled={codigoEnviando}
+                      className="text-xs font-semibold underline transition hover:opacity-70 flex items-center gap-1 mx-auto"
+                      style={{ color: '#22C55E' }}
+                    >
+                      {codigoEnviando ? <><Loader2 className="w-3 h-3 animate-spin" />Enviando...</> : '¿No recibiste el código? Reenviar'}
                     </button>
                   )}
                 </div>
-
-                {/* Feedback del lookup */}
-                {lookupMsg && (
-                  <div className={`mt-2 px-3 py-2 rounded-lg text-sm flex items-start gap-2 ${
-                    lookupMsg.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' :
-                    lookupMsg.type === 'warning' ? 'bg-yellow-50 text-yellow-800 border border-yellow-200' :
-                    'bg-red-50 text-red-800 border border-red-200'
-                  }`}>
-                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <span>{lookupMsg.text}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Campos según tipo de persona */}
-              {tipoPersona === 'natural' ? (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombres *
-                      {lookupLocked && <span className="ml-2 text-xs text-green-600 font-normal">✓ obtenido de RENIEC</span>}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.nombres}
-                      onChange={(e) => handleChange('nombres', e.target.value)}
-                      readOnly={lookupLocked}
-                      className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
-                      placeholder="Juan Carlos"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Paterno *</label>
-                      <input
-                        type="text"
-                        value={formData.apellidoPaterno}
-                        onChange={(e) => handleChange('apellidoPaterno', e.target.value)}
-                        readOnly={lookupLocked}
-                        className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
-                        placeholder="García"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Materno *</label>
-                      <input
-                        type="text"
-                        value={formData.apellidoMaterno}
-                        onChange={(e) => handleChange('apellidoMaterno', e.target.value)}
-                        readOnly={lookupLocked}
-                        className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
-                        placeholder="López"
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Razón Social *
-                      {lookupLocked && <span className="ml-2 text-xs text-green-600 font-normal">✓ obtenido de SUNAT</span>}
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.razonSocial}
-                      onChange={(e) => handleChange('razonSocial', e.target.value)}
-                      readOnly={lookupLocked}
-                      className={`w-full px-4 py-2.5 border-2 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition ${lookupLocked ? 'border-green-300 bg-green-50 text-green-900' : 'border-gray-300'}`}
-                      placeholder="EMPRESA SAC"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Persona de Contacto *</label>
-                    <input
-                      type="text"
-                      value={formData.personaContacto}
-                      onChange={(e) => handleChange('personaContacto', e.target.value)}
-                      className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                      placeholder="Juan García"
-                    />
-                  </div>
-                </>
               )}
 
-              <div className="flex justify-end pt-2">
-                <button
-                  type="button"
-                  onClick={siguientePaso}
-                  className="inline-flex items-center bg-primary text-white px-6 py-2.5 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
-                >
-                  Siguiente
-                  <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* PASO 2: Contacto y ubicación */}
-          {paso === 2 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right duration-300">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Paso 2: Contacto y Ubicación</h3>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="tu@email.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Teléfono *</label>
-                <input
-                  type="text"
-                  value={formData.telefono}
-                  onChange={(e) => handleChange('telefono', e.target.value.replace(/\D/g, ''))}
-                  maxLength={9}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="987654321"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Dirección *</label>
-                <input
-                  type="text"
-                  value={formData.direccion}
-                  onChange={(e) => handleChange('direccion', e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="Av. Principal 123"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Departamento *</label>
-                  <select
-                    value={formData.departamento}
-                    onChange={(e) => handleChange('departamento', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
+              {/* Input código (aparece tras envío) */}
+              {codigoEnviado && (
+                <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                  {/* Slots visuales con guiones */}
+                  <div
+                    className="relative flex justify-center gap-2.5 cursor-text py-1"
+                    onClick={() => document.getElementById('codigo-hidden-input')?.focus()}
                   >
-                    <option value="">Selecciona</option>
-                    {departamentos.map(dep => (
-                      <option key={dep} value={dep}>{dep}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Provincia *</label>
-                  <select
-                    value={formData.provincia}
-                    onChange={(e) => handleChange('provincia', e.target.value)}
-                    disabled={!formData.departamento}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition disabled:bg-gray-100"
-                  >
-                    <option value="">Selecciona</option>
-                    {provincias.map(prov => (
-                      <option key={prov} value={prov}>{prov}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Distrito *</label>
-                  <select
-                    value={formData.distrito}
-                    onChange={(e) => handleChange('distrito', e.target.value)}
-                    disabled={!formData.provincia}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition disabled:bg-gray-100"
-                  >
-                    <option value="">Selecciona</option>
-                    {distritos.map(dist => (
-                      <option key={dist} value={dist}>{dist}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <button
-                  type="button"
-                  onClick={anteriorPaso}
-                  className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition"
-                >
-                  Anterior
-                </button>
-                <button
-                  type="button"
-                  onClick={siguientePaso}
-                  className="inline-flex items-center bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg group"
-                >
-                  Siguiente
-                  <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* PASO 3: Seguridad y términos */}
-          {paso === 3 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right duration-300">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Paso 3: Seguridad</h3>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña *</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={(e) => handleChange('password', e.target.value)}
-                    className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                    placeholder="Mínimo 8 caracteres"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition"
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {/* Password strength indicator */}
-                {formData.password && (
-                  <div className="mt-2">
-                    <div className="flex gap-1 mb-1">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <div
-                          key={i}
-                          className={`strength-bar flex-1 ${i <= pwdStrength.score ? pwdStrength.color : 'bg-gray-200'}`}
-                        />
-                      ))}
-                    </div>
-                    <p className={`text-xs font-medium ${pwdStrength.score <= 1 ? 'text-red-500' : pwdStrength.score <= 3 ? 'text-yellow-600' : 'text-green-600'}`}>
-                      Contraseña {pwdStrength.label}
-                    </p>
+                    <input
+                      id="codigo-hidden-input"
+                      type="text"
+                      value={codigoValue}
+                      onChange={(e) => {
+                        const raw = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                        let result = '';
+                        let letters = 0, digits = 0;
+                        for (const c of raw) {
+                          if (letters < 3 && /[A-Z]/.test(c)) { result += c; letters++; }
+                          else if (letters === 3 && digits < 3 && /[0-9]/.test(c)) { result += c; digits++; }
+                        }
+                        setCodigoValue(result);
+                      }}
+                      maxLength={6}
+                      autoFocus
+                      className="absolute opacity-0 w-0 h-0 pointer-events-none"
+                      style={{ position: 'absolute' }}
+                    />
+                    {Array.from({ length: 6 }).map((_, i) => {
+                      const lineColor = codigoValido === true
+                        ? '#22C55E'
+                        : codigoValido === false
+                          ? '#EF4444'
+                          : codigoValidando
+                            ? '#CBD5E1'
+                            : i < codigoValue.length
+                              ? '#22C55E'
+                              : i === codigoValue.length
+                                ? '#94a3b8'
+                                : '#e2e8f0';
+                      const charColor = codigoValido === true ? '#22C55E' : codigoValido === false ? '#EF4444' : '#1E293B';
+                      return (
+                        <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: '34px' }}>
+                          <span className="text-lg font-bold h-7 flex items-end justify-center transition-colors duration-300" style={{ color: charColor, minWidth: '34px', textAlign: 'center' }}>
+                            {codigoValue[i] || ''}
+                          </span>
+                          <div className="w-full transition-colors duration-300" style={{ height: '2px', borderRadius: '2px', background: lineColor }} />
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Contraseña *</label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                    onPaste={(e) => e.preventDefault()}
-                    className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                    placeholder="Escribe tu contraseña (no pegues)"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition"
-                    tabIndex={-1}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+                  {/* Feedback validación */}
+                  {codigoValidando && (
+                    <div className="flex justify-center items-center gap-2 mt-3 animate-in fade-in duration-200">
+                      <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#94a3b8' }} />
+                      <span className="text-xs" style={{ color: 'rgba(30,41,59,0.45)' }}>Verificando código...</span>
+                    </div>
+                  )}
+                  {codigoValido === true && (
+                    <div className="flex justify-center items-center gap-1.5 mt-3 animate-in fade-in zoom-in-95 duration-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span className="text-xs font-semibold" style={{ color: '#22C55E' }}>Código verificado correctamente</span>
+                    </div>
+                  )}
+                  {codigoValido === false && (
+                    <div className="flex justify-center items-center gap-1.5 mt-3 animate-in fade-in zoom-in-95 duration-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      <span className="text-xs font-semibold" style={{ color: '#EF4444' }}>Código incorrecto, intenta de nuevo</span>
+                    </div>
+                  )}
                 </div>
-                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                  <p className="mt-1.5 text-xs text-red-500 font-medium">Las contraseñas no coinciden</p>
-                )}
-                {formData.confirmPassword && formData.password === formData.confirmPassword && (
-                  <p className="mt-1.5 text-xs text-green-600 font-medium flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Contraseñas coinciden
-                  </p>
-                )}
-              </div>
+              )}
 
-              <div className="space-y-3 pt-4">
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    checked={formData.acceptTerms}
-                    onChange={(e) => handleChange('acceptTerms', e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    Acepto los <a href="/terminos-condiciones" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Términos y Condiciones</a> *
-                  </span>
-                </label>
-
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    checked={formData.acceptPrivacy}
-                    onChange={(e) => handleChange('acceptPrivacy', e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    Acepto la <a href="/politica-privacidad" target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">Política de Privacidad</a> *
-                  </span>
-                </label>
-
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    checked={formData.acceptPromotions}
-                    onChange={(e) => handleChange('acceptPromotions', e.target.checked)}
-                    className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                  />
-                  <span className="ml-3 text-sm text-gray-700">
-                    Deseo recibir promociones y ofertas especiales
-                  </span>
-                </label>
-              </div>
-
-              <div className="flex justify-between pt-4">
+              {/* Cambiar correo */}
+              <p className="text-center">
                 <button
                   type="button"
-                  onClick={anteriorPaso}
-                  className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition"
+                  onClick={() => { setNewEmailValue(formData.email); setShowChangeEmailModal(true); }}
+                  className="text-xs underline transition hover:opacity-70"
+                  style={{ color: 'rgba(30,41,59,0.45)' }}
                 >
-                  Anterior
+                  ¿Necesitas cambiar de correo?
                 </button>
+              </p>
+
+              {/* Botón Crear Cuenta */}
+              {codigoEnviado && (
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={loading}
-                  className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-600 transition shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading || codigoValido !== true}
+                  className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 animate-in fade-in duration-300"
+                  style={{
+                    background: codigoValido === true ? '#22C55E' : 'rgba(30,41,59,0.12)',
+                    cursor: codigoValido === true ? 'pointer' : 'not-allowed',
+                  }}
                 >
-                  {loading ? (
-                    <span className="flex items-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Creando cuenta...
-                    </span>
-                  ) : (
-                    'Crear Cuenta'
-                  )}
+                  {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Creando cuenta...</> : 'Crear Cuenta'}
                 </button>
-              </div>
+              )}
+
             </div>
           )}
+
+          </>} {/* fin !loading */}
+        </div>}
+        </>} {/* fin !success */}
+        </div>{/* fin max-w formulario */}
+        </div>{/* fin formulario */}
+        </div>{/* fin fila centrada */}
+      </div>{/* fin layout centrado */}
+
+      {/* Modal: cambiar correo */}
+      {showChangeEmailModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: 'rgba(0,0,0,0.45)' }}>
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+            <h3 className="text-base font-black mb-1" style={{ color: '#1E293B' }}>Actualizar correo</h3>
+            <p className="text-xs mb-4" style={{ color: 'rgba(30,41,59,0.5)' }}>Ingresa el correo donde recibirás el código</p>
+            <input
+              type="email"
+              value={newEmailValue}
+              onChange={(e) => setNewEmailValue(e.target.value.toLowerCase())}
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:border-primary-400 focus:outline-none text-sm text-slate-700 mb-4"
+              placeholder="nuevo@correo.com"
+              autoFocus
+            />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowChangeEmailModal(false)}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold border border-slate-200 hover:bg-slate-50 transition"
+                style={{ color: 'rgba(30,41,59,0.5)' }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (newEmailValue.includes('@')) {
+                    handleChange('email', newEmailValue);
+                    setShowChangeEmailModal(false);
+                    setCodigoEnviado(false);
+                    setCodigoValue('');
+                    setCountdown(0);
+                  }
+                }}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold text-white transition"
+                style={{ background: newEmailValue.includes('@') ? '#22C55E' : 'rgba(30,41,59,0.18)', cursor: newEmailValue.includes('@') ? 'pointer' : 'not-allowed' }}
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

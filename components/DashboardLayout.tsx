@@ -96,15 +96,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Live dot */}
                 <div className="hidden sm:flex items-center gap-1.5 mr-1">
                   <div className="relative flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
+                    <div className="w-2 h-2 rounded-full bg-primary-500"></div>
+                    <div className="absolute w-2 h-2 rounded-full bg-primary-500 animate-ping"></div>
                   </div>
                   <span className="text-xs font-medium text-gray-400">En vivo</span>
                 </div>
                 {/* Compra */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 border border-green-100 rounded-lg">
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary-50 border border-primary-100 rounded-lg">
                   <span className="hidden md:inline text-gray-500 text-xs">Compra</span>
-                  <span className="font-bold text-green-600 text-sm">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
+                  <span className="font-bold text-primary-600 text-sm">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
                 </div>
                 {/* Venta */}
                 <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-50 border border-blue-100 rounded-lg">

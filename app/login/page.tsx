@@ -1,20 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LogIn, CreditCard, Lock, ArrowLeft, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { CreditCard, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { authApi } from '@/lib/api/auth';
+import Image from 'next/image';
 import ForgotPasswordModal from '@/components/ForgotPasswordModal';
 import ChangePasswordModal from '@/components/ChangePasswordModal';
 import type { ForgotPasswordRequest } from '@/lib/types';
 
+
 const loginSchema = z.object({
-  dni: z.string().min(8, 'Ingresa un DNI válido').max(12, 'DNI inválido'),
+  dni: z.string().min(8, 'Mínimo 8 dígitos').max(11, 'Máximo 11 dígitos'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
 });
 
@@ -25,315 +27,437 @@ export default function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const error = useAuthStore((state) => state.error);
   const clearError = useAuthStore((state) => state.clearError);
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginPhase, setLoginPhase] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [loginError, setLoginError] = useState('');
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const failedAttemptsRef = useRef(0);
 
-  // Modals state
+  const animDoneRef     = useRef(false);
+  const apiDoneRef      = useRef(false);
+  const isErrorRef      = useRef(false);
+  const transitionedRef = useRef(false);
+
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
-  const [pendingLoginDni, setPendingLoginDni] = useState<string>('');
+  const [pendingLoginDni, setPendingLoginDni] = useState('');
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
+  // ── Animation sync ──
+  const _transitionFinal = () => {
+    if (transitionedRef.current) return;
+    transitionedRef.current = true;
+
+    if (isErrorRef.current) {
+      const newCount = failedAttemptsRef.current + 1;
+      failedAttemptsRef.current = newCount;
+      setFailedAttempts(newCount);
+      setLoginPhase('error');
+      setTimeout(() => {
+        setLoginPhase('idle');
+        setIsLoading(false);
+        isErrorRef.current      = false;
+        animDoneRef.current     = false;
+        apiDoneRef.current      = false;
+        transitionedRef.current = false;
+        if (newCount >= 3) setIsBlocked(true);
+      }, 1800);
+    } else {
+      setLoginPhase('success');
+      setTimeout(() => router.push('/dashboard'), 1200);
+    }
+  };
+
+  const handleAnimEnd = () => {
+    animDoneRef.current = true;
+    if (apiDoneRef.current) _transitionFinal();
+  };
+
+  const handleApiDone = () => {
+    apiDoneRef.current = true;
+    if (animDoneRef.current) {
+      _transitionFinal();
+    } else {
+      // Fallback: si onAnimationEnd no dispara, forzamos la transición tras la duración del arco
+      setTimeout(_transitionFinal, 2700);
+    }
+  };
+
+  const _triggerError = (msg: string) => {
+    isErrorRef.current = true;
+    setLoginError(msg);
+    handleApiDone();
+  };
+
   const onSubmit = async (data: LoginFormData) => {
-    console.log('📝 [LoginPage] Form submitted with DNI:', data.dni);
+    if (isBlocked) return;
     setIsLoading(true);
     clearError();
+    animDoneRef.current     = false;
+    apiDoneRef.current      = false;
+    isErrorRef.current      = false;
+    transitionedRef.current = false;
+    setLoginPhase('loading');
 
     try {
-      console.log('📝 [LoginPage] Calling login function...');
-
-      // Call the login API directly to check for requires_password_change
       const response = await authApi.login({ dni: data.dni, password: data.password });
-      console.log('📝 [LoginPage] Login response:', response);
 
       if (response.success && response.client) {
-        // Check if password change is required
         if (response.requires_password_change) {
-          console.log('🔐 [LoginPage] Password change required');
+          setLoginPhase('idle');
+          setIsLoading(false);
           setPendingLoginDni(data.dni);
           setIsChangePasswordModalOpen(true);
-          setIsLoading(false);
           return;
         }
-
-        // No password change required - proceed with normal login
-        console.log('✅ [LoginPage] Login successful! Redirecting...');
-
-        // Update the auth store
         const success = await login({ dni: data.dni, password: data.password });
-
         if (success) {
-          console.log('🔄 [LoginPage] Redirecting to /dashboard');
-          router.push('/dashboard');
+          handleApiDone();
         } else {
-          console.log('❌ [LoginPage] Login failed after password check');
-          // Error will be displayed from store's error state
+          _triggerError('Credenciales incorrectas.');
         }
       } else {
-        // Login failed - use the store's login function to set error properly
-        console.log('❌ [LoginPage] Login failed:', response.message);
-        await login({ dni: data.dni, password: data.password });
+        _triggerError(response.message || 'Credenciales incorrectas.');
       }
-    } catch (error: any) {
-      console.error('❌ [LoginPage] Error en login:', error);
-      // Try to login via store to set proper error message
-      await login({ dni: data.dni, password: data.password });
-    } finally {
-      setIsLoading(false);
-      console.log('📝 [LoginPage] Loading finished');
+    } catch {
+      _triggerError('Credenciales incorrectas.');
     }
   };
 
-  // Handle forgot password submission
   const handleForgotPassword = async (data: ForgotPasswordRequest) => {
     try {
-      const result = await authApi.forgotPassword(data);
-      return result;
-    } catch (error: any) {
-      return {
-        success: false,
-        message: error.response?.data?.message || error.message || 'Error al recuperar contraseña'
-      };
+      return await authApi.forgotPassword(data);
+    } catch (e: any) {
+      return { success: false, message: e.response?.data?.message || e.message || 'Error al recuperar contraseña' };
     }
   };
 
-  // Handle password change submission
   const handleChangePassword = async (data: { currentPassword?: string; newPassword: string }) => {
     try {
-      const result = await authApi.changePasswordWeb({
-        dni: pendingLoginDni,
-        new_password: data.newPassword
-      });
-
+      const result = await authApi.changePasswordWeb({ dni: pendingLoginDni, new_password: data.newPassword });
       if (result.success) {
-        // Close modal
         setIsChangePasswordModalOpen(false);
-
-        // Now login with the new password
-        const loginSuccess = await login({
-          dni: pendingLoginDni,
-          password: data.newPassword
-        });
-
-        if (loginSuccess) {
-          router.push('/dashboard');
-        }
+        const ok = await login({ dni: pendingLoginDni, password: data.newPassword });
+        if (ok) router.push('/dashboard');
       }
-
       return result;
-    } catch (error: any) {
-      return {
-        success: false,
-        message: error.response?.data?.message || error.message || 'Error al cambiar contraseña'
-      };
+    } catch (e: any) {
+      return { success: false, message: e.response?.data?.message || e.message || 'Error al cambiar contraseña' };
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gold-100 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primary-50 rounded-full blur-3xl opacity-40"></div>
-      </div>
+    <>
+      <style>{`
+        @keyframes qcProgress {
+          from { stroke-dashoffset: 327; }
+          to   { stroke-dashoffset: 0;   }
+        }
+        @keyframes qcPulse {
+          0%,100% { transform: scale(1);    opacity: 1;   }
+          50%      { transform: scale(0.92); opacity: 0.75; }
+        }
+        @keyframes qcScaleIn {
+          0%   { transform: scale(0);    opacity: 0; }
+          65%  { transform: scale(1.18); opacity: 1; }
+          100% { transform: scale(1);    opacity: 1; }
+        }
+        @keyframes qcCheck {
+          from { stroke-dashoffset: 60; }
+          to   { stroke-dashoffset: 0;  }
+        }
+        @keyframes qcShimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position:  200% center; }
+        }
+        @keyframes qcFadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0);    }
+        }
+        @keyframes qcCardIn {
+          from { opacity: 0; transform: translateY(24px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
+        }
 
-      <div className="relative w-full max-w-md">
-        {/* Back to home */}
-        <Link
-          href="/"
-          className="inline-flex items-center text-gray-600 hover:text-primary-600 transition mb-8 group"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition" />
-          Volver al inicio
-        </Link>
+      `}</style>
 
-        {/* Login card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 border border-white/80 ring-1 ring-gray-100/50">
-          {/* Logo and title */}
-          <div className="text-center mb-8">
-            <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto mx-auto mb-4" />
-            <p className="text-gray-600 text-lg">Inicia sesión en tu cuenta</p>
-          </div>
+      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: '#f8fafc', position: 'relative', overflow: 'hidden' }}>
 
-          {/* Error message */}
-          {error && (
-            <div className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in duration-300">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100/80 flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-bold text-red-800 mb-0.5">Error de autenticación</p>
-                <p className="text-sm text-red-700/90">{error}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Login form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* DNI field */}
-            <div>
-              <label htmlFor="dni" className="block text-sm font-medium text-gray-700 mb-2">
-                DNI / CE / RUC
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <CreditCard className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  {...register('dni')}
-                  type="text"
-                  id="dni"
-                  className={`block w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.dni ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
-                  }`}
-                  placeholder="12345678"
-                  disabled={isLoading}
-                  onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  onPaste={(e) => {
-                    const pastedText = e.clipboardData.getData('text');
-                    if (!/^\d+$/.test(pastedText)) {
-                      e.preventDefault();
-                    }
-                  }}
-                />
-              </div>
-              {errors.dni && (
-                <p className="mt-2 text-sm text-red-600">{errors.dni.message}</p>
-              )}
-            </div>
-
-            {/* Password field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Contraseña
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  className={`block w-full pl-12 pr-12 py-3 border-2 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
-                    errors.password ? 'border-red-200/50 bg-red-50/30 focus:bg-white' : 'border-gray-300'
-                  }`}
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
-              )}
-            </div>
-
-            {/* Forgot password */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Recuérdame
-                </label>
-              </div>
-              <div className="text-sm">
-                <button
-                  type="button"
-                  onClick={() => setIsForgotPasswordModalOpen(true)}
-                  className="text-primary hover:text-primary-600 font-medium"
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
-            </div>
-
-            {/* Submit button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex items-center justify-center btn-primary-gradient text-white py-3.5 px-4 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Iniciando sesión...
-                </>
-              ) : (
-                <>
-                  <LogIn className="w-5 h-5 mr-2 group-hover:translate-x-1 transition" />
-                  Iniciar Sesión
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="mt-8 relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/70 backdrop-blur-sm text-gray-500">¿No tienes una cuenta?</span>
-            </div>
-          </div>
-
-          {/* Register link */}
-          <div className="mt-6 text-center">
-            <Link
-              href="/crear-cuenta"
-              className="inline-flex items-center justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-xl font-semibold hover:bg-primary-50 hover:shadow-md transition-all duration-200"
-            >
-              Crear cuenta gratis
-            </Link>
-          </div>
+        {/* Background blobs */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: 340, height: 340, borderRadius: '50%', background: 'rgba(34,197,94,0.10)', filter: 'blur(60px)' }} />
+          <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: 300, height: 300, borderRadius: '50%', background: 'rgba(30,41,59,0.08)', filter: 'blur(60px)' }} />
         </div>
 
-        {/* Security note */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Tus datos están protegidos con encriptación de nivel bancario
-        </p>
-      </div>
+        <div style={{ position: 'relative', width: '100%', maxWidth: 420, animation: 'qcCardIn 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
 
-      {/* Modals */}
+          {/* Back link */}
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748b', fontSize: 12, fontWeight: 500, textDecoration: 'none', marginBottom: 8 }}>
+            <ArrowLeft size={14} />
+            Volver al inicio
+          </Link>
+
+          {/* Card */}
+          <div style={{
+            background: '#ffffff',
+            borderRadius: 20,
+            boxShadow: '0 8px 40px rgba(30,41,59,0.10), 0 2px 8px rgba(30,41,59,0.06)',
+            border: '1px solid #e2e8f0',
+            overflow: 'hidden',
+            position: 'relative',
+          }}>
+
+            {/* ── Animation overlay ── */}
+            {loginPhase !== 'idle' && (
+              <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: '#fff', borderRadius: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
+
+                {/* Ring */}
+                <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(34,197,94,0.15)" strokeWidth="7" />
+                    {loginPhase === 'loading' && (
+                      <circle
+                        cx="64" cy="64" r="52"
+                        fill="none" stroke="#22C55E" strokeWidth="7" strokeLinecap="round"
+                        strokeDasharray="327" strokeDashoffset="327"
+                        style={{ animation: 'qcProgress 2.6s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                        onAnimationEnd={handleAnimEnd}
+                      />
+                    )}
+                    {loginPhase === 'success' && (
+                      <circle cx="64" cy="64" r="52" fill="none" stroke="#16a34a" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                    )}
+                    {loginPhase === 'error' && (
+                      <circle cx="64" cy="64" r="52" fill="none" stroke="#ef4444" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" style={{ transition: 'stroke 0.3s ease' }} />
+                    )}
+                  </svg>
+
+                  {/* Center */}
+                  <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.10)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                    {loginPhase === 'loading' ? (
+                      <Image src="/logo-principal.png" alt="QoriCash" width={58} height={58} style={{ objectFit: 'contain', animation: 'qcPulse 1.8s ease-in-out infinite' }} />
+                    ) : loginPhase === 'error' ? (
+                      <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                          <circle cx="22" cy="22" r="22" fill="#ef4444" />
+                          <line x1="14" y1="14" x2="30" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
+                          <line x1="30" y1="14" x2="14" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                          <circle cx="22" cy="22" r="22" fill="#16a34a" />
+                          <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="60" strokeDashoffset="60" style={{ animation: 'qcCheck 0.5s ease-out 0.15s forwards' }} />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Text */}
+                <div style={{ textAlign: 'center', animation: 'qcFadeUp 0.35s ease-out both', padding: '0 16px' }}>
+                  {loginPhase === 'loading' ? (
+                    <>
+                      <p style={{
+                        fontSize: 14, fontWeight: 700, margin: 0,
+                        background: 'linear-gradient(90deg,#16A34A 0%,#22C55E 45%,#16A34A 90%)',
+                        backgroundSize: '200% auto',
+                        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                        animation: 'qcShimmer 1.8s linear infinite',
+                      }}>
+                        Verificando credenciales...
+                      </p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera</p>
+                    </>
+                  ) : loginPhase === 'error' ? (
+                    <>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>Acceso denegado</p>
+                      <p style={{ fontSize: 12, color: '#ef4444', marginTop: 6, fontWeight: 600 }}>{loginError}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Bienvenido!</p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Redirigiendo al dashboard...</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ── Header strip ── */}
+            <div style={{ background: '#1E293B', padding: '16px 32px 14px', textAlign: 'center' }}>
+              <Image src="/logo-principal.png" alt="QoriCash" width={40} height={40} style={{ objectFit: 'contain', margin: '0 auto 8px' }} />
+              <h1 style={{ fontSize: 17, fontWeight: 800, color: '#ffffff', margin: 0 }}>Iniciar sesión</h1>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
+            </div>
+
+            {/* ── Form body ── */}
+            <div style={{ padding: '16px 24px 20px' }}>
+
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {/* DNI */}
+                <div style={{ marginBottom: 12 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                    Número de Documento
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <CreditCard size={16} color="#94a3b8" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                    <input
+                      {...register('dni')}
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="12345678"
+                      maxLength={11}
+                      disabled={isLoading || isBlocked}
+                      onKeyDown={e => { if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault(); }}
+                      onPaste={e => { const t = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,11); e.preventDefault(); document.execCommand('insertText', false, t); }}
+                      style={{
+                        width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 9, paddingBottom: 9,
+                        border: errors.dni ? '1.5px solid #fca5a5' : '1.5px solid #e2e8f0',
+                        borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
+                        background: errors.dni ? '#fef2f2' : '#fff', boxSizing: 'border-box',
+                        transition: 'border-color 0.15s',
+                      }}
+                      onFocus={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#22C55E'; }}
+                      onBlur={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                    />
+                  </div>
+                  {errors.dni && <p style={{ margin: '5px 0 0', fontSize: 11, color: '#dc2626' }}>{errors.dni.message}</p>}
+                </div>
+
+                {/* Password */}
+                <div style={{ marginBottom: 14 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                    Contraseña
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <Lock size={16} color="#94a3b8" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                    <input
+                      {...register('password')}
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      disabled={isLoading || isBlocked}
+                      style={{
+                        width: '100%', paddingLeft: 36, paddingRight: 42, paddingTop: 9, paddingBottom: 9,
+                        border: errors.password ? '1.5px solid #fca5a5' : '1.5px solid #e2e8f0',
+                        borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
+                        background: errors.password ? '#fef2f2' : '#fff', boxSizing: 'border-box',
+                        transition: 'border-color 0.15s',
+                      }}
+                      onFocus={e => { if (!errors.password) e.currentTarget.style.borderColor = '#22C55E'; }}
+                      onBlur={e => { if (!errors.password) e.currentTarget.style.borderColor = '#e2e8f0'; }}
+                    />
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => setShowPassword(v => !v)}
+                      style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
+                    >
+                      {showPassword
+                        ? <EyeOff size={16} color="#94a3b8" />
+                        : <Eye size={16} color="#94a3b8" />
+                      }
+                    </button>
+                  </div>
+                  {errors.password && <p style={{ margin: '5px 0 0', fontSize: 11, color: '#dc2626' }}>{errors.password.message}</p>}
+                </div>
+
+                {/* Row: remember + forgot */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 13, color: '#64748b' }}>
+                    <input type="checkbox" style={{ width: 15, height: 15, accentColor: '#1E293B', cursor: 'pointer' }} />
+                    Recuérdame
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPasswordModalOpen(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#22C55E', fontWeight: 600, padding: 0 }}
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={isLoading || isBlocked}
+                  style={{
+                    width: '100%', padding: '11px', borderRadius: 11, border: 'none',
+                    background: isBlocked ? '#94a3b8' : '#1E293B', color: '#fff', fontSize: 14, fontWeight: 700,
+                    cursor: (isLoading || isBlocked) ? 'not-allowed' : 'pointer', opacity: (isLoading || isBlocked) ? 0.7 : 1,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#334155'; }}
+                  onMouseLeave={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#1E293B'; }}
+                >
+                  Iniciar Sesión
+                </button>
+
+                {/* Intentos / Bloqueado */}
+                {isBlocked ? (
+                  <div style={{ marginTop: 12, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, textAlign: 'center' }}>
+                    <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#dc2626' }}>Cuenta bloqueada</p>
+                    <p style={{ margin: '4px 0 0', fontSize: 11, color: '#64748b' }}>
+                      Usa <span style={{ color: '#22C55E', fontWeight: 600, cursor: 'pointer' }} onClick={() => setIsForgotPasswordModalOpen(true)}>¿Olvidaste tu contraseña?</span> para recuperar el acceso
+                    </p>
+                  </div>
+                ) : failedAttempts > 0 ? (
+                  <p style={{ margin: '10px 0 0', textAlign: 'center', fontSize: 12, fontWeight: 700, color: '#ef4444' }}>
+                    Te quedan {3 - failedAttempts} intento{3 - failedAttempts !== 1 ? 's' : ''} disponible{3 - failedAttempts !== 1 ? 's' : ''}
+                  </p>
+                ) : null}
+              </form>
+
+              {/* Divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '16px 0' }}>
+                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
+                <span style={{ fontSize: 12, color: '#94a3b8' }}>¿No tienes cuenta?</span>
+                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
+              </div>
+
+              {/* Register */}
+              <Link
+                href="/crear-cuenta"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '100%', padding: '10px', borderRadius: 11,
+                  border: '1.5px solid #1E293B', background: '#fff',
+                  color: '#1E293B', fontSize: 14, fontWeight: 700, textDecoration: 'none',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#f8fafc')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
+              >
+                Crear cuenta gratis
+              </Link>
+            </div>
+          </div>
+
+          {/* Security note */}
+          <p style={{ marginTop: 12, textAlign: 'center', fontSize: 11, color: '#94a3b8' }}>
+            Tus datos están protegidos con encriptación de nivel bancario
+          </p>
+        </div>
+      </main>
+
       <ForgotPasswordModal
         isOpen={isForgotPasswordModalOpen}
         onClose={() => setIsForgotPasswordModalOpen(false)}
         onSubmit={handleForgotPassword}
       />
-
       <ChangePasswordModal
         isOpen={isChangePasswordModalOpen}
         onSubmit={handleChangePassword}
         canClose={false}
       />
-    </main>
+    </>
   );
 }

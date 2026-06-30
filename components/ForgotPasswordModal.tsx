@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { X, Mail, CreditCard, CheckCircle, AlertCircle, Key } from 'lucide-react';
 
-// Esquema de validación (simplificado para usar endpoint /api/client/*)
 const forgotPasswordSchema = z.object({
   dni: z.string()
     .min(1, 'Ingresa tu número de documento')
@@ -49,15 +48,11 @@ export default function ForgotPasswordModal({
   const handleFormSubmit = async (data: ForgotPasswordFormData) => {
     setIsSubmitting(true);
     setError(null);
-
     try {
       const result = await onSubmit(data);
-
       if (result.success) {
         setSuccess(true);
-        setTimeout(() => {
-          handleClose();
-        }, 3000);
+        setTimeout(() => { handleClose(); }, 3000);
       } else {
         setError(result.message || 'Error al recuperar contraseña');
       }
@@ -78,104 +73,121 @@ export default function ForgotPasswordModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-      <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border-2 border-white/60">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-primary-500 to-primary-600">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <Key className="w-5 h-5 text-white" />
+    <div className="animate-modal-backdrop fixed inset-0 bg-black/65 backdrop-blur-md flex items-center justify-center z-50 px-4">
+      <div className="animate-modal-enter bg-white rounded-2xl w-full max-w-md overflow-hidden"
+        style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}>
+
+        {/* Header — dark gradient */}
+        <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
+          <div className="absolute -top-4 -left-4 w-24 h-24 rounded-full pointer-events-none"
+            style={{ background: 'rgba(34,197,94,0.10)', filter: 'blur(24px)' }} />
+          <div className="absolute -bottom-6 right-10 w-20 h-20 rounded-full pointer-events-none"
+            style={{ background: 'rgba(34,197,94,0.06)', filter: 'blur(20px)' }} />
+
+          <div className="relative flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(34,197,94,0.18)' }}>
+              <Key className="w-[18px] h-[18px] text-primary-400" />
             </div>
-            <h3 className="text-lg font-bold text-white">Recuperar Contraseña</h3>
+            <div>
+              <p className="text-white font-extrabold text-sm leading-tight">Recuperar Contraseña</p>
+              <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                Recibirás una contraseña temporal en tu correo
+              </p>
+            </div>
           </div>
-          <button
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="text-white/80 hover:text-white transition disabled:opacity-50"
-          >
-            <X className="w-5 h-5" />
+          <button onClick={handleClose} disabled={isSubmitting}
+            className="relative p-1.5 rounded-lg transition-colors disabled:opacity-50"
+            style={{ color: 'rgba(255,255,255,0.4)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}>
+            <X style={{ width: '18px', height: '18px' }} />
           </button>
         </div>
 
         {/* Body */}
         <div className="px-6 py-6">
-          {/* Success Message */}
           {success ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-50/80 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-green-200/50">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                <CheckCircle className="w-9 h-9 text-primary-600" />
               </div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">
-                ¡Contraseña enviada!
-              </h4>
-              <p className="text-gray-600 mb-4">
+              <h4 className="text-lg font-extrabold text-gray-900 mb-2">¡Contraseña enviada!</h4>
+              <p className="text-gray-500 text-sm leading-relaxed mb-2">
                 Hemos enviado una contraseña temporal a tu correo electrónico.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-400">
                 Revisa tu bandeja de entrada y sigue las instrucciones.
               </p>
             </div>
           ) : (
             <>
-              {/* Error Message */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-xl flex items-start gap-3 shadow-sm animate-in fade-in duration-300">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100/80 flex items-center justify-center">
-                    <AlertCircle className="w-5 h-5 text-red-600" />
+                <div className="mb-5 p-3.5 rounded-xl flex items-start gap-3"
+                  style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)' }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(239,68,68,0.12)' }}>
+                    <AlertCircle className="w-4 h-4 text-red-500" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-red-800 mb-0.5">Error</p>
-                    <p className="text-sm text-red-700/90">{error}</p>
+                  <div>
+                    <p className="text-xs font-bold text-red-700 mb-0.5">Error</p>
+                    <p className="text-xs text-red-600">{error}</p>
                   </div>
                 </div>
               )}
 
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-500 text-sm leading-relaxed mb-5">
                 Ingresa tus datos para recibir una contraseña temporal en tu correo electrónico.
               </p>
 
-              <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-                {/* DNI/CE/RUC */}
+              <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    DNI / CE / RUC *
+                  <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
+                    style={{ color: 'rgba(13,27,42,0.5)' }}>
+                    DNI / CE / RUC
                   </label>
                   <div className="relative">
-                    <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     <input
                       type="text"
                       {...register('dni')}
                       placeholder="DNI (8), CE (9) o RUC (11) dígitos"
                       maxLength={11}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold text-gray-800 bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl focus:outline-none transition-all placeholder-gray-300"
+                      style={{ boxShadow: 'none' }}
+                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
+                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
                     />
                   </div>
                   {dni && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      {dni.length} dígitos ingresados
-                    </p>
+                    <p className="text-[11px] text-gray-400 mt-1.5 font-medium">{dni.length} dígitos ingresados</p>
                   )}
                   {errors.dni && (
-                    <p className="text-red-600 text-sm mt-2">{errors.dni.message}</p>
+                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.dni.message}</p>
                   )}
                 </div>
 
-                {/* Email */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Correo Electrónico *
+                  <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
+                    style={{ color: 'rgba(13,27,42,0.5)' }}>
+                    Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     <input
                       type="email"
                       {...register('email')}
                       placeholder="correo@ejemplo.com"
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold text-gray-800 bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl focus:outline-none transition-all placeholder-gray-300"
+                      style={{ boxShadow: 'none' }}
+                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
+                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-600 text-sm mt-2">{errors.email.message}</p>
+                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.email.message}</p>
                   )}
                 </div>
               </form>
@@ -185,20 +197,24 @@ export default function ForgotPasswordModal({
 
         {/* Footer */}
         {!success && (
-          <div className="flex gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
-            <button
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition font-medium disabled:opacity-50"
-            >
+          <div className="flex gap-3 px-6 pb-6">
+            <button onClick={handleClose} disabled={isSubmitting}
+              className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 hover:bg-gray-50 hover:border-gray-300 active:scale-[0.98]">
               Cancelar
             </button>
-            <button
-              onClick={handleSubmit(handleFormSubmit)}
-              disabled={isSubmitting}
-              className="flex-1 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium disabled:opacity-50"
-            >
-              {isSubmitting ? 'Enviando...' : 'Recuperar Contraseña'}
+            <button onClick={handleSubmit(handleFormSubmit)} disabled={isSubmitting}
+              className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-60 active:scale-[0.98]"
+              style={{
+                background: isSubmitting ? '#d1d5db' : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
+                boxShadow: isSubmitting ? 'none' : '0 4px 14px rgba(34,197,94,0.35)',
+              }}>
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 rounded-full border-2 animate-spin"
+                    style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'white' }} />
+                  Enviando...
+                </span>
+              ) : 'Recuperar Contraseña'}
             </button>
           </div>
         )}

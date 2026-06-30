@@ -3,7 +3,7 @@ import { getAlertas, markAlertasNotificadas, updateLastCheck, type AlertaTC } fr
 
 // ── TC fetcher ─────────────────────────────────────────────────────────────────
 async function fetchTC(): Promise<{ compra: number; venta: number }> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const apiUrl = process.env.BACKEND_URL || 'https://app.qoricash.pe';
   const res = await fetch(`${apiUrl}/api/platform/public/exchange-rates`, {
     next: { revalidate: 0 },
   });
@@ -228,6 +228,10 @@ export async function GET(req: NextRequest) {
 
 // ── POST handler — manual trigger from Flask dashboard ────────────────────────
 export async function POST(req: NextRequest) {
+  const secret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret');
+  if (!secret || secret !== process.env.CRON_SECRET) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+  }
   const body = await req.json().catch(() => null);
   const compra = body?.compra ? Number(body.compra) : undefined;
   const venta  = body?.venta  ? Number(body.venta)  : undefined;

@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" fill="none">
+
+  <!-- Fondo marca -->
+  <rect width="480" height="400" fill="#1E293B"/>
+
+  <!-- Glow decorativo -->
+  <circle cx="360" cy="80"  r="130" fill="#22C55E" opacity="0.05"/>
+  <circle cx="100" cy="350" r="90"  fill="#22C55E" opacity="0.06"/>
+
+  <!-- Puntos decorativos -->
+  <circle cx="36" cy="42" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="52" cy="42" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="68" cy="42" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="36" cy="58" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="52" cy="58" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="68" cy="58" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="36" cy="74" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="52" cy="74" r="2.5" fill="#22C55E" opacity="0.3"/>
+  <circle cx="68" cy="74" r="2.5" fill="#22C55E" opacity="0.3"/>
+
+  <circle cx="412" cy="340" r="2.5" fill="#22C55E" opacity="0.22"/>
+  <circle cx="428" cy="340" r="2.5" fill="#22C55E" opacity="0.22"/>
+  <circle cx="444" cy="340" r="2.5" fill="#22C55E" opacity="0.22"/>
+  <circle cx="412" cy="356" r="2.5" fill="#22C55E" opacity="0.22"/>
+  <circle cx="428" cy="356" r="2.5" fill="#22C55E" opacity="0.22"/>
+  <circle cx="444" cy="356" r="2.5" fill="#22C55E" opacity="0.22"/>
+
+  <!-- ══════════════════
+       SUPERFICIE MESA
+  ══════════════════ -->
+  <rect x="0" y="308" width="480" height="92" rx="0" fill="#162030"/>
+  <rect x="0" y="308" width="480" height="3" fill="#22C55E" opacity="0.15"/>
+
+  <!-- ══════════════════
+       LAPTOP — cuerpo plano sobre mesa
+  ══════════════════ -->
+  <!-- Base laptop (teclado) — perspectiva levemente inclinada -->
+  <path d="M148 295 Q150 310 152 320 L380 312 Q378 298 376 284 Z" fill="#0F172A"/>
+  <!-- Teclado detalle -->
+  <rect x="165" y="298" width="200" height="3" rx="1.5" fill="#1E3A5F" opacity="0.5"/>
+  <rect x="165" y="304" width="180" height="2" rx="1" fill="#1E3A5F" opacity="0.3"/>
+  <rect x="165" y="309" width="190" height="2" rx="1" fill="#1E3A5F" opacity="0.3"/>
+  <!-- Touchpad -->
+  <rect x="236" y="314" width="56" height="3" rx="1.5" fill="#1a2d40"/>
+
+  <!-- Pantalla laptop — abierta hacia el espectador -->
+  <path d="M148 295 L140 178 L374 168 L376 284 Z" fill="#0F172A"/>
+  <!-- Marco pantalla -->
+  <path d="M152 289 L145 186 L368 177 L370 278 Z" fill="#1a3a5c"/>
+  <!-- Cámara -->
+  <circle cx="257" cy="179" r="3" fill="#0F172A"/>
+
+  <!-- Pantalla: contenido formulario de registro -->
+  <path d="M151 283 L146 194 L367 185 L368 272 Z" fill="#0D1B2A" opacity="0.5"/>
+  <!-- Header -->
+  <path d="M146 194 L151 208 L368 199 L367 185 Z" fill="#0D1B2A" opacity="0.7"/>
+  <circle cx="164" cy="197" r="8" fill="#22C55E" opacity="0.9"/>
+  <path d="M161 197 L163 200 L168 194" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="178" y="193" width="55" height="4.5" rx="2.2" fill="white" opacity="0.75"/>
+  <rect x="178" y="200" width="38" height="3.5" rx="1.8" fill="white" opacity="0.3"/>
+
+  <!-- Campos formulario izq -->
+  <rect x="155" y="218" width="72" height="3.5" rx="1.8" fill="white" opacity="0.4"/>
+  <rect x="155" y="225" width="86" height="9"   rx="3"   fill="white" opacity="0.06"/>
+  <rect x="155" y="238" width="72" height="3.5" rx="1.8" fill="white" opacity="0.4"/>
+  <rect x="155" y="245" width="86" height="9"   rx="3"   fill="white" opacity="0.06"/>
+  <rect x="155" y="258" width="72" height="3.5" rx="1.8" fill="white" opacity="0.4"/>
+  <rect x="155" y="265" width="86" height="9"   rx="3"   fill="white" opacity="0.06"/>
+  <!-- Botón -->
+  <rect x="155" y="280" width="86" height="13" rx="6.5" fill="#22C55E"/>
+  <rect x="169" y="284" width="58" height="4.5" rx="2.2" fill="white" opacity="0.9"/>
+
+  <!-- Checkmarks derecha -->
+  <circle cx="264" cy="228" r="7" fill="#22C55E" opacity="0.18"/>
+  <path d="M260 228 L263 231 L269 225" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="276" y="224" width="78" height="4" rx="2" fill="white" opacity="0.4"/>
+  <rect x="276" y="231" width="56" height="3" rx="1.5" fill="white" opacity="0.2"/>
+
+  <circle cx="264" cy="248" r="7" fill="#22C55E" opacity="0.18"/>
+  <path d="M260 248 L263 251 L269 245" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="276" y="244" width="78" height="4" rx="2" fill="white" opacity="0.4"/>
+  <rect x="276" y="251" width="64" height="3" rx="1.5" fill="white" opacity="0.2"/>
+
+  <circle cx="264" cy="268" r="7" fill="white" opacity="0.05"/>
+  <circle cx="264" cy="268" r="3"  fill="white" opacity="0.12"/>
+  <rect x="276" y="264" width="78" height="4" rx="2" fill="white" opacity="0.18"/>
+  <rect x="276" y="271" width="48" height="3" rx="1.5" fill="white" opacity="0.1"/>
+
+  <!-- ══════════════════
+       CILINDRO VERDE (izquierda)
+  ══════════════════ -->
+  <!-- Objeto cilíndrico — adaptado a verde marca -->
+  <ellipse cx="98" cy="306" rx="22" ry="10" fill="#16A34A"/>
+  <rect x="76" y="270" width="44" height="36" rx="4" fill="#22C55E"/>
+  <ellipse cx="98" cy="270" rx="22" ry="10" fill="#4ADE80"/>
+  <!-- Detalle brillante -->
+  <rect x="84" y="272" width="8" height="30" rx="4" fill="white" opacity="0.15"/>
+  <!-- Sombra base -->
+  <ellipse cx="98" cy="314" rx="24" ry="6" fill="#0F172A" opacity="0.3"/>
+
+  <!-- Lápiz -->
+  <g transform="rotate(-15 310 318)">
+    <rect x="290" y="312" width="68" height="8" rx="3" fill="#F5C27A"/>
+    <rect x="354" y="313" width="12" height="6" rx="2" fill="#E5A020"/>
+    <polygon points="366,313 376,316 366,319" fill="#FBBF24" opacity="0.7"/>
+    <rect x="290" y="313" width="10" height="6" rx="3" fill="#0F172A" opacity="0.5"/>
+    <rect x="291" y="314" width="7" height="4" rx="2" fill="#1a1a2e"/>
+  </g>
+
+  <!-- Taza de café (anillo) -->
+  <ellipse cx="410" cy="318" rx="18" ry="7" fill="none" stroke="#334155" stroke-width="3"/>
+  <ellipse cx="410" cy="318" rx="10" ry="4" fill="none" stroke="#334155" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- ══════════════════
+       PERSONAJE
+  ══════════════════ -->
+
+  <!-- Cabello largo — fondo (detrás del cuerpo) -->
+  <path d="M218 100 Q200 120 192 160 Q186 200 190 250 Q192 280 196 300 L208 298 Q206 272 207 248 Q208 204 218 168 Q228 136 238 120 Z" fill="#1A1A2E"/>
+
+  <!-- TORSO / CAMISA BLANCA -->
+  <!-- Forma orgánica cuerpo inclinado hacia adelante -->
+  <path d="M208 188 Q196 196 188 216 Q180 238 182 262 Q184 286 188 306 L320 300 Q326 278 324 254 Q322 228 312 210 Q304 194 290 188 Q268 180 248 180 Q228 180 208 188 Z" fill="white"/>
+  <!-- Sombra/profundidad camisa -->
+  <path d="M208 188 Q196 196 188 216 Q186 228 188 242 Q200 222 218 210 Q232 202 248 200 Z" fill="#E8EDF2" opacity="0.6"/>
+  <path d="M290 188 Q304 194 312 210 Q320 226 322 242 Q310 220 294 210 Q278 202 260 200 Z" fill="#E8EDF2" opacity="0.4"/>
+  <!-- Pliegues camisa -->
+  <path d="M220 200 Q216 230 218 270" stroke="#CBD5E1" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M264 198 Q268 228 266 268" stroke="#CBD5E1" stroke-width="1.5" fill="none" opacity="0.4"/>
+
+  <!-- Cuello camisa (abertura V leve) -->
+  <path d="M238 188 L248 204 L258 188" fill="none" stroke="#CBD5E1" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- BRAZO IZQUIERDO — doblado sobre laptop -->
+  <!-- Brazo superior -->
+  <path d="M188 210 Q174 220 168 244 Q164 262 168 280 L188 278 Q186 262 190 246 Q194 230 204 220 Z" fill="white"/>
+  <path d="M188 210 Q174 220 168 244 Q165 255 167 265 Q175 248 186 238 Z" fill="#E8EDF2" opacity="0.5"/>
+  <!-- Antebrazo izquierdo apoyado en mesa horizontalmente -->
+  <path d="M168 280 Q158 286 142 290 Q126 293 112 294 L110 308 Q130 306 150 300 Q166 294 186 286 Z" fill="#F5C27A"/>
+  <!-- Mano izquierda -->
+  <path d="M104 292 Q94 294 90 300 Q88 308 94 312 Q106 316 118 312 Q126 308 124 298 Z" fill="#F5C27A"/>
+  <!-- Dedos -->
+  <path d="M92 296 Q84 290 82 298 Q82 306 90 308" stroke="#F5C27A" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M96 292 Q90 284 86 292 Q84 300 92 304" stroke="#F5C27A" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+  <!-- BRAZO DERECHO — extendido hacia laptop escribiendo -->
+  <!-- Brazo superior -->
+  <path d="M312 210 Q324 218 330 240 Q334 258 330 276 L312 274 Q314 258 312 242 Q310 226 302 216 Z" fill="white"/>
+  <path d="M312 210 Q324 218 330 240 Q332 252 330 262 Q322 246 312 236 Z" fill="#E8EDF2" opacity="0.4"/>
+  <!-- Antebrazo derecho inclinado hacia laptop -->
+  <path d="M330 276 Q344 268 360 256 Q374 246 386 240 L388 254 Q374 260 360 270 Q346 280 332 288 Z" fill="#F5C27A"/>
+  <!-- Mano derecha con lápiz/stylus -->
+  <path d="M388 236 Q396 228 402 230 Q408 234 406 242 Q400 256 390 258 Q382 258 380 250 Z" fill="#F5C27A"/>
+  <!-- Stylus en mano -->
+  <path d="M400 226 L424 208" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+  <path d="M420 210 L428 204" stroke="#22C55E" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- CUELLO -->
+  <path d="M234 170 Q234 154 248 150 Q262 154 262 170 L258 180 Q248 184 238 180 Z" fill="#F5C27A"/>
+
+  <!-- CABEZA -->
+  <path d="M210 128 Q208 100 228 90 Q240 85 252 88 Q272 95 276 118 Q280 138 276 158 Q272 176 260 182 Q248 186 236 182 Q220 176 214 158 Q208 142 210 128 Z" fill="#F5C27A"/>
+
+  <!-- CABELLO — encima de la cabeza -->
+  <!-- Parte superior cabello -->
+  <path d="M210 128 Q208 98 228 88 Q240 83 252 86 Q270 93 276 118 Q270 105 258 100 Q248 97 238 98 Q224 100 216 110 Z" fill="#1A1A2E"/>
+  <!-- Cabello lateral derecho que cae -->
+  <path d="M274 118 Q280 138 278 162 Q282 148 284 128 Q284 104 270 93 Z" fill="#1A1A2E"/>
+  <!-- Mechón frontal -->
+  <path d="M218 110 Q214 122 212 134 Q210 118 212 104 Q216 96 224 90 Z" fill="#1A1A2E"/>
+  <!-- Cabello largo cayendo por espalda -->
+  <path d="M276 120 Q290 140 292 180 Q294 220 286 270 Q280 300 276 318 L266 316 Q274 296 278 264 Q282 220 278 180 Q274 148 264 128 Z" fill="#1A1A2E"/>
+
+  <!-- ROSTRO -->
+  <!-- Cejas -->
+  <path d="M222 130 Q229 126 236 129" stroke="#1A1A2E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M248 128 Q255 124 262 128" stroke="#1A1A2E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Ojos semiabiertos (mirando hacia abajo/laptop) -->
+  <ellipse cx="229" cy="140" rx="7" ry="5.5" fill="white"/>
+  <ellipse cx="229" cy="141" rx="5" ry="4.5" fill="#5C3D1A"/>
+  <circle cx="229" cy="141" r="3" fill="#1A1A2E"/>
+  <circle cx="230" cy="139" r="1.5" fill="white"/>
+  <!-- Párpado superior ojo izq -->
+  <path d="M222 137 Q229 133 236 137" stroke="#1A1A2E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <ellipse cx="257" cy="139" rx="7" ry="5.5" fill="white"/>
+  <ellipse cx="257" cy="140" rx="5" ry="4.5" fill="#5C3D1A"/>
+  <circle cx="257" cy="140" r="3" fill="#1A1A2E"/>
+  <circle cx="258" cy="138" r="1.5" fill="white"/>
+  <!-- Párpado superior ojo der -->
+  <path d="M250 136 Q257 132 264 136" stroke="#1A1A2E" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Nariz sutil -->
+  <path d="M242 148 Q240 156 238 158 Q243 161 248 158 Q246 156 244 148" stroke="#E5A020" stroke-width="1.2" fill="none" opacity="0.5"/>
+
+  <!-- Boca / sonrisa sutil -->
+  <path d="M235 166 Q243 172 251 166" stroke="#1A1A2E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M235 166 Q237 170 240 170 Q244 170 251 166" fill="#F5A0A0" opacity="0.25"/>
+
+  <!-- Mejilla levemente rosada -->
+  <ellipse cx="220" cy="158" rx="9" ry="5" fill="#F87171" opacity="0.1"/>
+  <ellipse cx="264" cy="157" rx="9" ry="5" fill="#F87171" opacity="0.1"/>
+
+  <!-- ══════════════════
+       BADGE FLOTANTE — registro exitoso
+  ══════════════════ -->
+  <g transform="translate(318, 76)">
+    <rect width="130" height="52" rx="14" fill="#22C55E" opacity="0.95"/>
+    <circle cx="26" cy="26" r="13" fill="white" opacity="0.15"/>
+    <path d="M20 26 L24 30 L32 20" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="44" y="17" width="70" height="5"   rx="2.5" fill="white" opacity="0.95"/>
+    <rect x="44" y="26" width="54" height="4"   rx="2"   fill="white" opacity="0.65"/>
+    <rect x="44" y="34" width="44" height="3.5" rx="1.8" fill="white" opacity="0.4"/>
+  </g>
+  <path d="M318 102 Q302 116 290 130" stroke="#22C55E" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.35"/>
+
+  <!-- BADGE FLOTANTE — seguridad -->
+  <g transform="translate(38, 148)">
+    <rect width="110" height="46" rx="12" fill="#2D3F55"/>
+    <rect width="110" height="46" rx="12" stroke="#22C55E" stroke-width="1" opacity="0.35"/>
+    <rect x="14" y="16" width="16" height="15" rx="4" fill="#22C55E" opacity="0.7"/>
+    <path d="M16 16 L16 11 Q22 5 28 11 L28 16" stroke="#22C55E" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <circle cx="22" cy="24" r="2.5" fill="white" opacity="0.6"/>
+    <rect x="36" y="15" width="58" height="5"   rx="2.5" fill="white" opacity="0.6"/>
+    <rect x="36" y="24" width="44" height="4"   rx="2"   fill="white" opacity="0.3"/>
+  </g>
+  <path d="M148 171 Q162 178 176 190" stroke="#22C55E" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.28"/>
+
+</svg>

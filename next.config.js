@@ -16,6 +16,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/flask/:path*',
+        destination: 'https://app.qoricash.pe/:path*',
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig

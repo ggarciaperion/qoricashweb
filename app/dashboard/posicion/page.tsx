@@ -114,14 +114,14 @@ function getSemaforo(diferencia_usd: number) {
       color: 'green' as const,
       label: 'Posición equilibrada',
       action: 'Continuar operaciones normalmente',
-      bg: 'bg-green-50',
-      border: 'border-green-300',
-      ring: 'ring-green-200',
-      text: 'text-green-800',
-      subtext: 'text-green-600',
-      dot: 'bg-green-500',
-      dotPing: 'bg-green-500',
-      bar: 'bg-green-500',
+      bg: 'bg-primary-50',
+      border: 'border-primary-300',
+      ring: 'ring-primary-200',
+      text: 'text-primary-800',
+      subtext: 'text-primary-600',
+      dot: 'bg-primary-500',
+      dotPing: 'bg-primary-500',
+      bar: 'bg-primary-500',
     };
   }
   if (abs <= 3000) {
@@ -201,7 +201,7 @@ function getStatusBadge(status: string) {
     case 'En proceso':
       return { cls: 'bg-blue-100 text-blue-800', dot: 'bg-blue-500' };
     case 'Completada':
-      return { cls: 'bg-green-100 text-green-800', dot: 'bg-green-500' };
+      return { cls: 'bg-primary-100 text-primary-800', dot: 'bg-primary-500' };
     default:
       return { cls: 'bg-gray-100 text-gray-700', dot: 'bg-gray-400' };
   }
@@ -551,7 +551,7 @@ export default function PosicionPage() {
                 className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition disabled:opacity-40"
                 title="Copiar resumen al portapapeles"
               >
-                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-primary-500" /> : <Copy className="w-4 h-4" />}
                 <span className="hidden sm:inline">{copied ? 'Copiado' : 'Copiar'}</span>
               </button>
               <button
@@ -661,9 +661,9 @@ export default function PosicionPage() {
                 <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Utilidad bruta</span>
-                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <TrendingUp className="w-4 h-4 text-primary-500" />
                   </div>
-                  <div className={`text-2xl font-extrabold ${posicion.utilidad_pen >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  <div className={`text-2xl font-extrabold ${posicion.utilidad_pen >= 0 ? 'text-primary-600' : 'text-red-500'}`}>
                     {posicion.utilidad_pen >= 0 ? '' : '-'}{formatPEN(posicion.utilidad_pen)}
                   </div>
                   {spread && (
@@ -722,7 +722,7 @@ export default function PosicionPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   {apertura?.confirmed ? (
-                    <Lock className="w-4 h-4 text-green-500" />
+                    <Lock className="w-4 h-4 text-primary-500" />
                   ) : (
                     <Unlock className="w-4 h-4 text-gray-400" />
                   )}
@@ -737,11 +737,11 @@ export default function PosicionPage() {
               </div>
 
               {apertura?.confirmed ? (
-                <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                <div className="flex items-center gap-3 bg-primary-50 border border-primary-200 rounded-xl px-4 py-3">
+                  <CheckCircle2 className="w-5 h-5 text-primary-500 shrink-0" />
                   <div>
-                    <span className="text-sm font-bold text-green-800">Apertura confirmada</span>
-                    <span className="text-sm text-green-700 ml-2">
+                    <span className="text-sm font-bold text-primary-800">Apertura confirmada</span>
+                    <span className="text-sm text-primary-700 ml-2">
                       por <strong>{apertura.operatorName}</strong> a las{' '}
                       <strong>{formatTime(apertura.timestamp)}</strong>
                     </span>
@@ -794,7 +794,7 @@ export default function PosicionPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-xs">
                     <div className="bg-white/70 rounded-lg px-3 py-2">
                       <div className="text-indigo-400 font-semibold mb-0.5">Utilidad</div>
-                      <div className={`font-extrabold font-mono ${cierre.summary.utilidad >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                      <div className={`font-extrabold font-mono ${cierre.summary.utilidad >= 0 ? 'text-primary-600' : 'text-red-500'}`}>
                         S/{cierre.summary.utilidad.toFixed(2)}
                       </div>
                     </div>
@@ -808,7 +808,7 @@ export default function PosicionPage() {
                     </div>
                     <div className={`rounded-lg px-3 py-2 ${cierre.summary.pendientes > 0 ? 'bg-yellow-50' : 'bg-white/70'}`}>
                       <div className="text-indigo-400 font-semibold mb-0.5">Pendientes</div>
-                      <div className={`font-extrabold ${cierre.summary.pendientes > 0 ? 'text-yellow-600' : 'text-green-600'}`}>
+                      <div className={`font-extrabold ${cierre.summary.pendientes > 0 ? 'text-yellow-600' : 'text-primary-600'}`}>
                         {cierre.summary.pendientes}
                       </div>
                     </div>
@@ -843,7 +843,7 @@ export default function PosicionPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Compras completadas</div>
-                  <div className="text-base font-extrabold text-green-600">{formatUSD(posicion.compras_completadas_usd)}</div>
+                  <div className="text-base font-extrabold text-primary-600">{formatUSD(posicion.compras_completadas_usd)}</div>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Compras pendientes</div>
@@ -851,7 +851,7 @@ export default function PosicionPage() {
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Ventas completadas</div>
-                  <div className="text-base font-extrabold text-green-600">{formatUSD(posicion.ventas_completadas_usd)}</div>
+                  <div className="text-base font-extrabold text-primary-600">{formatUSD(posicion.ventas_completadas_usd)}</div>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Ventas pendientes</div>
@@ -1054,14 +1054,14 @@ export default function PosicionPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">USD</span>
-                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.usd.net >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.usd.net >= 0 ? 'text-primary-600' : 'text-red-500'}`}>
                       {movementsSummary.usd.net >= 0 ? '+' : ''}${movementsSummary.usd.net.toFixed(2)} neto
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-green-50 rounded-lg px-3 py-2">
-                      <div className="text-green-600 font-semibold mb-0.5">Entradas (Compras)</div>
-                      <div className="font-extrabold text-green-700 font-mono">${movementsSummary.usd.inflows.toFixed(2)}</div>
+                    <div className="bg-primary-50 rounded-lg px-3 py-2">
+                      <div className="text-primary-600 font-semibold mb-0.5">Entradas (Compras)</div>
+                      <div className="font-extrabold text-primary-700 font-mono">${movementsSummary.usd.inflows.toFixed(2)}</div>
                     </div>
                     <div className="bg-red-50 rounded-lg px-3 py-2">
                       <div className="text-red-600 font-semibold mb-0.5">Salidas (Ventas)</div>
@@ -1073,14 +1073,14 @@ export default function PosicionPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">PEN</span>
-                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.pen.net >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                    <span className={`text-sm font-extrabold font-mono ${movementsSummary.pen.net >= 0 ? 'text-primary-600' : 'text-red-500'}`}>
                       {movementsSummary.pen.net >= 0 ? '+' : ''}S/{movementsSummary.pen.net.toFixed(2)} neto
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-green-50 rounded-lg px-3 py-2">
-                      <div className="text-green-600 font-semibold mb-0.5">Entradas (Ventas)</div>
-                      <div className="font-extrabold text-green-700 font-mono">S/{movementsSummary.pen.inflows.toFixed(2)}</div>
+                    <div className="bg-primary-50 rounded-lg px-3 py-2">
+                      <div className="text-primary-600 font-semibold mb-0.5">Entradas (Ventas)</div>
+                      <div className="font-extrabold text-primary-700 font-mono">S/{movementsSummary.pen.inflows.toFixed(2)}</div>
                     </div>
                     <div className="bg-red-50 rounded-lg px-3 py-2">
                       <div className="text-red-600 font-semibold mb-0.5">Salidas (Compras)</div>
@@ -1101,7 +1101,7 @@ export default function PosicionPage() {
                     <AlertTriangle className="w-3 h-3" /> Descuadre crítico
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className="flex items-center gap-1 bg-primary-100 text-primary-700 text-xs font-bold px-2 py-0.5 rounded-full">
                     <CheckCircle2 className="w-3 h-3" /> Cuadrado
                   </span>
                 )}
@@ -1112,28 +1112,28 @@ export default function PosicionPage() {
                 </p>
                 {/* USD diff */}
                 <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${
-                  Math.abs(totalDifferences.usd) > 100 ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
+                  Math.abs(totalDifferences.usd) > 100 ? 'bg-red-50 border border-red-200' : 'bg-primary-50 border border-primary-200'
                 }`}>
                   <div>
                     <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-0.5">Diferencia USD</div>
                     <div className="text-xs text-gray-500">Actual vs Esperado</div>
                   </div>
                   <div className={`text-xl font-extrabold font-mono ${
-                    Math.abs(totalDifferences.usd) > 100 ? 'text-red-600' : 'text-green-600'
+                    Math.abs(totalDifferences.usd) > 100 ? 'text-red-600' : 'text-primary-600'
                   }`}>
                     {totalDifferences.usd >= 0 ? '+' : ''}${totalDifferences.usd.toFixed(2)}
                   </div>
                 </div>
                 {/* PEN diff */}
                 <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${
-                  Math.abs(totalDifferences.pen) > 300 ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'
+                  Math.abs(totalDifferences.pen) > 300 ? 'bg-red-50 border border-red-200' : 'bg-primary-50 border border-primary-200'
                 }`}>
                   <div>
                     <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-0.5">Diferencia PEN</div>
                     <div className="text-xs text-gray-500">Actual vs Esperado</div>
                   </div>
                   <div className={`text-xl font-extrabold font-mono ${
-                    Math.abs(totalDifferences.pen) > 300 ? 'text-red-600' : 'text-green-600'
+                    Math.abs(totalDifferences.pen) > 300 ? 'text-red-600' : 'text-primary-600'
                   }`}>
                     {totalDifferences.pen >= 0 ? '+' : ''}S/{totalDifferences.pen.toFixed(2)}
                   </div>
@@ -1222,7 +1222,7 @@ export default function PosicionPage() {
 
                       {/* Δ USD */}
                       <td className={`px-3 py-3.5 text-right font-semibold font-mono ${
-                        bank.usd.difference > 0 ? 'text-green-600' : bank.usd.difference < 0 ? 'text-red-500' : 'text-gray-400'
+                        bank.usd.difference > 0 ? 'text-primary-600' : bank.usd.difference < 0 ? 'text-red-500' : 'text-gray-400'
                       }`}>
                         {bank.usd.difference > 0 ? '+' : ''}{bank.usd.difference.toFixed(2)}
                       </td>
@@ -1269,7 +1269,7 @@ export default function PosicionPage() {
 
                       {/* Δ PEN */}
                       <td className={`px-3 py-3.5 text-right font-semibold font-mono ${
-                        bank.pen.difference > 0 ? 'text-green-600' : bank.pen.difference < 0 ? 'text-red-500' : 'text-gray-400'
+                        bank.pen.difference > 0 ? 'text-primary-600' : bank.pen.difference < 0 ? 'text-red-500' : 'text-gray-400'
                       }`}>
                         {bank.pen.difference > 0 ? '+' : ''}{bank.pen.difference.toFixed(2)}
                       </td>
@@ -1321,7 +1321,7 @@ export default function PosicionPage() {
             <div className="bg-gray-50 rounded-xl p-4 space-y-2 mb-5 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Utilidad bruta</span>
-                <span className={`font-bold ${posicion.utilidad_pen >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                <span className={`font-bold ${posicion.utilidad_pen >= 0 ? 'text-primary-600' : 'text-red-500'}`}>
                   S/ {posicion.utilidad_pen.toFixed(2)}
                 </span>
               </div>
@@ -1337,7 +1337,7 @@ export default function PosicionPage() {
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-2">
                 <span className="text-gray-500">Ops sin completar</span>
-                <span className={`font-bold ${pendingCount > 0 ? 'text-yellow-600' : 'text-green-600'}`}>
+                <span className={`font-bold ${pendingCount > 0 ? 'text-yellow-600' : 'text-primary-600'}`}>
                   {pendingCount}
                 </span>
               </div>
@@ -1466,7 +1466,7 @@ export default function PosicionPage() {
                 <button
                   onClick={() => handleUpdateStatus('Completada')}
                   disabled={isUpdatingStatus}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-60"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold transition disabled:opacity-60"
                 >
                   {isUpdatingStatus ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                   Completada
@@ -1478,7 +1478,7 @@ export default function PosicionPage() {
                 <button
                   onClick={() => handleUpdateStatus('Completada')}
                   disabled={isUpdatingStatus}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-60"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold transition disabled:opacity-60"
                 >
                   {isUpdatingStatus ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                   Marcar Completada

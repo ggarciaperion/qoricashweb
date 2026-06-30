@@ -1,47 +1,163 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useOperationEventStore } from '@/lib/store/operationEventStore';
 import { operationsApi } from '@/lib/api/operations';
+import { banksApi } from '@/lib/api/banks';
 import { parseSafeDate } from '@/lib/utils/date';
 import type { Operation, ClientStats } from '@/lib/types';
+import AddBankAccountModal from '@/components/AddBankAccountModal';
+import ConfirmModal from '@/components/ConfirmModal';
+import ChangePasswordModal from '@/components/ChangePasswordModal';
 import {
   TrendingUp,
   TrendingDown,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Plus,
-  LogOut,
-  User,
   RefreshCw,
-  Gift,
-  Copy,
-  Share2,
-  ChevronDown,
   HelpCircle,
   X,
   FileText,
   Image as ImageIcon,
   Building2,
-  BarChart2,
+  User,
   Activity,
-  Zap,
   ArrowRight,
   DollarSign,
   Layers,
+  ArrowLeft,
+  Mail,
+  Phone,
+  MapPin,
+  CreditCard,
+  Save,
+  UserCircle,
+  Trash2,
+  Plus,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  Shield,
 } from 'lucide-react';
+
+/* ─── DEMO DATA ───────────────────────────────────────────────── */
+const DEMO_OPERATIONS: Operation[] = [
+  {
+    id: 9001,
+    codigo_operacion: 'QC-20260626-001',
+    cliente_id: 1,
+    tipo: 'compra',
+    monto_dolares: 1000,
+    monto_soles: 3748,
+    tipo_cambio: 3.748,
+    banco_cliente: 'BCP',
+    cuenta_cliente: '19123456789',
+    estado: 'pendiente',
+    fecha_creacion: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    fecha_actualizacion: new Date().toISOString(),
+    origen: 'web',
+    source_bank_name: 'BCP',
+  },
+  {
+    id: 9002,
+    codigo_operacion: 'QC-20260624-017',
+    cliente_id: 1,
+    tipo: 'venta',
+    monto_dolares: 500,
+    monto_soles: 1873.5,
+    tipo_cambio: 3.747,
+    banco_cliente: 'INTERBANK',
+    cuenta_cliente: '2001234567890',
+    estado: 'completado',
+    fecha_creacion: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    fecha_actualizacion: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 30 * 60 * 1000).toISOString(),
+    origen: 'web',
+    source_bank_name: 'INTERBANK',
+  },
+  {
+    id: 9003,
+    codigo_operacion: 'QC-20260622-008',
+    cliente_id: 1,
+    tipo: 'compra',
+    monto_dolares: 2500,
+    monto_soles: 9370,
+    tipo_cambio: 3.748,
+    banco_cliente: 'BBVA',
+    cuenta_cliente: '00110234567890',
+    estado: 'completado',
+    fecha_creacion: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    fecha_actualizacion: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
+    origen: 'web',
+    source_bank_name: 'BBVA',
+  },
+  {
+    id: 9004,
+    codigo_operacion: 'QC-20260619-003',
+    cliente_id: 1,
+    tipo: 'venta',
+    monto_dolares: 300,
+    monto_soles: 1121.1,
+    tipo_cambio: 3.737,
+    banco_cliente: 'BCP',
+    cuenta_cliente: '19123456789',
+    estado: 'completado',
+    fecha_creacion: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    fecha_actualizacion: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 20 * 60 * 1000).toISOString(),
+    origen: 'web',
+    source_bank_name: 'BCP',
+  },
+  {
+    id: 9005,
+    codigo_operacion: 'QC-20260615-011',
+    cliente_id: 1,
+    tipo: 'compra',
+    monto_dolares: 750,
+    monto_soles: 2808,
+    tipo_cambio: 3.744,
+    banco_cliente: 'SCOTIABANK',
+    cuenta_cliente: '0301234567',
+    estado: 'cancelado',
+    fecha_creacion: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+    fecha_actualizacion: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
+    origen: 'web',
+    source_bank_name: 'SCOTIABANK',
+  },
+];
+
+const DEMO_STATS: ClientStats = {
+  total_operations: 5,
+  total_soles: 19520.6,
+  total_dolares: 5050,
+  pending_operations: 1,
+  completed_operations: 3,
+};
 
 /* ─── helpers ─────────────────────────────────────────────────── */
 const fmt$ = (n: number) =>
   n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtS = (n: number) =>
   n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* ─── AnimatedNumber ───────────────────────────────────────────── */
+function AnimatedNumber({ target, format }: { target: number; format: (n: number) => string }) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    let raf: number;
+    const t0 = performance.now();
+    const dur = 1100;
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setVal(target * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setVal(target);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target]);
+  return <>{format(val)}</>;
+}
+
 const fmtDate = (s: string) =>
   (parseSafeDate(s) ?? new Date()).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: 'short', year: '2-digit' });
 const fmtTime = (s: string) =>
@@ -49,55 +165,85 @@ const fmtTime = (s: string) =>
 
 /* ─── status config ───────────────────────────────────────────── */
 const STATUS: Record<string, { label: string; dot: string; pill: string }> = {
-  pendiente:  { label: 'Pendiente',  dot: 'bg-amber-400 animate-pulse', pill: 'bg-amber-50 text-amber-700 border-amber-200'    },
-  en_proceso: { label: 'En proceso', dot: 'bg-blue-400 animate-pulse',  pill: 'bg-blue-50 text-blue-700 border-blue-200'       },
-  completado: { label: 'Completado', dot: 'bg-emerald-500',             pill: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  cancelado:  { label: 'Cancelado',  dot: 'bg-gray-400',               pill: 'bg-gray-100 text-gray-600 border-gray-200'       },
-  rechazado:  { label: 'Rechazado',  dot: 'bg-rose-500',               pill: 'bg-rose-50 text-rose-700 border-rose-200'        },
+  pendiente:  { label: 'Pendiente',  dot: 'bg-amber-400 animate-pulse', pill: 'bg-amber-50 text-amber-700 border-amber-200'      },
+  en_proceso: { label: 'En proceso', dot: 'bg-blue-400 animate-pulse',  pill: 'bg-blue-50 text-blue-700 border-blue-200'         },
+  completado: { label: 'Completado', dot: 'bg-primary-500',             pill: 'bg-primary-50 text-primary-700 border-primary-200' },
+  cancelado:  { label: 'Cancelado',  dot: 'bg-gray-400',               pill: 'bg-gray-100 text-gray-600 border-gray-200'         },
+  rechazado:  { label: 'Rechazado',  dot: 'bg-rose-500',               pill: 'bg-rose-50 text-rose-700 border-rose-200'          },
 };
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const { currentRates, fetchRates, isConnected } = useExchangeStore();
+  const searchParams = useSearchParams();
+  const { user, isAuthenticated, updateUser } = useAuthStore();
+  const { currentRates, isConnected } = useExchangeStore();
   const { lastEvent } = useOperationEventStore();
 
   const [operations, setOperations]               = useState<Operation[]>([]);
   const [stats, setStats]                         = useState<ClientStats | null>(null);
   const [isLoading, setIsLoading]                 = useState(true);
   const [activeTab, setActiveTab]                 = useState<'todas' | 'pendientes' | 'completadas'>('todas');
-  const [copiedCode, setCopiedCode]               = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen]       = useState(false);
   const [selectedOperation, setSelectedOperation] = useState<any>(null);
   const [isOperationModalOpen, setIsOperationModalOpen] = useState(false);
   const [currentPage, setCurrentPage]             = useState(1);
   const operationsPerPage = 10;
 
-  /* tick flash on rate change */
-  const [rateTick, setRateTick] = useState<'up' | 'down' | null>(null);
-  const prevRates = useRef(currentRates);
-  useEffect(() => {
-    if (!currentRates || !prevRates.current) { prevRates.current = currentRates; return; }
-    setRateTick(currentRates.tipo_venta > prevRates.current.tipo_venta ? 'up' : 'down');
-    const t = setTimeout(() => setRateTick(null), 800);
-    prevRates.current = currentRates;
-    return () => clearTimeout(t);
-  }, [currentRates]);
+  /* ── Profile panel state ────────────────────────────────────── */
+  const [showProfile, setShowProfile]             = useState(false);
+  const [isEditing, setIsEditing]                 = useState(false);
+  const [profileForm, setProfileForm]             = useState({ phone: '', email: '' });
+  const [isSaving, setIsSaving]                   = useState(false);
+  const [profileMsg, setProfileMsg]               = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen]     = useState(false);
+  const [accountToDelete, setAccountToDelete]             = useState<number | null>(null);
+  const [isDeletingAccount, setIsDeletingAccount]         = useState(false);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [noticias, setNoticias] = useState<any[]>([]);
+  const [noticiaIdx, setNoticiaIdx] = useState(0);
+  const [tasas, setTasas] = useState<{ sunat: any; sbs: any } | null>(null);
 
   useEffect(() => {
-    fetchRates();
-    const unsub = useExchangeStore.getState().startRateSubscription();
-    return () => unsub();
+    if (searchParams.get('perfil') === '1') {
+      setShowProfile(true);
+      setProfileMsg(null);
+      setIsEditing(false);
+      router.replace('/dashboard');
+    } else if (searchParams.get('home') === '1') {
+      setShowProfile(false);
+      router.replace('/dashboard');
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    fetch('/api/noticias')
+      .then(r => r.json())
+      .then((data: any[]) => { if (Array.isArray(data)) setNoticias(data); })
+      .catch(() => {});
+    fetch('/api/tasas')
+      .then(r => r.json())
+      .then(data => setTasas(data))
+      .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (noticias.length < 2) return;
+    const t = setInterval(() => setNoticiaIdx(i => (i + 1) % noticias.length), 4000);
+    return () => clearInterval(t);
+  }, [noticias.length]);
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
     loadData();
   }, [isAuthenticated]);
 
+  /* sync profile form when user changes */
+  useEffect(() => {
+    if (user) setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' });
+  }, [user]);
+
   useEffect(() => { setCurrentPage(1); }, [activeTab]);
 
-  // Refrescar lista cuando llega un evento realtime de operación
   useEffect(() => {
     if (!lastEvent || !isAuthenticated) return;
     loadData();
@@ -111,19 +257,23 @@ export default function DashboardPage() {
         operationsApi.getMyOperations(user.dni),
         operationsApi.getStats(user.dni),
       ]);
-      if (opsRes.success && opsRes.data)     setOperations(opsRes.data);
-      if (statsRes.success && statsRes.data) setStats(statsRes.data);
-    } catch (e) { console.error(e); }
+      const ops = opsRes.success && opsRes.data ? opsRes.data : [];
+      const st  = statsRes.success && statsRes.data ? statsRes.data : null;
+      // Demo mode: si no hay operaciones reales, mostrar datos de prueba
+      if (ops.length === 0) {
+        setOperations(DEMO_OPERATIONS);
+        setStats(DEMO_STATS);
+      } else {
+        setOperations(ops);
+        if (st) setStats(st);
+      }
+    } catch (e) {
+      console.error(e);
+      // En caso de error de red, también mostrar demo
+      setOperations(DEMO_OPERATIONS);
+      setStats(DEMO_STATS);
+    }
     finally { setIsLoading(false); }
-  };
-
-  const handleLogout = async () => { await logout(); router.push('/'); };
-
-  const copyReferralCode = () => {
-    if (!user?.referral_code) return;
-    navigator.clipboard.writeText(user.referral_code);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
   };
 
   const filtered = operations.filter((op) => {
@@ -145,439 +295,560 @@ export default function DashboardPage() {
     }
   };
 
+  /* ── Profile handlers ──────────────────────────────────────── */
+  const handleProfileSave = async () => {
+    setIsSaving(true);
+    setProfileMsg(null);
+    try {
+      if (user) updateUser({ ...user, phone: profileForm.phone, telefono: profileForm.phone, email: profileForm.email });
+      setProfileMsg({ type: 'success', text: 'Perfil actualizado correctamente' });
+      setIsEditing(false);
+    } catch { setProfileMsg({ type: 'error', text: 'Error al actualizar el perfil' }); }
+    finally { setIsSaving(false); }
+  };
+
+  const handleAddAccountSuccess = (updatedAccounts: any[]) => {
+    if (user) updateUser({ ...user, bank_accounts: updatedAccounts });
+    setProfileMsg({ type: 'success', text: 'Cuenta bancaria agregada exitosamente' });
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user || accountToDelete === null) return;
+    setIsDeletingAccount(true);
+    try {
+      const response = await banksApi.removeAccount(user.dni, accountToDelete);
+      if (response.success) {
+        updateUser({ ...user, bank_accounts: response.bank_accounts || [] });
+        setProfileMsg({ type: 'success', text: 'Cuenta bancaria eliminada exitosamente' });
+        setIsDeleteConfirmOpen(false);
+        setAccountToDelete(null);
+      } else {
+        setProfileMsg({ type: 'error', text: response.message || 'Error al eliminar la cuenta' });
+      }
+    } catch (err: any) {
+      setProfileMsg({ type: 'error', text: err?.message || 'Error al eliminar la cuenta' });
+    } finally { setIsDeletingAccount(false); }
+  };
+
+  const handlePasswordChange = async (_data: { currentPassword?: string; newPassword: string }) => {
+    // TODO: conectar al endpoint real cuando salga de demo
+    await new Promise(r => setTimeout(r, 900)); // simula latencia
+    setProfileMsg({ type: 'success', text: 'Contraseña actualizada exitosamente' });
+    return { success: true, message: 'Contraseña actualizada exitosamente' };
+  };
+
   const displayName =
     user?.document_type === 'RUC'
       ? user?.razon_social || user?.nombres
       : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres;
 
+  const firstName = user?.nombres?.split(' ')[0];
+
   /* ── Loading ─────────────────────────────────────────────────── */
   if (isLoading) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center"
+      style={{ backgroundColor: '#ffffff' }}>
       <div className="text-center">
         <div className="relative w-12 h-12 mx-auto mb-4">
-          <div className="absolute inset-0 rounded-full border-2 border-gray-200" />
+          <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: 'rgba(30,41,59,0.1)' }} />
           <div className="absolute inset-0 rounded-full border-2 border-t-primary-500 animate-spin" />
         </div>
-        <p className="text-gray-400 text-sm font-medium">Cargando...</p>
+        <p className="text-sm font-medium" style={{ color: 'rgba(30,41,59,0.35)' }}>Cargando...</p>
       </div>
     </div>
   );
 
   /* ═══════════════════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen bg-[#F4F6FA]">
-
-      {/* ── TOPBAR ──────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-200/80 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Main nav row */}
-          <div className="h-14 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5 hover:opacity-75 transition">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
-              <span className="font-bold text-gray-900 text-base hidden sm:block">QoriCash</span>
-            </Link>
-
-            {/* Live rates — desktop pill */}
-            {currentRates && (
-              <div className="hidden md:flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2">
-                <span className={`w-1.5 h-1.5 rounded-full mr-2 ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`} />
-                <div className="flex items-center gap-4 divide-x divide-gray-200">
-                  <div className="flex items-center gap-2 pr-4">
-                    <TrendingDown className="w-3.5 h-3.5 text-emerald-500" />
-                    <span className="text-gray-400 text-[11px] font-semibold uppercase tracking-wide">Compra</span>
-                    <span className={`text-sm font-bold font-mono transition-colors duration-300 ${rateTick === 'up' ? 'text-emerald-500' : 'text-gray-900'}`}>
-                      {currentRates.tipo_compra.toFixed(4)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 pl-4">
-                    <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-gray-400 text-[11px] font-semibold uppercase tracking-wide">Venta</span>
-                    <span className={`text-sm font-bold font-mono transition-colors duration-300 ${rateTick === 'down' ? 'text-rose-500' : 'text-gray-900'}`}>
-                      {currentRates.tipo_venta.toFixed(4)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* User menu */}
-            <div className="relative">
-              <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition group">
-                <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                  {displayName?.charAt(0)?.toUpperCase() ?? 'U'}
-                </div>
-                <span className="text-sm font-medium hidden sm:block max-w-[120px] truncate">{displayName}</span>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile live rates strip */}
-          {currentRates && (
-            <div className="md:hidden flex items-center justify-center gap-5 pb-2 text-sm">
-              <span className="flex items-center gap-1.5">
-                <TrendingDown className="w-3.5 h-3.5 text-emerald-500" />
-                <span className="text-gray-500 text-xs">Compra</span>
-                <span className="font-bold font-mono text-gray-900">{currentRates.tipo_compra.toFixed(4)}</span>
-              </span>
-              <span className="w-px h-3 bg-gray-200" />
-              <span className="flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                <span className="text-gray-500 text-xs">Venta</span>
-                <span className="font-bold font-mono text-gray-900">{currentRates.tipo_venta.toFixed(4)}</span>
-              </span>
-              <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`} />
-            </div>
-          )}
-        </div>
-      </header>
-
-      {/* ── User dropdown portal ──────────────────────────────────── */}
-      {isUserMenuOpen && createPortal(
-        <>
-          <div className="fixed inset-0" style={{ zIndex: 99998 }} onClick={() => setIsUserMenuOpen(false)} />
-          <div className="fixed right-4 w-52 bg-white rounded-xl shadow-xl border border-gray-200 py-1.5 overflow-hidden" style={{ zIndex: 99999, top: '64px' }}>
-            {[
-              { icon: User,      label: 'Mi perfil',      action: () => router.push('/perfil') },
-              { icon: BarChart2, label: 'Mi Dashboard',   action: () => router.push('/dashboard') },
-            ].map(({ icon: Icon, label, action }) => (
-              <button key={label} onClick={() => { setIsUserMenuOpen(false); action(); }}
-                className="flex items-center w-full px-4 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition text-sm gap-3">
-                <Icon className="w-4 h-4 text-gray-400" />{label}
-              </button>
-            ))}
-            {(['Master', 'Operador'] as const).includes(user?.role as any) && (
-              <button onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/posicion'); }}
-                className="flex items-center w-full px-4 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition text-sm gap-3">
-                <BarChart2 className="w-4 h-4 text-gray-400" />Posición del Día
-              </button>
-            )}
-            <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
-              target="_blank" rel="noopener noreferrer" onClick={() => setIsUserMenuOpen(false)}
-              className="flex items-center px-4 py-2.5 text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition text-sm gap-3">
-              <HelpCircle className="w-4 h-4 text-gray-400" />Ayuda
-            </a>
-            <div className="border-t border-gray-100 my-1" />
-            <button onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
-              className="flex items-center w-full px-4 py-2.5 text-rose-600 hover:bg-rose-50 transition text-sm gap-3">
-              <LogOut className="w-4 h-4" />Cerrar sesión
-            </button>
-          </div>
-        </>,
-        document.body
-      )}
-
-      {/* ── MAIN ─────────────────────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
-
-        {/* ── WELCOME ROW ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest mb-0.5">Panel de operaciones</p>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Hola, <span className="text-primary-600">{user?.nombres?.split(' ')[0]}</span>
-            </h1>
-          </div>
+    <>
+      {/* ── PROFILE PANEL ──────────────────────────────────────── */}
+      {showProfile && user && (
+        <main className="p-4 sm:p-6 space-y-3 max-w-2xl mx-auto" style={{ animation: 'profileSlideIn 0.32s cubic-bezier(0.22,1,0.36,1) both' }}>
+          <style>{`
+            @keyframes profileSlideIn {
+              from { opacity: 0; transform: translateY(18px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
+          {/* Back button */}
           <button
-            onClick={() => router.push('/dashboard/nueva-operacion')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm transition-all shadow-md shadow-primary-200 active:scale-95"
+            onClick={() => { setShowProfile(false); setIsEditing(false); setProfileMsg(null); }}
+            className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
+            style={{ color: 'rgba(30,41,59,0.45)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.45)')}
           >
-            <Plus className="w-4 h-4" />Nueva Operación
+            <ArrowLeft className="w-3.5 h-3.5" /> Volver al inicio
           </button>
-        </div>
 
-        {/* ── METRICS ── */}
-        {stats && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { label: 'Operaciones',  value: stats.total_operations.toString(), icon: Layers,     accent: 'text-primary-600',  bg: 'bg-primary-50',  border: 'border-primary-100' },
-              { label: 'Vol. Dólares', value: `$ ${fmt$(stats.total_dolares)}`,  icon: DollarSign, accent: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-              { label: 'Vol. Soles',   value: `S/ ${fmtS(stats.total_soles)}`,   icon: Activity,   accent: 'text-blue-600',    bg: 'bg-blue-50',    border: 'border-blue-100'    },
-              { label: 'Activas',      value: stats.pending_operations.toString(), icon: Zap,       accent: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-100'   },
-            ].map(({ label, value, icon: Icon, accent, bg, border }) => (
-              <div key={label} className="bg-white rounded-2xl border border-gray-200 px-4 py-4 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
-                <div className={`w-10 h-10 rounded-xl ${bg} border ${border} flex items-center justify-center shrink-0`}>
-                  <Icon className={`w-5 h-5 ${accent}`} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-wide">{label}</p>
-                  <p className={`text-lg font-bold font-mono ${accent} truncate leading-tight`}>{value}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── RATES + REFERRAL ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-          {/* Rates */}
-          {currentRates && (
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest">Tipo de Cambio</p>
-                  <p className="text-gray-900 font-bold text-sm">USD / PEN</p>
-                </div>
-                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold ${isConnected ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
-                  {isConnected ? 'En vivo' : 'Sin conexión'}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Compra */}
-                <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <TrendingDown className="w-3.5 h-3.5 text-emerald-500" />
-                    <span className="text-emerald-600 text-[10px] font-bold uppercase tracking-widest">QoriCash Compra</span>
-                  </div>
-                  <p className="text-3xl font-bold font-mono text-emerald-700 leading-none">
-                    {currentRates.tipo_compra.toFixed(3)}
-                  </p>
-                  <p className="text-emerald-400 text-[10px] mt-2 font-medium">S/ por cada USD que usted entrega</p>
-                </div>
-                {/* Venta */}
-                <div className="rounded-xl bg-blue-50 border border-blue-100 p-4">
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                    <span className="text-blue-600 text-[10px] font-bold uppercase tracking-widest">QoriCash Vende</span>
-                  </div>
-                  <p className="text-3xl font-bold font-mono text-blue-700 leading-none">
-                    {currentRates.tipo_venta.toFixed(3)}
-                  </p>
-                  <p className="text-blue-400 text-[10px] mt-2 font-medium">S/ por cada USD que usted recibe</p>
-                </div>
-              </div>
+          {/* Profile header */}
+          <div className="rounded-xl flex items-center gap-3 px-4 py-3" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
+            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }}>
+              {user.document_type === 'RUC'
+                ? <Building2 className="w-4 h-4 text-white/80" />
+                : <UserCircle className="w-4 h-4 text-white/80" />}
             </div>
-          )}
-
-          {/* Referral */}
-          {user?.referral_code && (
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <Gift className="w-4 h-4 text-amber-500" />
-                <p className="text-gray-400 text-[11px] font-semibold uppercase tracking-widest">Programa Referidos</p>
-              </div>
-              <p className="text-gray-500 text-sm mb-4 leading-relaxed">
-                Invita a tus amigos. Ambos obtienen un mejor tipo de cambio en su próxima operación.
+            <div className="min-w-0">
+              <p className="text-sm font-black text-white leading-tight truncate">
+                {user.document_type === 'RUC' ? user.razon_social : user.apellidos ? `${user.nombres} ${user.apellidos}` : user.nombres}
               </p>
-              <div className="mt-auto">
-                <div className="rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 px-4 py-3.5 mb-3">
-                  <p className="text-amber-600 text-[10px] font-semibold uppercase tracking-widest mb-1">Tu código exclusivo</p>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-2xl font-black font-mono tracking-widest text-amber-700">{user.referral_code}</span>
-                    <div className="flex gap-2">
-                      <button onClick={copyReferralCode}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition ${copiedCode ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-white text-gray-600 border-gray-200 hover:border-amber-300 hover:text-amber-600'}`}>
-                        {copiedCode ? <><CheckCircle2 className="w-3.5 h-3.5" />Copiado</> : <><Copy className="w-3.5 h-3.5" />Copiar</>}
-                      </button>
-                      <button onClick={() => {
-                        const text = `¡Hola! Te invito a cambiar dólares con QoriCash. Usa mi código ${user.referral_code} y ambos tendremos un mejor tipo de cambio.`;
-                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                      }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-600 transition">
-                        <Share2 className="w-3.5 h-3.5" />Compartir
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => router.push('/dashboard/promociones/codigo-referido')}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl border border-gray-200 text-gray-500 hover:text-primary-600 hover:border-primary-200 text-xs font-semibold transition">
-                  Ver mis beneficios <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
+              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{user.document_type} · {user.dni}</p>
+            </div>
+            <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
+              <span className="text-[10px] font-semibold text-primary-300">{user.estado || 'Activo'}</span>
+            </div>
+          </div>
+
+          {/* Alert message */}
+          {profileMsg && (
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium ${profileMsg.type === 'success' ? 'bg-primary-50 border-primary-200 text-primary-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+              {profileMsg.type === 'success' ? <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-primary-600" /> : <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 text-red-600" />}
+              {profileMsg.text}
             </div>
           )}
-        </div>
 
-        {/* ── OPERATIONS TABLE ── */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-
-          {/* Table toolbar */}
-          <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-primary-50 border border-primary-100 flex items-center justify-center">
-                <Activity className="w-4 h-4 text-primary-600" />
-              </div>
-              <div>
-                <p className="text-gray-900 text-sm font-bold">Historial de Operaciones</p>
-                <p className="text-gray-400 text-xs">{operations.length} operaciones en total</p>
-              </div>
-            </div>
-            {/* Tabs */}
-            <div className="flex items-center rounded-xl border border-gray-200 bg-gray-50 p-1 gap-0.5">
-              {([
-                { key: 'todas',       label: 'Todas' },
-                { key: 'pendientes',  label: 'Activas' },
-                { key: 'completadas', label: 'Completadas' },
-              ] as const).map((tab) => (
-                <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
-                    activeTab === tab.key
-                      ? 'bg-white text-primary-600 shadow-sm border border-gray-200'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}>
-                  {tab.label}
-                </button>
+          {/* Personal info */}
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1" style={{ color: 'rgba(30,41,59,0.35)' }}>
+              <FileText className="w-3 h-3" /> Información Personal
+            </p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { label: 'Tipo doc.', value: user.document_type },
+                { label: 'Número', value: user.dni },
+                ...(user.document_type === 'RUC'
+                  ? [{ label: 'Razón Social', value: user.razon_social }, { label: 'Contacto', value: user.persona_contacto }]
+                  : [{ label: 'Nombres', value: user.nombres }, { label: 'Ap. Paterno', value: user.apellido_paterno || user.apellidos }, { label: 'Ap. Materno', value: user.apellido_materno || '-' }]),
+              ].map(({ label, value }) => (
+                <div key={label} className="rounded-lg px-2.5 py-1.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                  <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
+                  <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{value || '-'}</p>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Column headers — desktop */}
-          <div className="hidden sm:grid grid-cols-[1.2fr_110px_110px_70px_110px_90px_36px] px-5 py-2.5 bg-gray-50 border-b border-gray-100">
-            {['Operación', 'Usted paga', 'Usted recibe', 'T.C.', 'Estado', 'Fecha', ''].map((h) => (
-              <span key={h} className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">{h}</span>
-            ))}
-          </div>
-
-          {/* Rows */}
-          <div className="divide-y divide-gray-100">
-            {paginated.length === 0 ? (
-              <div className="py-16 text-center">
-                <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                  <Activity className="w-5 h-5 text-gray-300" />
-                </div>
-                <p className="text-gray-500 text-sm font-medium">Sin operaciones</p>
-                <p className="text-gray-400 text-xs mt-1">Crea tu primera operación para comenzar</p>
-              </div>
-            ) : paginated.map((op) => {
-              const sc = STATUS[op.estado] ?? STATUS.pendiente;
-              const isCompra = op.tipo === 'compra';
-              const paga   = isCompra ? `$ ${fmt$(op.monto_dolares ?? 0)}` : `S/ ${fmtS(op.monto_soles ?? 0)}`;
-              const recibe = isCompra ? `S/ ${fmtS(op.monto_soles ?? 0)}` : `$ ${fmt$(op.monto_dolares ?? 0)}`;
-
-              return (
-                <div key={op.id}
-                  className="px-5 py-3.5 hover:bg-gray-50/80 cursor-pointer transition group"
-                  onClick={() => handleOpClick(op)}
-                >
-                  {/* Mobile */}
-                  <div className="sm:hidden space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${isCompra ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                          {isCompra ? 'QC COMPRA' : 'QC VENDE'}
-                        </span>
-                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-semibold ${sc.pill}`}>
-                          <span className={`w-1 h-1 rounded-full ${sc.dot}`} />{sc.label}
-                        </div>
-                      </div>
-                      <span className="text-gray-400 text-[10px]">{fmtDate(op.fecha_creacion)}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">Paga</p>
-                        <p className="text-sm font-bold font-mono text-rose-600">{paga}</p>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-gray-300" />
-                      <div>
-                        <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">Recibe</p>
-                        <p className="text-sm font-bold font-mono text-emerald-600">{recibe}</p>
-                      </div>
-                      <div className="ml-auto">
-                        <p className="text-[9px] text-gray-400 uppercase tracking-widest font-semibold">T.C.</p>
-                        <p className="text-xs font-mono text-gray-600">{(op.tipo_cambio ?? 0).toFixed(3)}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Desktop */}
-                  <div className="hidden sm:grid grid-cols-[1.2fr_110px_110px_70px_110px_90px_36px] items-center">
-                    {/* Operación */}
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isCompra ? 'bg-emerald-50 border border-emerald-100' : 'bg-blue-50 border border-blue-100'}`}>
-                        {isCompra
-                          ? <TrendingDown className="w-4 h-4 text-emerald-500" />
-                          : <TrendingUp className="w-4 h-4 text-blue-500" />}
-                      </div>
-                      <div className="min-w-0">
-                        <p className={`text-xs font-bold ${isCompra ? 'text-emerald-600' : 'text-blue-600'}`}>
-                          {isCompra ? 'QoriCash Compra' : 'QoriCash Vende'}
-                        </p>
-                        <p className="text-gray-400 text-[10px] font-mono truncate">{op.codigo_operacion ?? `#${op.id}`}</p>
-                      </div>
-                    </div>
-                    {/* Paga */}
-                    <p className="text-sm font-bold font-mono text-rose-600">{paga}</p>
-                    {/* Recibe */}
-                    <p className="text-sm font-bold font-mono text-emerald-600">{recibe}</p>
-                    {/* TC */}
-                    <p className="text-xs font-mono text-gray-500">{(op.tipo_cambio ?? 0).toFixed(3)}</p>
-                    {/* Estado */}
-                    <div>
-                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[10px] font-bold ${sc.pill}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />{sc.label}
-                      </div>
-                    </div>
-                    {/* Fecha */}
-                    <div>
-                      <p className="text-xs text-gray-600 font-medium">{fmtDate(op.fecha_creacion)}</p>
-                      <p className="text-[10px] text-gray-400">{fmtTime(op.fecha_creacion)}</p>
-                    </div>
-                    {/* Arrow */}
-                    <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary-400 transition" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="px-5 py-3.5 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
-              <p className="text-gray-400 text-xs">
-                Mostrando {(currentPage - 1) * operationsPerPage + 1}–{Math.min(currentPage * operationsPerPage, filtered.length)} de {filtered.length}
+          {/* Contact info */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1" style={{ color: 'rgba(30,41,59,0.35)' }}>
+                <Mail className="w-3 h-3" /> Contacto
               </p>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 bg-white border border-gray-200 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition">
-                  ← Anterior
+              {!isEditing && (
+                <button onClick={() => setIsEditing(true)}
+                  className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
+                  style={{ color: '#ffffff', background: '#22C55E', border: '1px solid #16A34A' }}>
+                  Editar
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                  <button key={p} onClick={() => setCurrentPage(p)}
-                    className={`w-8 h-8 rounded-lg text-xs font-bold transition ${currentPage === p ? 'bg-primary-600 text-white shadow-sm' : 'text-gray-500 hover:text-gray-900 bg-white border border-gray-200 hover:border-gray-300'}`}>
-                    {p}
-                  </button>
-                ))}
-                <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-900 bg-white border border-gray-200 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition">
-                  Siguiente →
-                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-1.5">
+              <div className="rounded-lg px-2.5 py-1.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>Teléfono</p>
+                {isEditing ? (
+                  <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
+                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#22C55E' }} />
+                ) : (
+                  <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{user.phone || user.telefono || '-'}</p>
+                )}
+              </div>
+              <div className="rounded-lg px-2.5 py-1.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>Correo</p>
+                {isEditing ? (
+                  <input type="email" value={profileForm.email} onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
+                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#22C55E' }} />
+                ) : (
+                  <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{user.email || '-'}</p>
+                )}
               </div>
             </div>
-          )}
-        </div>
+            {isEditing && (
+              <div className="flex gap-1.5 mt-2">
+                <button onClick={handleProfileSave} disabled={isSaving}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                  <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
+                </button>
+                <button onClick={() => { setIsEditing(false); setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' }); }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold transition"
+                  style={{ background: '#F1F5F9', color: 'rgba(30,41,59,0.6)' }}>
+                  Cancelar
+                </button>
+              </div>
+            )}
+          </div>
 
-      </main>
+          {/* Security */}
+          <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+            <div className="flex items-center gap-2">
+              <Lock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(30,41,59,0.35)' }} />
+              <p className="text-xs font-semibold" style={{ color: '#1E293B' }}>Contraseña</p>
+            </div>
+            <button onClick={() => setIsChangePasswordModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold text-white transition"
+              style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
+              <Lock className="w-3 h-3" /> Cambiar
+            </button>
+          </div>
+
+          {/* Address */}
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1" style={{ color: 'rgba(30,41,59,0.35)' }}>
+              <MapPin className="w-3 h-3" /> Dirección
+            </p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { label: 'Dirección', value: user.direccion, wide: true },
+                { label: 'Distrito', value: user.distrito },
+                { label: 'Provincia', value: user.provincia },
+                { label: 'Departamento', value: user.departamento },
+              ].map(({ label, value, wide }) => (
+                <div key={label} className={`rounded-lg px-2.5 py-1.5${wide ? ' col-span-2' : ''}`} style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                  <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
+                  <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{value || '-'}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </main>
+      )}
+
+      {/* ── MAIN DASHBOARD ─────────────────────────────────────── */}
+      {!showProfile && <main className="p-4 sm:p-6 space-y-5">
+
+
+          {/* TC rates strip */}
+          <div className="flex items-center justify-center gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.07)' }}>
+            <div className="flex items-center gap-1.5 mr-1">
+              <span className="relative flex w-2 h-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#ef4444' }} />
+                <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(30,41,59,0.35)' }}>
+                Tipo de Cambio <span style={{ color: '#ef4444' }}>live</span>
+              </span>
+            </div>
+            {currentRates ? (
+              <>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{ background: '#0369a1' }}>
+                  <TrendingDown className="w-3.5 h-3.5 text-white/70" />
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-white/70">Compramos</span>
+                  <span className="text-sm font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)' }}>{currentRates.tipo_compra.toFixed(3)}</span>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{ background: '#15803d' }}>
+                  <TrendingUp className="w-3.5 h-3.5 text-white/70" />
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-white/70">Vendemos</span>
+                  <span className="text-sm font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)' }}>{currentRates.tipo_venta.toFixed(3)}</span>
+                </div>
+              </>
+            ) : (
+              <span className="text-xs" style={{ color: 'rgba(30,41,59,0.35)' }}>Cargando...</span>
+            )}
+          </div>
+
+          {/* Welcome + stats */}
+          <div>
+            <h1 className="text-xl font-black mb-4" style={{ color: '#1E293B' }}>
+              ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
+            </h1>
+            {stats && currentRates && (() => {
+              const spreadVal = currentRates.tipo_venta && currentRates.tipo_compra
+                ? (currentRates.tipo_venta - currentRates.tipo_compra) * 1000
+                : 0;
+              const cards = [
+                { label: 'Operaciones', target: stats.total_operations, icon: Layers,     bg: '#064E3B', shadow: 'rgba(6,78,59,0.35)',    fmt: (n: number) => Math.round(n).toString()                   },
+                { label: 'Vol. Dólares', target: stats.total_dolares,   icon: DollarSign, bg: '#1E3A8A', shadow: 'rgba(30,58,138,0.35)',  fmt: (n: number) => `$${fmt$(n)}`                              },
+                { label: 'Vol. Soles',   target: stats.total_soles,     icon: Activity,   bg: '#3B0764', shadow: 'rgba(59,7,100,0.35)',   fmt: (n: number) => `S/${fmtS(n)}`                             },
+                { label: 'Spread',       target: spreadVal,             icon: TrendingUp, bg: '#431407', shadow: 'rgba(67,20,7,0.35)',    fmt: (n: number) => spreadVal ? `${n.toFixed(1)} pips` : '—'   },
+              ];
+              return (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {cards.map(({ label, target, icon: Icon, bg, shadow, fmt }) => (
+                    <div
+                      key={label}
+                      className="relative rounded-xl px-3 py-2.5 flex flex-col gap-1.5 transition-all hover:-translate-y-0.5 cursor-default overflow-hidden"
+                      style={{ width: 148, background: bg, boxShadow: `0 4px 14px ${shadow}` }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${shadow}`; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 14px ${shadow}`; }}
+                    >
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
+                        <Icon className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-bold uppercase tracking-[0.1em] leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</p>
+                        <p className="text-sm font-black tabular-nums truncate leading-tight text-white" style={{ fontFamily: 'var(--font-poppins)' }}>
+                          <AnimatedNumber target={target} format={fmt} />
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Quick actions */}
+          <div style={{ maxWidth: 'calc(4 * 148px + 3 * 8px)', margin: '1.5rem auto 0', width: '100%' }}>
+
+          <div className="flex flex-wrap justify-center gap-3">
+              {[
+                {
+                  icon: RefreshCw,
+                  label: 'Cambiar\ndólares',
+                  action: () => router.push('/dashboard/nueva-operacion'),
+                  primary: true,
+                },
+                {
+                  icon: Building2,
+                  label: 'Cuentas\nbancarias',
+                  action: () => router.push('/dashboard/cuentas-bancarias'),
+                  primary: false,
+                },
+                {
+                  icon: User,
+                  label: 'Mi\nperfil',
+                  action: () => { setShowProfile(true); setProfileMsg(null); setIsEditing(false); },
+                  primary: false,
+                },
+                {
+                  icon: HelpCircle,
+                  label: 'Recibir\nayuda',
+                  action: () => window.open('https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash.', '_blank'),
+                  primary: false,
+                },
+              ].map(({ icon: Icon, label, action, primary }) => (
+                <button
+                  key={label}
+                  onClick={action}
+                  className="flex flex-col items-center gap-2 py-2 px-3 transition-all active:scale-[0.95] group"
+                  style={{ outline: 'none' }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:-translate-y-1"
+                    style={primary
+                      ? { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 14px rgba(34,197,94,0.30)' }
+                      : { background: 'white', border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 2px 8px rgba(30,41,59,0.06)' }}
+                    onMouseEnter={e => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.boxShadow = primary
+                        ? '0 8px 20px rgba(34,197,94,0.45)'
+                        : '0 6px 16px rgba(30,41,59,0.14)';
+                    }}
+                    onMouseLeave={e => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.boxShadow = primary
+                        ? '0 4px 14px rgba(34,197,94,0.30)'
+                        : '0 2px 8px rgba(30,41,59,0.06)';
+                    }}
+                  >
+                    <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                      style={{ color: primary ? 'white' : 'rgba(30,41,59,0.5)' }} />
+                  </div>
+                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-600 group-hover:-translate-y-1"
+                    style={{ color: 'rgba(30,41,59,0.6)' }}>{label}</span>
+                </button>
+              ))}
+          </div>
+          </div>
+
+          {/* ── BANCOS PRINCIPALES + NOTICIAS + TASAS ───────────────── */}
+          <div className="flex gap-2 items-stretch" style={{ maxWidth: 'calc(4 * 148px + 3 * 8px)', margin: '2rem auto 0', width: '100%' }}>
+            {/* Columna izquierda: Logos */}
+            <div className="flex flex-col gap-1" style={{ width: '50%' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(30,41,59,0.42)' }}>Operaciones inmediatas</p>
+              <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(13,27,42,0.08)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)' }}>
+                {/* Sección principal — operaciones inmediatas */}
+                <div className="flex flex-col items-center px-4 pt-5 pb-4">
+                  <div className="flex items-center justify-around w-full gap-1">
+                    {[
+                      { src: '/BCP.png',       alt: 'BCP',       h: 'h-11' },
+                      { src: '/Interbank.png', alt: 'Interbank', h: 'h-12' },
+                      { src: '/BanBif.png',    alt: 'BanBif',    h: 'h-11' },
+                    ].map(({ src, alt, h }) => (
+                      <div key={alt} className="flex items-center justify-center rounded-lg p-1.5" style={{ background: '#F8FAFC', flex: 1 }}>
+                        <img src={src} alt={alt} className={`${h} w-auto object-contain`} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#22C55E' }} />
+                    <span className="text-[8px] font-bold" style={{ color: '#16A34A' }}>Acreditación en 10 minutos</span>
+                  </div>
+                </div>
+
+                {/* Divisor con etiqueta */}
+                <div className="relative flex items-center px-4 py-0.5">
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(13,27,42,0.07)' }} />
+                  <span className="mx-2 text-[7px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: '#F1F5F9', color: 'rgba(13,27,42,0.35)' }}>otros bancos</span>
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(13,27,42,0.07)' }} />
+                </div>
+
+                {/* Sección interbancaria */}
+                <div className="flex flex-col items-center px-4 pt-3 pb-4 flex-1 justify-between">
+                  <div className="flex items-center justify-around w-full gap-2 mb-3">
+                    {[
+                      { src: '/BBVA.png',           alt: 'BBVA'      },
+                      { src: '/Scotiabank.png',      alt: 'Scotiabank'},
+                      { src: '/Banco Pichincha.png', alt: 'Pichincha' },
+                      { src: '/bancosantander.png',  alt: 'Santander' },
+                    ].map(({ src, alt }) => (
+                      <img key={alt} src={src} alt={alt} className="h-6 w-auto object-contain" style={{ filter: 'grayscale(1)', opacity: 0.4 }} />
+                    ))}
+                  </div>
+                  <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: '#F8FAFC' }}>
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em]" style={{ color: 'rgba(13,27,42,0.55)' }}>
+                      o cualquier otro banco
+                    </p>
+                    <p className="text-[7px] font-semibold mt-0.5" style={{ color: 'rgba(13,27,42,0.35)' }}>
+                      Solo Lima · 2 a 24 hrs según horario
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Columna derecha: Noticias + Tasas */}
+            <div className="flex flex-col gap-1" style={{ width: '50%' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(30,41,59,0.42)' }}>Noticias que mueven el TC</p>
+              {/* Carrusel */}
+              <div className="rounded-xl overflow-hidden relative" style={{ height: 90 }}>
+                {noticias.map((item, i) => (
+                  <a key={item.id} href={`/noticias/${item.id}`}
+                    className="absolute inset-0 transition-opacity duration-700"
+                    style={{ opacity: i === noticiaIdx ? 1 : 0, pointerEvents: i === noticiaIdx ? 'auto' : 'none' }}>
+                    {item.imagen && <img src={item.imagen} alt={item.titulo} className="absolute inset-0 w-full h-full object-cover" />}
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)' }} />
+                    <div className="absolute bottom-0 left-0 right-0 px-2 pb-5 pt-2">
+                      <span className="text-[7px] font-bold uppercase tracking-wide block mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                        {item.categoria} · {item.fuente}
+                      </span>
+                      <p className="text-[9px] font-semibold leading-tight text-white" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {item.titulo}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+                <div className="absolute bottom-1.5 left-0 right-0 flex justify-center items-center gap-1">
+                  {[-1, 0, 1].map(offset => {
+                    const isActive = offset === 0;
+                    return (
+                      <button key={offset}
+                        onClick={() => setNoticiaIdx((noticiaIdx + offset + noticias.length) % noticias.length)}
+                        className="rounded-full transition-all"
+                        style={{ width: isActive ? 12 : 5, height: 5, background: isActive ? 'white' : 'rgba(255,255,255,0.4)' }} />
+                    );
+                  })}
+                </div>
+              </div>
+              {/* Tasas */}
+              <div className="rounded-xl px-4 flex-1 flex flex-col justify-between py-4" style={{ background: '#0D1B2A' }}>
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] mb-3" style={{ color: 'rgba(255,255,255,0.35)' }}>Referencia del mercado</p>
+                <div className="flex flex-col flex-1 justify-around">
+                  {[
+                    { logo: '/sunat.png',        label: 'SUNAT',    compra: tasas?.sunat?.compra,       venta: tasas?.sunat?.venta        },
+                    { logo: '/sbs.png',           label: 'SBS',      compra: tasas?.sbs?.compra,         venta: tasas?.sbs?.venta          },
+                    { logo: '/logo-principal.png', label: 'QoriCash', compra: currentRates?.tipo_compra, venta: currentRates?.tipo_venta   },
+                  ].map(({ logo, label, compra, venta }) => (
+                    <div key={label} className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5" style={{ minWidth: 72 }}>
+                        <img src={logo} alt={label} className="w-4 h-4 object-contain rounded-sm" />
+                        <span className="text-[10px] font-bold text-white">{label}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                          Compra <span className="font-black text-[10px] text-white">{compra ? `S/ ${Number(compra).toFixed(3)}` : '—'}</span>
+                        </span>
+                        <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                          Venta <span className="font-black text-[10px] text-white">{venta ? `S/ ${Number(venta).toFixed(3)}` : '—'}</span>
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+      </main>}
+
+      {/* ── PROFILE MODALS ────────────────────────────────────────── */}
+      {user && <>
+        <AddBankAccountModal
+          isOpen={isAddAccountModalOpen}
+          onClose={() => setIsAddAccountModalOpen(false)}
+          onSuccess={handleAddAccountSuccess}
+          userDni={user.dni}
+        />
+        <ConfirmModal
+          isOpen={isDeleteConfirmOpen}
+          title="Eliminar Cuenta Bancaria"
+          message="¿Estás seguro de que deseas eliminar esta cuenta bancaria? Esta acción no se puede deshacer."
+          confirmText="Sí, eliminar"
+          cancelText="Cancelar"
+          confirmButtonClass="bg-red-600 hover:bg-red-700 text-white"
+          onConfirm={handleDeleteAccount}
+          onCancel={() => { setIsDeleteConfirmOpen(false); setAccountToDelete(null); }}
+          isLoading={isDeletingAccount}
+        />
+        <ChangePasswordModal
+          isOpen={isChangePasswordModalOpen}
+          onClose={() => setIsChangePasswordModalOpen(false)}
+          onSubmit={handlePasswordChange}
+          requireCurrentPassword={true}
+          canClose={true}
+        />
+      </>}
 
       {/* ── OPERATION DETAIL MODAL ────────────────────────────────── */}
       {isOperationModalOpen && selectedOperation && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4"
-          onClick={() => setIsOperationModalOpen(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200"
-            onClick={e => e.stopPropagation()}>
-
+        <div
+          className="animate-modal-backdrop fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-md p-4"
+          onClick={() => setIsOperationModalOpen(false)}
+        >
+          <div
+            className="animate-modal-slide-up bg-white rounded-2xl w-full max-w-lg max-h-[92vh] overflow-y-auto"
+            style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}
+            onClick={e => e.stopPropagation()}
+          >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedOperation.tipo === 'compra' ? 'bg-emerald-50 border border-emerald-100' : 'bg-blue-50 border border-blue-100'}`}>
+            <div
+              className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}
+            >
+              <div className="absolute -top-4 -left-4 w-24 h-24 rounded-full pointer-events-none"
+                style={{ background: selectedOperation.tipo === 'compra' ? 'rgba(34,197,94,0.12)' : 'rgba(59,130,246,0.12)', filter: 'blur(24px)' }} />
+              <div className="absolute -bottom-6 right-10 w-20 h-20 rounded-full pointer-events-none"
+                style={{ background: selectedOperation.tipo === 'compra' ? 'rgba(34,197,94,0.08)' : 'rgba(59,130,246,0.08)', filter: 'blur(20px)' }} />
+
+              <div className="relative flex items-center gap-3">
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: selectedOperation.tipo === 'compra' ? 'rgba(34,197,94,0.2)' : 'rgba(59,130,246,0.2)' }}
+                >
                   {selectedOperation.tipo === 'compra'
-                    ? <TrendingDown className="w-5 h-5 text-emerald-500" />
-                    : <TrendingUp className="w-5 h-5 text-blue-500" />}
+                    ? <TrendingDown className="w-[18px] h-[18px] text-primary-400" />
+                    : <TrendingUp className="w-[18px] h-[18px] text-blue-400" />}
                 </div>
                 <div>
-                  <p className={`text-sm font-bold ${selectedOperation.tipo === 'compra' ? 'text-emerald-600' : 'text-blue-600'}`}>
+                  <p className="text-white font-extrabold text-sm leading-tight">
                     {selectedOperation.tipo === 'compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
                   </p>
-                  <p className="text-gray-400 text-[10px] font-mono">
+                  <p className="text-[10px] font-mono font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}
                   </p>
                 </div>
               </div>
-              <button onClick={() => setIsOperationModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition">
-                <X className="w-4 h-4" />
+              <button
+                onClick={() => setIsOperationModalOpen(false)}
+                className="relative p-1.5 rounded-lg transition-colors"
+                style={{ color: 'rgba(255,255,255,0.4)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}
+              >
+                <X className="w-[18px] h-[18px]" />
               </button>
             </div>
 
@@ -585,8 +856,8 @@ export default function DashboardPage() {
 
               {/* Estado + fecha */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
-                  <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-1.5 font-semibold">Estado</p>
+                <div className="rounded-xl p-3.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                  <p className="text-[9px] uppercase tracking-widest font-bold mb-2" style={{ color: 'rgba(13,27,42,0.4)' }}>Estado</p>
                   {(() => {
                     const sc = STATUS[selectedOperation.estado] ?? STATUS.pendiente;
                     return (
@@ -596,42 +867,45 @@ export default function DashboardPage() {
                     );
                   })()}
                 </div>
-                <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
-                  <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-1.5 font-semibold">Fecha</p>
-                  <p className="text-gray-900 text-sm font-bold">
+                <div className="rounded-xl p-3.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+                  <p className="text-[9px] uppercase tracking-widest font-bold mb-2" style={{ color: 'rgba(13,27,42,0.4)' }}>Fecha</p>
+                  <p className="text-sm font-bold leading-tight" style={{ color: '#1E293B' }}>
                     {(parseSafeDate(selectedOperation.fecha_creacion) ?? new Date()).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })}
                   </p>
                 </div>
               </div>
 
               {/* Montos */}
-              <div className="rounded-xl border border-gray-200 p-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="text-center">
-                    <p className="text-gray-400 text-[9px] uppercase tracking-widest mb-2 font-semibold">Usted paga</p>
-                    <div className="rounded-xl bg-rose-50 border border-rose-100 p-3">
-                      <p className="text-base font-bold font-mono text-rose-600 leading-tight">
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(13,27,42,0.08)' }}>
+                <div className="px-4 py-2.5 border-b" style={{ background: '#F8FAFC', borderColor: 'rgba(13,27,42,0.06)' }}>
+                  <p className="text-[9px] uppercase tracking-widest font-bold" style={{ color: 'rgba(13,27,42,0.4)' }}>Resumen de operación</p>
+                </div>
+                <div className="grid grid-cols-3 divide-x p-1" style={{ divideColor: 'rgba(13,27,42,0.06)' }}>
+                  <div className="flex flex-col items-center px-2 py-4 gap-1.5">
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-rose-400">Usted paga</p>
+                    <div className="rounded-xl px-3 py-2.5 text-center w-full" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.12)' }}>
+                      <p className="text-lg font-black font-mono text-rose-600 leading-none">
                         {selectedOperation.tipo === 'compra'
-                          ? `$ ${fmt$(selectedOperation.monto_dolares ?? 0)}`
-                          : `S/ ${fmtS(selectedOperation.monto_soles ?? 0)}`}
+                          ? `$${fmt$(selectedOperation.monto_dolares ?? 0)}`
+                          : `S/${fmtS(selectedOperation.monto_soles ?? 0)}`}
                       </p>
                     </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-gray-400 text-[9px] uppercase tracking-widest mb-2 font-semibold">T.C.</p>
-                    <div className="rounded-xl bg-amber-50 border border-amber-100 p-3">
-                      <p className="text-base font-bold font-mono text-amber-600 leading-tight">
+                  <div className="flex flex-col items-center px-2 py-4 gap-1.5">
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-amber-500">T.C.</p>
+                    <div className="rounded-xl px-3 py-2.5 text-center w-full" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+                      <p className="text-lg font-black font-mono text-amber-600 leading-none">
                         {(selectedOperation.tipo_cambio ?? 0).toFixed(3)}
                       </p>
                     </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-gray-400 text-[9px] uppercase tracking-widest mb-2 font-semibold">Usted recibe</p>
-                    <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-3">
-                      <p className="text-base font-bold font-mono text-emerald-600 leading-tight">
+                  <div className="flex flex-col items-center px-2 py-4 gap-1.5">
+                    <p className="text-[9px] uppercase tracking-widest font-bold text-primary-500">Usted recibe</p>
+                    <div className="rounded-xl px-3 py-2.5 text-center w-full" style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
+                      <p className="text-lg font-black font-mono text-primary-600 leading-none">
                         {selectedOperation.tipo === 'compra'
-                          ? `S/ ${fmtS(selectedOperation.monto_soles ?? 0)}`
-                          : `$ ${fmt$(selectedOperation.monto_dolares ?? 0)}`}
+                          ? `S/${fmtS(selectedOperation.monto_soles ?? 0)}`
+                          : `$${fmt$(selectedOperation.monto_dolares ?? 0)}`}
                       </p>
                     </div>
                   </div>
@@ -640,86 +914,98 @@ export default function DashboardPage() {
 
               {/* Cuentas */}
               {(selectedOperation.source_account || selectedOperation.destination_account) && (
-                <div className="rounded-xl border border-gray-200 p-4 space-y-2">
-                  <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2">
-                    <Building2 className="w-3.5 h-3.5" />Cuentas bancarias
-                  </p>
-                  {selectedOperation.source_account && (
-                    <div className="rounded-lg bg-gray-50 px-3 py-2.5">
-                      <p className="text-gray-400 text-[10px] mb-0.5">Cuenta origen</p>
-                      <p className="text-gray-900 text-sm font-semibold">{selectedOperation.source_account}</p>
-                      {selectedOperation.source_bank && <p className="text-gray-500 text-xs">{selectedOperation.source_bank}</p>}
-                    </div>
-                  )}
-                  {selectedOperation.destination_account && (
-                    <div className="rounded-lg bg-gray-50 px-3 py-2.5">
-                      <p className="text-gray-400 text-[10px] mb-0.5">Cuenta destino</p>
-                      <p className="text-gray-900 text-sm font-semibold">{selectedOperation.destination_account}</p>
-                    </div>
-                  )}
+                <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(13,27,42,0.08)' }}>
+                  <div className="px-4 py-2.5 border-b flex items-center gap-2" style={{ background: '#F8FAFC', borderColor: 'rgba(13,27,42,0.06)' }}>
+                    <Building2 className="w-3.5 h-3.5" style={{ color: 'rgba(13,27,42,0.35)' }} />
+                    <p className="text-[9px] uppercase tracking-widest font-bold" style={{ color: 'rgba(13,27,42,0.4)' }}>Cuentas bancarias</p>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    {selectedOperation.source_account && (
+                      <div className="rounded-lg px-3 py-2.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.06)' }}>
+                        <p className="text-[9px] uppercase tracking-widest font-semibold mb-1" style={{ color: 'rgba(13,27,42,0.35)' }}>Cuenta origen</p>
+                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{selectedOperation.source_account}</p>
+                        {selectedOperation.source_bank && <p className="text-xs mt-0.5" style={{ color: 'rgba(30,41,59,0.35)' }}>{selectedOperation.source_bank}</p>}
+                      </div>
+                    )}
+                    {selectedOperation.destination_account && (
+                      <div className="rounded-lg px-3 py-2.5" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.06)' }}>
+                        <p className="text-[9px] uppercase tracking-widest font-semibold mb-1" style={{ color: 'rgba(13,27,42,0.35)' }}>Cuenta destino</p>
+                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{selectedOperation.destination_account}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
-              {/* Documentos — solo en completado */}
+              {/* Documentos */}
               {selectedOperation.estado?.toLowerCase() === 'completado' && (
-                <div className="rounded-xl border border-gray-200 p-4 space-y-2">
-                  <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2">
-                    <FileText className="w-3.5 h-3.5" />Documentos
-                  </p>
-                  {selectedOperation.payment_proof_url && (
-                    <div className="rounded-lg bg-gray-50 p-3">
-                      <p className="text-gray-400 text-[10px] mb-2">Comprobante cliente</p>
-                      <div className="flex items-center gap-3">
-                        <img src={selectedOperation.payment_proof_url} alt="Comprobante"
-                          className="w-16 h-16 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-80 transition"
-                          onClick={() => window.open(selectedOperation.payment_proof_url, '_blank')} />
-                        <a href={selectedOperation.payment_proof_url} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1">
-                          <ImageIcon className="w-3 h-3" />Ver completo
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                  {Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.map((proof: any, idx: number) =>
-                    proof.comprobante_url ? (
-                      <div key={idx} className="rounded-lg bg-gray-50 p-3">
-                        <p className="text-gray-400 text-[10px] mb-2">Comprobante operador</p>
+                <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(13,27,42,0.08)' }}>
+                  <div className="px-4 py-2.5 border-b flex items-center gap-2" style={{ background: '#F8FAFC', borderColor: 'rgba(13,27,42,0.06)' }}>
+                    <FileText className="w-3.5 h-3.5" style={{ color: 'rgba(13,27,42,0.35)' }} />
+                    <p className="text-[9px] uppercase tracking-widest font-bold" style={{ color: 'rgba(13,27,42,0.4)' }}>Documentos</p>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    {selectedOperation.payment_proof_url && (
+                      <div className="rounded-lg p-3" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.06)' }}>
+                        <p className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: 'rgba(13,27,42,0.35)' }}>Comprobante cliente</p>
                         <div className="flex items-center gap-3">
-                          <img src={proof.comprobante_url} alt="Comprobante operador"
-                            className="w-16 h-16 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-80 transition"
-                            onClick={() => window.open(proof.comprobante_url, '_blank')} />
-                          <a href={proof.comprobante_url} target="_blank" rel="noopener noreferrer"
-                            className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1">
-                            <ImageIcon className="w-3 h-3" />Ver completo
+                          <img src={selectedOperation.payment_proof_url} alt="Comprobante"
+                            className="w-16 h-16 object-cover rounded-xl cursor-pointer hover:opacity-80 transition"
+                            style={{ border: '1px solid rgba(13,27,42,0.08)' }}
+                            onClick={() => window.open(selectedOperation.payment_proof_url, '_blank')} />
+                          <a href={selectedOperation.payment_proof_url} target="_blank" rel="noopener noreferrer"
+                            className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1.5 transition-colors">
+                            <ImageIcon className="w-3.5 h-3.5" />Ver completo
                           </a>
                         </div>
                       </div>
-                    ) : null
-                  )}
-                  {Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.map((inv: any, idx: number) =>
-                    inv.nubefact_enlace_pdf ? (
-                      <div key={idx} className="rounded-lg bg-gray-50 px-3 py-2.5 flex items-center justify-between">
-                        <p className="text-gray-500 text-xs font-medium">{inv.invoice_type === '01' ? 'Factura' : 'Boleta'}{inv.invoice_number ? ` ${inv.invoice_number}` : ''}</p>
-                        <a href={inv.nubefact_enlace_pdf} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1">
-                          <FileText className="w-3 h-3" />Ver PDF
-                        </a>
-                      </div>
-                    ) : null
-                  )}
+                    )}
+                    {Array.isArray(selectedOperation.operator_proofs) && selectedOperation.operator_proofs.map((proof: any, idx: number) =>
+                      proof.comprobante_url ? (
+                        <div key={idx} className="rounded-lg p-3" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.06)' }}>
+                          <p className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: 'rgba(13,27,42,0.35)' }}>Comprobante operador</p>
+                          <div className="flex items-center gap-3">
+                            <img src={proof.comprobante_url} alt="Comprobante operador"
+                              className="w-16 h-16 object-cover rounded-xl cursor-pointer hover:opacity-80 transition"
+                              style={{ border: '1px solid rgba(13,27,42,0.08)' }}
+                              onClick={() => window.open(proof.comprobante_url, '_blank')} />
+                            <a href={proof.comprobante_url} target="_blank" rel="noopener noreferrer"
+                              className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1.5 transition-colors">
+                              <ImageIcon className="w-3.5 h-3.5" />Ver completo
+                            </a>
+                          </div>
+                        </div>
+                      ) : null
+                    )}
+                    {Array.isArray(selectedOperation.invoices) && selectedOperation.invoices.map((inv: any, idx: number) =>
+                      inv.nubefact_enlace_pdf ? (
+                        <div key={idx} className="rounded-lg px-3 py-2.5 flex items-center justify-between" style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.06)' }}>
+                          <p className="text-xs font-semibold" style={{ color: 'rgba(30,41,59,0.65)' }}>{inv.invoice_type === '01' ? 'Factura' : 'Boleta'}{inv.invoice_number ? ` ${inv.invoice_number}` : ''}</p>
+                          <a href={inv.nubefact_enlace_pdf} target="_blank" rel="noopener noreferrer"
+                            className="text-xs text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1.5 transition-colors">
+                            <FileText className="w-3.5 h-3.5" />Ver PDF
+                          </a>
+                        </div>
+                      ) : null
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* Ver detalles */}
-              <button onClick={() => { setIsOperationModalOpen(false); router.push(`/dashboard/operaciones/${selectedOperation.id}`); }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 hover:border-primary-200 text-gray-500 hover:text-primary-600 text-sm font-semibold transition">
+              <button
+                onClick={() => { setIsOperationModalOpen(false); router.push(`/dashboard/operaciones/${selectedOperation.id}`); }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all active:scale-[0.98]"
+                style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)', color: 'rgba(255,255,255,0.85)', boxShadow: '0 4px 14px rgba(13,27,42,0.25)' }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'white'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(13,27,42,0.35)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(13,27,42,0.25)'; }}
+              >
                 Ver detalles completos <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         </div>
       )}
-
-    </div>
+    </>
   );
 }

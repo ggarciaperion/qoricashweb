@@ -32,8 +32,6 @@ class SocketService {
     this.isConnecting = true;
 
     try {
-      console.log('🔌 Connecting to Socket.IO server:', API_BASE_URL);
-
       this.socket = io(API_BASE_URL, {
         transports: ['polling', 'websocket'], // polling primero para evitar fallos de upgrade WS en proxies
         reconnection: true,
@@ -60,35 +58,29 @@ class SocketService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('✅ Socket.IO connected');
       this.reconnectAttempts = 0;
       this.emit('connection_status', { connected: true });
     });
 
     this.socket.on('disconnect', (reason) => {
-      console.log('🔌 Socket.IO disconnected:', reason);
       this.emit('connection_status', { connected: false, reason });
     });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('❌ Socket.IO connection error:', error.message);
+    this.socket.on('connect_error', (_error) => {
       this.reconnectAttempts++;
-
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-        console.error('Max reconnection attempts reached');
         this.emit('connection_status', { connected: false, error: 'Max reconnection attempts' });
       }
     });
 
     this.socket.on('reconnect', (attemptNumber) => {
-      console.log(`🔄 Socket.IO reconnected after ${attemptNumber} attempts`);
+      // reconnected
       this.reconnectAttempts = 0;
       this.emit('connection_status', { connected: true, reconnected: true });
     });
 
     // Listen for exchange rate updates from backend
     this.socket.on('tipos_cambio_actualizados', (data: ExchangeRateUpdate) => {
-      console.log('💱 Exchange rates updated:', data);
       this.emit('exchange_rates_updated', data);
     });
   }
@@ -147,7 +139,6 @@ class SocketService {
    */
   disconnect(): void {
     if (this.socket) {
-      console.log('🔌 Disconnecting from Socket.IO');
       this.socket.disconnect();
       this.socket = null;
       this.listeners.clear();

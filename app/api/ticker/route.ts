@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'https://qoricash-trading-v2.onrender.com';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://app.qoricash.pe';
 const TICKER_API_KEY = process.env.TICKER_API_KEY || '';
 
 export const revalidate = 60; // cache 60 segundos — todos los visitantes comparten el mismo fetch

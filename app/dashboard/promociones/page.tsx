@@ -1,31 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
-import { useExchangeStore } from '@/lib/store/exchangeStore';
-import { Gift, TrendingUp, Sparkles, ArrowRight, Users, Plus, User, ChevronDown, LogOut, HelpCircle } from 'lucide-react';
+import { Gift, Sparkles, ArrowRight, Users, Plus } from 'lucide-react';
 
 export default function PromocionesPage() {
   const router = useRouter();
-  const { isAuthenticated, user, logout } = useAuthStore();
-  const { currentRates } = useExchangeStore();
+  const { isAuthenticated } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
     // Permitir acceso sin autenticación
     setIsLoading(false);
   }, []);
-
-  // El cierre del menú al hacer clic fuera se maneja con un backdrop fixed (ver JSX)
-
-  const handleLogout = () => {
-    logout();
-    router.push('/login');
-  };
 
   const promotions = [
     {
@@ -50,138 +38,6 @@ export default function PromocionesPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <div className="bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2 group">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto" />
-                <span className="text-xl font-bold text-gray-900 group-hover:text-secondary transition">
-                  QoriCash
-                </span>
-              </Link>
-            </div>
-
-            {/* Exchange Rates */}
-            {currentRates && isAuthenticated && (
-              <div className="hidden md:flex items-center space-x-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <div className="relative flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                      <div className="absolute w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
-                    </div>
-                    <span className="text-xs font-medium text-gray-500">En vivo</span>
-                  </div>
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-green-50 rounded-lg">
-                    <span className="text-gray-600">Compra:</span>
-                    <span className="font-bold text-green-600">S/ {currentRates.tipo_compra?.toFixed(3)}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 rounded-lg">
-                    <span className="text-gray-600">Venta:</span>
-                    <span className="font-bold text-blue-600">S/ {currentRates.tipo_venta?.toFixed(3)}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* User Menu o Login Button */}
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center space-x-2 text-gray-700 hover:text-secondary transition group"
-                  >
-                    <User className="w-5 h-5" />
-                    <span className="hidden sm:inline-block text-sm font-medium">
-                      {user?.razon_social
-                        ? user?.razon_social
-                        : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
-
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/login"
-                  className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  href="/crear-cuenta"
-                  className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition"
-                >
-                  Crear cuenta
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Dropdown via portal — renderiza en document.body para escapar cualquier stacking context */}
-      {isUserMenuOpen && createPortal(
-        <>
-          <div
-            className="fixed inset-0"
-            style={{ zIndex: 99998 }}
-            onClick={() => setIsUserMenuOpen(false)}
-          />
-          <div
-            className="fixed right-4 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2"
-            style={{ zIndex: 99999, top: '64px' }}
-          >
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-            >
-              <User className="w-5 h-5 mr-3" />
-              Mi Perfil
-            </button>
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-            >
-              <TrendingUp className="w-5 h-5 mr-3" />
-              Dashboard
-            </button>
-            <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard/promociones'); }}
-              className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition text-left"
-            >
-              <Gift className="w-5 h-5 mr-3" />
-              Promociones
-            </button>
-            <a
-              href="https://wa.me/51960826862"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary/5 hover:text-secondary transition"
-              onClick={() => setIsUserMenuOpen(false)}
-            >
-              <HelpCircle className="w-5 h-5 mr-3" />
-              Soporte
-            </a>
-            <div className="border-t border-gray-200 my-2" />
-            <button
-              onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}
-              className="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 transition text-left"
-            >
-              <LogOut className="w-5 h-5 mr-3" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </>,
-        document.body
-      )}
-
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

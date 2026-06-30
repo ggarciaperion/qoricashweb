@@ -7,9 +7,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import SocketNotifications from "@/components/SocketNotifications";
 import BackgroundDecor from "@/components/BackgroundDecor";
 import CookieBanner from "@/components/CookieBanner";
-import HomeOnlyTicker from "@/components/HomeOnlyTicker";
 import SwRegister from "@/components/SwRegister";
-import InstallPrompt from "@/components/InstallPrompt";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +31,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.qoricash.pe'),
   title: "QoriCash | Casa de Cambio Online - Compra y Vende Dólares al Mejor Precio",
   description: "Cambia dólares de forma segura y rápida con QoriCash. Los mejores tipos de cambio del mercado. Transferencias inmediatas a tu cuenta bancaria.",
   keywords: "casa de cambio, cambio de dólares, tipo de cambio, compra venta dólares, peru",
@@ -83,10 +82,6 @@ export default function RootLayout({
 
         <AuthProvider>
           <div className="relative z-10">
-            {/* Cinta de mercado — solo visible en la página de inicio */}
-            <Suspense fallback={null}>
-              <HomeOnlyTicker />
-            </Suspense>
             {children}
           </div>
           {/* Notificaciones en tiempo real (KYC, operaciones, etc.) */}
@@ -97,7 +92,6 @@ export default function RootLayout({
 
         {/* PWA */}
         <SwRegister />
-        <InstallPrompt />
       </body>
     </html>
   );

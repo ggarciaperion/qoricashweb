@@ -11,13 +11,13 @@ export const metadata = {
 };
 
 const CATEGORIA_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Nacional:       { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  Nacional:       { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
   Internacional:  { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-200'    },
   Economía:       { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
   Tecnología:     { bg: 'bg-violet-50',  text: 'text-violet-700',  border: 'border-violet-200'  },
   Misceláneos:    { bg: 'bg-slate-50',   text: 'text-slate-600',   border: 'border-slate-200'   },
   // legacy fallbacks
-  'Economía Peruana': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'Economía Peruana': { bg: 'bg-primary-50', text: 'text-primary-700', border: 'border-primary-200' },
   'Mercado Forex':    { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
   Análisis:           { bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
 };
@@ -163,7 +163,7 @@ export default async function NoticiasPage({
           <div className="mt-4">
             <h1 className="text-2xl md:text-3xl font-display font-bold text-white leading-tight">
               Noticias que{' '}
-              <span className="bg-gradient-to-r from-primary-400 to-emerald-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-400 to-primary-400 bg-clip-text text-transparent">
                 mueven el dólar
               </span>
             </h1>

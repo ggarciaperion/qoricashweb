@@ -140,11 +140,11 @@ export default function AgregarCuentaPage() {
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+          <div className="mb-6 p-4 bg-primary-50 border border-primary-200 rounded-xl flex items-start">
+            <CheckCircle className="w-5 h-5 text-primary-600 mr-3 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-green-900 font-semibold">Cuenta bancaria agregada exitosamente</p>
-              <p className="text-green-700 text-sm mt-1">Redirigiendo...</p>
+              <p className="text-primary-900 font-semibold">Cuenta bancaria agregada exitosamente</p>
+              <p className="text-primary-700 text-sm mt-1">Redirigiendo...</p>
             </div>
           </div>
         )}
