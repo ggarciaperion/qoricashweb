@@ -32,6 +32,7 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [bankRates, setBankRates] = useState<Record<string, { compra: string; venta: string } | null> | null>(null);
 
   const BANK_ACCOUNTS = {
     bcp:       { soles: '1937353150041',   dolares: '1917357790119'   },
@@ -96,6 +97,18 @@ export default function Home() {
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
+  }, []);
+
+  // Tasas reales de bancos vía SBS
+  useEffect(() => {
+    const fetchBankRates = () =>
+      fetch('/api/bank-rates')
+        .then(r => r.json())
+        .then(data => { if (data.banks) setBankRates(data.banks); })
+        .catch(() => {});
+    fetchBankRates();
+    const id = setInterval(fetchBankRates, 10 * 60 * 1000); // refresca cada 10 min
+    return () => clearInterval(id);
   }, []);
 
   const handleLogout = async () => {
@@ -660,27 +673,32 @@ export default function Home() {
                 {/* Bancos */}
                 <div className="flex flex-col flex-1">
                 {[
-                  { name: 'BCP',        logo: '/BCP.png',        compra: '3.620', venta: '3.710' },
-                  { name: 'Interbank',  logo: '/Interbank.png',  compra: '3.625', venta: '3.715' },
-                  { name: 'BBVA',       logo: '/BBVA.png',       compra: '3.610', venta: '3.720' },
-                  { name: 'Scotiabank', logo: '/Scotiabank.png', compra: '3.615', venta: '3.712' },
-                ].map(({ name, logo, compra, venta }, i, arr) => (
-                  <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
-                    <div className="flex items-center gap-2.5 flex-1">
-                      <img src={logo} alt={name} className="h-4 w-auto object-contain flex-shrink-0 opacity-40" />
-                      <span className="text-sm font-medium" style={{ color: 'rgba(13,27,42,0.4)' }}>{name}</span>
+                  { name: 'BCP',        logo: '/BCP.png'        },
+                  { name: 'Interbank',  logo: '/Interbank.png'  },
+                  { name: 'BBVA',       logo: '/BBVA.png'       },
+                  { name: 'Scotiabank', logo: '/Scotiabank.png' },
+                ].map(({ name, logo }, i, arr) => {
+                  const rate = bankRates?.[name];
+                  const compra = rate?.compra ?? '—';
+                  const venta  = rate?.venta  ?? '—';
+                  return (
+                    <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
+                      <div className="flex items-center gap-2.5 flex-1">
+                        <img src={logo} alt={name} className="h-4 w-auto object-contain flex-shrink-0 opacity-40" />
+                        <span className="text-sm font-medium" style={{ color: 'rgba(13,27,42,0.4)' }}>{name}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{compra}</span>
+                        <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{venta}</span>
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{compra}</span>
-                      <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{venta}</span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 </div>
               </div>
 
               <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(13,27,42,0.3)' }}>
-                *Tasas bancarias referenciales. Actualizado en tiempo real.
+                *Tasas bancarias según SBS. Actualizado cada 10 min.
               </p>
             </div>
 
