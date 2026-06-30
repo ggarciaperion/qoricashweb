@@ -28,6 +28,8 @@ export default function Home() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
@@ -78,7 +80,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const current = window.scrollY;
+      const prev = lastScrollYRef.current;
+      setNavScrolled(current > 20);
+      if (current > prev && current > 80) {
+        setNavHidden(true);
+      } else if (current < prev) {
+        setNavHidden(false);
+      }
+      lastScrollYRef.current = current;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -110,11 +122,11 @@ export default function Home() {
   return (
     <>
     {loggingOut && createPortal(
-      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center animate-fade-in" style={{ background: '#0A0F1A' }}>
         <div className="flex flex-col items-center gap-5">
           <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto animate-logo-exit" />
           <div className="flex flex-col items-center gap-2">
-            <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">Cerrando sesión...</p>
+            <p className="font-bold text-sm tracking-wide animate-slide-up-fade" style={{ color: 'rgba(255,255,255,0.7)' }}>Cerrando sesión...</p>
             <div className="flex gap-1.5 animate-slide-up-fade">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
               <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
@@ -126,35 +138,16 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen">
-      {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
-      <MarketTicker />
-
+    <main className="min-h-screen" style={{ background: '#000000' }}>
       {/* ══ NAVBAR ══ */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none' }}>
-        <nav className="w-full px-6 sm:px-8 lg:px-10">
-          <div className="max-w-5xl mx-auto flex justify-between items-center h-20">
+      <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: '#000000', borderBottom: '1px solid rgba(255,255,255,0.06)', transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>
+        <nav className="w-full">
+          <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
               <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
               <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white">Qoricash</span>
             </Link>
             <div className="hidden lg:flex items-center space-x-8">
-              {[
-                { href: '/sobre-nosotros', label: 'Nosotros', isLink: true },
-                { href: '/noticias',       label: 'Noticias', isLink: true },
-                { href: '/dashboard/promociones', label: 'Promociones', isLink: true },
-              ].map(({ href, label, isLink }) => {
-                const cls = 'relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1';
-                const inner = (
-                  <>
-                    {label}
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
-                  </>
-                );
-                return isLink
-                  ? <Link key={href} href={href} className={cls}>{inner}</Link>
-                  : <a key={href} href={href} className={cls}>{inner}</a>;
-              })}
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
                   {user && (
@@ -186,7 +179,7 @@ export default function Home() {
                     Iniciar Sesión
                     <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href="/crear-cuenta" className="text-sm font-bold bg-white text-primary-600 px-5 py-2 rounded-full hover:bg-white/90 hover:-translate-y-0.5 transition-all duration-200 shadow-md">
+                  <Link href="/crear-cuenta" className="text-sm font-bold text-white px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200" style={{ border: '1.5px solid rgba(255,255,255,0.6)' }}>
                     Regístrate
                   </Link>
                 </>
@@ -209,24 +202,23 @@ export default function Home() {
       {/* Mobile Menu Panel */}
       <div
         className={`lg:hidden fixed left-0 right-0 z-[49] rounded-b-3xl overflow-hidden transition-all duration-300 ease-out ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        style={{ top: '80px', maxHeight: isMobileMenuOpen ? '82vh' : '0px', transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out', background: '#FFFFFF', borderBottom: '1px solid rgba(13,27,42,0.06)', boxShadow: '0 16px 40px rgba(0,0,0,0.12)' }}
+        style={{ top: '80px', maxHeight: isMobileMenuOpen ? '82vh' : '0px', transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out', background: '#111827', borderBottom: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}
       >
         <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
-          <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Menú</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Menú</p>
           <div className="space-y-1 mb-4">
             {[
-              { href: '/sobre-nosotros',        label: 'Nosotros',      Icon: Users,        iconCls: 'text-blue-600',   bgCls: 'bg-blue-50'    },
-              { href: '/noticias',              label: 'Noticias',      Icon: TrendingUp,   iconCls: 'text-amber-600',  bgCls: 'bg-amber-50'   },
-              { href: '/dashboard/promociones', label: 'Promociones',   Icon: Gift,         iconCls: 'text-violet-600', bgCls: 'bg-violet-50'  },
+              { href: '/sobre-nosotros',        label: 'Nosotros',      Icon: Users,        iconCls: 'text-blue-400',   bgCls: 'bg-blue-900/30'    },
+              { href: '/dashboard/promociones', label: 'Promociones',   Icon: Gift,         iconCls: 'text-violet-400', bgCls: 'bg-violet-900/30'  },
             ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
-              const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
+              const cls = 'flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors hover:bg-white/5';
               const inner = (
                 <>
                   <div className={`w-9 h-9 rounded-xl ${bgCls} flex items-center justify-center flex-shrink-0`}>
                     <Icon className={`w-4 h-4 ${iconCls}`} />
                   </div>
-                  <span className="font-medium flex-1">{label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  <span className="font-medium flex-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{label}</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-all" style={{ color: 'rgba(255,255,255,0.2)' }} />
                 </>
               );
               return isAnchor
@@ -234,38 +226,38 @@ export default function Home() {
                 : <Link key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</Link>;
             })}
           </div>
-          <div className="border-t border-gray-100 pt-4">
+          <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
             {isAuthenticated ? (
               <>
-                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Mi Cuenta</p>
+                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>Mi Cuenta</p>
                 <div className="space-y-1">
-                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><UserIcon className="w-4 h-4 text-gray-600" /></div>
+                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}><UserIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.5)' }} /></div>
                     <span className="font-medium flex-1">Mi perfil</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-all" style={{ color: 'rgba(255,255,255,0.2)' }} />
                   </Link>
-                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Banknote className="w-4 h-4 text-gray-600" /></div>
+                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}><Banknote className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.5)' }} /></div>
                     <span className="font-medium flex-1">Mi Dashboard</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-all" style={{ color: 'rgba(255,255,255,0.2)' }} />
                   </Link>
-                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0"><HelpCircle className="w-4 h-4 text-primary-600" /></div>
+                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.1)' }}><HelpCircle className="w-4 h-4 text-green-400" /></div>
                     <span className="font-medium flex-1">Ayuda</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-primary-400 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-all" style={{ color: 'rgba(255,255,255,0.2)' }} />
                   </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                    <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0"><LogOut className="w-4 h-4 text-red-500" /></div>
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-400 rounded-xl transition-colors hover:bg-red-900/20">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.1)' }}><LogOut className="w-4 h-4 text-red-400" /></div>
                     <span className="font-medium">Cerrar Sesión</span>
                   </button>
                 </div>
               </>
             ) : (
               <div className="space-y-2">
-                <Link href="/login" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Lock className="w-4 h-4 text-gray-600" /></div>
+                <Link href="/login" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.8)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.06)' }}><Lock className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.5)' }} /></div>
                   <span className="font-medium flex-1">Iniciar Sesión</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-all" style={{ color: 'rgba(255,255,255,0.2)' }} />
                 </Link>
                 <Link href="/crear-cuenta" className="flex items-center gap-3 px-4 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-bold shadow-lg shadow-primary-200 hover:from-primary-700 hover:to-primary-800 transition-all" onClick={() => setIsMobileMenuOpen(false)}>
                   <UserPlus className="w-4 h-4 flex-shrink-0" />
@@ -282,18 +274,18 @@ export default function Home() {
       {isUserMenuOpen && createPortal(
         <>
           <div className="fixed inset-0" style={{ zIndex: 99998 }} onClick={() => setIsUserMenuOpen(false)} />
-          <div className="fixed right-8 w-56 rounded-xl py-2" style={{ zIndex: 99999, top: '80px', background: '#FFFFFF', backdropFilter: 'blur(16px)', border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 16px 40px rgba(0,0,0,0.12)' }}>
-            <button onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }} className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition text-left">
+          <div className="fixed right-8 w-56 rounded-xl py-2" style={{ zIndex: 99999, top: '80px', background: '#111827', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)' }}>
+            <button onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }} className="flex items-center w-full px-4 py-3 transition text-left hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.7)' }}>
               <UserIcon className="w-5 h-5 mr-3" />Mi perfil
             </button>
-            <button onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }} className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition text-left">
+            <button onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }} className="flex items-center w-full px-4 py-3 transition text-left hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.7)' }}>
               <TrendingUp className="w-5 h-5 mr-3" />Mi Dashboard
             </button>
-            <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition" onClick={() => setIsUserMenuOpen(false)}>
+            <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-3 transition hover:bg-white/5" style={{ color: 'rgba(255,255,255,0.7)' }} onClick={() => setIsUserMenuOpen(false)}>
               <HelpCircle className="w-5 h-5 mr-3" />Ayuda
             </a>
-            <div className="my-1" style={{ borderTop: '1px solid rgba(13,27,42,0.06)' }} />
-            <button onClick={handleLogout} className="flex items-center w-full px-4 py-3 text-red-500 hover:bg-red-50 transition text-left">
+            <div className="my-1" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }} />
+            <button onClick={handleLogout} className="flex items-center w-full px-4 py-3 text-red-400 hover:bg-red-900/20 transition text-left">
               <LogOut className="w-5 h-5 mr-3" />Cerrar Sesión
             </button>
           </div>
@@ -304,7 +296,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[116px]">
+      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]">
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-4 lg:gap-6 items-center w-full">
@@ -312,18 +304,18 @@ export default function Home() {
             {/* LEFT — Texto */}
             <div className="order-2 lg:order-1">
               {/* Pill label */}
-              <span className="inline-flex items-center gap-2 mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(13,27,42,0.15)', color: 'rgba(13,27,42,0.45)' }}>
+              <span className="inline-flex items-center gap-2 mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.45)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                 Fintech de cambio de divisas · Perú
               </span>
 
-              <h1 className="font-display font-black leading-[1.05] mb-6" style={{ color: '#1E293B' }}>
+              <h1 className="font-display font-black leading-[1.05] mb-6" style={{ color: '#FFFFFF' }}>
                 <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
                 <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
                 <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-9 leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-9 leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
                 Personas y empresas cambian millones de soles con QoriCash.
                 Rápido, seguro y sin comisiones ocultas.
               </p>
@@ -342,7 +334,7 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm hover:border-opacity-80"
-                  style={{ border: '2px solid rgba(13,27,42,0.18)', color: 'rgba(13,27,42,0.6)' }}
+                  style={{ border: '2px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.65)' }}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="#22C55E" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -351,7 +343,7 @@ export default function Home() {
                 </a>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 text-xs font-medium" style={{ color: 'rgba(13,27,42,0.45)' }}>
+              <div className="flex flex-wrap items-center gap-6 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-primary" />Registrados ante la SBS</span>
                 <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary" />En 15 minutos</span>
                 <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-primary" />0 comisiones</span>
@@ -359,13 +351,14 @@ export default function Home() {
             </div>
 
             {/* RIGHT — Calculadora */}
-            <div className="order-1 lg:order-2 relative flex items-center justify-center" style={{ minHeight: '500px' }}>
+            <div className="order-1 lg:order-2 relative flex items-center justify-end" style={{ minHeight: '500px' }}>
 
               {/* Calculator */}
               <div className="relative z-10 w-full max-w-[400px]">
                 <Calculator
                   initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                   showContinueButton={true}
+                  dark={true}
                   onOperationReady={() => {
                     router.push(isAuthenticated ? '/dashboard' : '/crear-cuenta');
                   }}
@@ -407,7 +400,7 @@ export default function Home() {
 
           {/* Encabezado */}
           <div className="mb-7 text-center">
-            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#1E293B', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
+            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#FFFFFF', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
               Operamos con los bancos <span className="text-primary">principales del Peru</span>
             </h2>
           </div>
@@ -417,7 +410,7 @@ export default function Home() {
 
           {/* Grupo 1 — Card unificada BCP + Interbank + BanBif */}
           <div className="flex-[3]">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(13,27,42,0.4)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
               Transferencias inmediatas a todo el Perú
             </p>
 
@@ -428,9 +421,9 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : 'rgba(13,27,42,0.10)'}`,
-                    background: hovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)',
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.08)' : '0 1px 6px rgba(0,0,0,0.06)',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : 'rgba(255,255,255,0.08)'}`,
+                    background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
+                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.4)' : '0 1px 6px rgba(0,0,0,0.3)',
                     minHeight: '110px',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
                   }}
@@ -452,12 +445,12 @@ export default function Home() {
                             <div key={key} className="flex items-center justify-between gap-1 py-0.5">
                               <div className="flex items-center gap-1 min-w-0">
                                 <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                                <span className="text-[9px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
+                                <span className="text-[9px] font-bold tabular-nums truncate" style={{ color: '#E2E8F0' }}>{value}</span>
                               </div>
                               <button
                                 onClick={() => handleCopy(value, key)}
                                 className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all"
-                                style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}
+                                style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)', color: copiedKey === key ? '#4ade80' : 'rgba(255,255,255,0.4)' }}
                               >
                                 {copiedKey === key ? '✓' : 'Copiar'}
                               </button>
@@ -474,7 +467,7 @@ export default function Home() {
 
           {/* Grupo 2 — Interbancaria solo Lima */}
           <div className="flex-[1] flex flex-col">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(13,27,42,0.4)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
               Interbancaria solo Lima
             </p>
 
@@ -486,12 +479,12 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : 'rgba(13,27,42,0.10)'}`,
-                    background: hovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    background: hovered ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
                     minHeight: '110px',
                     transitionDelay: isBanksSectionVisible ? '0ms' : '360ms',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0px)',
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.08)' : '0 1px 6px rgba(0,0,0,0.06)',
+                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.4)' : '0 1px 6px rgba(0,0,0,0.3)',
                     zIndex: hovered ? 10 : 1,
                   }}
                   onMouseEnter={() => setHoveredBank('cci')}
@@ -501,7 +494,7 @@ export default function Home() {
                   <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
                     {[
                       [{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }],
-                      [{ src: '/bancognb.jpg', alt: 'GNB' }, { src: '/bancoripley.png', alt: 'Ripley' }, { src: '/bancosantander.png', alt: 'Santander' }],
+                      [],
                     ].map((row, ri) => (
                       <div key={ri} className="flex items-center justify-center gap-3 w-full">
                         {row.map(({ src, alt }) => (
@@ -509,22 +502,27 @@ export default function Home() {
                             <img src={src} alt={alt} style={{ maxWidth: '72px', maxHeight: '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
                           </div>
                         ))}
+                        {ri === 1 && (
+                          <p className="text-[9px] leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                            Transferencias interbancarias para cualquier banco solo Lima. De 2 a 24 horas sujeto a horario bancario.
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>
                   {/* CCI Interbank */}
                   <div className={`absolute bottom-0 left-0 right-0 px-2 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                    <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: 'rgba(13,27,42,0.45)' }}>Cuenta Interbancaria Interbank</p>
+                    <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Cuenta Interbancaria Interbank</p>
                     {[{ label: 'S/', value: CCI.soles, key: 'cci-s' }, { label: '$', value: CCI.dolares, key: 'cci-d' }].map(({ label, value, key }) => (
                       <div key={key} className="flex items-center justify-between gap-1 py-0.5">
                         <div className="flex items-center gap-1 min-w-0">
                           <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                          <span className="text-[8px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
+                          <span className="text-[8px] font-bold tabular-nums truncate" style={{ color: '#E2E8F0' }}>{value}</span>
                         </div>
                         <button
                           onClick={() => handleCopy(value, key)}
                           className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all"
-                          style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}
+                          style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.08)', color: copiedKey === key ? '#4ade80' : 'rgba(255,255,255,0.4)' }}
                         >
                           {copiedKey === key ? '✓' : 'Copiar'}
                         </button>
@@ -546,7 +544,7 @@ export default function Home() {
               { icon: Lock,         label: 'SSL cifrado' },
               { icon: Shield,       label: 'Datos protegidos por ley' },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: 'rgba(13,27,42,0.45)' }}>
+              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 <Icon className="w-3.5 h-3.5 text-primary" />{label}
               </span>
             ))}
@@ -556,7 +554,7 @@ export default function Home() {
 
       {/* Separador */}
       <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="h-px w-full" style={{ background: 'linear-gradient(to right, transparent, rgba(13,27,42,0.12) 20%, rgba(13,27,42,0.12) 80%, transparent)' }} />
+        <div className="h-px w-full" style={{ background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.08) 80%, transparent)' }} />
       </div>
 
       {/* ══════════════════════════════════════
@@ -570,7 +568,7 @@ export default function Home() {
             {/* LEFT — headline + 3 stats inline */}
             <div className="reveal-left flex flex-col justify-between">
               <div>
-                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#1E293B' }}>
+                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#FFFFFF' }}>
                   Cada sol importa.<br />
                   <span className="text-primary">No lo pierdas</span> en el banco.
                 </h2>
@@ -580,13 +578,13 @@ export default function Home() {
               </div>
 
               {/* 3 stats compactos */}
-              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(13,27,42,0.08)' }}>
+              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 {[
                   { value: 80, prefix: 'S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco', speedClock: false },
                   { value: 10, prefix: '',   suffix: 'min', label: 'tiempo aprox.',        sub: 'por operación', speedClock: true },
                   { value: 0,  prefix: 'S/', suffix: '',    label: 'comisiones',           sub: 'siempre', speedClock: false },
                 ].map(({ value, prefix, suffix, label, sub, speedClock }, i) => (
-                  <div key={label} className="pt-5 pb-2" style={{ paddingLeft: i > 0 ? '20px' : '0', borderLeft: i > 0 ? '1px solid rgba(13,27,42,0.08)' : 'none' }}>
+                  <div key={label} className="pt-5 pb-2" style={{ paddingLeft: i > 0 ? '20px' : '0', borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
                     <div className="flex items-center gap-1.5 mb-1">
                       {speedClock && (
                         <div className="relative flex items-center justify-center flex-shrink-0" style={{ width: '22px', height: '22px' }}>
@@ -602,8 +600,8 @@ export default function Home() {
                         <span className="text-sm font-bold text-primary ml-0.5">{suffix}</span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-semibold leading-tight text-gray-800">{label}</div>
-                    <div className="text-[10px]" style={{ color: 'rgba(13,27,42,0.4)' }}>{sub}</div>
+                    <div className="text-[11px] font-semibold leading-tight" style={{ color: 'rgba(255,255,255,0.8)' }}>{label}</div>
+                    <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{sub}</div>
                   </div>
                 ))}
               </div>
@@ -614,7 +612,7 @@ export default function Home() {
             <div className="reveal-right flex flex-col h-full">
 
               {/* Tabla */}
-              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ border: '1px solid rgba(13,27,42,0.1)' }}>
+              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
 
                 {/* Encabezado único — fondo oscuro, todo en una fila */}
                 <div className="flex items-center px-4 py-3" style={{ background: '#1E293B', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -646,7 +644,7 @@ export default function Home() {
                     }}>
                       <div className="flex items-center gap-2.5 flex-1">
                         <img src="/logo-principal.png" alt="QoriCash" className="h-5 w-auto object-contain flex-shrink-0" />
-                        <span className="text-sm font-black" style={{ color: '#1E293B' }}>QoriCash</span>
+                        <span className="text-sm font-black" style={{ color: '#FFFFFF' }}>QoriCash</span>
                         <span className="text-[8px] font-black uppercase tracking-wider bg-primary text-white px-1.5 py-0.5 rounded-full">Mejor</span>
                       </div>
                       <div className="flex gap-1">
@@ -673,14 +671,14 @@ export default function Home() {
                       const compra = (base_c + dc).toFixed(3);
                       const venta  = (base_v + dv).toFixed(3);
                       return (
-                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
+                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
                           <div className="flex items-center gap-2.5 flex-1">
-                            <img src={logo} alt={name} className="h-4 w-auto object-contain flex-shrink-0 opacity-40" />
-                            <span className="text-sm font-medium" style={{ color: 'rgba(13,27,42,0.4)' }}>{name}</span>
+                            <img src={logo} alt={name} className="h-4 w-auto object-contain flex-shrink-0 opacity-20" />
+                            <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.35)' }}>{name}</span>
                           </div>
                           <div className="flex gap-1">
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{compra}</span>
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{venta}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>{compra}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>{venta}</span>
                           </div>
                         </div>
                       );
@@ -690,7 +688,7 @@ export default function Home() {
                 })()}
               </div>
 
-              <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(13,27,42,0.3)' }}>
+              <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(255,255,255,0.3)' }}>
                 *Tasas bancarias referenciales.
               </p>
             </div>
@@ -709,7 +707,7 @@ export default function Home() {
         @keyframes dimPulse   { 0%,100%{opacity:.45} 50%{opacity:1} }
         @keyframes sparkle    { 0%,100%{transform:scale(0) rotate(0deg);opacity:0} 50%{transform:scale(1) rotate(180deg);opacity:1} }
         @keyframes flowDot    { 0%{left:0%;opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{left:100%;opacity:0} }
-        @keyframes cardGlow   { 0%,100%{box-shadow:0 2px 12px rgba(13,27,42,.06)} 50%{box-shadow:0 8px 32px rgba(34,197,94,.12)} }
+        @keyframes cardGlow   { 0%,100%{box-shadow:0 2px 12px rgba(0,0,0,.3)} 50%{box-shadow:0 8px 32px rgba(34,197,94,.15)} }
         @keyframes calcA   { 0%,28%{opacity:1} 34%,100%{opacity:0} }
         @keyframes calcB   { 0%,30%{opacity:0} 36%,62%{opacity:1} 68%,100%{opacity:0} }
         @keyframes calcC   { 0%,64%{opacity:0} 70%,94%{opacity:1} 100%{opacity:0} }
@@ -733,16 +731,16 @@ export default function Home() {
       <section id="como-funciona" className="pt-12 pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(13,27,42,0.12)', color: 'rgba(13,27,42,0.4)' }}>
+            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.4)' }}>
               Simple como siempre debió ser
             </span>
-            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#1E293B' }}>3 pasos. Menos de 15 minutos.</h2>
+            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#FFFFFF' }}>3 pasos. Menos de 15 minutos.</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 mb-10">
 
             {/* ── CARD 01 — Cotiza en línea ── */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', animation: 'cardGlow 4s ease-in-out infinite' }}>
+            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(255,255,255,0.08)', animation: 'cardGlow 4s ease-in-out infinite' }}>
               {/* Illustration zone */}
               <div className="relative overflow-hidden px-7 pt-7 pb-5" style={{ background: '#1E293B', height: '210px' }}>
                 {/* Ghost number */}
@@ -800,15 +798,15 @@ export default function Home() {
               </div>
 
               {/* Text body */}
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
+              <div className="px-6 py-5 flex-1" style={{ background: '#0F172A' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 01</span>
+                <h3 className="font-display font-bold text-lg mb-2 text-white">Cotiza en línea</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
               </div>
             </div>
 
             {/* ── CARD 02 — Transfiere ── */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.4s' }}>
+            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.3)', animationDelay: '0.4s' }}>
               <div className="relative overflow-hidden px-7 py-5 flex flex-col justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>02</span>
                 <div className="absolute top-0 left-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%)', transform: 'translate(-30%, -30%)' }} />
@@ -909,15 +907,15 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y demás.</p>
+              <div className="px-6 py-5 flex-1" style={{ background: '#0F172A' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 02</span>
+                <h3 className="font-display font-bold text-lg mb-2 text-white">Transfiere a QoriCash</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y demás.</p>
               </div>
             </div>
 
             {/* ── CARD 03 — Recibe tu dinero ── */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.8s' }}>
+            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.3)', animationDelay: '0.8s' }}>
               <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>03</span>
                 {/* Central green glow */}
@@ -967,10 +965,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
+              <div className="px-6 py-5 flex-1" style={{ background: '#0F172A' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 03</span>
+                <h3 className="font-display font-bold text-lg mb-2 text-white">Recibe tu dinero</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
               </div>
             </div>
 
@@ -999,8 +997,8 @@ export default function Home() {
       <section className="py-16" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-3xl mx-auto px-6 sm:px-8" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-10">
-            <h2 className="font-display font-black text-3xl md:text-4xl mb-2" style={{ color: '#1E293B' }}>Preguntas frecuentes</h2>
-            <p className="text-sm" style={{ color: 'rgba(13,27,42,0.45)' }}>Resolvemos tus dudas antes de empezar</p>
+            <h2 className="font-display font-black text-3xl md:text-4xl mb-2" style={{ color: '#FFFFFF' }}>Preguntas frecuentes</h2>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>Resolvemos tus dudas antes de empezar</p>
           </div>
           <div className="space-y-2">
             {[
@@ -1013,23 +1011,23 @@ export default function Home() {
               <div
                 key={i}
                 className="rounded-2xl overflow-hidden transition-all duration-300"
-                style={{ border: openFaq === i ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(13,27,42,0.1)' }}
+                style={{ border: openFaq === i ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(255,255,255,0.08)' }}
               >
                 <button className="w-full flex items-center gap-4 px-6 py-5 text-left" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                   <span
                     className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black transition-colors duration-300"
                     style={{
-                      background: openFaq === i ? '#22C55E' : 'rgba(13,27,42,0.06)',
-                      color: openFaq === i ? 'white' : 'rgba(13,27,42,0.35)',
+                      background: openFaq === i ? '#22C55E' : 'rgba(255,255,255,0.06)',
+                      color: openFaq === i ? 'white' : 'rgba(255,255,255,0.35)',
                     }}
                   >{i + 1}</span>
-                  <span className="flex-1 font-bold text-sm sm:text-base text-slate-800">{item.q}</span>
+                  <span className="flex-1 font-bold text-sm sm:text-base text-white">{item.q}</span>
                   <ChevronDown className={`flex-shrink-0 w-4 h-4 text-primary transition-transform duration-300 ${openFaq === i ? 'rotate-180' : 'opacity-50'}`} />
                 </button>
                 <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
                   <div>
                     <div className="px-6 pb-5 pl-[60px]">
-                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>{item.a}</p>
+                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>{item.a}</p>
                     </div>
                   </div>
                 </div>
@@ -1042,7 +1040,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer className="bg-[#1e293b] text-gray-400">
+      <footer className="text-gray-400" style={{ background: '#060A10' }}>
         <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -1082,6 +1080,7 @@ export default function Home() {
                 <li><Link href="/servicios#compra" className="hover:text-white transition-colors">Compra de dólares</Link></li>
                 <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
                 <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
+                <li><Link href="/noticias" className="hover:text-white transition-colors">Noticias</Link></li>
               </ul>
             </div>
             <div>
