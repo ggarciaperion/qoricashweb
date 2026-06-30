@@ -134,197 +134,159 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
         )}
       </button>
 
-      {/* Modal backdrop — renderizado via Portal para escapar del stacking context de la navbar */}
+      {/* Modal — via Portal para escapar del stacking context de la navbar */}
       {open && createPortal(
-        <div
-          className="animate-modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/65 backdrop-blur-md"
-          onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
-        >
-          <div className="animate-modal-enter w-full max-w-md bg-white rounded-2xl overflow-hidden"
-            style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}>
+        <div className="animate-modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+          <div className="animate-modal-enter w-full max-w-sm bg-white rounded-2xl overflow-hidden"
+            style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.35)' }}>
 
             {/* Header */}
-            <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
-              {/* Ambient glow */}
-              <div className="absolute -top-4 -left-4 w-24 h-24 rounded-full bg-primary-500/10 blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-6 right-12 w-20 h-20 rounded-full bg-primary-400/10 blur-2xl pointer-events-none" />
-
-              <div className="relative flex items-center gap-3">
-                <div className="relative w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.2)' }}>
-                  <Bell className="w-[18px] h-[18px] text-primary-400" />
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-400 ring-1 ring-primary-900/40" />
+            <div className="relative flex items-center justify-between px-5 py-4" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.18)' }}>
+                  <Bell className="w-4 h-4 text-green-400" />
                 </div>
                 <div>
-                  <p className="text-white font-extrabold text-sm leading-tight">Alertas de Tipo de Cambio</p>
-                  <p className="text-primary-400/70 text-[10px] font-medium mt-0.5">Recibe el aviso exacto cuando el dólar se mueva</p>
+                  <p className="text-white font-bold text-sm leading-tight">Alertas de Tipo de Cambio</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Aviso por email cuando el dólar se mueva</p>
                 </div>
               </div>
               <button onClick={() => setOpen(false)}
-                className="relative p-1.5 rounded-lg transition-colors"
+                className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                 style={{ color: 'rgba(255,255,255,0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}>
-                <X className="w-[18px] h-[18px]" />
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-5 space-y-5 max-h-[80vh] overflow-y-auto">
+            <div className="p-5 space-y-4 max-h-[78vh] overflow-y-auto">
 
-              {/* Current TC display */}
+              {/* TC actual */}
               {(currentCompra || currentVenta) && (
                 <div className="grid grid-cols-2 gap-2">
-                  <div
-                    className={`relative overflow-hidden rounded-xl px-3 py-3 text-center border transition-all duration-300 ${
-                      flashCompra
-                        ? 'bg-primary-50 border-primary-300 scale-[1.03] shadow-md shadow-primary-100'
-                        : 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200/80'
-                    }`}
-                  >
-                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">TC Compra</p>
-                    <p
-                      key={currentCompra}
-                      className={`text-xl font-black tracking-tight ${
-                        flashCompra ? 'text-primary-700 animate-flash-in' : 'text-slate-800'
-                      }`}
-                      style={{ display: 'inline-block' }}
-                    >
-                      S/ {currentCompra?.toFixed(3) ?? '—'}
+                  <div className={`rounded-xl px-3 py-3 text-center border transition-all duration-300 ${flashCompra ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50'}`}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">QoriCash compra</p>
+                    <p className={`text-xl font-black ${flashCompra ? 'text-green-700' : 'text-slate-800'}`}>
+                      {currentCompra?.toFixed(3) ?? '—'}
                     </p>
-                    {flashCompra && (
-                      <span className="absolute top-1.5 right-2 text-[9px] font-black text-primary-500 animate-ping-once">LIVE</span>
-                    )}
+                    <p className="text-[10px] text-slate-400 mt-0.5">soles por dólar</p>
                   </div>
-                  <div
-                    className={`relative overflow-hidden rounded-xl px-3 py-3 text-center border transition-all duration-300 ${
-                      flashVenta
-                        ? 'bg-primary-100 border-primary-400 scale-[1.03] shadow-md shadow-primary-100'
-                        : 'bg-gradient-to-br from-primary-50 to-primary-100/60 border-primary-200/60'
-                    }`}
-                  >
-                    <p className="text-[9px] text-primary-600 font-bold uppercase tracking-widest mb-1">TC Venta</p>
-                    <p
-                      key={currentVenta}
-                      className={`text-xl font-black tracking-tight ${
-                        flashVenta ? 'text-primary-700 animate-flash-in' : 'text-primary-700'
-                      }`}
-                      style={{ display: 'inline-block' }}
-                    >
-                      S/ {currentVenta?.toFixed(3) ?? '—'}
+                  <div className={`rounded-xl px-3 py-3 text-center border transition-all duration-300 ${flashVenta ? 'border-green-300 bg-green-50' : 'border-green-100 bg-green-50/60'}`}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-1">QoriCash vende</p>
+                    <p className={`text-xl font-black ${flashVenta ? 'text-green-700' : 'text-green-700'}`}>
+                      {currentVenta?.toFixed(3) ?? '—'}
                     </p>
-                    {flashVenta && (
-                      <span className="absolute top-1.5 right-2 text-[9px] font-black text-primary-500 animate-ping-once">LIVE</span>
-                    )}
+                    <p className="text-[10px] text-green-500 mt-0.5">soles por dólar</p>
                   </div>
                 </div>
               )}
 
-              {/* Success state */}
+              {/* Confirmación creación */}
               {justCreated && (
-                <div className="flex items-center gap-3 bg-primary-50 border border-primary-200 rounded-xl px-4 py-3">
-                  <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-primary-600" />
-                  </div>
+                <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-bold text-primary-800">¡Alerta creada!</p>
-                    <p className="text-xs text-primary-600">Te avisaremos por email cuando se active.</p>
+                    <p className="text-sm font-bold text-green-800">¡Alerta creada!</p>
+                    <p className="text-xs text-green-600">Te avisaremos por email en cuanto se active.</p>
                   </div>
                 </div>
               )}
 
-              {/* Create form */}
+              {/* Formulario nueva alerta */}
               {!justCreated && (
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-3.5 h-3.5 text-primary-500" />
-                    <p className="text-xs font-extrabold text-gray-700 uppercase tracking-widest">Nueva alerta</p>
-                  </div>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Nueva alerta</p>
 
-                  {/* Tipo — pill buttons */}
+                  {/* Paso 1: TC tipo */}
                   <div>
-                    <label className="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Condición</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {(['sobre', 'bajo'] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setForm((f) => ({ ...f, tipo: t }))}
-                          className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all duration-150 ${
-                            form.tipo === t
-                              ? t === 'sobre'
-                                ? 'bg-primary-500 text-white border-primary-500 shadow-sm shadow-primary-200'
-                                : 'bg-red-500 text-white border-red-500 shadow-sm shadow-red-200'
-                              : 'bg-slate-50 text-gray-500 border-slate-200 hover:border-slate-300'
-                          }`}
-                        >
-                          {t === 'sobre' ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                          {t === 'sobre' ? 'Por encima de' : 'Por debajo de'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Moneda — pill buttons */}
-                  <div>
-                    <label className="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Tipo de TC</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      ¿Para qué tipo de cambio?
+                    </label>
                     <div className="grid grid-cols-2 gap-2">
                       {(['venta', 'compra'] as const).map((m) => (
-                        <button
-                          key={m}
-                          type="button"
+                        <button key={m} type="button"
                           onClick={() => setForm((f) => ({ ...f, moneda: m }))}
-                          className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all duration-150 ${
+                          className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all ${
                             form.moneda === m
-                              ? 'bg-primary-500 text-white border-primary-500 shadow-sm shadow-primary-200'
-                              : 'bg-slate-50 text-gray-500 border-slate-200 hover:border-slate-300'
-                          }`}
-                        >
-                          TC {m === 'venta' ? 'Venta' : 'Compra'}
+                              ? 'bg-slate-800 text-white border-slate-800'
+                              : 'bg-white text-gray-500 border-slate-200 hover:border-slate-300'
+                          }`}>
+                          {m === 'venta' ? '🔵 TC Venta' : '🟢 TC Compra'}
+                          {m === 'venta' && currentVenta && (
+                            <span className={`block text-[11px] font-black mt-0.5 ${form.moneda === m ? 'text-green-300' : 'text-green-600'}`}>
+                              S/ {currentVenta.toFixed(3)}
+                            </span>
+                          )}
+                          {m === 'compra' && currentCompra && (
+                            <span className={`block text-[11px] font-black mt-0.5 ${form.moneda === m ? 'text-green-300' : 'text-slate-600'}`}>
+                              S/ {currentCompra.toFixed(3)}
+                            </span>
+                          )}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Valor */}
+                  {/* Paso 2: Condición */}
                   <div>
-                    <label className="block text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
-                      Valor del TC
-                      {tcRef && (
-                        <span className="ml-2 text-primary-500 font-semibold normal-case">
-                          actual: S/ {tcRef.toFixed(3)}
-                        </span>
-                      )}
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      ¿Cuándo avisarte?
                     </label>
-                    <input
-                      type="number"
-                      step="0.001"
-                      min="1"
-                      max="10"
-                      placeholder="Ej: 3.410"
-                      value={form.valor}
-                      onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
-                      className="w-full bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl px-4 py-3 text-base font-black text-gray-800 placeholder-gray-300 focus:outline-none transition-all"
-                      style={{ boxShadow: 'none' }}
-                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
-                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
-                      required
-                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button"
+                        onClick={() => setForm((f) => ({ ...f, tipo: 'sobre' }))}
+                        className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border text-xs font-bold transition-all ${
+                          form.tipo === 'sobre'
+                            ? 'bg-green-500 text-white border-green-500'
+                            : 'bg-white text-gray-500 border-slate-200 hover:border-slate-300'
+                        }`}>
+                        <TrendingUp className="w-4 h-4" />
+                        Sube de…
+                      </button>
+                      <button type="button"
+                        onClick={() => setForm((f) => ({ ...f, tipo: 'bajo' }))}
+                        className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border text-xs font-bold transition-all ${
+                          form.tipo === 'bajo'
+                            ? 'bg-orange-500 text-white border-orange-500'
+                            : 'bg-white text-gray-500 border-slate-200 hover:border-slate-300'
+                        }`}>
+                        <TrendingDown className="w-4 h-4" />
+                        Baja de…
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Paso 3: Valor */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-2">
+                      ¿A qué valor?
+                      {tcRef && <span className="ml-1.5 text-green-600 font-bold">Actual: S/ {tcRef.toFixed(3)}</span>}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">S/</span>
+                      <input
+                        type="number" step="0.001" min="1" max="10"
+                        placeholder="3.750"
+                        value={form.valor}
+                        onChange={(e) => setForm((f) => ({ ...f, valor: e.target.value }))}
+                        className="w-full pl-9 pr-4 py-3 bg-slate-50 border-2 border-slate-200 focus:border-green-400 focus:outline-none rounded-xl text-lg font-black text-gray-800 placeholder-gray-300 transition-all"
+                        required
+                      />
+                    </div>
                   </div>
 
                   {/* Preview */}
                   {form.valor && parseFloat(form.valor) > 0 && (
-                    <div className={`flex items-start gap-2.5 rounded-xl px-4 py-3 border ${
-                      form.tipo === 'sobre'
-                        ? 'bg-primary-50 border-primary-200'
-                        : 'bg-red-50 border-red-200'
+                    <div className={`flex items-center gap-2.5 rounded-xl px-4 py-3 ${
+                      form.tipo === 'sobre' ? 'bg-green-50 border border-green-200' : 'bg-orange-50 border border-orange-200'
                     }`}>
-                      {form.tipo === 'sobre' ? (
-                        <TrendingUp className="w-4 h-4 text-primary-600 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <TrendingDown className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-                      )}
-                      <p className={`text-xs leading-relaxed ${form.tipo === 'sobre' ? 'text-primary-700' : 'text-red-600'}`}>
-                        Te avisaremos cuando el <strong>TC {form.moneda === 'compra' ? 'Compra' : 'Venta'}</strong>{' '}
-                        esté <strong>{form.tipo === 'sobre' ? 'por encima de' : 'por debajo de'}</strong>{' '}
+                      {form.tipo === 'sobre'
+                        ? <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        : <TrendingDown className="w-4 h-4 text-orange-500 flex-shrink-0" />}
+                      <p className={`text-xs leading-snug ${form.tipo === 'sobre' ? 'text-green-700' : 'text-orange-700'}`}>
+                        Te avisamos cuando el <strong>TC {form.moneda === 'compra' ? 'Compra' : 'Venta'}</strong>{' '}
+                        {form.tipo === 'sobre' ? 'suba de' : 'baje de'}{' '}
                         <strong>S/ {parseFloat(form.valor).toFixed(3)}</strong>
                       </p>
                     </div>
@@ -332,66 +294,56 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
 
                   {error && <p className="text-xs text-red-500 font-semibold">{error}</p>}
 
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-extrabold text-white tracking-wide transition-all duration-200 disabled:opacity-50"
-                    style={{ background: submitting ? '#d1d5db' : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: submitting ? 'none' : '0 4px 14px rgba(34,197,94,0.35)' }}
-                  >
+                  <button type="submit" disabled={submitting}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #16A34A, #15803d)', boxShadow: '0 4px 12px rgba(22,163,74,0.3)' }}>
                     <Plus className="w-4 h-4" />
-                    {submitting ? 'Creando alerta...' : 'Crear alerta ahora'}
+                    {submitting ? 'Guardando...' : 'Crear alerta'}
                   </button>
                 </form>
               )}
 
-              {/* Active alerts list */}
+              {/* Lista de alertas activas */}
               {alertas.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Bell className="w-3.5 h-3.5 text-primary-500" />
-                    <p className="text-xs font-extrabold text-gray-700 uppercase tracking-widest">Tus alertas</p>
-                    <span className="ml-auto text-[10px] font-bold text-gray-400">{activeCount} activa{activeCount !== 1 ? 's' : ''}</span>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Tus alertas</p>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                      {activeCount} activa{activeCount !== 1 ? 's' : ''}
+                    </span>
                   </div>
                   <div className="space-y-2">
                     {alertas.map((a) => (
-                      <div
-                        key={a.id}
-                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
-                          a.activa
-                            ? 'bg-white border-primary-100 shadow-sm'
-                            : 'bg-slate-50 border-slate-100 opacity-50'
-                        }`}
-                      >
+                      <div key={a.id}
+                        className={`flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all ${
+                          a.activa ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100 opacity-50'
+                        }`}>
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                            a.activa ? 'bg-primary-50' : 'bg-slate-100'
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                            a.tipo === 'sobre' ? 'bg-green-100' : 'bg-orange-100'
                           }`}>
-                            {a.activa ? (
-                              <Bell className="w-3.5 h-3.5 text-primary-500" />
-                            ) : (
-                              <BellOff className="w-3.5 h-3.5 text-gray-300" />
-                            )}
+                            {a.tipo === 'sobre'
+                              ? <TrendingUp className="w-3.5 h-3.5 text-green-600" />
+                              : <TrendingDown className="w-3.5 h-3.5 text-orange-500" />}
                           </div>
                           <div className="min-w-0">
-                            <p className="text-xs font-bold text-gray-800 truncate">
+                            <p className="text-xs font-bold text-gray-800">
                               TC {a.moneda === 'compra' ? 'Compra' : 'Venta'}{' '}
-                              <span className={a.tipo === 'sobre' ? 'text-primary-600' : 'text-red-500'}>
-                                {a.tipo === 'sobre' ? '>' : '<'}
-                              </span>{' '}
-                              S/ {a.valor.toFixed(3)}
+                              {a.tipo === 'sobre' ? 'sube de' : 'baja de'}{' '}
+                              <span className={a.tipo === 'sobre' ? 'text-green-600' : 'text-orange-500'}>
+                                S/ {a.valor.toFixed(3)}
+                              </span>
                             </p>
-                            <p className="text-[10px] text-gray-400 font-medium">
-                              {a.activa ? 'Activa' : 'Disparada'} ·{' '}
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              {a.activa ? '● Activa' : '✓ Disparada'} ·{' '}
                               {new Date(a.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: 'numeric', month: 'short' })}
                             </p>
                           </div>
                         </div>
                         {a.activa && (
-                          <button
-                            onClick={() => handleDelete(a.id)}
-                            className="p-1.5 text-gray-200 hover:text-red-400 transition-colors flex-shrink-0"
-                            title="Eliminar alerta"
-                          >
+                          <button onClick={() => handleDelete(a.id)}
+                            className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-400 hover:bg-red-50 transition-colors flex-shrink-0"
+                            title="Eliminar">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}
@@ -401,13 +353,10 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
                 </div>
               )}
 
-              {loading && (
-                <p className="text-center text-xs text-gray-400 py-2">Cargando alertas...</p>
-              )}
+              {loading && <p className="text-center text-xs text-gray-400 py-2">Cargando alertas...</p>}
 
-              {/* Bottom note */}
-              <p className="text-center text-[10px] text-gray-400 pt-1">
-                Las alertas llegan a <strong className="text-gray-500">{user.email}</strong>
+              <p className="text-center text-[10px] text-gray-400">
+                Aviso a <strong className="text-gray-500">{user.email}</strong>
               </p>
             </div>
           </div>
