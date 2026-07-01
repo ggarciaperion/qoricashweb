@@ -24,9 +24,314 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-06-30T08:00:00.000Z';
+const HOY = '2026-07-01T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'f001',
+    titulo: 'Fed confirma señales dovish: PCE 2.4% allana el camino para un recorte en septiembre y los mercados elevan la probabilidad al 52%',
+    descripcion: 'Con el PCE subyacente de mayo en 2.4% —mínimo desde enero de 2024— la Reserva Federal inicia julio con señales cada vez más claras de un recorte en septiembre. Los rendimientos del Treasury a 10 años cayeron a 4.18% y el DXY retrocede levemente a 101.5, dando un primer respiro a las monedas emergentes.',
+    contenido: `La Reserva Federal abre el tercer trimestre de 2026 con el escenario de política monetaria más favorable para los mercados emergentes en lo que va del año. El dato del PCE subyacente de mayo —publicado el 27 de junio en 2.4% interanual, el más bajo desde enero de 2024— instaló la convicción de que la Fed tiene margen suficiente para iniciar su ciclo de recortes antes del cierre del año.
+
+La herramienta CME FedWatch refleja el cambio de humor del mercado: la probabilidad implícita de un recorte de 25 puntos básicos en la reunión del 17 de septiembre pasó del 31% (previo al dato PCE) al 52% al cierre del 30 de junio, y para la reunión del 5 de noviembre la probabilidad acumulada de al menos un recorte asciende al 74%. Goldman Sachs y Morgan Stanley revisaron sus bases de escenario hacia dos recortes en 2026 (septiembre y diciembre), mientras JP Morgan mantiene uno (diciembre) como caso central.
+
+El primer dato crítico del Q3 será el reporte de empleo de junio (nóminas no agrícolas), que se publica el 3 de julio. El consenso apunta a 185,000 empleos nuevos y una tasa de desempleo estable en 3.9%. Un dato por debajo de 150,000 sería el detonante definitivo para que el mercado pricee el recorte de septiembre con probabilidad superior al 75%; uno superior a 220,000 volvería a postergar las expectativas hacia diciembre. La inflación CPI de junio (publicación 11 de julio) y el PCE de junio (publicación 1 de agosto) completarán el panorama antes de la reunión de septiembre.
+
+Para el mercado cambiario, la evolución del DXY es el termómetro más inmediato de las expectativas de política monetaria de la Fed. El índice cedió 0.4% al cierre del viernes 27 de junio ante el PCE favorable, iniciando julio en 101.5 puntos. Si los datos de julio confirman la desinflación, el DXY podría retroceder hacia 99-100 antes de la reunión de septiembre, lo que generaría un alivio directo sobre el sol peruano y las demás monedas de la región.`,
+    analisis: `Un recorte de la Fed en septiembre sería el catalizador más potente para el alivio del tipo de cambio PEN/USD en el segundo semestre. Históricamente, cuando la Fed inicia un ciclo de recortes, el DXY cede entre 3% y 6% en los 3 meses siguientes, lo que implicaría un retroceso hacia 95-98 y una apreciación del sol hacia S/ 3.25-3.35.
+
+Para empresas con necesidades de compra de dólares en los próximos meses, el nivel actual de S/ 3.40 podría representar un punto cercano al techo del ciclo si la Fed confirma el recorte. En QoriCash le ayudamos a ejecutar sus operaciones cambiarias al mejor tipo de cambio del mercado, en menos de 15 minutos.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/4705378/pexels-photo-4705378.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f002',
+    titulo: 'Sol peruano inicia el Q3 en S/ 3.400: tres escenarios para el tipo de cambio PEN/USD en el segundo semestre de 2026',
+    descripcion: 'El sol peruano arranca el tercer trimestre de 2026 en S/ 3.400 interbancario, con una ligera apreciación de 0.3% respecto al cierre de junio. El Q3 se presenta como el período de mayor incertidumbre del año: el timing de la Fed, los datos de empleo de EE.UU. y el PMI chino determinarán si el sol converge hacia S/ 3.25 o se presiona hacia S/ 3.55.',
+    contenido: `El tipo de cambio PEN/USD inicia julio de 2026 en S/ 3.400 interbancario —compra S/ 3.396 / venta S/ 3.404 en ventanillas bancarias—, con una moderada apreciación de 0.3% respecto al cierre de junio en S/ 3.41. El movimiento recoge el retroceso del DXY de 101.8 a 101.5 puntos tras el PCE favorable publicado el viernes 27 de junio, y anticipa un tercer trimestre con alta sensibilidad a los datos macro de EE.UU.
+
+El análisis de los tres escenarios base para el Q3 2026 parte del consenso de Bloomberg con 42 economistas y 18 bancos de inversión:
+
+Escenario base (probabilidad 50%): la Fed recorta 25bps en diciembre. El DXY se mantiene en el rango 100-102 durante el Q3. El sol fluctúa entre S/ 3.30-3.50. La temporada de agroexportaciones (julio-septiembre) provee soporte estacional. Cierre de septiembre proyectado: S/ 3.38.
+
+Escenario alcista para el sol (probabilidad 30%): la Fed recorta en septiembre. El DXY retrocede hacia 98-99. El PMI chino se mantiene en expansión (>50), sosteniendo el cobre por encima de US$ 4.80/libra. Flujo de capitales hacia emergentes se revierte. Cierre de septiembre: S/ 3.20-3.28.
+
+Escenario bajista para el sol (probabilidad 20%): la Fed pausa sine die y señala que el siguiente movimiento podría ser al alza. El DXY supera 103. El cobre cae por debajo de US$ 4.50/libra. El sol podría alcanzar S/ 3.55-3.65.
+
+Los tres catalizadores locales que favorecen al sol en el Q3 son: el inicio de la temporada alta de agroexportaciones (blueberries, uvas, paltas), la estabilización de las reservas del BCRP en US$ 73.4B, y la percepción positiva del resultado fiscal del H1 (déficit 1.1% del PBI, por debajo de la meta).`,
+    analisis: `El rango S/ 3.35-3.45 representa el campo de juego más probable para el sol durante el Q3 2026 bajo el escenario base. El nivel actual de S/ 3.40 está en el punto medio de ese rango, lo que implica un equilibrio relativo entre las fuerzas de apreciación (exportaciones, BCRP) y depreciación (DXY, salidas de capitales).
+
+Para la gestión cambiaria empresarial, el inicio del Q3 es un momento estratégico: empresas importadoras con necesidades de dólares en los próximos 90 días pueden considerar S/ 3.40 como referencia de planificación, mientras que exportadores con ingresos en dólares pueden beneficiarse del nivel actual para conversiones graduales. En QoriCash ofrecemos el mejor tipo de cambio del mercado para todas sus necesidades.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/5831529/pexels-photo-5831529.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f003',
+    titulo: 'BCRP: inflación de junio se estimaría en 3.4%, la más baja en 18 meses; mercado eleva probabilidad de recorte en agosto al 67%',
+    descripcion: 'Las estimaciones preliminares ubican la inflación de junio en Perú alrededor de 3.4% interanual —el nivel más bajo desde diciembre de 2024— impulsadas por la caída de precios de alimentos frescos y la moderación en energía. El mercado ya asigna 67% de probabilidad a un recorte de 25bps del BCRP en su reunión del 7 de agosto.',
+    contenido: `Las primeras estimaciones privadas del índice de precios al consumidor (IPC) de junio de 2026 en Lima Metropolitana apuntan a una inflación mensual de 0.12% y una inflación interanual de aproximadamente 3.4%, según los modelos de Credicorp Capital, Scotiabank y BBVA Research publicados a inicios de julio. De confirmarse, sería la lectura interanual más baja desde diciembre de 2024 y marcaría el segundo mes consecutivo de desaceleración.
+
+Los factores que explicarían la desaceleración en junio son: la caída estacional de precios de frutas y verduras de temporada (-1.8% mensual estimado), la moderación en los precios de los combustibles al consumidor final (-0.6% mensual, reflejo del WTI en niveles manejables), y la menor presión de los precios de servicios de comunicaciones (-0.3% mensual tras los ajustes de tarifas de operadoras en mayo). Por el contrario, los rubros con presión al alza fueron educación (+1.4% mensual por inicio de semestre en colegios privados) y alquileres (+0.4% mensual).
+
+El dato oficial del INEI se publicará el 4 de julio. Si confirma la lectura estimada de 3.4%, la probabilidad de un recorte del BCRP en su reunión del 7 de agosto —actualmente en 67% según la encuesta Reuters de analistas— podría escalar al 80% o más. La tasa de política monetaria del BCRP lleva en 4.50% desde febrero de 2026, lo que implica una tasa real ex-ante de 1.1% (nominal 4.50% - inflación 3.4%), el nivel más elevado de América del Sur.
+
+Julio Velarde, presidente del BCRP, indicó en declaraciones recientes que el directorio "seguirá de cerca la evolución de la inflación y actuará según los datos", una formulación consistente con un recorte si las próximas lecturas confirman la tendencia. El BCRP tiene reuniones programadas el 7 de agosto, el 11 de septiembre y el 6 de noviembre de 2026.`,
+    analisis: `Una inflación de junio en 3.4% y un eventual recorte del BCRP en agosto tienen un efecto ambivalente sobre el tipo de cambio: en el corto plazo, la reducción de la tasa diferencial Peru-EE.UU. podría generar una presión leve de depreciación del sol (menor atractivo relativo de activos en soles). Sin embargo, si el recorte es percibido como un "recorte de confianza" (señal de solidez macroeconómica), el impacto cambiario sería neutral o levemente positivo.
+
+El nivel clave a vigilar es S/ 3.45: si el sol supera ese nivel tras el anuncio de un recorte del BCRP en agosto, podría indicar que el mercado interpreta el movimiento como excesivo. En QoriCash monitoreamos el tipo de cambio en tiempo real para ofrecerle siempre la mejor tasa disponible.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f004',
+    titulo: 'Producción de cobre en Perú alcanzaría 262,000 TMF en junio: acumulado H1 en 1.54M TMF, récord histórico semestral',
+    descripcion: 'Las estimaciones preliminares del sector apuntan a una producción cuprìfera peruana de 262,000 toneladas métricas finas (TMF) en junio, lo que llevaría el acumulado del H1 a un récord histórico de 1.54 millones de TMF. Antamina, Cerro Verde y Quellaveco son las principales unidades que impulsan el crecimiento.',
+    contenido: `La industria minera peruana se encamina a cerrar el primer semestre de 2026 con un nuevo récord de producción de cobre: las estimaciones del Ministerio de Energía y Minas (MINEM) y de las propias compañías mineras apuntan a una producción de 262,000 TMF en junio, lo que elevaría el total acumulado del H1 a aproximadamente 1.54 millones de TMF, superando el récord anterior de 1.49 millones de TMF del primer semestre de 2023.
+
+Las tres unidades de mayor contribución al récord semestral son Antamina (participación estimada del 20% del total nacional), Cerro Verde —operada por Freeport-McMoRan en Arequipa, con una producción estimada de 130,000 TMF en el H1— y Quellaveco, el proyecto de Anglo American que arrancó operaciones en 2022 y aporta aproximadamente 95,000 TMF en el semestre. Las tres compañías coincidieron en comunicaciones a sus matrices en que los indicadores operativos de junio han estado en línea o por encima de los presupuestos.
+
+El precio del cobre en la LME cerró junio en US$ 4.87/libra, el nivel más alto del año. Para el año completo, el precio promedio se ubica en US$ 4.71/libra, lo que implica un valor exportado total de cobre para el H1 de aproximadamente US$ 10,760 millones —confirmando el dato de SUNAT publicado el 30 de junio. Con las estimaciones actuales de producción y precio, el año 2026 podría convertirse en el mejor año de la historia minera peruana en términos de valor exportado de cobre, superando el récord de US$ 19,800 millones de 2022.
+
+El MINEM publicará las cifras oficiales de producción de mayo la próxima semana (las estadísticas tienen un retraso de aproximadamente 5 semanas). Las cifras de junio se conocerán recién a finales de julio.`,
+    analisis: `El récord de producción cuprìfera peruana en el H1 2026 es la principal fuente de fortaleza estructural del sol ante la presión del DXY. Cada 10,000 TMF adicionales de producción de cobre generan, al precio actual, aproximadamente US$ 107 millones de ingreso exportador adicional, lo que equivale a un flujo de divisas que el BCRP puede canalizar para moderar la depreciación cambiaria.
+
+Para el Q3, la temporada alta de exportación de cobre coincide con la temporada alta de agroexportaciones, generando un flujo combinado de divisas que es el principal soporte natural del sol. En QoriCash ofrecemos el mejor tipo de cambio para exportadores mineros y empresas del sector que necesitan convertir dólares a soles.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5505961/pexels-photo-5505961.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f005',
+    titulo: 'Arándanos peruanos: julio inicia la temporada alta de exportación con proyección de US$ 950M para 2026, un récord histórico',
+    descripcion: 'Julio marca el inicio de la temporada alta de exportación de arándanos peruanos, con embarques semanales que superan las 2,800 toneladas. El sector proyecta exportaciones totales de US$ 950 millones en 2026 —nuevo récord— liderado por la mayor demanda de EE.UU. y Europa, con el precio FOB promedio en US$ 4.85/kg.',
+    contenido: `El primer día de julio de 2026 marca oficialmente el inicio de la temporada alta de exportación de arándanos peruanos, el cultivo de mayor crecimiento en las exportaciones no tradicionales del país. Las asociaciones de productores de las principales regiones (La Libertad, Ica, Ancash) reportan que los campos están en plena cosecha y los volúmenes semanales de embarque superan las 2,800 toneladas —un incremento del 18% respecto al mismo período de 2025— según datos de la Asociación de Exportadores (ADEX).
+
+La proyección del sector para el año completo 2026 apunta a exportaciones de US$ 950 millones, lo que representaría un nuevo máximo histórico y un crecimiento del 26% frente a los US$ 754 millones de 2025. Los factores que impulsan el crecimiento son la mayor superficie cultivada (75,000 hectáreas en producción, +12% vs 2025), la mejora de las variedades cultivadas (mayor contenido de antioxidantes, mayor resistencia al transporte) y el fortalecimiento de las certificaciones de buenas prácticas agrícolas (GlobalGAP, BRCGS).
+
+El precio FOB promedio se ubica actualmente en US$ 4.85 por kilogramo, el más alto para un mes de julio desde 2022. El mercado de destino principal sigue siendo EE.UU. (48% del volumen total), seguido por los Países Bajos (22%, desde donde se redistribuye al resto de Europa) y el Reino Unido (11%). China está emergiendo como tercer mercado de crecimiento acelerado: los volúmenes hacia el gigante asiático crecieron 38% en el H1, beneficiados por el acuerdo fitosanitario bilateral de 2023.
+
+Las empresas líderes del sector —Camposol, Hortifrut, Talsa y Blueberries Peru— han anunciado inversiones combinadas de US$ 180 millones para la campaña 2026-2027, incluyendo la expansión de plantas de empaque en La Libertad y nuevas cámaras frigoríficas en el puerto del Callao.`,
+    analisis: `La temporada alta de arándanos (julio-octubre) es uno de los pilares del superávit comercial peruano en el Q3. Con exportaciones proyectadas de US$ 950 millones en el año y el pico en julio-agosto, el flujo de dólares del sector agrícola suma al cobre y el oro como fuentes de divisas que estabilizan el tipo de cambio en el Q3.
+
+Para agroexportadoras que liquidan dólares semanalmente, el tipo de cambio actual de S/ 3.40 representa un nivel históricamente favorable comparado con los S/ 3.20-3.25 de 2024. Optimizar la conversión con QoriCash puede significar un incremento de ingresos en soles de S/ 150-200 por cada US$ 1,000 exportado frente a las tasas bancarias.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/13277183/pexels-photo-13277183.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f006',
+    titulo: 'Consumo privado en Perú crece 4.2% en mayo 2026: ventas retail al alza y salarios reales positivos por tercer mes consecutivo',
+    descripcion: 'El consumo privado en Perú creció 4.2% interanual en mayo de 2026, impulsado por el aumento de las ventas de alimentos y bebidas (+5.1%), electrodomésticos (+6.8%) y servicios de restaurantes y hoteles (+4.9%). Los salarios reales crecieron 1.8% en mayo, el tercer mes consecutivo en terreno positivo, sustentando el dinamismo del consumidor.',
+    contenido: `El consumo privado en Perú registró un crecimiento de 4.2% interanual en mayo de 2026, acelerándose respecto al 3.8% de abril, según estimaciones del INEI publicadas a finales de junio. El resultado consolida la tendencia de recuperación del gasto de los hogares peruanos, que había sido golpeado por la inflación elevada de 2024 y la incertidumbre política del primer semestre de 2025.
+
+Las ventas en supermercados y autoservicios crecieron 5.1% en mayo, sustentadas por la mayor demanda de alimentos procesados, bebidas y productos de higiene. Las tiendas por departamentos reportaron un incremento del 7.4% en ventas, impulsado por la campaña de liquidación de invierno y el auge del comercio electrónico (penetración de e-commerce en retail: 18.4%, vs 14.2% en 2024). Las ventas de vehículos livianos crecieron 8.2% con 14,200 unidades vendidas en mayo, el mejor registro mensual desde agosto de 2023.
+
+El principal factor de soporte del consumo es la recuperación de los salarios reales: el salario nominal promedio en Lima creció 5.8% interanual en mayo, por encima de la inflación de 3.6%, lo que genera un crecimiento real de 1.8%. Es el tercer mes consecutivo de salarios reales positivos, luego de 18 meses (enero 2024 - febrero 2026) de pérdida de poder adquisitivo. Las remesas del exterior sumaron US$ 780 millones en mayo, un crecimiento del 11.4% y un apoyo adicional al gasto de los hogares.
+
+La confianza del consumidor (APOYO) subió a 42 puntos en junio (escala 0-100), el nivel más alto desde octubre de 2023. Las expectativas de empleo a 3 meses son positivas en todos los segmentos socioeconómicos, lo que anticipa un Q3 de consumo dinámico.`,
+    analisis: `El crecimiento del consumo privado en 4.2% es positivo para el ciclo económico peruano y tiene un efecto favorecedor sobre el tipo de cambio: mayor actividad económica interna eleva la demanda de soles, la recaudación tributaria y la confianza en los fundamentos del país, factores que —en el margen— limitan la presión depreciativa sobre el PEN.
+
+Para empresas del sector retail, consumo masivo e importadoras que requieren dólares para financiar sus cadenas de suministro, el contexto de consumo dinámico es una señal para planificar sus necesidades de divisas del Q3. En QoriCash le ofrecemos el mejor tipo de cambio del mercado para sus operaciones de cambio.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5980178/pexels-photo-5980178.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f007',
+    titulo: 'Nóminas no agrícolas de EE.UU. (publicación 3 de julio): consenso en 185,000; el dato que definirá si la Fed recorta en septiembre',
+    descripcion: 'El reporte de empleo de junio de EE.UU. se publica este jueves 3 de julio —anticipado por el feriado del 4 de julio— y el mercado asigna un peso extraordinario al dato: un resultado por debajo de 150,000 empleos nuevos elevaría la probabilidad de un recorte de la Fed en septiembre por encima del 75%, mientras que uno superior a 220,000 lo reduciría al 25%.',
+    contenido: `El Departamento de Trabajo de EE.UU. publicará este jueves 3 de julio (anticipado un día por el feriado del Día de la Independencia) el reporte de empleo del mes de junio de 2026. El consenso de Bloomberg con 73 economistas apunta a 185,000 nóminas no agrícolas nuevas, una tasa de desempleo estable en 3.9% y un crecimiento del salario promedio por hora del 3.8% interanual. De materializarse estas cifras, el informe sería "Ricitos de Oro" para la Fed: suficientemente sólido para no generar pánico recesivo, pero suficientemente moderado para justificar el inicio del ciclo de recortes.
+
+Los modelos de nowcasting del reporte son heterogéneos: el modelo de la Fed de Atlanta proyecta 198,000; el modelo de Indeed (basado en publicaciones de empleo online) apunta a 172,000; y los datos de empleo privado ADP de junio (publicados el 2 de julio) serán el primer indicador del día previo. Históricamente, la correlación entre el ADP y las nóminas oficiales es moderada (0.58), por lo que el mercado no reaccionará excesivamente al ADP previo.
+
+Los sectores de mayor atención en el informe serán: servicios de salud y asistencia social (el componente de mayor crecimiento consistente en los últimos 18 meses, proyectado en +48,000 para junio), ocio y hospitalidad (estacional positivo en junio, proyectado en +35,000), y manufactura (que ha mostrado debilidad reciente, proyectado en -5,000). El empleo gubernamental será clave: la reducción de personal federal bajo el programa DOGE podría imprimir un sesgo bajista de 15,000-25,000 empleos.
+
+El mercado de divisas reaccionará con alta volatilidad al dato: un resultado inferior a 150,000 generaría una caída inmediata del DXY del 0.8-1.2% y una apreciación del sol y otras monedas emergentes; uno superior a 220,000 provocaría el movimiento contrario.`,
+    analisis: `El reporte de empleo del 3 de julio es el evento de mayor impacto para el tipo de cambio PEN/USD de esta semana. En QoriCash monitoreamos el tipo de cambio en tiempo real, y el día de publicación del reporte es típicamente uno de los de mayor volatilidad del mes. Anticipar el nivel de operación antes del dato —no después— es la estrategia más eficiente para obtener el mejor tipo de cambio.
+
+Si el dato es débil (< 150K), el sol podría apreciarse a S/ 3.35-3.38 en cuestión de horas. Si es fuerte (> 220K), podría presionarse a S/ 3.44-3.48. La ventana antes del dato (hoy martes y miércoles) ofrece el tipo de cambio más predecible. En QoriCash le ofrecemos atención inmediata para aprovechar el mejor momento.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/17507798/pexels-photo-17507798.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f008',
+    titulo: 'WTI inicia Q3 en US$ 80.8/barril: el aumento de producción de la OPEP+ y el shale de EE.UU. limitan el alza en el trimestre',
+    descripcion: 'El petróleo WTI comienza el tercer trimestre de 2026 en US$ 80.8 por barril, dentro del rango de equilibrio del año. La ampliación de producción de la OPEP+ en 411,000 b/d —efectiva desde agosto— y la producción récord de shale estadounidense en 13.4M b/d crean un techo estructural sobre el precio, proyectado en el rango US$ 75-88 para el Q3.',
+    contenido: `El crudo de referencia WTI (West Texas Intermediate) inicia el tercer trimestre de 2026 en US$ 80.8 por barril, con una caída acumulada del 2.1% desde el cierre de junio (US$ 81.3/barril), en un inicio de Q3 marcado por la proximidad de la ampliación de cuotas de la OPEP+ y la publicación de datos de inventarios de EE.UU. esta semana.
+
+La decisión de la OPEP+ del 22 de junio de ampliar la producción en 411,000 barriles diarios a partir de agosto es la variable de oferta más relevante para el Q3. Arabia Saudita, los EAU e Irak lideran el retorno de producción previamente recortada (la alianza había recortado 3.66 millones de b/d en 2024-2025 para sostener precios). La nueva producción OPEP+ más la producción récord estadounidense de 13.4M b/d (máximo histórico según la EIA) sitúan la oferta global en niveles que el mercado percibe como ligeramente excedentarios frente a una demanda que crece al 1.3% anual.
+
+Los factores que compensan parcialmente la presión bajista de oferta son: la demanda de refinación de la costa del Golfo de EE.UU. en plena temporada de conducción (julio-agosto), la mayor demanda de aviación en Europa y Asia-Pacífico (+8.4% interanual en junio según IATA), y las tensiones geopolíticas latentes en el estrecho de Ormuz que mantienen una prima de riesgo de US$ 2-3/barril sobre el precio spot.
+
+Para el Q3, el consenso de analistas de energía (Energy Aspects, Wood Mackenzie, Rystad) proyecta el WTI en el rango US$ 75-88, con un precio central de US$ 82/barril. La principal amenaza bajista es una desaceleración de la demanda china que ya empieza a reflejarse en los datos de importaciones de crudo de junio (54.2 millones de toneladas, -3.8% vs junio 2025).`,
+    analisis: `El WTI en US$ 80-82/barril es neutral para la economía peruana: no genera presión inflacionaria adicional (el break-even de la refinación nacional es ~US$ 75/barril) pero tampoco representa un shock de costos energéticos. Para Camisea y los productores de gas natural en Perú, el nivel actual es moderadamente favorable.
+
+Para empresas peruanas con costos de transporte, logística o energía denominados en dólares, la estabilidad del petróleo en el rango US$ 75-88 facilita la planificación financiera del Q3. Combinar costos energéticos estables con el mejor tipo de cambio del mercado en QoriCash es la estrategia más eficiente para controlar el impacto cambiario en los costos operativos.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f009',
+    titulo: 'Oro inicia julio en US$ 3,298/oz: demanda de bancos centrales en récord y objetivo de Goldman en US$ 3,700 reafirmado para fin de año',
+    descripcion: 'El oro spot inicia julio en US$ 3,298 por onza, sostenido por la demanda récord de bancos centrales y el debilitamiento del DXY ante el PCE favorable de mayo. Goldman Sachs reafirmó su objetivo de fin de año en US$ 3,700 citando el ritmo de compras de los bancos centrales emergentes y el apetito por activos de refugio ante la incertidumbre geopolítica.',
+    contenido: `El oro spot (XAU/USD) inicia el tercer trimestre de 2026 en US$ 3,298 por onza, con un alza del 0.4% respecto al cierre de junio (US$ 3,285), beneficiado por el retroceso del DXY a 101.5 tras el PCE favorable del 27 de junio. El metal precioso ha consolidado el nivel de US$ 3,200-3,300 como nuevo rango de equilibrio estructural, tras haber alcanzado un máximo histórico de US$ 3,509 el 22 de abril de 2026.
+
+Goldman Sachs reafirmó el 30 de junio su objetivo de precio para el oro a fin de 2026 en US$ 3,700 por onza, argumentando que la demanda de bancos centrales emergentes "no muestra señales de desaceleración" y que los riesgos geopolíticos en Oriente Medio y Europa del Este mantienen una prima de refugio estructural. El banco de inversión proyecta compras de bancos centrales por 950-1,000 toneladas en el año completo 2026, superando el récord histórico de 2022 (1,136 toneladas). Los mayores compradores identificados son los bancos centrales de China (en proceso de reducir la dependencia del dólar en sus reservas), India, Polonia y varios países del Golfo Pérsico.
+
+La correlación inversa entre el oro y el DXY (coeficiente -0.82 en los últimos 12 meses) hace al metal precioso particularmente sensible a las expectativas de la Fed. Un recorte de tasas en septiembre —probabilidad del 52% según CME FedWatch— implicaría una caída del DXY que actuaría como un catalizador directo para el oro: históricamente, en los 3 meses posteriores al primer recorte de la Fed en un ciclo, el oro ha subido en promedio 8.4%.
+
+El soporte técnico más sólido del metal está en US$ 3,200 (mínimo de junio y media móvil de 50 días). La resistencia inmediata está en US$ 3,370 (máximo de mayo). Un cierre semanal por encima de US$ 3,370 abriría el camino hacia US$ 3,509 (máximo histórico).`,
+    analisis: `El oro en US$ 3,298/oz al inicio del Q3 confirma la tendencia alcista estructural del metal precioso en 2026. Para Perú, el país con la sexta mayor producción aurífera del mundo, cada aumento de US$ 100/oz en el precio del oro amplía el valor de las exportaciones en aproximadamente US$ 190 millones anualizados, reforzando el superávit comercial y el soporte al sol.
+
+Para inversores o empresas peruanas con exposición al oro o que deseen diversificarse, el nivel actual de S/ 3.40 para la conversión USD/PEN maximiza el valor en soles de los activos denominados en dólares. En QoriCash ofrecemos el mejor tipo de cambio del mercado para todas sus conversiones.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f010',
+    titulo: 'Bitcoin entra al Q3 en US$ 107,200: soporte clave en US$ 100K y ETFs con flujos netos de US$ 1,200M solo en la última semana de junio',
+    descripcion: 'Bitcoin inicia el tercer trimestre de 2026 en US$ 107,200, consolidando el rango US$ 103,000-109,200 establecido en junio. Los ETFs spot de Bitcoin en EE.UU. registraron flujos netos positivos de US$ 1,200 millones en la última semana de junio, señal de que la demanda institucional se mantiene robusta al inicio del nuevo trimestre.',
+    contenido: `Bitcoin (BTC/USD) inicia julio de 2026 en US$ 107,200, con un alza del 0.6% respecto al cierre de junio (US$ 106,820), marcando la cuarta semana consecutiva en que el activo digital permanece por encima del nivel psicológico de US$ 100,000. El mercado de criptomonedas en conjunto capitaliza US$ 3.74 billones al inicio del Q3, un máximo histórico.
+
+Los ETFs spot de Bitcoin listados en EE.UU. —liderados por el iShares Bitcoin Trust (IBIT) de BlackRock y el Fidelity Wise Origin Bitcoin Fund (FBTC)— registraron flujos netos de entrada de US$ 1,200 millones en la última semana de junio (24-28 de junio), elevando el total acumulado del H1 a US$ 18,400 millones netos. El IBIT de BlackRock superó los US$ 60,000 millones de activos bajo gestión el 30 de junio, consolidándose como el ETF de materias primas de mayor crecimiento en la historia de los mercados de capitales estadounidenses.
+
+La estacionalidad histórica de Bitcoin favorece al Q3: en los 4 años posteriores al halving (2013, 2017, 2021, 2025), el activo registró ganancias en el tercer trimestre en 3 de los 4 casos, con rendimientos promedio del +28%. El halving más reciente ocurrió en abril de 2024. Si la pauta se repite, el Q3 2026 podría llevar a Bitcoin hacia US$ 120,000-130,000.
+
+Los riesgos bajistas principales para el Q3 son: una corrección del Nasdaq (con el que Bitcoin tiene alta correlación de 0.74), un dato de empleo de EE.UU. muy fuerte el 3 de julio que postergue la Fed, y el potencial de toma de ganancias institucional tras el rally del H1. El soporte técnico más fuerte está en US$ 100,000 (zona de máximos anteriores, ahora soporte psicológico y técnico de primer orden). Una ruptura de ese nivel podría generar una corrección hacia US$ 92,000-96,000.`,
+    analisis: `Bitcoin en US$ 107,200 al inicio del Q3 representa una ganancia del 34% en el H1 que, para inversores peruanos, se amplifica al convertirla a soles: con el tipo de cambio en S/ 3.40, US$ 100 invertidos en BTC a principios de año (S/ 338 al cambio de S/ 3.38/USD) valen hoy S/ 364 solo por la variación del BTC, más el diferencial cambiario.
+
+Para peruanos con ganancias en criptomonedas que deseen convertir a soles, QoriCash ofrece el mejor tipo de cambio del mercado para la conversión USD/PEN, maximizando el valor final de sus activos digitales en moneda local.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/7267611/pexels-photo-7267611.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f011',
+    titulo: 'S&P 500 cierra H1 en 5,742 puntos con +14.8% en el año: inicio de Q3 sólido favorece el apetito por riesgo en mercados emergentes',
+    descripcion: 'El S&P 500 cerró el primer semestre de 2026 en 5,742 puntos, acumulando una ganancia del 14.8% en el año y consolidando el mejor H1 para el índice desde 2023. El fuerte desempeño de la renta variable estadounidense impulsa el apetito por activos de riesgo globalmente y favorece los flujos hacia mercados emergentes como Perú.',
+    contenido: `El índice S&P 500 cerró el primer semestre de 2026 en 5,742 puntos, con una ganancia del 14.8% desde el cierre de 2025 (4,999 puntos). El resultado supera el rendimiento histórico promedio del H1 (8.4% desde 1950) y consolida el bull market iniciado en octubre de 2022. La estadística histórica es favorable para el Q3: cuando el S&P 500 gana más del 10% en el H1, el Q3 es positivo en el 72% de los casos, con un retorno promedio del 4.8%.
+
+Los sectores líderes del H1 2026 fueron tecnología (+22.1%), comunicaciones (+19.4%) y consumo discrecional (+16.8%). El sector tecnológico fue impulsado por la continuación del ciclo de inversión en inteligencia artificial: Nvidia reportó ingresos de US$ 44,000 millones en el Q1, Microsoft superó el billón de dólares en capitalización de mercado y Apple recuperó el puesto de empresa más valiosa del mundo con US$ 3.8 billones en market cap. Los sectores rezagados fueron utilities (-2.1%) y consumo básico (+3.4%), castigados por el entorno de tasas elevadas.
+
+El impacto del S&P 500 en los mercados emergentes opera a través de tres canales: (1) el canal de riesgo-apetito: cuando el S&P sube, los inversores globales aumentan su tolerancia al riesgo y fluyen hacia activos emergentes; (2) el canal de liquidez: utilidades corporativas elevadas en EE.UU. generan mayor disponibilidad de capital para inversión global; (3) el canal de confianza: un mercado de capitales estadounidense sólido es la mejor señal de salud de la economía global.
+
+Para los mercados emergentes de LatAm, el H1 del S&P fue de beneficio neto: la bolsa de Lima (BVL) subió 11.2% en soles (+10.3% en dólares) y el índice MSCI EM LatAm ganó 8.4%. El inicio del Q3 con el S&P en niveles récord favorece la continuación de estos flujos.`,
+    analisis: `Un S&P 500 sólido al inicio del Q3 es positivo para el sol peruano a través del canal de apetito por riesgo: mayor confianza en los mercados globales reduce la demanda de dólares como refugio y disminuye la presión sobre el DXY. En la práctica, cada rally del 5% del S&P correlaciona con un retroceso promedio del 1.5-2% del DXY y una apreciación similar del sol.
+
+Para empresas peruanas que monitoran los mercados internacionales como referencia de su planificación cambiaria, el inicio del Q3 con el S&P en máximos históricos es una señal moderadamente positiva para el tipo de cambio. En QoriCash le ofrecemos siempre el mejor tipo de cambio, independientemente de la coyuntura de mercados globales.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5831529/pexels-photo-5831529.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f012',
+    titulo: 'WTI técnico: soporte sólido en US$ 78/barril y resistencia en US$ 85; RSI neutral anticipa rango lateral en julio',
+    descripcion: 'El análisis técnico del WTI muestra un panorama de rango lateral para julio: soporte en US$ 78/barril (media móvil de 50 días), resistencia en US$ 85 (nivel de break-even promedio de la OPEP+) y RSI en 47 (terreno neutral). Los operadores de futuros reducen posiciones largas especulativas en anticipación al aumento de producción OPEP+.',
+    contenido: `El análisis técnico del contrato de futuros WTI para agosto de 2026 muestra un panorama equilibrado al inicio del Q3. El precio se ubica en US$ 80.8/barril, dentro del canal lateral US$ 78-85 que ha definido el movimiento del crudo en los últimos 45 días de negociación. Los indicadores técnicos clave son: RSI (14 períodos) en 47 —terreno neutral, sin señal de sobrecompra ni sobreventa—, media móvil de 50 días en US$ 78.4/barril (soporte técnico validado en tres ocasiones en junio), y media móvil de 200 días en US$ 83.2/barril (actuando como resistencia de largo plazo).
+
+El posicionamiento especulativo en los mercados de futuros de Chicago (NYMEX) muestra que los grandes especuladores (managed money) redujeron sus posiciones largas netas en crudo un 14% durante la última semana de junio, según el reporte CFTC del 27 de junio. Esta reducción del apetito especulativo por el alza del crudo refleja la anticipación del aumento de producción OPEP+ en agosto y es consistente con un mercado que "compra el rumor y vende la noticia".
+
+Los niveles técnicos a vigilar en julio son: al alza, US$ 83.5 (media móvil de 200 días; una ruptura confirmada abriría el camino a US$ 87-89, donde se concentra el interés abierto de opciones call de agosto); a la baja, US$ 78 (media móvil de 50 días; una ruptura aumentaría el riesgo de caída hacia US$ 74-75, zona de mínimos de 2026). El catalizador más probable para una ruptura en cualquier dirección sería el dato de inventarios de crudo de EE.UU. (publicado por la EIA cada miércoles).
+
+El inventario de crudo de EE.UU. se ubica en 452 millones de barriles, 6.4% por debajo del promedio de los últimos 5 años. Una caída adicional de inventarios (por temporada de driving peak) podría ser el catalizador alcista del Q3; un aumento sorpresivo (por demanda débil) sería el detonante bajista.`,
+    analisis: `El WTI en rango lateral US$ 78-85 es el escenario más neutro posible para la economía peruana: sin el shock de costos de un crudo a US$ 95+, pero sin el alivio inflacionario de uno a US$ 65-. Para la planificación empresarial del Q3, este entorno sugiere que los costos energéticos denominados en dólares serán predecibles.
+
+El verdadero impacto del petróleo sobre el tipo de cambio peruano en este ciclo es indirecto: opera vía inflación global (mayor o menor presión sobre la Fed) y vía demanda china de commodities. En QoriCash le ofrecemos el mejor tipo de cambio para sus conversiones de divisas, independientemente del entorno de precios del petróleo.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/1716008/pexels-photo-1716008.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f013',
+    titulo: 'Argentina: junio termina con CPI estimado de 1.7%, el más bajo en 8 años; INDEC publica el 9 de julio y peso avanza a 1,297 ARS/USD',
+    descripcion: 'Argentina cierra junio de 2026 con una inflación mensual estimada de 1.7%, la más baja desde marzo de 2018, según estimaciones privadas previas a la publicación oficial del INDEC el 9 de julio. El peso oficial avanza a 1,297 ARS/USD tras el crawl mensual del 1%, la brecha con el blue se comprime al 3.8% y las reservas brutas del BCRA llegan a US$ 38,700 millones.',
+    contenido: `Argentina inicia julio de 2026 con las mejores perspectivas macroeconómicas de los últimos 8 años. Las consultoras privadas (Elypsis, Equilibra, FIEL) estiman que la inflación mensual de junio fue de aproximadamente 1.7%, por debajo del 2.1% de mayo y del 2.4% de abril, lo que confirmaría la continuidad de la desinflación más rápida de la historia reciente del país. El INDEC publicará el dato oficial el miércoles 9 de julio.
+
+El programa de estabilización del presidente Javier Milei continúa mostrando resultados. El equilibrio fiscal primario se mantiene por undécimo mes consecutivo: el resultado de junio habría sido un superávit primario de aproximadamente 0.2% del PIB mensual, suficiente para financiar los pagos de deuda sin nueva emisión monetaria. La base monetaria se contrajo 1.4% real en junio, manteniendo la desinflación en curso.
+
+El tipo de cambio oficial inició julio en 1,297 ARS/USD tras el crawl programado del 1% mensual desde los 1,285 del 1 de junio. La brecha cambiaria entre el tipo oficial y el dólar blue (1,347 ARS/USD) se comprimió al 3.8%, el nivel más bajo desde la implementación del cepo en 2019 y una señal de credibilidad del esquema cambiario de Milei. El dólar CCL (contado con liquidación) se ubica en 1,318 ARS/USD, generando una brecha del 1.6% con el oficial —prácticamente unificación de facto.
+
+Las reservas brutas del BCRA superaron los US$ 38,700 millones al 1 de julio, su máximo desde septiembre de 2019. El FMI desembolsó el quinto tramo del programa Stand-By (US$ 800 millones) el 28 de junio tras la aprobación del quinto review. El próximo hito del programa es el sexto review, programado para septiembre.`,
+    analisis: `La convergencia de indicadores positivos en Argentina —inflación descendente, reservas en máximos de 6 años, brecha cambiaria casi eliminada— es una señal de estabilización macroeconómica regional que reduce el riesgo de contagio sobre el sol peruano y otras monedas latinoamericanas.
+
+Para empresas peruanas con exportaciones o inversiones en Argentina, el tipo de cambio implícito PEN/ARS es de aproximadamente 381 pesos argentinos por sol peruano (ARS 1,297 / USD ÷ S/ 3.40 / USD). En QoriCash optimizamos la conversión PEN/USD como primer paso de cualquier operación internacional.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/34004034/pexels-photo-34004034.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f014',
+    titulo: 'Colombia: Banrep decide el 25 de julio con 72% de probabilidad de recorte a 9.00%; COP en 4,165 ante perspectivas dovish',
+    descripcion: 'El Banco de la República de Colombia (Banrep) celebra su reunión de política monetaria el 25 de julio con el mercado asignando un 72% de probabilidad a un recorte de 25 puntos básicos hasta 9.00%. El peso colombiano se aprecia a 4,165 COP/USD ante las expectativas de flexibilización y el Brent estable en US$ 85/barril.',
+    contenido: `El Banco de la República de Colombia (Banrep) tiene programada su reunión de política monetaria para el 25 de julio de 2026, y la expectativa del mercado es inequívoca: el 72% de los analistas encuestados por Reuters esperan un recorte de 25 puntos básicos que llevaría la tasa de política monetaria del 9.25% al 9.00%, según la encuesta publicada el 30 de junio. La probabilidad implícita en los contratos de IBR (Indicador Bancario de Referencia) es del 68%, en línea con el consenso de analistas.
+
+Los argumentos a favor del recorte son sólidos: la inflación de mayo fue de 4.6% interanual, su menor nivel en 28 meses y acercándose al techo del rango meta del Banrep (4%). El Banrep proyecta que la inflación llegará al rango meta antes del cierre de 2026. La actividad económica creció 3.1% en el Q1, moderada pero no preocupante. Las expectativas de inflación a 12 meses (3.8% según la encuesta de mayo del Banrep) están bien ancladas dentro del rango meta de 2-4%.
+
+El peso colombiano (COP) inicia julio en 4,165 por dólar, con una apreciación del 0.4% respecto al cierre de junio (4,180), en una dinámica de "vender dólares, comprar pesos" que refleja las expectativas de un Banrep más dovish. El precio del petróleo Brent en US$ 85/barril —referencia más relevante para Colombia que el WTI— también sostiene al COP: con 700,000 barriles de exportación diaria, cada dólar de alza en el Brent genera US$ 255 millones adicionales anualizados en ingresos de divisas para el país.
+
+La economía colombiana muestra señales mixtas al inicio del Q3: el PMI manufacturero de junio bajó a 49.2 (contracción leve), el desempleo urbano se ubica en 9.8% (elevado frente al 7.4% de Perú) y la inversión extranjera directa creció 11.4% en el H1. El Plan Nacional de Desarrollo aprobado por el Congreso incluye inversiones en infraestructura vial por COP 45 billones para 2026-2030 que sostendrán el ciclo de crecimiento.`,
+    analisis: `Un recorte del Banrep el 25 de julio es positivo para el peso colombiano en el mediano plazo —señal de confianza en la desinflación— aunque puede generar volatilidad de corto plazo el día del anuncio. Para el sol peruano, la convergencia de ciclos de recorte en LatAm (BCRP en agosto, Banrep en julio) reduce la presión de salida de capitales regional.
+
+Para empresas peruanas con operaciones en Colombia, el tipo de cambio implícito PEN/COP es de aproximadamente 1,225 pesos colombianos por sol peruano. En QoriCash ofrecemos el mejor tipo de cambio PEN/USD para optimizar sus operaciones financieras internacionales.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29477129/pexels-photo-29477129.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'f015',
+    titulo: 'Chile: BCCh da señal de recorte en agosto; CLP en 925/USD y exportaciones de cobre en US$ 5,200M consolidan el H1 más sólido en 4 años',
+    descripcion: 'El Banco Central de Chile (BCCh) inició julio con una comunicación que el mercado interpretó como una señal clara de recorte en su reunión del 5 de agosto. El peso chileno se ubica en 925 CLP/USD, con depreciación del 4.3% en el H1 a pesar del sólido desempeño exportador cuprìfero (US$ 5,200M en H1). La tasa actual es 5.00% y el mercado proyecta 4.75% para fin de Q3.',
+    contenido: `El Banco Central de Chile (BCCh) celebró el lunes 30 de junio la última reunión del semestre, manteniendo la tasa de política monetaria en 5.00%, pero el comunicado incluyó modificaciones importantes al lenguaje previo que el mercado interpretó como una señal inequívoca de recorte en la reunión del 5 de agosto. El BCCh señaló que "la actividad económica muestra señales de moderación consistentes con la convergencia de la inflación al 3% antes del cierre del año, lo que permitiría evaluar una mayor flexibilización de la política monetaria en el corto plazo".
+
+La inflación en Chile fue de 3.9% interanual en mayo —por debajo del 4.2% de abril— y el BCCh proyecta que llegará al 3% antes del cierre de 2026. La tasa real ex-ante se ubica en 1.1% (5.00% - 3.9%), el nivel más restrictivo de la región andina. El recorte de 25 puntos básicos en agosto bajaría la tasa a 4.75%, con el mercado proyectando un objetivo de 4.25-4.50% para el cierre de 2026.
+
+El peso chileno (CLP) inicia el Q3 en 925 por dólar, con una depreciación del 4.3% en el H1 pese al sólido desempeño exportador cuprìfero. Las exportaciones totales de Chile en el H1 sumaron US$ 46,800 millones (+11.2%), con el cobre aportando US$ 5,200 millones en la primera mitad del semestre. El BCCh estima que las exportaciones totales del año completo alcanzarán un récord de US$ 98,000 millones, impulsadas por el cobre en US$ 29,000 millones y el litio en US$ 8,400 millones.
+
+La economía chilena creció 2.8% en el Q1 y la proyección del BCCh para el año completo es de 3.0-3.5%, un ciclo de expansión moderado pero sostenido. Los sectores minería (+14.2%), servicios financieros (+6.8%) y exportaciones de litio (+38.4%) son los principales motores del crecimiento.`,
+    analisis: `El ciclo de recortes del BCCh —que podría sumar 75-100 puntos básicos antes de fin de 2026— es una señal de normalización monetaria regional que se suma a la del BCRP en Perú y el Banrep en Colombia. Para el sol peruano, este contexto regional favorece una menor presión de salida de capitales latinoamericanos y una mayor estabilidad cambiaria general.
+
+Para empresas peruanas con operaciones o proveedores en Chile, el tipo de cambio implícito PEN/CLP es de aproximadamente 272 pesos chilenos por sol peruano (CLP 925 / USD ÷ S/ 3.40 / USD). En QoriCash le ofrecemos el mejor tipo de cambio PEN/USD del mercado como paso inicial de cualquier operación en divisas.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19821189/pexels-photo-19821189.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+
   {
     id: 'i001',
     titulo: 'Sol cierra el primer semestre en S/ 3.41: tipo de cambio estable en H1 2026 con reservas récord y superávit comercial de US$ 7,200M',
