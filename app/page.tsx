@@ -310,12 +310,12 @@ export default function Home() {
       <section className="relative min-h-screen flex flex-col overflow-hidden pt-[116px]">
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-4 lg:gap-6 items-center w-full">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
 
             {/* LEFT — Texto */}
             <div className="order-2 lg:order-1">
               {/* Pill label */}
-              <span className="inline-flex items-center gap-2 mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(13,27,42,0.15)', color: 'rgba(13,27,42,0.45)' }}>
+              <span className="inline-flex items-center gap-2 mb-4 sm:mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(13,27,42,0.15)', color: 'rgba(13,27,42,0.45)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                 Fintech de cambio de divisas · Perú
               </span>
@@ -326,15 +326,15 @@ export default function Home() {
                 <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-9 leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
                 Personas y empresas cambian millones de soles con QoriCash.
                 Rápido, seguro y sin comisiones ocultas.
               </p>
 
-              <div className="flex flex-wrap gap-3 mb-10">
+              <div className="flex flex-wrap gap-3 mb-6 sm:mb-10">
                 <Link
                   href="/operaciones/nueva"
-                  className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
                   style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}
                 >
                   Cotizar ahora
@@ -344,7 +344,7 @@ export default function Home() {
                   href="https://wa.me/51926011920"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm hover:border-opacity-80"
+                  className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm hover:border-opacity-80 w-full sm:w-auto"
                   style={{ border: '2px solid rgba(13,27,42,0.18)', color: 'rgba(13,27,42,0.6)' }}
                 >
                   <svg className="w-4 h-4 flex-shrink-0" fill="#22C55E" viewBox="0 0 24 24">
@@ -362,7 +362,7 @@ export default function Home() {
             </div>
 
             {/* RIGHT — Calculadora */}
-            <div className="order-1 lg:order-2 relative flex items-center justify-center" style={{ minHeight: '500px' }}>
+            <div className="order-1 lg:order-2 relative flex items-center justify-center">
 
               {/* Calculator */}
               <div className="relative z-10 w-full max-w-[400px]">
@@ -405,7 +405,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className="py-6">
+      <section ref={banksSectionRef} className="py-4 sm:py-6">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
 
           {/* Encabezado */}
@@ -439,6 +439,7 @@ export default function Home() {
                   }}
                   onMouseEnter={() => setHoveredBank('group1' as any)}
                   onMouseLeave={() => setHoveredBank(null)}
+                  onClick={() => setHoveredBank(hoveredBank === 'group1' ? null : 'group1' as any)}
                 >
                   <div className="grid grid-cols-3 h-full">
                     {[
@@ -499,6 +500,7 @@ export default function Home() {
                   }}
                   onMouseEnter={() => setHoveredBank('cci')}
                   onMouseLeave={() => setHoveredBank(null)}
+                  onClick={() => setHoveredBank(hoveredBank === 'cci' ? null : 'cci')}
                 >
                   {/* Logos — 2 filas de 3, uniformes */}
                   <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
@@ -542,7 +544,7 @@ export default function Home() {
           </div>{/* fin flex container */}
 
           {/* Footer strip */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-6 pt-5">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 pt-5">
             {[
               { icon: CheckCircle2, label: 'Sin comisiones ocultas' },
               { icon: Clock,        label: 'En menos de 15 minutos' },
@@ -566,9 +568,9 @@ export default function Home() {
           AHORRO EN NÚMEROS
       ══════════════════════════════════════ */}
 
-      <section className="py-16" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
             {/* LEFT — headline + 3 stats inline */}
             <div className="reveal-left flex flex-col justify-between">
@@ -733,7 +735,7 @@ export default function Home() {
         @keyframes blobMorph3 { 0%,100%{border-radius:50% 50% 45% 55%/55% 45% 55% 45%;transform:translate(0,0) scale(1)} 50%{border-radius:65% 35% 55% 45%/40% 65% 35% 60%;transform:translate(15px,20px) scale(1.05)} }
       `}</style>
 
-      <section id="como-funciona" className="pt-12 pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(13,27,42,0.12)', color: 'rgba(13,27,42,0.4)' }}>
@@ -742,7 +744,7 @@ export default function Home() {
             <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#1E293B' }}>3 pasos. Menos de 15 minutos.</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5 mb-10">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
             {/* ── CARD 01 — Cotiza en línea ── */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', animation: 'cardGlow 4s ease-in-out infinite' }}>
@@ -999,7 +1001,7 @@ export default function Home() {
           FAQ
       ══════════════════════════════════════ */}
 
-      <section className="py-16" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-3xl mx-auto px-6 sm:px-8" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-10">
             <h2 className="font-display font-black text-3xl md:text-4xl mb-2" style={{ color: '#1E293B' }}>Preguntas frecuentes</h2>
@@ -1031,7 +1033,7 @@ export default function Home() {
                 </button>
                 <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
                   <div>
-                    <div className="px-6 pb-5 pl-[60px]">
+                    <div className="px-6 pb-5 pl-6 sm:pl-[60px]">
                       <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>{item.a}</p>
                     </div>
                   </div>
@@ -1048,7 +1050,7 @@ export default function Home() {
       <footer className="bg-[#1e293b] text-gray-400">
         <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
                 <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <div>
@@ -1071,8 +1073,8 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full px-6 sm:px-8 lg:px-10 py-14">
-          <div className="max-w-5xl mx-auto grid md:grid-cols-4 gap-10">
-            <div>
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+            <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-3 mb-5 hover:opacity-80 transition-opacity w-fit">
                 <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
                 <span className="text-2xl font-display font-bold text-white">QoriCash</span>
