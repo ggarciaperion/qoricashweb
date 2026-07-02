@@ -89,8 +89,8 @@ export default function HistorialPage() {
       setLoading(true);
       try {
         const r = await operationsApi.getMyOperations(user.dni);
-        setOps(r.success && r.data?.length ? r.data : DEMO);
-      } catch { setOps(DEMO); }
+        setOps(r.success && r.data ? r.data : []);
+      } catch { setOps([]); }
       finally { setLoading(false); }
     })();
   }, [isAuthenticated]);

@@ -259,19 +259,11 @@ export default function DashboardPage() {
       ]);
       const ops = opsRes.success && opsRes.data ? opsRes.data : [];
       const st  = statsRes.success && statsRes.data ? statsRes.data : null;
-      // Demo mode: si no hay operaciones reales, mostrar datos de prueba
-      if (ops.length === 0) {
-        setOperations(DEMO_OPERATIONS);
-        setStats(DEMO_STATS);
-      } else {
-        setOperations(ops);
-        if (st) setStats(st);
-      }
+      setOperations(ops);
+      if (st) setStats(st);
     } catch (e) {
       console.error(e);
-      // En caso de error de red, también mostrar demo
-      setOperations(DEMO_OPERATIONS);
-      setStats(DEMO_STATS);
+      setOperations([]);
     }
     finally { setIsLoading(false); }
   };
