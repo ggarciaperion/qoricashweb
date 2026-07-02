@@ -25,14 +25,6 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 
-/* ─── DEMO DATA (ambiente de prueba) ─────────────────────────────────── */
-const DEMO_OPS: Record<number, Operation & { _demoInvoice?: DemoInvoice }> = {
-  9001: { id:9001, codigo_operacion:'QC-20260626-001', cliente_id:1, tipo:'compra',  monto_dolares:1000,  monto_soles:3748,   tipo_cambio:3.748, banco_cliente:'BCP',       cuenta_cliente:'191-2345678-0-91', estado:'pendiente',  comprobante_url:'https://placehold.co/800x600/e2e8f0/64748b?text=Voucher+BCP',   notas:'Operación demo — en espera de comprobante de transferencia.', fecha_creacion:new Date(Date.now()-5*60*1000).toISOString(),        fecha_actualizacion:new Date().toISOString(), origen:'web', source_bank_name:'BCP' },
-  9002: { id:9002, codigo_operacion:'QC-20260624-017', cliente_id:1, tipo:'venta',   monto_dolares:500,   monto_soles:1873.5, tipo_cambio:3.747, banco_cliente:'INTERBANK',  cuenta_cliente:'200-1234567-890',  estado:'completado', comprobante_url:'https://placehold.co/800x600/e2e8f0/64748b?text=Voucher+Interbank', notas:'Transferencia verificada y procesada. Soles acreditados en cuenta del cliente.', fecha_creacion:new Date(Date.now()-2*24*3600*1000).toISOString(),   fecha_actualizacion:new Date().toISOString(), origen:'web', source_bank_name:'INTERBANK', _demoInvoice:{ serie:'B001', numero:'00000217', tipo:'Boleta de Venta', fecha:'24/06/2026', cliente:'García Perión, Gianpierre', doc:'DNI 12345678', subtotal:1873.50, igv:0, total:1873.50, moneda:'PEN', url:'https://placehold.co/900x1200/ffffff/1e293b?text=BOLETA+B001-00000217' } },
-  9003: { id:9003, codigo_operacion:'QC-20260622-008', cliente_id:1, tipo:'compra',  monto_dolares:2500,  monto_soles:9370,   tipo_cambio:3.748, banco_cliente:'BBVA',       cuenta_cliente:'001-1023456-7890', estado:'completado', comprobante_url:'https://placehold.co/800x600/e2e8f0/64748b?text=Voucher+BBVA',     notas:'Compra de USD completada. Dólares acreditados en cuenta BCP del cliente.', fecha_creacion:new Date(Date.now()-4*24*3600*1000).toISOString(),   fecha_actualizacion:new Date().toISOString(), origen:'web', source_bank_name:'BBVA',      _demoInvoice:{ serie:'F001', numero:'00000089', tipo:'Factura Electrónica', fecha:'22/06/2026', cliente:'Empresa Demo S.A.C.', doc:'RUC 20612345678', subtotal:7940.68, igv:1429.32, total:9370.00, moneda:'PEN', url:'https://placehold.co/900x1200/ffffff/1e293b?text=FACTURA+F001-00000089' } },
-  9004: { id:9004, codigo_operacion:'QC-20260619-003', cliente_id:1, tipo:'venta',   monto_dolares:300,   monto_soles:1121.1, tipo_cambio:3.737, banco_cliente:'BCP',        cuenta_cliente:'191-2345678-0-91', estado:'completado', comprobante_url:'https://placehold.co/800x600/e2e8f0/64748b?text=Voucher+BCP',   notas:'Venta de USD procesada correctamente.', fecha_creacion:new Date(Date.now()-7*24*3600*1000).toISOString(),   fecha_actualizacion:new Date().toISOString(), origen:'web', source_bank_name:'BCP',       _demoInvoice:{ serie:'B001', numero:'00000198', tipo:'Boleta de Venta', fecha:'19/06/2026', cliente:'García Perión, Gianpierre', doc:'DNI 12345678', subtotal:1121.10, igv:0, total:1121.10, moneda:'PEN', url:'https://placehold.co/900x1200/ffffff/1e293b?text=BOLETA+B001-00000198' } },
-  9005: { id:9005, codigo_operacion:'QC-20260615-011', cliente_id:1, tipo:'compra',  monto_dolares:750,   monto_soles:2808,   tipo_cambio:3.744, banco_cliente:'SCOTIABANK', cuenta_cliente:'030-1234567',      estado:'cancelado',  notas:'Operación cancelada por el cliente: no pudo completar la transferencia a tiempo.', fecha_creacion:new Date(Date.now()-11*24*3600*1000).toISOString(), fecha_actualizacion:new Date().toISOString(), origen:'web', source_bank_name:'SCOTIABANK' },
-};
 
 interface DemoInvoice {
   serie: string; numero: string; tipo: string; fecha: string;
@@ -104,27 +96,11 @@ export default function OperacionDetallesPage() {
       if (response.success && response.data) {
         setOperation(response.data);
       } else {
-        // Fallback a datos demo en ambiente de prueba
-        const demo = DEMO_OPS[operationId];
-        if (demo) {
-          const { _demoInvoice, ...op } = demo;
-          setOperation(op as Operation);
-          if (_demoInvoice) setDemoInvoice(_demoInvoice);
-        } else {
-          setError(response.message || 'Operación no encontrada');
-        }
+        setError(response.message || 'Operación no encontrada');
       }
     } catch (error: any) {
-      // Fallback a datos demo en ambiente de prueba
-      const demo = operationId ? DEMO_OPS[operationId] : null;
-      if (demo) {
-        const { _demoInvoice, ...op } = demo;
-        setOperation(op as Operation);
-        if (_demoInvoice) setDemoInvoice(_demoInvoice);
-      } else {
-        console.error('Error loading operation:', error);
-        setError(error.response?.data?.message || 'Error al cargar la operación');
-      }
+      console.error('Error loading operation:', error);
+      setError(error.response?.data?.message || 'Error al cargar la operación');
     } finally {
       setIsLoading(false);
     }
