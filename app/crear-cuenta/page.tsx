@@ -243,11 +243,20 @@ export default function CrearCuentaPage() {
     if (codigoValue.length === 6) {
       setCodigoValidando(true);
       setCodigoValido(null);
-      const t = setTimeout(() => {
-        setCodigoValidando(false);
-        setCodigoValido(true); // validación real ocurre en el submit
-      }, 1300);
-      return () => clearTimeout(t);
+      fetch('/api/flask/api/web/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, code: codigoValue }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          setCodigoValidando(false);
+          setCodigoValido(data.success === true);
+        })
+        .catch(() => {
+          setCodigoValidando(false);
+          setCodigoValido(false);
+        });
     } else {
       setCodigoValidando(false);
       setCodigoValido(null);
@@ -480,7 +489,7 @@ export default function CrearCuentaPage() {
     return true;
   };
 
-  const validarPaso3 = () => true;
+  const validarPaso3 = () => codigoValido === true;
 
   const siguientePaso = async () => {
     if (paso === 1 && !validarPaso1()) return;
@@ -1547,10 +1556,25 @@ export default function CrearCuentaPage() {
                   type="button"
                   onClick={async () => {
                     setCodigoEnviando(true);
-                    await new Promise(r => setTimeout(r, 1800));
-                    setCodigoEnviando(false);
-                    setCodigoEnviado(true);
-                    setCountdown(90);
+                    setError('');
+                    try {
+                      const res = await fetch('/api/flask/api/web/send-verification-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: formData.email }),
+                      });
+                      const data = await res.json();
+                      if (data.success) {
+                        setCodigoEnviado(true);
+                        setCountdown(90);
+                      } else {
+                        setError(data.message || 'Error al enviar el código');
+                      }
+                    } catch {
+                      setError('Error al conectar con el servidor');
+                    } finally {
+                      setCodigoEnviando(false);
+                    }
                   }}
                   disabled={codigoEnviando}
                   className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold text-white transition"
@@ -1580,9 +1604,25 @@ export default function CrearCuentaPage() {
                       onClick={async () => {
                         setCodigoEnviando(true);
                         setCodigoValue('');
-                        await new Promise(r => setTimeout(r, 1800));
-                        setCodigoEnviando(false);
-                        setCountdown(90);
+                        setCodigoValido(null);
+                        setError('');
+                        try {
+                          const res = await fetch('/api/flask/api/web/send-verification-code', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: formData.email }),
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            setCountdown(90);
+                          } else {
+                            setError(data.message || 'Error al reenviar el código');
+                          }
+                        } catch {
+                          setError('Error al conectar con el servidor');
+                        } finally {
+                          setCodigoEnviando(false);
+                        }
                       }}
                       disabled={codigoEnviando}
                       className="text-xs font-semibold underline transition hover:opacity-70 flex items-center gap-1 mx-auto"
