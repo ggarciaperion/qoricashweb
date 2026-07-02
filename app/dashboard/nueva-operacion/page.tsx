@@ -1502,26 +1502,14 @@ function NuevaOperacionContent() {
                   <div className="relative flex justify-center mt-12">
                   {/* KYC side banner — fuera del calc, flotando a la derecha */}
                   {user?.status === 'Inactivo' && !user?.has_complete_documents && !docsSubmittedThisSession && !verifyStillPending && (
-                    <div
-                      className="absolute top-0 flex flex-col items-center gap-2.5 rounded-2xl p-3 text-center w-[96px]"
-                      style={{ left: 'calc(50% + 212px)', background: '#fff5f5', border: '1px solid #fecaca' }}
+                    <button
+                      type="button"
+                      onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                      className="absolute top-0 rounded-xl py-2 px-3 text-center transition-all hover:brightness-110 active:scale-[0.97]"
+                      style={{ left: 'calc(50% + 212px)', width: '190px', background: '#dc2626' }}
                     >
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: '#fee2e2' }}>
-                        <AlertCircle className="w-3.5 h-3.5 text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-red-600 leading-tight">Cuenta<br/>inactiva</p>
-                        <p className="text-[9px] text-gray-400 mt-1 leading-snug">Sube tus docs para operar</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => { setIsKYCModalOpen(true); setError(null); }}
-                        className="w-full text-white text-[9px] font-bold py-1.5 rounded-lg transition-all hover:brightness-110 active:scale-[0.97]"
-                        style={{ background: '#dc2626' }}
-                      >
-                        Activar
-                      </button>
-                    </div>
+                      <p className="text-xs font-black text-white leading-snug tracking-wide">ACTIVAR CUENTA<br/>PARA OPERAR</p>
+                    </button>
                   )}
                   <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]">
                     <Calculator
