@@ -1505,8 +1505,8 @@ function NuevaOperacionContent() {
                     <button
                       type="button"
                       onClick={() => { setIsKYCModalOpen(true); setError(null); }}
-                      className="absolute top-0 rounded-xl py-2 px-3 text-center transition-all hover:brightness-110 active:scale-[0.97]"
-                      style={{ left: 'calc(50% + 212px)', width: '190px', background: '#dc2626' }}
+                      className="absolute rounded-xl py-2 px-3 text-center transition-all hover:brightness-110 active:scale-[0.97]"
+                      style={{ top: '32px', left: 'calc(50% + 212px)', width: '190px', background: '#dc2626' }}
                     >
                       <p className="text-xs font-black text-white leading-snug tracking-wide">ACTIVAR CUENTA<br/>PARA OPERAR</p>
                     </button>
