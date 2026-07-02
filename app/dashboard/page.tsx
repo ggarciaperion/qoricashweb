@@ -533,7 +533,7 @@ export default function DashboardPage() {
             <h1 className="text-xl font-black mb-4" style={{ color: '#1E293B' }}>
               ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
             </h1>
-            {stats && currentRates && (() => {
+            {stats && currentRates && stats.total_operations > 0 && (() => {
               const spreadVal = currentRates.tipo_venta && currentRates.tipo_compra
                 ? (currentRates.tipo_venta - currentRates.tipo_compra) * 1000
                 : 0;
