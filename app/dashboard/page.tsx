@@ -101,6 +101,8 @@ export default function DashboardPage() {
   const [showProfile, setShowProfile]             = useState(false);
   const [isEditing, setIsEditing]                 = useState(false);
   const [profileForm, setProfileForm]             = useState({ phone: '', email: '' });
+  const [isEditingAddress, setIsEditingAddress]   = useState(false);
+  const [addressForm, setAddressForm]             = useState({ direccion: '', departamento: '', provincia: '', distrito: '' });
   const [isSaving, setIsSaving]                   = useState(false);
   const [profileMsg, setProfileMsg]               = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
@@ -148,7 +150,15 @@ export default function DashboardPage() {
 
   /* sync profile form when user changes */
   useEffect(() => {
-    if (user) setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' });
+    if (user) {
+      setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' });
+      setAddressForm({
+        direccion:    (user as any).direccion    || '',
+        departamento: (user as any).departamento || '',
+        provincia:    (user as any).provincia    || '',
+        distrito:     (user as any).distrito     || '',
+      });
+    }
   }, [user]);
 
   useEffect(() => { setCurrentPage(1); }, [activeTab]);
@@ -206,6 +216,31 @@ export default function DashboardPage() {
       setIsEditing(false);
     } catch { setProfileMsg({ type: 'error', text: 'Error al actualizar el perfil' }); }
     finally { setIsSaving(false); }
+  };
+
+  const handleAddressSave = async () => {
+    if (!user) return;
+    setIsSaving(true);
+    setProfileMsg(null);
+    try {
+      const res = await fetch('/api/flask/api/web/update-address', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dni: user.dni, ...addressForm }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        updateUser({ ...user, ...(addressForm as any) });
+        setProfileMsg({ type: 'success', text: 'Dirección actualizada correctamente' });
+        setIsEditingAddress(false);
+      } else {
+        setProfileMsg({ type: 'error', text: data.message || 'Error al guardar la dirección' });
+      }
+    } catch {
+      setProfileMsg({ type: 'error', text: 'Error al conectar con el servidor' });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAddAccountSuccess = (updatedAccounts: any[]) => {
@@ -395,22 +430,66 @@ export default function DashboardPage() {
 
           {/* Address */}
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1" style={{ color: 'rgba(30,41,59,0.35)' }}>
-              <MapPin className="w-3 h-3" /> Dirección
-            </p>
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1" style={{ color: 'rgba(30,41,59,0.35)' }}>
+                <MapPin className="w-3 h-3" /> Dirección
+              </p>
+              {!isEditingAddress && (
+                <button onClick={() => setIsEditingAddress(true)}
+                  className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
+                  style={{ color: '#ffffff', background: '#22C55E', border: '1px solid #16A34A' }}>
+                  Editar
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-1.5">
-              {[
-                { label: 'Dirección', value: user.direccion, wide: true },
-                { label: 'Distrito', value: user.distrito },
-                { label: 'Provincia', value: user.provincia },
-                { label: 'Departamento', value: user.departamento },
-              ].map(({ label, value, wide }) => (
-                <div key={label} className={`rounded-lg px-2.5 py-1.5${wide ? ' col-span-2' : ''}`} style={{ background: '#F8FAFC', border: '1px solid rgba(13,27,42,0.07)' }}>
+              {([
+                { label: 'Dirección',    key: 'direccion',    wide: true },
+                { label: 'Distrito',     key: 'distrito',     wide: false },
+                { label: 'Provincia',    key: 'provincia',    wide: false },
+                { label: 'Departamento', key: 'departamento', wide: false },
+              ] as { label: string; key: keyof typeof addressForm; wide: boolean }[]).map(({ label, key, wide }) => (
+                <div key={label} className={`rounded-lg px-2.5 py-1.5${wide ? ' col-span-2' : ''}`} style={{ background: '#F8FAFC', border: `1px solid ${isEditingAddress ? '#bbf7d0' : 'rgba(13,27,42,0.07)'}` }}>
                   <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
-                  <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{value || '-'}</p>
+                  {isEditingAddress ? (
+                    <input
+                      type="text"
+                      value={addressForm[key]}
+                      onChange={e => setAddressForm({ ...addressForm, [key]: e.target.value })}
+                      placeholder={`Ingresa ${label.toLowerCase()}`}
+                      className="w-full text-xs font-semibold bg-transparent outline-none border-b"
+                      style={{ color: '#1E293B', borderColor: '#22C55E' }}
+                    />
+                  ) : (
+                    <p className="text-xs font-semibold truncate" style={{ color: (user as any)[key] ? '#1E293B' : 'rgba(30,41,59,0.3)' }}>
+                      {(user as any)[key] || 'Sin registrar'}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
+            {isEditingAddress && (
+              <div className="flex gap-1.5 mt-2">
+                <button onClick={handleAddressSave} disabled={isSaving}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                  <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
+                </button>
+                <button onClick={() => {
+                  setIsEditingAddress(false);
+                  setAddressForm({
+                    direccion:    (user as any).direccion    || '',
+                    departamento: (user as any).departamento || '',
+                    provincia:    (user as any).provincia    || '',
+                    distrito:     (user as any).distrito     || '',
+                  });
+                }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold transition"
+                  style={{ background: '#F1F5F9', color: 'rgba(30,41,59,0.6)' }}>
+                  Cancelar
+                </button>
+              </div>
+            )}
           </div>
 
         </main>
