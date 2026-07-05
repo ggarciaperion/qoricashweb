@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Calculator from '@/components/Calculator';
 import AnimatedStat from '@/components/AnimatedStat';
 import { useAuthStore } from '@/lib/store';
@@ -13,6 +13,7 @@ import {
   Users, CheckCircle2, Lock, UserPlus, Banknote,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
   HelpCircle, Gift, Calculator as CalculatorIcon,
+  Building2, Zap, HandCoins,
 } from 'lucide-react';
 import AlertaTCModal from '@/components/AlertaTCModal';
 import AlertaTCBanner from '@/components/AlertaTCBanner';
@@ -20,10 +21,16 @@ import MarketTicker from '@/components/MarketTicker';
 
 export default function Home() {
   const router = useRouter();
+  const pathname = usePathname();
+  const isEmpresaPage = pathname === '/empresa';
   const { user, isAuthenticated, logout } = useAuthStore();
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
+
+  const [profileMismatchModal, setProfileMismatchModal] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const userBtnRef = useRef<HTMLButtonElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
@@ -41,6 +48,19 @@ export default function Home() {
     banbif:    { soles: '007000845805',    dolares: '007000845813'    },
   } as const;
 
+  // Detecta conflicto de perfil: empresa logueada en página personas o viceversa
+  const isEmpresaUser = isAuthenticated && user?.document_type === 'RUC';
+  const hasProfileMismatch = isAuthenticated && (
+    (isEmpresaPage && !isEmpresaUser) ||   // persona en página empresa
+    (!isEmpresaPage && isEmpresaUser)      // empresa en página personas
+  );
+
+  // Wrapper para acciones protegidas: bloquea si hay conflicto de perfil
+  const guardedAction = (action: () => void) => {
+    if (hasProfileMismatch) { setProfileMismatchModal(true); return; }
+    action();
+  };
+
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text.replace(/-/g, ''));
     setCopiedKey(key);
@@ -48,6 +68,17 @@ export default function Home() {
   };
 
   const { currentRates } = useExchangeStore();
+
+  // Auto-redirigir según perfil de usuario autenticado
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    const isRUC = user.document_type === 'RUC';
+    if (isRUC && !isEmpresaPage) {
+      router.replace('/empresa');
+    } else if (!isRUC && isEmpresaPage) {
+      router.replace('/');
+    }
+  }, [isAuthenticated, user, isEmpresaPage]);
 
   const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
   useEffect(() => {
@@ -118,6 +149,48 @@ export default function Home() {
 
   return (
     <>
+    {/* ── Modal conflicto de perfil ── */}
+    {profileMismatchModal && createPortal(
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}>
+        <div className="w-full max-w-sm rounded-2xl p-7 flex flex-col gap-5" style={{ background: '#0D1B2A', border: '1px solid rgba(143,184,204,0.2)' }}>
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(143,184,204,0.12)', border: '1px solid rgba(143,184,204,0.25)' }}>
+              <Shield className="w-5 h-5" style={{ color: '#8fb8cc' }} />
+            </div>
+            <div>
+              <p className="font-black text-white text-base mb-1">Perfil incorrecto</p>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                {isEmpresaPage
+                  ? 'Esta sección es exclusiva para cuentas empresariales. Cierra sesión e ingresa con tu cuenta empresa.'
+                  : 'Esta sección es exclusiva para personas naturales. Cierra sesión e ingresa con tu cuenta personal.'}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setProfileMismatchModal(false)}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={async () => {
+                setProfileMismatchModal(false);
+                await logout();
+                router.push(isEmpresaPage ? '/login?from=/empresa' : '/login?from=/');
+              }}
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
+              style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' }}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )}
+
     {loggingOut && createPortal(
       <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
         <div className="flex flex-col items-center gap-5">
@@ -137,16 +210,36 @@ export default function Home() {
 
     <main className="min-h-screen">
       {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
-      <MarketTicker hidden={navHidden} />
+
 
       {/* ══ NAVBAR ══ */}
-      <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'rgba(30,41,59,1)', borderBottom: 'none', transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>
+      <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'transparent', borderBottom: 'none', transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
-            <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
-              <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white">Qoricash</span>
-            </Link>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
+                {isEmpresaPage ? (
+                  <div className="relative inline-flex flex-shrink-0">
+                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-8 sm:h-11 md:h-12 w-auto invisible" />
+                    <div className="absolute inset-0" style={{
+                      background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
+                      WebkitMaskImage: "url('/logo-principal.png')",
+                      maskImage: "url('/logo-principal.png')",
+                      WebkitMaskSize: '100% 100%',
+                      maskSize: '100% 100%',
+                      WebkitMaskRepeat: 'no-repeat',
+                      maskRepeat: 'no-repeat',
+                    }} />
+                  </div>
+                ) : (
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
+                )}
+                <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
+                {isEmpresaPage && (
+                  <span className="text-sm sm:text-base md:text-lg font-light tracking-[0.18em] leading-none" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginLeft: '6px', alignSelf: 'center' }}>Corporate</span>
+                )}
+              </Link>
+            </div>
             <div className="hidden lg:flex items-center space-x-8">
               {[
               ].map(({ href, label, isLink }) => {
@@ -172,7 +265,14 @@ export default function Home() {
                   )}
                   <div className="relative">
                     <button
-                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      ref={userBtnRef}
+                      onClick={() => {
+                        if (!isUserMenuOpen && userBtnRef.current) {
+                          const rect = userBtnRef.current.getBoundingClientRect();
+                          setDropdownPos({ top: rect.bottom + 10, left: rect.left + rect.width / 2 });
+                        }
+                        setIsUserMenuOpen(!isUserMenuOpen);
+                      }}
                       className="relative flex items-center space-x-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
                     >
                       <UserIcon className="w-4 h-4" />
@@ -188,11 +288,30 @@ export default function Home() {
                 </div>
               ) : (
                 <>
-                  <Link href="/login" className="relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1">
+                  {!isAuthenticated && (
+                    <>
+                      <button
+                        className="relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
+                        onClick={() => {
+                          const href = isEmpresaPage ? '/' : '/empresa';
+                          if ('startViewTransition' in document) {
+                            (document as any).startViewTransition(() => router.push(href));
+                          } else {
+                            router.push(href);
+                          }
+                        }}
+                      >
+                        {isEmpresaPage ? 'Personas' : 'Empresas'}
+                        <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
+                      </button>
+                      <span className="h-4 w-px bg-white/30" aria-hidden="true" />
+                    </>
+                  )}
+                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1">
                     Iniciar Sesión
                     <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href="/crear-cuenta" className="text-sm font-bold bg-white text-primary-600 px-5 py-2 rounded-full hover:bg-white/90 hover:-translate-y-0.5 transition-all duration-200 shadow-md">
+                  <Link href="/crear-cuenta" className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#ffffff', color: 'var(--color-primary-600)' }}>
                     Regístrate
                   </Link>
                 </>
@@ -265,7 +384,7 @@ export default function Home() {
               </>
             ) : (
               <div className="space-y-2">
-                <Link href="/login" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                   <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Lock className="w-4 h-4 text-gray-600" /></div>
                   <span className="font-medium flex-1">Iniciar Sesión</span>
                   <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
@@ -285,19 +404,59 @@ export default function Home() {
       {isUserMenuOpen && createPortal(
         <>
           <div className="fixed inset-0" style={{ zIndex: 99998 }} onClick={() => setIsUserMenuOpen(false)} />
-          <div className="fixed right-8 w-56 rounded-xl py-2" style={{ zIndex: 99999, top: '80px', background: '#FFFFFF', backdropFilter: 'blur(16px)', border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 16px 40px rgba(0,0,0,0.12)' }}>
-            <button onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }} className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition text-left">
-              <UserIcon className="w-5 h-5 mr-3" />Mi perfil
+          <div
+            className="fixed w-56 rounded-2xl py-2 overflow-hidden"
+            style={{
+              zIndex: 99999,
+              top: dropdownPos.top,
+              left: dropdownPos.left,
+              transform: 'translateX(-50%)',
+              background: 'rgba(10,20,34,0.88)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(143,184,204,0.18)',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.45)',
+            }}
+          >
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
+              className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
+              style={{ color: 'rgba(255,255,255,0.75)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+            >
+              <UserIcon className="w-4 h-4 mr-3 opacity-60" />Mi perfil
             </button>
-            <button onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }} className="flex items-center w-full px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition text-left">
-              <TrendingUp className="w-5 h-5 mr-3" />Mi Dashboard
+            <button
+              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
+              className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
+              style={{ color: 'rgba(255,255,255,0.75)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+            >
+              <TrendingUp className="w-4 h-4 mr-3 opacity-60" />Mi Dashboard
             </button>
-            <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition" onClick={() => setIsUserMenuOpen(false)}>
-              <HelpCircle className="w-5 h-5 mr-3" />Ayuda
+            <a
+              href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-4 py-3 text-sm transition-colors"
+              style={{ color: 'rgba(255,255,255,0.75)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+              onClick={() => setIsUserMenuOpen(false)}
+            >
+              <HelpCircle className="w-4 h-4 mr-3 opacity-60" />Ayuda
             </a>
-            <div className="my-1" style={{ borderTop: '1px solid rgba(13,27,42,0.06)' }} />
-            <button onClick={handleLogout} className="flex items-center w-full px-4 py-3 text-red-500 hover:bg-red-50 transition text-left">
-              <LogOut className="w-5 h-5 mr-3" />Cerrar Sesión
+            <div className="my-1 mx-4" style={{ borderTop: '1px solid rgba(143,184,204,0.12)' }} />
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
+              style={{ color: 'rgba(239,68,68,0.75)' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)', e.currentTarget.style.color = '#ef4444')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(239,68,68,0.75)')}
+            >
+              <LogOut className="w-4 h-4 mr-3 opacity-60" />Cerrar Sesión
             </button>
           </div>
         </>,
@@ -307,7 +466,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[116px]">
+      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
@@ -315,64 +474,84 @@ export default function Home() {
             {/* LEFT — Texto */}
             <div className="order-2 lg:order-1">
               {/* Pill label */}
-              <span className="inline-flex items-center gap-2 mb-4 sm:mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(13,27,42,0.15)', color: 'rgba(13,27,42,0.45)' }}>
+              <span className="inline-flex items-center gap-2 mb-4 sm:mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                 Fintech de cambio de divisas · Perú
               </span>
 
-              <h1 className="font-display font-black leading-[1.05] mb-6" style={{ color: '#1E293B' }}>
-                <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
-                <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
-                <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
+              <h1 className="font-display font-black leading-[1.05] mb-6" style={{ color: '#FFFFFF' }}>
+                {isEmpresaPage ? (
+                  <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
+                ) : (
+                  <>
+                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
+                    <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
+                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
+                  </>
+                )}
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
-                Personas y empresas cambian millones de soles con QoriCash.
-                Rápido, seguro y sin comisiones ocultas.
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                {isEmpresaPage
+                  ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
+                  : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
               </p>
 
               <div className="flex flex-wrap gap-3 mb-6 sm:mb-10">
-                <Link
-                  href="/operaciones/nueva"
-                  className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
-                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}
-                >
-                  Cotizar ahora
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <a
-                  href="https://wa.me/51926011920"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm hover:border-opacity-80 w-full sm:w-auto"
-                  style={{ border: '2px solid rgba(13,27,42,0.18)', color: 'rgba(13,27,42,0.6)' }}
-                >
-                  <svg className="w-4 h-4 flex-shrink-0" fill="#22C55E" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                  </svg>
-                  WhatsApp
-                </a>
+                {isEmpresaPage ? (
+                  <button
+                    onClick={() => guardedAction(() => window.open('https://wa.me/51926011920?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo.', '_blank'))}
+                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
+                    style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' }}
+                  >
+                    Cotizar ahora
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <Link
+                    href="/operaciones/nueva"
+                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
+                    style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}
+                  >
+                    Cotizar ahora
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                )}
               </div>
 
-              <div className="flex flex-wrap items-center gap-6 text-xs font-medium" style={{ color: 'rgba(13,27,42,0.45)' }}>
-                <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-primary" />Registrados ante la SBS</span>
-                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary" />En 15 minutos</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-primary" />0 comisiones</span>
+<div className="flex flex-wrap items-center gap-6 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {isEmpresaPage ? (
+                  <>
+                    <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Rentabilidad</span>
+                    <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Inmediato</span>
+                    <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Exclusivo</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-primary" />Registrados ante la SBS</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary" />En 15 minutos</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-primary" />0 comisiones</span>
+                  </>
+                )}
               </div>
             </div>
 
-            {/* RIGHT — Calculadora */}
+            {/* RIGHT — Calculadora / FX Terminal */}
             <div className="order-1 lg:order-2 relative flex items-center justify-center">
 
-              {/* Calculator */}
               <div className="relative z-10 w-full max-w-[400px]">
-                <Calculator
-                  initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
-                  showContinueButton={true}
-                  onOperationReady={() => {
+              <Calculator
+                initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
+                showContinueButton={true}
+                dark={isEmpresaPage}
+                onOperationReady={() => guardedAction(() => {
+                  if (isEmpresaPage) {
+                    router.push(isAuthenticated ? '/dashboard/empresa' : '/login?from=/empresa');
+                  } else {
                     router.push(isAuthenticated ? '/dashboard' : '/crear-cuenta');
-                  }}
-                />
+                  }
+                })}
+              />
 
                 {/* Mercado en Vivo button — oculto temporalmente */}
                 {/* <Link
@@ -405,13 +584,13 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className="py-4 sm:py-6">
+      <section ref={banksSectionRef} className="py-4 sm:py-6" style={{ backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
 
           {/* Encabezado */}
           <div className="mb-7 text-center">
-            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#1E293B', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
-              Operamos con los bancos <span className="text-primary">principales del Peru</span>
+            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#ffffff', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
+              Operamos con los bancos <span className={isEmpresaPage ? '' : 'text-primary'} style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>principales del Peru</span>
             </h2>
           </div>
 
@@ -420,7 +599,7 @@ export default function Home() {
 
           {/* Grupo 1 — Card unificada BCP + Interbank + BanBif */}
           <div className="flex-[3]">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(13,27,42,0.4)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Transferencias inmediatas a todo el Perú
             </p>
 
@@ -431,9 +610,11 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : 'rgba(13,27,42,0.10)'}`,
-                    background: hovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)',
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.08)' : '0 1px 6px rgba(0,0,0,0.06)',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : 'rgba(255,255,255,0.18)'}`,
+                    background: hovered ? 'rgba(255,255,255,0.08)' : 'transparent',
+                    backdropFilter: 'blur(14px)',
+                    WebkitBackdropFilter: 'blur(14px)',
+                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.12)' : 'none',
                     minHeight: '110px',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
                   }}
@@ -478,7 +659,7 @@ export default function Home() {
 
           {/* Grupo 2 — Interbancaria solo Lima */}
           <div className="flex-[1] flex flex-col">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(13,27,42,0.4)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Interbancaria solo Lima
             </p>
 
@@ -490,8 +671,10 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : 'rgba(13,27,42,0.10)'}`,
-                    background: hovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.85)',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.18)'}`,
+                    background: hovered ? 'rgba(255,255,255,0.08)' : 'transparent',
+                    backdropFilter: 'blur(14px)',
+                    WebkitBackdropFilter: 'blur(14px)',
                     minHeight: '110px',
                     transitionDelay: isBanksSectionVisible ? '0ms' : '360ms',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0px)',
@@ -506,12 +689,12 @@ export default function Home() {
                   <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
                     {[
                       [{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }],
-                      [{ src: '/bancognb.jpg', alt: 'GNB' }, { src: '/bancoripley.png', alt: 'Ripley' }, { src: '/bancosantander.png', alt: 'Santander' }],
+                      [{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancoripley.png', alt: 'Ripley' }, { src: '/bancosantander.png', alt: 'Santander' }],
                     ].map((row, ri) => (
                       <div key={ri} className="flex items-center justify-center gap-3 w-full">
                         {row.map(({ src, alt }) => (
-                          <div key={alt} className="flex items-center justify-center" style={{ width: '72px', height: '44px' }}>
-                            <img src={src} alt={alt} style={{ maxWidth: '72px', maxHeight: '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+                          <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? '90px' : '72px', height: alt === 'GNB' ? '56px' : '44px' }}>
+                            <img src={src} alt={alt} style={{ maxWidth: alt === 'GNB' ? '90px' : '72px', maxHeight: alt === 'GNB' ? '56px' : '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
                           </div>
                         ))}
                       </div>
@@ -551,7 +734,7 @@ export default function Home() {
               { icon: Lock,         label: 'SSL cifrado' },
               { icon: Shield,       label: 'Datos protegidos por ley' },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: 'rgba(13,27,42,0.45)' }}>
+              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.6)' }}>
                 <Icon className="w-3.5 h-3.5 text-primary" />{label}
               </span>
             ))}
@@ -559,23 +742,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Separador */}
-      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="h-px w-full" style={{ background: 'linear-gradient(to right, transparent, rgba(13,27,42,0.12) 20%, rgba(13,27,42,0.12) 80%, transparent)' }} />
-      </div>
 
       {/* ══════════════════════════════════════
           AHORRO EN NÚMEROS
       ══════════════════════════════════════ */}
 
-      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
             {/* LEFT — headline + 3 stats inline */}
             <div className="reveal-left flex flex-col justify-between">
               <div>
-                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#1E293B' }}>
+                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#ffffff' }}>
                   Cada sol importa.<br />
                   <span className="text-primary">No lo pierdas</span> en el banco.
                 </h2>
@@ -585,7 +764,7 @@ export default function Home() {
               </div>
 
               {/* 3 stats compactos */}
-              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(13,27,42,0.08)' }}>
+              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
                 {[
                   { value: 80, prefix: 'S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco', speedClock: false },
                   { value: 10, prefix: '',   suffix: 'min', label: 'tiempo aprox.',        sub: 'por operación', speedClock: true },
@@ -607,8 +786,8 @@ export default function Home() {
                         <span className="text-sm font-bold text-primary ml-0.5">{suffix}</span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-semibold leading-tight text-gray-800">{label}</div>
-                    <div className="text-[10px]" style={{ color: 'rgba(13,27,42,0.4)' }}>{sub}</div>
+                    <div className="text-[11px] font-semibold leading-tight text-white">{label}</div>
+                    <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{sub}</div>
                   </div>
                 ))}
               </div>
@@ -651,7 +830,7 @@ export default function Home() {
                     }}>
                       <div className="flex items-center gap-2.5 flex-1">
                         <img src="/logo-principal.png" alt="QoriCash" className="h-5 w-auto object-contain flex-shrink-0" />
-                        <span className="text-sm font-black" style={{ color: '#1E293B' }}>QoriCash</span>
+                        <span className="text-sm font-black" style={{ color: '#ffffff' }}>QoriCash</span>
                         <span className="text-[8px] font-black uppercase tracking-wider bg-primary text-white px-1.5 py-0.5 rounded-full">Mejor</span>
                       </div>
                       <div className="flex gap-1">
@@ -680,12 +859,12 @@ export default function Home() {
                       return (
                         <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
                           <div className="flex items-center gap-2.5 flex-1">
-                            <img src={logo} alt={name} className="h-4 w-auto object-contain flex-shrink-0 opacity-40" />
-                            <span className="text-sm font-medium" style={{ color: 'rgba(13,27,42,0.4)' }}>{name}</span>
+                            <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0 opacity-70" />
+                            <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{name}</span>
                           </div>
                           <div className="flex gap-1">
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{compra}</span>
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(13,27,42,0.35)' }}>{venta}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{compra}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{venta}</span>
                           </div>
                         </div>
                       );
@@ -695,7 +874,7 @@ export default function Home() {
                 })()}
               </div>
 
-              <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(13,27,42,0.3)' }}>
+              <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(255,255,255,0.35)' }}>
                 *Tasas bancarias referenciales.
               </p>
             </div>
@@ -735,13 +914,13 @@ export default function Home() {
         @keyframes blobMorph3 { 0%,100%{border-radius:50% 50% 45% 55%/55% 45% 55% 45%;transform:translate(0,0) scale(1)} 50%{border-radius:65% 35% 55% 45%/40% 65% 35% 60%;transform:translate(15px,20px) scale(1.05)} }
       `}</style>
 
-      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
+      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(13,27,42,0.12)', color: 'rgba(13,27,42,0.4)' }}>
+            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.65)' }}>
               Simple como siempre debió ser
             </span>
-            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#1E293B' }}>3 pasos. Menos de 15 minutos.</h2>
+            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#ffffff' }}>3 pasos. Menos de 15 minutos.</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
@@ -805,7 +984,7 @@ export default function Home() {
               </div>
 
               {/* Text body */}
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
@@ -914,7 +1093,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y demás.</p>
@@ -972,7 +1151,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
@@ -998,67 +1177,20 @@ export default function Home() {
 
 
       {/* ══════════════════════════════════════
-          FAQ
-      ══════════════════════════════════════ */}
-
-      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="max-w-3xl mx-auto px-6 sm:px-8" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="text-center mb-10">
-            <h2 className="font-display font-black text-3xl md:text-4xl mb-2" style={{ color: '#1E293B' }}>Preguntas frecuentes</h2>
-            <p className="text-sm" style={{ color: 'rgba(13,27,42,0.45)' }}>Resolvemos tus dudas antes de empezar</p>
-          </div>
-          <div className="space-y-2">
-            {[
-              { q: '¿Cuánto tiempo tarda mi operación?',     a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.' },
-              { q: '¿Es seguro cambiar dólares con QoriCash?', a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.' },
-              { q: '¿Cuáles son las comisiones?',            a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales. El tipo de cambio que ves es exactamente lo que recibes.' },
-              { q: '¿Cuál es el monto mínimo para operar?',  a: <span>Puedes cambiar desde S/ 100 o $30 dólares. Para operaciones grandes contáctanos por <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">WhatsApp 926 011 920</a> para coordinar condiciones especiales.</span> },
-              { q: '¿Con qué bancos trabajan?',              a: 'Trabajamos directamente con BCP, Interbank y BanBif. Además, aceptamos operaciones interbancarias desde BBVA, Scotiabank, Pichincha o cualquier otro banco con plaza Lima; estas acreditaciones toman entre 2 a 24 horas según el horario de envío.' },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="rounded-2xl overflow-hidden transition-all duration-300"
-                style={{ border: openFaq === i ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(13,27,42,0.1)' }}
-              >
-                <button className="w-full flex items-center gap-4 px-6 py-5 text-left" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                  <span
-                    className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black transition-colors duration-300"
-                    style={{
-                      background: openFaq === i ? '#22C55E' : 'rgba(13,27,42,0.06)',
-                      color: openFaq === i ? 'white' : 'rgba(13,27,42,0.35)',
-                    }}
-                  >{i + 1}</span>
-                  <span className="flex-1 font-bold text-sm sm:text-base text-slate-800">{item.q}</span>
-                  <ChevronDown className={`flex-shrink-0 w-4 h-4 text-primary transition-transform duration-300 ${openFaq === i ? 'rotate-180' : 'opacity-50'}`} />
-                </button>
-                <div className={`faq-body ${openFaq === i ? 'open' : ''}`}>
-                  <div>
-                    <div className="px-6 pb-5 pl-6 sm:pl-[60px]">
-                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>{item.a}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer className="bg-[#1e293b] text-gray-400">
+      <footer className="text-gray-400" style={{ backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
+              <div className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
                 <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <div>
                   <div className="text-white font-bold text-[11px] leading-tight">Empresa Registrada</div>
                   <div className="text-gray-500 text-[10px]">RUC: 20615113698 · Lima, Perú</div>
                 </div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 flex items-center gap-3">
+              <div className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
                 <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <div>
                   <div className="text-white font-bold text-[11px] leading-tight">Registrados ante la SBS</div>
@@ -1072,10 +1204,10 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="w-full px-6 sm:px-8 lg:px-10 py-14">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+        <div className="w-full px-6 sm:px-8 lg:px-10 py-8">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-3 mb-5 hover:opacity-80 transition-opacity w-fit">
+              <Link href="/" className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity w-fit">
                 <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
                 <span className="text-2xl font-display font-bold text-white">QoriCash</span>
               </Link>
@@ -1088,6 +1220,7 @@ export default function Home() {
                 <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
                 <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
                 <li><Link href="/noticias" className="hover:text-white transition-colors">Noticias</Link></li>
+                <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors">Preguntas frecuentes</Link></li>
               </ul>
             </div>
             <div>
