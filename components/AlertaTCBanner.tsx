@@ -72,21 +72,23 @@ export default function AlertaTCBanner() {
 
   return (
     <>
-    <section className="relative overflow-hidden" style={{ backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+    <section className="relative overflow-hidden" style={{ background: '#1E293B' }}>
 
       {/* Glow sutil institucional */}
       <div className="absolute top-0 right-1/3 w-[400px] h-[400px] bg-primary-500/6 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-primary-500/8 rounded-full blur-[100px] pointer-events-none" />
 
+      {/* Separador superior */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8 rounded-2xl overflow-hidden" style={{ background: '#1E293B' }}>
+      <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-16">
 
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           {/* ── Texto ── */}
           <div>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-4">
+            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-400" />
@@ -95,17 +97,17 @@ export default function AlertaTCBanner() {
             </div>
 
             {/* Headline */}
-            <h2 className="text-2xl md:text-3xl font-display font-black text-white leading-[1.1] mb-3">
+            <h2 className="text-3xl md:text-4xl lg:text-[2.6rem] font-display font-black text-white leading-[1.1] mb-4">
               Te avisamos cuando el<br />
               <span className="text-primary-400">dólar llega a tu precio.</span>
             </h2>
 
-            <p className="text-gray-400 text-sm leading-relaxed mb-4 max-w-md">
+            <p className="text-gray-400 text-base leading-relaxed mb-7 max-w-md">
               Configura un TC objetivo y recibe un email al instante. Sin aplicaciones, sin costo.
             </p>
 
             {/* Beneficios */}
-            <div className="grid grid-cols-2 gap-2 mb-5">
+            <div className="grid grid-cols-2 gap-2.5 mb-8">
               {[
                 { icon: Zap,         text: 'Aviso en segundos' },
                 { icon: Bell,        text: 'Al alza y a la baja' },

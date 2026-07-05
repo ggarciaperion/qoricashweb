@@ -27,19 +27,12 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-const NAV_ITEMS_PERSONA = [
-  { icon: Home,      label: 'Inicio',            href: '/dashboard',                   exact: true  },
-  { icon: RefreshCw, label: 'Nueva Operación',   href: '/dashboard/nueva-operacion',   exact: false },
-  { icon: Clock,     label: 'Historial',         href: '/dashboard/historial',         exact: false },
+const NAV_ITEMS = [
+  { icon: Home,      label: 'Inicio',            href: '/dashboard',                  exact: true  },
+  { icon: RefreshCw, label: 'Nueva Operación',   href: '/dashboard/nueva-operacion',  exact: false },
+  { icon: Clock,     label: 'Historial',         href: '/dashboard/historial',        exact: false },
   { icon: Building2, label: 'Cuentas Bancarias', href: '/dashboard/cuentas-bancarias', exact: false },
-  { icon: Gift,      label: 'Promociones',       href: '/dashboard/promociones',       exact: false },
-];
-
-const NAV_ITEMS_EMPRESA = [
-  { icon: Home,      label: 'Inicio',            href: '/dashboard/empresa',                    exact: true  },
-  { icon: RefreshCw, label: 'Nueva Operación',   href: '/dashboard/empresa/nueva-operacion',    exact: false },
-  { icon: Clock,     label: 'Historial',         href: '/dashboard/historial',                  exact: false },
-  { icon: Building2, label: 'Cuentas Bancarias', href: '/dashboard/cuentas-bancarias',          exact: false },
+  { icon: Gift,      label: 'Promociones',       href: '/dashboard/promociones',      exact: false },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -72,9 +65,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       ? user?.razon_social || user?.nombres
       : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres;
 
-  const isEmpresaUser = user?.document_type === 'RUC';
-  const NAV_ITEMS = isEmpresaUser ? NAV_ITEMS_EMPRESA : NAV_ITEMS_PERSONA;
-
   const isActive = (href: string, exact: boolean) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + '/');
 
@@ -98,53 +88,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
-        style={isEmpresaUser
-          ? { background: 'linear-gradient(180deg, #0D1B2A 0%, #1a3353 100%)', borderRight: '1px solid rgba(143,184,204,0.12)' }
-          : { backgroundColor: '#ffffff', borderRight: '1px solid rgba(30,41,59,0.07)' }}
+        style={{ borderRight: '1px solid rgba(30,41,59,0.07)', backgroundColor: '#ffffff' }}
       >
         {/* Logo */}
-        <div className="h-[60px] flex items-center justify-between px-5">
+        <div
+          className="h-[60px] flex items-center justify-between px-5"
+        >
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition">
-            {isEmpresaUser ? (
-              <div className="relative inline-flex shrink-0">
-                <img src="/logo-principal.png" aria-hidden className="h-14 w-auto invisible" />
-                <div className="absolute inset-0" style={{
-                  background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)',
-                  WebkitMaskImage: 'url(/logo-principal.png)',
-                  WebkitMaskSize: '100% 100%',
-                  WebkitMaskRepeat: 'no-repeat',
-                  maskImage: 'url(/logo-principal.png)',
-                  maskSize: '100% 100%',
-                  maskRepeat: 'no-repeat',
-                }} />
-              </div>
-            ) : (
-              <img src="/logo-principal.png" alt="QoriCash" className="h-14 w-auto" />
-            )}
-            <div className="flex flex-col items-center">
-              <span
-                className="text-2xl font-black tracking-tight leading-none"
-                style={isEmpresaUser
-                  ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
-                  : { color: '#1E293B' }}
-              >
-                Qoricash
-              </span>
-              {isEmpresaUser && (
-                <span
-                  className="text-[9px] font-bold tracking-[0.22em] uppercase mt-0.5"
-                  style={{ color: 'rgba(143,184,204,0.6)', letterSpacing: '0.22em' }}
-                >
-                  Corporate
-                </span>
-              )}
-            </div>
+            <img src="/logo-principal.png" alt="QoriCash" className="h-14 w-auto" />
+            <span className="text-2xl font-black tracking-tight" style={{ color: '#1E293B' }}>Qoricash</span>
           </Link>
           <button
             className="lg:hidden p-1.5 rounded-lg transition"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#8fb8cc' : '#1E293B')}
-            onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)')}
+            style={{ color: 'rgba(30,41,59,0.4)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.4)')}
             onClick={() => setIsSidebarOpen(false)}
           >
             <X className="w-5 h-5" />
@@ -153,38 +111,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Nav */}
         <nav className="flex-1 py-5 px-3 space-y-1.5 overflow-y-auto">
+          {/* Section label */}
           <p
             className="px-3 mb-3 text-[10px] font-bold uppercase tracking-[0.14em]"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(30,41,59,0.35)' }}
+            style={{ color: 'rgba(30,41,59,0.35)' }}
           >
             Menú principal
           </p>
 
           {NAV_ITEMS.map(({ icon: Icon, label, href, exact }) => {
             const active = isActive(href, exact);
-            const activeStyle = isEmpresaUser
-              ? { background: 'rgba(143,184,204,0.12)', borderLeft: '3px solid #8fb8cc', color: '#8fb8cc' }
-              : { background: 'rgba(34,197,94,0.10)', borderLeft: '3px solid #22C55E', color: '#16A34A' };
-            const inactiveColor = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.55)';
-            const hoverColor   = isEmpresaUser ? '#ffffff' : '#1E293B';
-            const hoverBg      = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(30,41,59,0.05)';
-            const iconColor    = active
-              ? (isEmpresaUser ? '#8fb8cc' : '#16A34A')
-              : (isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.35)');
             return (
               <Link
                 key={label}
                 href={href}
-                className={`flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium transition-all ${active ? 'pl-[9px]' : ''}`}
-                style={active ? activeStyle : { color: inactiveColor }}
+                className={`flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium transition-all ${
+                  active ? 'pl-[9px]' : ''
+                }`}
+                style={
+                  active
+                    ? {
+                        background: 'rgba(34,197,94,0.10)',
+                        borderLeft: '3px solid #22C55E',
+                        color: '#16A34A',
+                      }
+                    : {
+                        color: 'rgba(30,41,59,0.55)',
+                      }
+                }
                 onMouseEnter={e => {
-                  if (!active) { (e.currentTarget as HTMLElement).style.color = hoverColor; (e.currentTarget as HTMLElement).style.background = hoverBg; }
+                  if (!active) (e.currentTarget as HTMLElement).style.color = '#1E293B';
+                  if (!active) (e.currentTarget as HTMLElement).style.background = 'rgba(30,41,59,0.05)';
                 }}
                 onMouseLeave={e => {
-                  if (!active) { (e.currentTarget as HTMLElement).style.color = inactiveColor; (e.currentTarget as HTMLElement).style.background = 'transparent'; }
+                  if (!active) (e.currentTarget as HTMLElement).style.color = 'rgba(30,41,59,0.55)';
+                  if (!active) (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }}
               >
-                <Icon className="w-[17px] h-[17px] shrink-0" style={{ color: iconColor }} />
+                <Icon
+                  className="w-[17px] h-[17px] shrink-0"
+                  style={{ color: active ? '#16A34A' : 'rgba(30,41,59,0.35)' }}
+                />
                 {label}
               </Link>
             );
@@ -194,24 +161,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <>
               <p
                 className="px-3 pt-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]"
-                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(30,41,59,0.35)' }}
+                style={{ color: 'rgba(30,41,59,0.35)' }}
               >
                 Administración
               </p>
               <Link
                 href="/dashboard/posicion"
                 className="flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium transition-all"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.55)' }}
+                style={{ color: 'rgba(30,41,59,0.55)' }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#1E293B';
-                  (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(30,41,59,0.05)';
+                  (e.currentTarget as HTMLElement).style.color = '#1E293B';
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(30,41,59,0.05)';
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.55)';
+                  (e.currentTarget as HTMLElement).style.color = 'rgba(30,41,59,0.55)';
                   (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }}
               >
-                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.35)' }} />
+                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: 'rgba(30,41,59,0.35)' }} />
                 Posición del Día
               </Link>
             </>
@@ -219,23 +186,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom */}
-        <div className="px-4 py-4" style={{ borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(30,41,59,0.07)' }}>
+        <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(30,41,59,0.07)' }}>
           {/* Contacto rápido */}
           <div className="mb-2 space-y-1">
             <a href="mailto:info@qoricash.pe"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(30,41,59,0.5)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#1E293B'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(30,41,59,0.05)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(30,41,59,0.5)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              style={{ color: 'rgba(30,41,59,0.5)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#1E293B'; (e.currentTarget as HTMLElement).style.background = 'rgba(30,41,59,0.05)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(30,41,59,0.5)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <Mail className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">info@qoricash.pe</span>
             </a>
             <a href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(30,41,59,0.5)' }}
+              style={{ color: 'rgba(30,41,59,0.5)' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#16a34a'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.06)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(30,41,59,0.5)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(30,41,59,0.5)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <MessageCircle className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">WhatsApp</span>
@@ -246,13 +213,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button
             onClick={handleLogout}
             className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition"
-            style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.45)', borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(30,41,59,0.07)', paddingTop: '10px', marginTop: '4px' }}
+            style={{ color: 'rgba(30,41,59,0.45)', borderTop: '1px solid rgba(30,41,59,0.07)', paddingTop: '10px', marginTop: '4px' }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.color = '#ef4444';
               (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.45)';
+              (e.currentTarget as HTMLElement).style.color = 'rgba(30,41,59,0.45)';
               (e.currentTarget as HTMLElement).style.background = 'transparent';
             }}
           >
@@ -265,25 +232,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* TOPBAR */}
-        <header className="sticky top-0 z-30" style={isEmpresaUser ? { background: 'rgba(13,27,42,0.45)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: '#ffffff' }}>
+        <header className="sticky top-0 z-30" style={{ background: '#ffffff' }}>
           <div className="flex items-center px-5 h-[64px] gap-4">
 
             {/* Left: hamburger + horario */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 className="lg:hidden p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#1E293B')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)')}
+                style={{ color: 'rgba(30,41,59,0.4)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.4)')}
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
               </button>
               <div className="hidden md:flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.35)' }} />
+                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: 'rgba(30,41,59,0.35)' }} />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : 'rgba(30,41,59,0.35)' }}>Horario de atención</p>
-                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.6)' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.35)' }}>Horario de atención</p>
+                  <p className="text-[11px] font-medium leading-none" style={{ color: 'rgba(30,41,59,0.6)' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
                 </div>
               </div>
             </div>
@@ -295,29 +262,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-1 shrink-0">
               <button
                 className="p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#1E293B')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)')}
+                style={{ color: 'rgba(30,41,59,0.4)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.4)')}
               >
                 <Bell className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition ml-1"
-                style={{ background: isUserMenuOpen ? (isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.06)') : 'transparent' }}
-                onMouseEnter={e => (e.currentTarget.style.background = isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.06)')}
+                style={{ background: isUserMenuOpen ? 'rgba(30,41,59,0.06)' : 'transparent' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(30,41,59,0.06)')}
                 onMouseLeave={e => { if (!isUserMenuOpen) (e.currentTarget.style.background = 'transparent'); }}
               >
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0"
-                  style={{ background: isEmpresaUser ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                  style={{ background: '#22C55E' }}>
                   {displayName?.charAt(0)?.toUpperCase() ?? 'U'}
                 </div>
-                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: isEmpresaUser ? '#ffffff' : '#1E293B' }}>
+                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: '#1E293B' }}>
                   {displayName}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.35)' }}
+                  style={{ color: 'rgba(30,41,59,0.35)' }}
                 />
               </button>
             </div>
