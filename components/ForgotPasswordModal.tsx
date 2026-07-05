@@ -74,8 +74,8 @@ export default function ForgotPasswordModal({
 
   return (
     <div className="animate-modal-backdrop fixed inset-0 bg-black/65 backdrop-blur-md flex items-center justify-center z-50 px-4">
-      <div className="animate-modal-enter bg-white rounded-2xl w-full max-w-md overflow-hidden"
-        style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}>
+      <div className="animate-modal-enter rounded-2xl w-full max-w-md overflow-hidden"
+        style={{ background: 'transparent', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 32px 64px rgba(0,0,0,0.5)' }}>
 
         {/* Header — dark gradient */}
         <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
@@ -114,11 +114,11 @@ export default function ForgotPasswordModal({
                 style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
                 <CheckCircle className="w-9 h-9 text-primary-600" />
               </div>
-              <h4 className="text-lg font-extrabold text-gray-900 mb-2">¡Contraseña enviada!</h4>
-              <p className="text-gray-500 text-sm leading-relaxed mb-2">
+              <h4 className="text-lg font-extrabold text-white mb-2">¡Contraseña enviada!</h4>
+              <p className="text-sm leading-relaxed mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 Hemos enviado una contraseña temporal a tu correo electrónico.
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
                 Revisa tu bandeja de entrada y sigue las instrucciones.
               </p>
             </div>
@@ -138,56 +138,56 @@ export default function ForgotPasswordModal({
                 </div>
               )}
 
-              <p className="text-gray-500 text-sm leading-relaxed mb-5">
+              <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.5)' }}>
                 Ingresa tus datos para recibir una contraseña temporal en tu correo electrónico.
               </p>
 
               <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
-                    style={{ color: 'rgba(13,27,42,0.5)' }}>
-                    DNI / CE / RUC
+                    style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    Numero de documento
                   </label>
                   <div className="relative">
-                    <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }} />
                     <input
                       type="text"
                       {...register('dni')}
                       placeholder="DNI (8), CE (9) o RUC (11) dígitos"
                       maxLength={11}
-                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold text-gray-800 bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl focus:outline-none transition-all placeholder-gray-300"
-                      style={{ boxShadow: 'none' }}
-                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
-                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
+                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all"
+                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'white', boxShadow: 'none' }}
+                      onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.1)'; }}
+                      onBlur={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.12)'; e.currentTarget.style.boxShadow = 'none'; }}
                     />
                   </div>
                   {dni && (
-                    <p className="text-[11px] text-gray-400 mt-1.5 font-medium">{dni.length} dígitos ingresados</p>
+                    <p className="text-[11px] mt-1.5 font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>{dni.length} dígitos ingresados</p>
                   )}
                   {errors.dni && (
-                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.dni.message}</p>
+                    <p className="text-red-400 text-xs mt-1.5 font-semibold">{errors.dni.message}</p>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
-                    style={{ color: 'rgba(13,27,42,0.5)' }}>
+                    style={{ color: 'rgba(255,255,255,0.4)' }}>
                     Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }} />
                     <input
                       type="email"
                       {...register('email')}
                       placeholder="correo@ejemplo.com"
-                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold text-gray-800 bg-slate-50 border-2 border-slate-200 focus:border-primary-400 rounded-xl focus:outline-none transition-all placeholder-gray-300"
-                      style={{ boxShadow: 'none' }}
-                      onFocus={e => { e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)'; }}
-                      onBlur={e => { e.currentTarget.style.boxShadow = 'none'; }}
+                      className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all"
+                      style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'white', boxShadow: 'none' }}
+                      onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.1)'; }}
+                      onBlur={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.12)'; e.currentTarget.style.boxShadow = 'none'; }}
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.email.message}</p>
+                    <p className="text-red-400 text-xs mt-1.5 font-semibold">{errors.email.message}</p>
                   )}
                 </div>
               </form>
@@ -199,7 +199,8 @@ export default function ForgotPasswordModal({
         {!success && (
           <div className="flex gap-3 px-6 pb-6">
             <button onClick={handleClose} disabled={isSubmitting}
-              className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 hover:bg-gray-50 hover:border-gray-300 active:scale-[0.98]">
+              className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 active:scale-[0.98]"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)' }}>
               Cancelar
             </button>
             <button onClick={handleSubmit(handleFormSubmit)} disabled={isSubmitting}
