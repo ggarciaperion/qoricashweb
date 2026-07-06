@@ -1577,7 +1577,7 @@ export default function Home() {
                   <span className="text-sm font-light tracking-[0.18em] leading-none self-center" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Corporate</span>
                 )}
               </Link>
-              <p className="text-sm text-gray-500 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+              <p className="text-sm text-gray-400 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Servicios</h4>
