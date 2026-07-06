@@ -16,15 +16,6 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
   return (
     <div className="empresa-page" style={{ position: 'relative', minHeight: '100vh' }}>
       <style>{`
-        /* Fade-in suave del contenido al montar la página */
-        @keyframes empresaFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        .empresa-page > main {
-          animation: empresaFadeIn 0.4s ease-out both;
-        }
-
         /* Hero y bancos → transparentes para mostrar el video */
         .empresa-page section.corp-transparent {
           background: transparent !important;
