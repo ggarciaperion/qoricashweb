@@ -518,7 +518,7 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className={`relative min-h-screen flex flex-col overflow-hidden ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
-        <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-2 sm:pt-12 pb-6 sm:pb-12 relative z-10">
+        <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-16 pb-6 sm:pb-12 relative z-10">
 
           {/* H1 personas — entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
