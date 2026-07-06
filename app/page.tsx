@@ -469,11 +469,11 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
-        <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
+        <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8 sm:py-12 relative z-10">
+          <div className="grid sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 items-center w-full">
 
             {/* LEFT — Texto */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 sm:order-1">
               {/* Pill label */}
               <span className="inline-flex items-center gap-2 mb-4 sm:mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' }}>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
@@ -540,12 +540,12 @@ export default function Home() {
             </div>
 
             {/* RIGHT — Calculadora / FX Terminal */}
-            <div className="order-1 lg:order-2 relative flex items-center justify-center">
+            <div className="order-1 sm:order-2 relative flex items-center justify-center">
 
               <div className="relative z-10 w-full max-w-[400px]">
               {isEmpresaPage && !isAuthenticated ? (
                 /* ── Glass CTA — acceso herramientas corporativas ── */
-                <div className="relative overflow-hidden rounded-2xl p-7 flex flex-col gap-5"
+                <div className="relative overflow-hidden rounded-2xl p-5 sm:p-7 flex flex-col gap-4 sm:gap-5"
                   style={{
                     background: 'rgba(8,18,30,0.45)',
                     backdropFilter: 'blur(28px)',
@@ -660,7 +660,7 @@ export default function Home() {
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
       <section ref={banksSectionRef} className={`py-4 sm:py-6 ${isEmpresaPage ? 'corp-transparent' : ''}`}>
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
 
           {/* Encabezado */}
           <div className="mb-7 text-center">
@@ -957,10 +957,10 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="corp-dark py-14 sm:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
+      <section className="corp-dark py-10 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
             {/* LEFT — TC Live + Sparkline + Tabla */}
             <div>
@@ -977,15 +977,15 @@ export default function Home() {
                 const bcrpCompra = lastBcrp?.compra?.toFixed(3) ?? '···';
                 const bcrpVenta  = lastBcrp?.venta?.toFixed(3)  ?? '···';
                 return (
-                  <div className="flex items-end gap-8 mb-8">
+                  <div className="flex flex-wrap items-end gap-4 sm:gap-8 mb-6 sm:mb-8">
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Compra BCR</div>
-                      <div className="text-5xl font-black tabular-nums leading-none" style={{ color: '#ffffff' }}>{bcrpCompra}</div>
+                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#ffffff' }}>{bcrpCompra}</div>
                     </div>
                     <div className="self-stretch w-px mb-1" style={{ background: 'rgba(143,184,204,0.1)' }} />
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Venta BCR</div>
-                      <div className="text-5xl font-black tabular-nums leading-none" style={{ color: '#22c55e' }}>{bcrpVenta}</div>
+                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#22c55e' }}>{bcrpVenta}</div>
                     </div>
                     {lastBcrp && (
                       <div className="self-end pb-1">
@@ -1049,9 +1049,9 @@ export default function Home() {
               <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(143,184,204,0.1)' }}>
                 <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(143,184,204,0.06)', borderBottom: '1px solid rgba(143,184,204,0.08)' }}>
                   <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.5)' }}>Comparativa bancaria</span>
-                  <div className="flex gap-6">
-                    <span className="text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Compra</span>
-                    <span className="text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Venta</span>
+                  <div className="flex gap-3 sm:gap-6">
+                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Compra</span>
+                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Venta</span>
                   </div>
                 </div>
                 {(() => {
@@ -1064,10 +1064,10 @@ export default function Home() {
                     { name: 'BBVA',      c: base_c - 0.080, v: base_v + 0.090, highlight: false },
                   ].map(({ name, c, v, highlight }, i, arr) => (
                     <div key={name} className="flex items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(143,184,204,0.06)' : 'none', background: highlight ? 'rgba(34,197,94,0.05)' : 'transparent', borderLeft: highlight ? '2px solid rgba(34,197,94,0.5)' : '2px solid transparent' }}>
-                      <div className="flex-1 text-sm font-bold" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.5)' }}>{name}</div>
-                      <div className="flex gap-6">
-                        <span className="text-sm tabular-nums font-medium w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{c.toFixed(3)}</span>
-                        <span className="text-sm tabular-nums font-medium w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{v.toFixed(3)}</span>
+                      <div className="flex-1 text-sm font-bold min-w-0 truncate" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.5)' }}>{name}</div>
+                      <div className="flex gap-3 sm:gap-6 flex-shrink-0">
+                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{c.toFixed(3)}</span>
+                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{v.toFixed(3)}</span>
                       </div>
                     </div>
                   ));
@@ -1079,7 +1079,7 @@ export default function Home() {
             {/* RIGHT — Ventajas corporativas */}
             <div>
               <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: 'rgba(143,184,204,0.6)' }}>Por qué elegirnos</span>
-              <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.15] mb-8" style={{ color: '#ffffff' }}>
+              <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-6 sm:mb-8" style={{ color: '#ffffff' }}>
                 El tipo de cambio <br /><span style={{ color: '#22c55e' }}>que su empresa</span> merece.
               </h2>
 
@@ -1110,7 +1110,7 @@ export default function Home() {
 
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2.5 font-bold px-7 py-3.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
+                className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-7 py-3.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
                 style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 6px 20px rgba(34,197,94,0.3)' }}
               >
                 Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
@@ -1414,23 +1414,23 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="corp-dark pt-4 pb-14 sm:pt-6 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
+      <section className="corp-dark pt-6 pb-12 sm:pt-8 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="flex items-start justify-between mb-8 gap-4">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
             <div>
               <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: 'rgba(143,184,204,0.55)' }}>Mercados globales</span>
-              <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#ffffff' }}>
+              <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl" style={{ color: '#ffffff' }}>
                 Noticias que mueven <span style={{ color: '#22c55e' }}>el tipo de cambio</span>
               </h2>
             </div>
             {noticiasCorp.length > 0 && (
-              <div className="hidden sm:flex items-center gap-2 flex-shrink-0 mt-8">
-                <button onClick={() => setNewsCorpIdx(i => (i - 1 + noticiasCorp.length) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
-                  <ArrowLeft className="w-4 h-4" />
+              <div className="flex items-center gap-2 flex-shrink-0 sm:mt-8">
+                <button onClick={() => setNewsCorpIdx(i => (i - 1 + noticiasCorp.length) % noticiasCorp.length)} className="w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
+                  <ArrowLeft className="w-5 h-5 sm:w-4 sm:h-4" />
                 </button>
-                <button onClick={() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
-                  <ArrowRight className="w-4 h-4" />
+                <button onClick={() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length)} className="w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
+                  <ArrowRight className="w-5 h-5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             )}
@@ -1440,9 +1440,9 @@ export default function Home() {
             <>
               {/* Main carousel card */}
               <div className="rounded-2xl overflow-hidden mb-4" style={{ background: 'rgba(143,184,204,0.05)', border: '1px solid rgba(143,184,204,0.12)' }}>
-                <div className="grid md:grid-cols-5">
+                <div className="grid sm:grid-cols-5">
                   {noticiasCorp[newsCorpIdx]?.imagen && (
-                    <div className="md:col-span-2 relative overflow-hidden" style={{ minHeight: 200 }}>
+                    <div className="sm:col-span-2 relative overflow-hidden" style={{ minHeight: 180 }}>
                       <img
                         src={noticiasCorp[newsCorpIdx].imagen}
                         alt={noticiasCorp[newsCorpIdx].titulo}
@@ -1451,7 +1451,7 @@ export default function Home() {
                       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(6,14,26,0.3), transparent)' }} />
                     </div>
                   )}
-                  <div className={`p-6 flex flex-col justify-between ${noticiasCorp[newsCorpIdx]?.imagen ? 'md:col-span-3' : 'md:col-span-5'}`}>
+                  <div className={`p-5 sm:p-6 flex flex-col justify-between ${noticiasCorp[newsCorpIdx]?.imagen ? 'sm:col-span-3' : 'sm:col-span-5'}`}>
                     <div>
                       <span className="inline-block text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>
                         {noticiasCorp[newsCorpIdx]?.categoria}
@@ -1499,10 +1499,10 @@ export default function Home() {
             </div>
           )}
 
-          <div className="text-center mt-10">
+          <div className="mt-8 sm:mt-10">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5"
+              className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5 active:scale-[0.98]"
               style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 8px 24px rgba(34,197,94,0.32)' }}
             >
               Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
@@ -1520,9 +1520,9 @@ export default function Home() {
           FOOTER
       ══════════════════════════════════════ */}
       <footer className="text-gray-400">
-        <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
+        <div className="border-b border-white/5 py-4 px-4 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
               <div className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
                 <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <div>
@@ -1544,7 +1544,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="w-full px-6 sm:px-8 lg:px-10 py-8">
+        <div className="w-full px-4 sm:px-8 lg:px-10 py-8">
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity w-fit">
