@@ -16,24 +16,20 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
   return (
     <div className="empresa-page" style={{ position: 'relative', minHeight: '100vh' }}>
       <style>{`
-        /* Quita cualquier fondo en todas las secciones para mostrar el video */
-        .empresa-page section,
-        .empresa-page main > * {
-          background-image: none !important;
-          background-color: transparent !important;
+        /* Hero y bancos → transparentes para mostrar el video */
+        .empresa-page section.corp-transparent {
           background: transparent !important;
+        }
+
+        /* Secciones corp con fondo oscuro propio (analytics, noticias) → conservar */
+        .empresa-page section.corp-dark {
+          /* mantiene su inline background */
         }
 
         /* Todos los textos de secciones debajo del hero → blanco */
         .empresa-page section:not(:first-of-type) *,
         .empresa-page footer * {
           color: rgba(255,255,255,0.88) !important;
-        }
-
-        /* Cards de pasos → texto oscuro (ID selector = máxima especificidad) */
-        #step-text-1, #step-text-2, #step-text-3,
-        #step-text-1 *, #step-text-2 *, #step-text-3 * {
-          color: #1E293B !important;
         }
 
         /* Re-aplicar verde a los elementos que deben mantenerse */
@@ -53,12 +49,6 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
         .empresa-page section:not(:first-of-type) [style*="fff"],
         .empresa-page section:not(:first-of-type) [style*="FFF"] {
           color: #ffffff !important;
-        }
-
-        /* Text body de los cards de pasos (fondo blanco) → texto oscuro */
-        .empresa-page section:not(:first-of-type) [style*="255,255,255,0.75"] *,
-        .empresa-page section:not(:first-of-type) [style*="255,255,255,0.75"] {
-          color: #1E293B !important;
         }
       `}</style>
 

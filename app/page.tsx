@@ -467,7 +467,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]">
+      <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
@@ -659,7 +659,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className="py-4 sm:py-6">
+      <section ref={banksSectionRef} className={`py-4 sm:py-6 ${isEmpresaPage ? 'corp-transparent' : ''}`}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
 
           {/* Encabezado */}
@@ -957,7 +957,7 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="py-14 sm:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
+      <section className="corp-dark py-14 sm:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
@@ -1414,7 +1414,7 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="pt-4 pb-14 sm:pt-6 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
+      <section className="corp-dark pt-4 pb-14 sm:pt-6 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="flex items-start justify-between mb-8 gap-4">
