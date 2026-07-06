@@ -34,8 +34,6 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
-  const [navScrolled, setNavScrolled] = useState(false);
-  const lastScrollYRef = useRef(0);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
@@ -112,16 +110,6 @@ export default function Home() {
     return () => { if (banksSectionRef.current) observer.unobserve(banksSectionRef.current); };
   }, []);
 
-  useEffect(() => {
-    const onScroll = () => {
-      const current = window.scrollY;
-      const prev = lastScrollYRef.current;
-      setNavScrolled(current > 20);
-      lastScrollYRef.current = current;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
 
   useEffect(() => {
@@ -224,12 +212,12 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
 
 
       {/* ══ NAVBAR ══ */}
-      <header className={`relative w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'transparent', borderBottom: 'none' }}>
+      <header className="relative w-full z-50" style={{ background: 'transparent', borderBottom: 'none' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -479,7 +467,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]">
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
@@ -671,7 +659,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className="py-4 sm:py-6" style={{ backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section ref={banksSectionRef} className="py-4 sm:py-6">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
 
           {/* Encabezado */}
@@ -831,7 +819,7 @@ export default function Home() {
 
 
       {!isEmpresaPage && (
-      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
@@ -1166,7 +1154,7 @@ export default function Home() {
       `}</style>
 
       {!isEmpresaPage && (
-      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.65)' }}>
@@ -1531,7 +1519,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer className="text-gray-400" style={{ backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <footer className="text-gray-400">
         <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">

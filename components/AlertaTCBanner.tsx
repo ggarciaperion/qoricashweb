@@ -72,7 +72,7 @@ export default function AlertaTCBanner() {
 
   return (
     <>
-    <section className="relative overflow-hidden" style={{ backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+    <section className="relative overflow-hidden">
 
       {/* Glow sutil institucional */}
       <div className="absolute top-0 right-1/3 w-[400px] h-[400px] bg-primary-500/6 rounded-full blur-[120px] pointer-events-none" />
