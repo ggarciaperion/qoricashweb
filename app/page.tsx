@@ -368,80 +368,65 @@ export default function Home() {
 
       {/* Mobile Menu Panel */}
       <div
-        className={`lg:hidden fixed left-0 right-0 z-[49] rounded-b-3xl overflow-hidden transition-all duration-300 ease-out ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`lg:hidden fixed right-3 z-[49] rounded-3xl overflow-hidden transition-all duration-300 ease-out ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         style={{
-          top: '80px',
-          maxHeight: isMobileMenuOpen ? '82vh' : '0px',
+          width: '220px',
+          top: '74px',
+          maxHeight: isMobileMenuOpen ? '70vh' : '0px',
           transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
-          background: isEmpresaPage ? 'rgba(8,18,30,0.97)' : 'rgba(255,255,255,0.82)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(13,27,42,0.06)',
-          boxShadow: '0 16px 40px rgba(0,0,0,0.18)',
+          background: 'rgba(255,255,255,0.22)',
+          backdropFilter: 'blur(28px)',
+          WebkitBackdropFilter: 'blur(28px)',
+          border: '1px solid rgba(255,255,255,0.35)',
+          boxShadow: '0 20px 48px rgba(0,0,0,0.18)',
         }}
       >
-        <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
-          <div className="space-y-1 mb-4">
-            {[
-            ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
-              const cls = 'flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors ' + (isEmpresaPage ? 'text-white/80 hover:bg-white/5' : 'text-gray-700 hover:bg-gray-50');
-              const inner = (
-                <>
-                  <div className={`w-9 h-9 rounded-xl ${bgCls} flex items-center justify-center flex-shrink-0`}>
-                    <Icon className={`w-4 h-4 ${iconCls}`} />
-                  </div>
-                  <span className="font-medium flex-1">{label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
-                </>
-              );
-              return isAnchor
-                ? <a key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</a>
-                : <Link key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</Link>;
-            })}
-          </div>
-          <div className="pt-4" style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid #f3f4f6' }}>
+        <div className="px-4 pt-4 pb-5 overflow-y-auto" style={{ maxHeight: '70vh' }}>
+
+          {/* Separador y acciones de cuenta */}
+          <div style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.1)' }}>
             {isAuthenticated ? (
               <>
-                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : undefined }}>Mi Cuenta</p>
-                <div className="space-y-1">
-                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
-                    <span className="font-medium flex-1">Mi perfil</span>
+                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.4)' }}>Mi Cuenta</p>
+                <div className="space-y-0.5">
+                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                    <span className="font-medium flex-1 text-sm">Mi perfil</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
-                    <span className="font-medium flex-1">Mi Dashboard</span>
+                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                    <span className="font-medium flex-1 text-sm">Mi Dashboard</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f0fdf4' }}><HelpCircle className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#16a34a' }} /></div>
-                    <span className="font-medium flex-1">Ayuda</span>
+                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(34,197,94,0.12)' }}><HelpCircle className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#22c55e' }} /></div>
+                    <span className="font-medium flex-1 text-sm">Ayuda</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-colors" style={{ color: '#ef4444' }}>
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(239,68,68,0.1)' : '#fef2f2' }}><LogOut className="w-4 h-4 text-red-500" /></div>
-                    <span className="font-medium">Cerrar Sesión</span>
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/8" style={{ color: '#ef4444' }}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.1)' }}><LogOut className="w-4 h-4 text-red-500" /></div>
+                    <span className="font-medium text-sm">Cerrar Sesión</span>
                   </button>
                 </div>
               </>
             ) : (
-              <div className="space-y-2">
-                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
-                  <span className="font-medium flex-1">Iniciar Sesión</span>
+              <div className="space-y-2 pt-4">
+                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                  <span className="font-medium flex-1 text-sm">Iniciar Sesión</span>
                   <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                 </Link>
                 <Link
                   href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'}
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all"
+                  className="flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all"
                   style={isEmpresaPage
                     ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' }
                     : { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff' }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <UserPlus className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1">Regístrate gratis</span>
+                  <span className="flex-1 text-sm">Regístrate</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -1601,36 +1586,38 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <footer className="text-gray-400">
         <div className="border-b border-white/5 py-3 px-4 sm:px-8 lg:px-10">
-          <div className="max-w-5xl mx-auto flex flex-row items-center justify-between gap-2 sm:gap-4">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
                 <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="text-white font-bold text-[10px] sm:text-[11px] leading-tight">Empresa Registrada</div>
-                  <div className="text-gray-500 text-[9px] sm:text-[10px]">RUC: 20615113698 · Lima, Perú</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>Empresa Registrada</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>RUC: 20615113698 · Lima, Perú</div>
                 </div>
               </div>
               <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="text-white font-bold text-[10px] sm:text-[11px] leading-tight">Registrados ante la SBS</div>
-                  <div className="text-gray-500 text-[9px] sm:text-[10px]">Res. N° 00313-2026</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>Registrados ante la SBS</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Res. N° 00313-2026</div>
                 </div>
               </div>
             </div>
-            <div className="hidden sm:flex items-center gap-5 text-[11px] text-gray-600">
-              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
-              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
+            <div className="flex items-center gap-5 text-[11px] text-white">
+              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3 text-white" /> SSL cifrado</span>
+              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-white" /> Datos protegidos por ley</span>
             </div>
           </div>
         </div>
-        <div className="w-full px-4 sm:px-8 lg:px-10 py-5 sm:py-8">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity w-fit">
+        <div className="w-full px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
+          <div className="max-w-5xl mx-auto">
+
+            {/* Fila 1 — Logo + descripción */}
+            <div className="flex items-center gap-3 mb-5 sm:mb-6">
+              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
                 {isEmpresaPage ? (
                   <div className="relative inline-flex flex-shrink-0">
-                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-11 w-auto invisible" />
+                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-9 w-auto invisible" />
                     <div className="absolute inset-0" style={{
                       background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
                       WebkitMaskImage: "url('/logo-principal.png')",
@@ -1642,67 +1629,77 @@ export default function Home() {
                     }} />
                   </div>
                 ) : (
-                  <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
                 )}
-                <span className="text-2xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#ffffff' }}>QoriCash</span>
-                {isEmpresaPage && (
-                  <span className="text-sm font-light tracking-[0.18em] leading-none self-center" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Corporate</span>
-                )}
+                <span className="text-xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#ffffff' }}>QoriCash</span>
               </Link>
-              <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+              <span className="hidden sm:block w-px h-6 bg-white/10" />
+              <p className="hidden sm:block text-xs leading-relaxed" style={{ color: isEmpresaPage ? '#6b7280' : '#ffffff' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Servicios</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/servicios#compra" className="hover:text-white transition-colors text-xs sm:text-sm">Compra de dólares</Link></li>
-                <li><Link href="/servicios#venta" className="hover:text-white transition-colors text-xs sm:text-sm">Venta de dólares</Link></li>
-                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors text-xs sm:text-sm">Tipo de cambio</Link></li>
-                <li><Link href="/noticias" className="hover:text-white transition-colors text-xs sm:text-sm">Noticias</Link></li>
-                <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors text-xs sm:text-sm">Preguntas frecuentes</Link></li>
-              </ul>
+            <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: isEmpresaPage ? '#6b7280' : '#ffffff' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+
+            {/* Fila 2 — Links en 3 columnas */}
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
+
+              {/* Servicios */}
+              <div>
+                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Servicios</h4>
+                <ul className="space-y-2">
+                  <li><Link href="/servicios#compra" className="hover:text-white transition-colors text-[11px] sm:text-xs">Compra USD</Link></li>
+                  <li><Link href="/servicios#venta" className="hover:text-white transition-colors text-[11px] sm:text-xs">Venta USD</Link></li>
+                  <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors text-[11px] sm:text-xs">Tipo de cambio</Link></li>
+                  <li><Link href="/noticias" className="hover:text-white transition-colors text-[11px] sm:text-xs">Noticias</Link></li>
+                  <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors text-[11px] sm:text-xs">FAQ</Link></li>
+                </ul>
+              </div>
+
+              {/* Legal */}
+              <div>
+                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Legal</h4>
+                <ul className="space-y-2">
+                  <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors text-[11px] sm:text-xs">Nosotros</Link></li>
+                  <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors text-[11px] sm:text-xs">Términos</Link></li>
+                  <li><Link href="/politica-privacidad" className="hover:text-white transition-colors text-[11px] sm:text-xs">Privacidad</Link></li>
+                  <li><Link href="/politica-cookies" className="hover:text-white transition-colors text-[11px] sm:text-xs">Cookies</Link></li>
+                  <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors text-[11px] sm:text-xs">Reclamaciones</Link></li>
+                </ul>
+              </div>
+
+              {/* Contacto */}
+              <div className="col-span-1 md:col-span-2">
+                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Contacto</h4>
+                <ul className="space-y-2.5">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors text-[11px] sm:text-xs">info@qoricash.pe</a>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-[11px] sm:text-xs">926 011 920</a>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-[11px] sm:text-xs leading-relaxed">Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span className="text-[11px] sm:text-xs">Lun–Vie 9–6 pm · Sáb 9–1 pm</span>
+                  </li>
+                </ul>
+              </div>
+
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Empresa</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors text-xs sm:text-sm">Sobre nosotros</Link></li>
-                <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors text-xs sm:text-sm">Términos y cond.</Link></li>
-                <li><Link href="/politica-privacidad" className="hover:text-white transition-colors text-xs sm:text-sm">Privacidad</Link></li>
-                <li><Link href="/politica-cookies" className="hover:text-white transition-colors text-xs sm:text-sm">Cookies</Link></li>
-                <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors text-xs sm:text-sm">Reclamaciones</Link></li>
-              </ul>
+
+            {/* Copyright */}
+            <div className="border-t border-white/5 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs text-gray-600">
+              <p>© 2025 QoriCash. Todos los derechos reservados.</p>
+              <div className="flex items-center gap-3">
+                <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
+                <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
+                <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
+              </div>
             </div>
-            <div className="col-span-2 md:col-span-1">
-              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Contacto</h4>
-              <ul className="space-y-2 sm:space-y-4 text-sm flex flex-wrap gap-x-6 gap-y-2 sm:flex-nowrap sm:flex-col sm:gap-0">
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                  <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                  <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">926 011 920</a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors leading-relaxed">Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</a>
-                </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <div className="leading-relaxed">
-                    <div>Lun – Vie: 9:00 a.m. – 6:00 p.m.</div>
-                    <div>Sáb: 9:00 a.m. – 1:00 p.m.</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="max-w-5xl mx-auto border-t border-white/5 mt-6 sm:mt-10 pt-4 sm:pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600">
-            <p>© 2025 QoriCash. Todos los derechos reservados.</p>
-            <div className="flex items-center gap-4">
-              <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
-              <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
-              <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
-            </div>
+
           </div>
         </div>
       </footer>
