@@ -246,10 +246,12 @@ export default function Home() {
                 ) : (
                   <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
                 )}
-                <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
-                {isEmpresaPage && (
-                  <span className="lg:hidden text-[9px] font-bold tracking-[0.18em] uppercase self-end mb-1" style={{ color: '#8fb8cc' }}>Corporate</span>
-                )}
+                <div className="flex flex-col items-start">
+                  <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white leading-tight" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
+                  {isEmpresaPage && (
+                    <span className="lg:hidden text-[8px] font-bold tracking-[0.2em] uppercase w-full text-center" style={{ color: '#8fb8cc' }}>Corporate</span>
+                  )}
+                </div>
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
@@ -1010,7 +1012,7 @@ export default function Home() {
       </section>
       )}
 
-      {isEmpresaPage && isAuthenticated && (
+      {isEmpresaPage && (
       <section className="corp-dark py-10 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
@@ -1467,7 +1469,7 @@ export default function Home() {
       </section>
       )}
 
-      {isEmpresaPage && isAuthenticated && (
+      {isEmpresaPage && (
       <section className="corp-dark pt-6 pb-12 sm:pt-8 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
