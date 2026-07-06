@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,6 +24,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromPage = searchParams.get('from') || '/';
   const login = useAuthStore((state) => state.login);
   const error = useAuthStore((state) => state.error);
   const clearError = useAuthStore((state) => state.clearError);
@@ -36,10 +38,11 @@ export default function LoginPage() {
   const [isBlocked, setIsBlocked] = useState(false);
   const failedAttemptsRef = useRef(0);
 
-  const animDoneRef     = useRef(false);
-  const apiDoneRef      = useRef(false);
-  const isErrorRef      = useRef(false);
-  const transitionedRef = useRef(false);
+  const animDoneRef      = useRef(false);
+  const apiDoneRef       = useRef(false);
+  const isErrorRef       = useRef(false);
+  const transitionedRef  = useRef(false);
+  const documentTypeRef  = useRef<string>('DNI');
 
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
@@ -70,7 +73,8 @@ export default function LoginPage() {
       }, 1800);
     } else {
       setLoginPhase('success');
-      setTimeout(() => router.push('/dashboard'), 1200);
+      const destination = documentTypeRef.current === 'RUC' ? '/empresa' : (fromPage || '/');
+      setTimeout(() => router.push(destination), 1200);
     }
   };
 
@@ -109,6 +113,7 @@ export default function LoginPage() {
       const response = await authApi.login({ dni: data.dni, password: data.password });
 
       if (response.success && response.client) {
+        documentTypeRef.current = response.client.document_type || 'DNI';
         if (response.requires_password_change) {
           setLoginPhase('idle');
           setIsLoading(false);
@@ -187,51 +192,48 @@ export default function LoginPage() {
 
       `}</style>
 
-      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: '#f8fafc', position: 'relative', overflow: 'hidden' }}>
-
-        {/* Background blobs */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: 340, height: 340, borderRadius: '50%', background: 'rgba(34,197,94,0.10)', filter: 'blur(60px)' }} />
-          <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: 300, height: 300, borderRadius: '50%', background: 'rgba(30,41,59,0.08)', filter: 'blur(60px)' }} />
-        </div>
+      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundImage: "url('/df.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', position: 'relative', overflow: 'hidden' }}>
 
         <div style={{ position: 'relative', width: '100%', maxWidth: 420, animation: 'qcCardIn 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
 
           {/* Back link */}
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748b', fontSize: 12, fontWeight: 500, textDecoration: 'none', marginBottom: 8 }}>
-            <ArrowLeft size={14} />
+          <Link href={fromPage} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#ffffff', fontSize: 12, fontWeight: 500, textDecoration: 'none', marginBottom: 8 }}>
+            <ArrowLeft size={14} color="#ffffff" />
             Volver al inicio
           </Link>
 
           {/* Card */}
           <div style={{
-            background: '#ffffff',
+            background: 'transparent',
             borderRadius: 20,
-            boxShadow: '0 8px 40px rgba(30,41,59,0.10), 0 2px 8px rgba(30,41,59,0.06)',
-            border: '1px solid #e2e8f0',
             overflow: 'hidden',
             position: 'relative',
           }}>
 
-            {/* ── Animation overlay ── */}
+            {/* ── Animation overlay — glass neutro ── */}
             {loginPhase !== 'idle' && (
-              <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: '#fff', borderRadius: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28 }}>
+              <div style={{
+                position: 'absolute', inset: 0, zIndex: 20, borderRadius: 20,
+                background: 'linear-gradient(135deg, rgba(13,27,42,0.72) 0%, rgba(26,51,83,0.72) 100%)',
+                backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28,
+              }}>
 
                 {/* Ring */}
                 <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(34,197,94,0.15)" strokeWidth="7" />
+                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(143,184,204,0.18)" strokeWidth="7" />
                     {loginPhase === 'loading' && (
                       <circle
                         cx="64" cy="64" r="52"
-                        fill="none" stroke="#22C55E" strokeWidth="7" strokeLinecap="round"
+                        fill="none" stroke="#8fb8cc" strokeWidth="7" strokeLinecap="round"
                         strokeDasharray="327" strokeDashoffset="327"
                         style={{ animation: 'qcProgress 2.6s cubic-bezier(0.4,0,0.6,1) forwards' }}
                         onAnimationEnd={handleAnimEnd}
                       />
                     )}
                     {loginPhase === 'success' && (
-                      <circle cx="64" cy="64" r="52" fill="none" stroke="#16a34a" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                      <circle cx="64" cy="64" r="52" fill="none" stroke="#8fb8cc" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                     )}
                     {loginPhase === 'error' && (
                       <circle cx="64" cy="64" r="52" fill="none" stroke="#ef4444" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" style={{ transition: 'stroke 0.3s ease' }} />
@@ -239,13 +241,27 @@ export default function LoginPage() {
                   </svg>
 
                   {/* Center */}
-                  <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.10)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{
+                    width: 88, height: 88, borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(143,184,204,0.25)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1,
+                  }}>
                     {loginPhase === 'loading' ? (
-                      <Image src="/logo-principal.png" alt="QoriCash" width={58} height={58} style={{ objectFit: 'contain', animation: 'qcPulse 1.8s ease-in-out infinite' }} />
+                      <div style={{
+                        width: 44, height: 44,
+                        background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)',
+                        WebkitMaskImage: 'url(/logo-principal.png)',
+                        WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
+                        maskImage: 'url(/logo-principal.png)',
+                        maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
+                        animation: 'qcPulse 1.8s ease-in-out infinite',
+                      }} />
                     ) : loginPhase === 'error' ? (
                       <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                          <circle cx="22" cy="22" r="22" fill="#ef4444" />
+                          <circle cx="22" cy="22" r="22" fill="rgba(239,68,68,0.8)" />
                           <line x1="14" y1="14" x2="30" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
                           <line x1="30" y1="14" x2="14" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
                         </svg>
@@ -253,7 +269,7 @@ export default function LoginPage() {
                     ) : (
                       <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                          <circle cx="22" cy="22" r="22" fill="#16a34a" />
+                          <circle cx="22" cy="22" r="22" fill="#4A6884" />
                           <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="60" strokeDashoffset="60" style={{ animation: 'qcCheck 0.5s ease-out 0.15s forwards' }} />
                         </svg>
                       </div>
@@ -267,24 +283,24 @@ export default function LoginPage() {
                     <>
                       <p style={{
                         fontSize: 14, fontWeight: 700, margin: 0,
-                        background: 'linear-gradient(90deg,#16A34A 0%,#22C55E 45%,#16A34A 90%)',
+                        background: 'linear-gradient(90deg, #8fb8cc 0%, #ffffff 45%, #8fb8cc 90%)',
                         backgroundSize: '200% auto',
                         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
                         animation: 'qcShimmer 1.8s linear infinite',
                       }}>
                         Verificando credenciales...
                       </p>
-                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera</p>
+                      <p style={{ fontSize: 11, color: 'rgba(143,184,204,0.6)', marginTop: 4 }}>Por favor espera</p>
                     </>
                   ) : loginPhase === 'error' ? (
                     <>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>Acceso denegado</p>
-                      <p style={{ fontSize: 12, color: '#ef4444', marginTop: 6, fontWeight: 600 }}>{loginError}</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', margin: 0 }}>Acceso denegado</p>
+                      <p style={{ fontSize: 12, color: '#fca5a5', marginTop: 6, fontWeight: 600 }}>{loginError}</p>
                     </>
                   ) : (
                     <>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Bienvenido!</p>
-                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Redirigiendo al dashboard...</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', margin: 0 }}>¡Bienvenido!</p>
+                      <p style={{ fontSize: 11, color: 'rgba(143,184,204,0.7)', marginTop: 4 }}>Redirigiendo al dashboard...</p>
                     </>
                   )}
                 </div>
@@ -292,14 +308,14 @@ export default function LoginPage() {
             )}
 
             {/* ── Header strip ── */}
-            <div style={{ background: '#1E293B', padding: '16px 32px 14px', textAlign: 'center' }}>
+            <div style={{ background: 'transparent', padding: '16px 32px 14px', textAlign: 'center' }}>
               <Image src="/logo-principal.png" alt="QoriCash" width={40} height={40} style={{ objectFit: 'contain', margin: '0 auto 8px' }} />
               <h1 style={{ fontSize: 17, fontWeight: 800, color: '#ffffff', margin: 0 }}>Iniciar sesión</h1>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
             </div>
 
             {/* ── Form body ── */}
-            <div style={{ padding: '16px 24px 20px' }}>
+            <div style={{ padding: '16px 24px 20px', background: 'transparent' }}>
 
               <form onSubmit={handleSubmit(onSubmit)}>
                 {/* DNI */}
@@ -320,9 +336,9 @@ export default function LoginPage() {
                       onPaste={e => { const t = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,11); e.preventDefault(); document.execCommand('insertText', false, t); }}
                       style={{
                         width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 9, paddingBottom: 9,
-                        border: errors.dni ? '1.5px solid #fca5a5' : '1.5px solid #e2e8f0',
+                        border: errors.dni ? '1px solid #fca5a5' : '1px solid rgba(255,255,255,0.5)',
                         borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
-                        background: errors.dni ? '#fef2f2' : '#fff', boxSizing: 'border-box',
+                        background: errors.dni ? 'rgba(254,242,242,0.3)' : 'transparent', boxSizing: 'border-box',
                         transition: 'border-color 0.15s',
                       }}
                       onFocus={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#22C55E'; }}
@@ -346,9 +362,9 @@ export default function LoginPage() {
                       disabled={isLoading || isBlocked}
                       style={{
                         width: '100%', paddingLeft: 36, paddingRight: 42, paddingTop: 9, paddingBottom: 9,
-                        border: errors.password ? '1.5px solid #fca5a5' : '1.5px solid #e2e8f0',
+                        border: errors.password ? '1px solid #fca5a5' : '1px solid rgba(255,255,255,0.5)',
                         borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
-                        background: errors.password ? '#fef2f2' : '#fff', boxSizing: 'border-box',
+                        background: errors.password ? 'rgba(254,242,242,0.3)' : 'transparent', boxSizing: 'border-box',
                         transition: 'border-color 0.15s',
                       }}
                       onFocus={e => { if (!errors.password) e.currentTarget.style.borderColor = '#22C55E'; }}
@@ -390,13 +406,13 @@ export default function LoginPage() {
                   disabled={isLoading || isBlocked}
                   style={{
                     width: '100%', padding: '11px', borderRadius: 11, border: 'none',
-                    background: isBlocked ? '#94a3b8' : '#1E293B', color: '#fff', fontSize: 14, fontWeight: 700,
+                    background: isBlocked ? '#94a3b8' : '#16a34a', color: '#fff', fontSize: 14, fontWeight: 700,
                     cursor: (isLoading || isBlocked) ? 'not-allowed' : 'pointer', opacity: (isLoading || isBlocked) ? 0.7 : 1,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     transition: 'background 0.15s',
                   }}
-                  onMouseEnter={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#334155'; }}
-                  onMouseLeave={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#1E293B'; }}
+                  onMouseEnter={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#15803d'; }}
+                  onMouseLeave={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#16a34a'; }}
                 >
                   Iniciar Sesión
                 </button>

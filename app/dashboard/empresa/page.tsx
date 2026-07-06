@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -10,6 +10,7 @@ import { parseSafeDate } from '@/lib/utils/date';
 import type { Operation } from '@/lib/types';
 import {
   ArrowRight,
+  ArrowLeft,
   TrendingUp,
   TrendingDown,
   RefreshCw,
@@ -22,6 +23,9 @@ import {
   Zap,
   Phone,
   MessageCircle,
+  Newspaper,
+  ExternalLink,
+  User,
 } from 'lucide-react';
 
 const fmt$ = (n: number) =>
@@ -51,11 +55,37 @@ export default function EmpresaDashboardPage() {
   const [stats, setStats] = useState<{ total_ops: number; total_usd: number; total_pen: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Noticias carousel
+  const [noticias, setNoticias] = useState<any[]>([]);
+  const [carouselIdx, setCarouselIdx] = useState(0);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+
+  const resetAutoPlay = useCallback((idx: number) => {
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+    autoPlayRef.current = setInterval(() => {
+      setCarouselIdx(prev => (prev + 1) % Math.min(5, noticias.length));
+    }, 5000);
+    setCarouselIdx(idx);
+  }, [noticias.length]);
+
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
     if (user?.document_type !== 'RUC') { router.replace('/dashboard'); return; }
     loadData();
+    fetch('/api/noticias')
+      .then(r => r.json())
+      .then((data: any[]) => { if (Array.isArray(data)) setNoticias(data.slice(0, 5)); })
+      .catch(() => {});
   }, [isAuthenticated, user?.document_type]);
+
+  // Auto-play carrusel
+  useEffect(() => {
+    if (noticias.length === 0) return;
+    autoPlayRef.current = setInterval(() => {
+      setCarouselIdx(prev => (prev + 1) % Math.min(5, noticias.length));
+    }, 5000);
+    return () => { if (autoPlayRef.current) clearInterval(autoPlayRef.current); };
+  }, [noticias.length]);
 
   async function loadData() {
     setIsLoading(true);
@@ -82,7 +112,7 @@ export default function EmpresaDashboardPage() {
   const venta = currentRates?.tipo_venta ?? 0;
 
   return (
-    <div className="min-h-full" style={{ backgroundImage: "url('/xc.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+    <div className="min-h-full" style={{ backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
 
       {/* ── HERO BANNER ──────────────────────────────────────────── */}
       <div
@@ -222,34 +252,17 @@ export default function EmpresaDashboardPage() {
             </Link>
 
             <Link
-              href="/dashboard/historial"
+              href="/dashboard/perfil"
               className="flex items-center justify-between px-4 py-4 rounded-2xl transition-all group"
               style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: '1px solid rgba(143,184,204,0.1)' }}
             >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(143,184,204,0.12)' }}>
-                  <Clock className="w-4 h-4" style={{ color: '#8fb8cc' }} />
+                  <User className="w-4 h-4" style={{ color: '#8fb8cc' }} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">Historial</p>
-                  <p className="text-[11px]" style={{ color: 'rgba(143,184,204,0.6)' }}>Ver todas las operaciones</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ color: 'rgba(143,184,204,0.5)' }} />
-            </Link>
-
-            <Link
-              href="/dashboard/cuentas-bancarias"
-              className="flex items-center justify-between px-4 py-4 rounded-2xl transition-all group"
-              style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: '1px solid rgba(143,184,204,0.1)' }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(143,184,204,0.12)' }}>
-                  <Building2 className="w-4 h-4" style={{ color: '#8fb8cc' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-white">Cuentas Bancarias</p>
-                  <p className="text-[11px]" style={{ color: 'rgba(143,184,204,0.6)' }}>Gestionar cuentas empresa</p>
+                  <p className="text-sm font-bold text-white">Mi perfil</p>
+                  <p className="text-[11px]" style={{ color: 'rgba(143,184,204,0.6)' }}>Datos y configuración de cuenta</p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ color: 'rgba(143,184,204,0.5)' }} />
@@ -363,7 +376,123 @@ export default function EmpresaDashboardPage() {
             </div>
           </div>
         </div>
+
+        {/* ── CARRUSEL DE NOTICIAS ─────────────────────────────── */}
+        {noticias.length > 0 && (() => {
+          const noticia = noticias[carouselIdx];
+          const total = Math.min(5, noticias.length);
+          const catColor: Record<string, string> = {
+            'Nacional': '#4ade80', 'Internacional': '#60a5fa',
+            'Economía': '#fbbf24', 'Tecnología': '#a78bfa', 'Misceláneos': '#fb923c',
+          };
+          const color = catColor[noticia.categoria] ?? '#8fb8cc';
+          return (
+            <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(143,184,204,0.12)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid rgba(143,184,204,0.1)' }}>
+                <div className="flex items-center gap-2">
+                  <Newspaper className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#8fb8cc' }}>Noticias que mueven el tipo de cambio</p>
+                </div>
+                <Link href="/noticias" className="text-[10px] font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity" style={{ color: 'rgba(143,184,204,0.6)' }}>
+                  Ver todas <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+
+              {/* Slide */}
+              <div className="flex flex-col md:flex-row gap-0">
+                {/* Imagen */}
+                {noticia.imagen && (
+                  <div className="md:w-64 flex-shrink-0 relative overflow-hidden" style={{ height: 160 }}>
+                    <img
+                      src={noticia.imagen}
+                      alt={noticia.titulo}
+                      className="w-full h-full object-cover"
+                      style={{ opacity: 0.75 }}
+                    />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 60%, rgba(13,27,42,0.6))' }} />
+                  </div>
+                )}
+
+                {/* Texto */}
+                <div className="flex-1 px-5 py-4 flex flex-col justify-between min-w-0">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: `${color}18`, color, border: `1px solid ${color}30` }}>
+                        {noticia.categoria}
+                      </span>
+                      <span className="text-[10px]" style={{ color: 'rgba(143,184,204,0.45)' }}>{noticia.fuente}</span>
+                      <span className="text-[10px]" style={{ color: 'rgba(143,184,204,0.3)' }}>·</span>
+                      <span className="text-[10px]" style={{ color: 'rgba(143,184,204,0.45)' }}>
+                        {new Date(noticia.fecha).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', timeZone: 'America/Lima' })}
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-bold text-white leading-snug mb-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{noticia.titulo}</h3>
+                    <p className="text-xs leading-relaxed" style={{ color: 'rgba(143,184,204,0.65)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{noticia.descripcion}</p>
+                  </div>
+
+                  {/* Controles */}
+                  <div className="flex items-center justify-between mt-4">
+                    {/* Dots */}
+                    <div className="flex items-center gap-1.5">
+                      {Array.from({ length: total }).map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => resetAutoPlay(i)}
+                          className="transition-all rounded-full"
+                          style={{ width: i === carouselIdx ? 16 : 6, height: 6, background: i === carouselIdx ? '#8fb8cc' : 'rgba(143,184,204,0.25)' }}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Arrows */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => resetAutoPlay((carouselIdx - 1 + total) % total)}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                        style={{ background: 'rgba(143,184,204,0.08)', border: '1px solid rgba(143,184,204,0.15)' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.18)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)')}
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />
+                      </button>
+                      <button
+                        onClick={() => resetAutoPlay((carouselIdx + 1) % total)}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                        style={{ background: 'rgba(143,184,204,0.08)', border: '1px solid rgba(143,184,204,0.15)' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.18)')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)')}
+                      >
+                        <ArrowRight className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Barra de progreso */}
+              <div style={{ height: 2, background: 'rgba(143,184,204,0.08)' }}>
+                <div
+                  key={carouselIdx}
+                  style={{
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #4A6884, #8fb8cc)',
+                    animation: 'carouselProgress 5s linear forwards',
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })()}
+
       </div>
+
+      <style>{`
+        @keyframes carouselProgress {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+      `}</style>
     </div>
   );
 }

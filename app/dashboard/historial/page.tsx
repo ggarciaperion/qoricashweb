@@ -130,8 +130,16 @@ export default function HistorialPage() {
     }
   };
 
+  const isEmpresa = user?.document_type === 'RUC';
+
+  const bgStyle = isEmpresa ? {
+    backgroundImage: "url('/xc.webp')",
+    backgroundSize: 'cover' as const,
+    backgroundPosition: 'center' as const,
+  } : {};
+
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? bgStyle : { background: 'transparent' }}>
       <div className="relative w-8 h-8">
         <div className="absolute inset-0 rounded-full border-2" style={{ borderColor: '#F1F5F9' }} />
         <div className="absolute inset-0 rounded-full border-2 border-t-primary-500 animate-spin" />
@@ -140,21 +148,21 @@ export default function HistorialPage() {
   );
 
   return (
-    <main className="min-h-screen bg-white py-8 px-4">
+    <main className="min-h-screen py-8 px-4" style={isEmpresa ? bgStyle : { background: 'transparent' }}>
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* ── HEADER ── */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: '#0F172A' }}>
+            <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: isEmpresa ? '#ffffff' : '#0F172A' }}>
               Mis operaciones
             </h1>
-            <p className="text-sm mt-0.5" style={{ color: '#94A3B8' }}>
+            <p className="text-sm mt-0.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#94A3B8' }}>
               {ops.length} registro{ops.length !== 1 ? 's' : ''} en total
             </p>
           </div>
           <button
-            onClick={() => router.push('/dashboard/nueva-operacion')}
+            onClick={() => router.push(isEmpresa ? '/dashboard/empresa/nueva-operacion' : '/dashboard/nueva-operacion')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
             style={{ background: '#22C55E', boxShadow: '0 2px 8px rgba(34,197,94,0.3)' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#16A34A'; }}
@@ -170,7 +178,9 @@ export default function HistorialPage() {
           {/* Vol. cambiado */}
           <div
             className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', border: '1px solid #1E293B' }}
+            style={isEmpresa
+              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
+              : { background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', border: '1px solid #1E293B' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.04)' }} />
@@ -186,7 +196,9 @@ export default function HistorialPage() {
           {/* Spread */}
           <div
             className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #0E7490 0%, #0891B2 100%)', border: '1px solid #0E7490' }}
+            style={isEmpresa
+              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
+              : { background: 'linear-gradient(135deg, #0E7490 0%, #0891B2 100%)', border: '1px solid #0E7490' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.07)' }} />
@@ -202,7 +214,9 @@ export default function HistorialPage() {
           {/* Rentabilidad acumulada */}
           <div
             className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #15803D 0%, #22C55E 100%)', border: '1px solid #15803D' }}
+            style={isEmpresa
+              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
+              : { background: 'linear-gradient(135deg, #15803D 0%, #22C55E 100%)', border: '1px solid #15803D' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.07)' }} />
@@ -217,15 +231,22 @@ export default function HistorialPage() {
         </div>
 
         {/* ── TABS ── */}
-        <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: '#F8FAFC', border: '1px solid #F1F5F9' }}>
+        <div
+          className="flex items-center gap-1 p-1 rounded-xl"
+          style={isEmpresa
+            ? { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '1px solid rgba(143,184,204,0.15)' }
+            : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}
+        >
           {TABS.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-semibold transition"
               style={tab === t.key
-                ? { background: 'white', color: '#0F172A', boxShadow: '0 1px 4px rgba(15,23,42,0.08)' }
-                : { color: '#94A3B8' }
+                ? isEmpresa
+                  ? { background: 'rgba(74,104,132,0.35)', color: '#ffffff', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }
+                  : { background: 'rgba(255,255,255,0.3)', color: '#ffffff', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }
+                : { color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#94A3B8' }
               }
             >
               {t.label}
@@ -248,25 +269,32 @@ export default function HistorialPage() {
         {rows.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3"
-              style={{ background: '#F8FAFC', border: '1px solid #F1F5F9' }}>
-              <RefreshCw className="w-4 h-4" style={{ color: '#E2E8F0' }} />
+              style={isEmpresa
+                ? { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.15)' }
+                : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <RefreshCw className="w-4 h-4" style={{ color: isEmpresa ? '#ffffff' : 'rgba(255,255,255,0.6)' }} />
             </div>
-            <p className="text-sm font-medium" style={{ color: '#94A3B8' }}>Sin operaciones aquí</p>
+            <p className="text-sm font-medium" style={{ color: isEmpresa ? '#ffffff' : '#94A3B8' }}>Sin operaciones aquí</p>
           </div>
         ) : (
-          <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid #E2E8F0' }}>
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={isEmpresa
+              ? { border: '1px solid rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
+              : { border: '1px solid #E2E8F0' }}
+          >
 
             {/* Table header */}
             <div
               className="grid items-center px-4 py-2.5"
               style={{
                 gridTemplateColumns: '140px 1fr 1fr 80px 100px',
-                background: '#F8FAFC',
-                borderBottom: '1px solid #E2E8F0',
+                background: isEmpresa ? 'rgba(13,27,42,0.5)' : 'rgba(255,255,255,0.12)',
+                borderBottom: isEmpresa ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.15)',
               }}
             >
               {['Tipo', 'Dólares', 'Soles', 'T.C.', 'Estado'].map(h => (
-                <p key={h} className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#94A3B8' }}>
+                <p key={h} className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#94A3B8' }}>
                   {h}
                 </p>
               ))}
@@ -285,17 +313,19 @@ export default function HistorialPage() {
               return (
                 <div
                   key={op.id}
-                  style={{ borderBottom: idx < rows.length - 1 || isOpen ? '1px solid #F1F5F9' : 'none' }}
+                  style={{ borderBottom: idx < rows.length - 1 || isOpen ? `1px solid ${isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.12)'}` : 'none' }}
                 >
                   {/* Row */}
                   <div
                     className="grid items-center px-4 py-3 cursor-pointer transition-colors"
                     style={{
                       gridTemplateColumns: '140px 1fr 1fr 80px 100px',
-                      background: isOpen ? '#FAFBFC' : 'white',
+                      background: isEmpresa
+                        ? (isOpen ? 'rgba(74,104,132,0.15)' : 'transparent')
+                        : (isOpen ? 'rgba(255,255,255,0.1)' : 'transparent'),
                     }}
-                    onMouseEnter={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = '#FAFBFC'; }}
-                    onMouseLeave={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = 'white'; }}
+                    onMouseEnter={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = isEmpresa ? 'rgba(74,104,132,0.1)' : 'rgba(255,255,255,0.08)'; }}
+                    onMouseLeave={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                     onClick={() => handleRowClick(op)}
                   >
                     {/* Col 1: tipo chip + fecha */}
@@ -314,24 +344,24 @@ export default function HistorialPage() {
                         }
                         {isCompra ? 'QoriCash Compra' : 'QoriCash Vende'}
                       </span>
-                      <p className="text-[10px]" style={{ color: '#CBD5E1' }}>
+                      <p className="text-[10px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>
                         {fmtDate(op.fecha_creacion)}
                       </p>
                     </div>
 
                     {/* Col 2: USD */}
-                    <p className="text-sm font-semibold tabular-nums" style={{ color: isClosed ? '#CBD5E1' : '#0F172A' }}>
+                    <p className="text-sm font-semibold tabular-nums" style={{ color: isClosed ? (isEmpresa ? 'rgba(143,184,204,0.35)' : '#CBD5E1') : (isEmpresa ? '#ffffff' : '#0F172A') }}>
                       $ {fmt$(amtUSD)}
                     </p>
 
                     {/* Col 3: PEN */}
                     <p className="text-sm font-semibold tabular-nums"
-                      style={{ color: isClosed ? '#CBD5E1' : isCompra ? '#15803D' : '#1D4ED8' }}>
+                      style={{ color: isClosed ? (isEmpresa ? 'rgba(143,184,204,0.35)' : '#CBD5E1') : (isEmpresa ? '#8fb8cc' : (isCompra ? '#15803D' : '#1D4ED8')) }}>
                       S/ {fmtS(amtPEN)}
                     </p>
 
                     {/* Col 4: TC */}
-                    <p className="text-sm tabular-nums" style={{ color: '#64748B' }}>
+                    <p className="text-sm tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#64748B' }}>
                       {(op.tipo_cambio ?? 0).toFixed(3)}
                     </p>
 
@@ -357,41 +387,55 @@ export default function HistorialPage() {
                   {isOpen && (
                     <div
                       className="px-4 pb-4 pt-2"
-                      style={{ background: '#FAFBFC', borderTop: '1px solid #F1F5F9' }}
+                      style={isEmpresa
+                        ? { background: 'rgba(13,27,42,0.3)', borderTop: '1px solid rgba(143,184,204,0.1)' }
+                        : { background: 'rgba(255,255,255,0.08)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
                     >
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                         {/* Código */}
-                        <div className="rounded-xl px-3 py-2.5" style={{ background: 'white', border: '1px solid #F1F5F9' }}>
-                          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#CBD5E1' }}>Código</p>
-                          <p className="text-xs font-semibold mt-1" style={{ color: '#475569' }}>
+                        <div className="rounded-xl px-3 py-2.5"
+                          style={isEmpresa
+                            ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
+                            : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Código</p>
+                          <p className="text-xs font-semibold mt-1" style={{ color: isEmpresa ? '#ffffff' : '#475569' }}>
                             {op.codigo_operacion ?? `#${op.id}`}
                           </p>
                         </div>
 
                         {/* Hora */}
-                        <div className="rounded-xl px-3 py-2.5" style={{ background: 'white', border: '1px solid #F1F5F9' }}>
-                          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#CBD5E1' }}>Hora</p>
-                          <p className="text-xs font-semibold mt-1" style={{ color: '#475569' }}>
+                        <div className="rounded-xl px-3 py-2.5"
+                          style={isEmpresa
+                            ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
+                            : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                          <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Hora</p>
+                          <p className="text-xs font-semibold mt-1" style={{ color: isEmpresa ? '#ffffff' : '#475569' }}>
                             {fmtTime(op.fecha_creacion)}
                           </p>
                         </div>
 
                         {/* Banco */}
                         {op.banco_cliente && (
-                          <div className="rounded-xl px-3 py-2.5 flex items-center gap-2" style={{ background: 'white', border: '1px solid #F1F5F9' }}>
-                            <Building2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#CBD5E1' }} />
+                          <div className="rounded-xl px-3 py-2.5 flex items-center gap-2"
+                            style={isEmpresa
+                              ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
+                              : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                            <Building2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }} />
                             <div>
-                              <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#CBD5E1' }}>Banco</p>
-                              <p className="text-xs font-semibold mt-0.5" style={{ color: '#475569' }}>{op.banco_cliente}</p>
+                              <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Banco</p>
+                              <p className="text-xs font-semibold mt-0.5" style={{ color: isEmpresa ? '#ffffff' : '#475569' }}>{op.banco_cliente}</p>
                             </div>
                           </div>
                         )}
 
                         {/* Ahorro */}
                         {op.estado === 'completado' && (
-                          <div className="rounded-xl px-3 py-2.5" style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
-                            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: '#86EFAC' }}>Ahorraste</p>
-                            <p className="text-xs font-bold tabular-nums mt-1" style={{ color: '#15803D' }}>
+                          <div className="rounded-xl px-3 py-2.5"
+                            style={isEmpresa
+                              ? { background: 'rgba(74,104,132,0.2)', border: '1px solid rgba(143,184,204,0.2)' }
+                              : { background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                            <p className="text-[9px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#86EFAC' }}>Ahorraste</p>
+                            <p className="text-xs font-bold tabular-nums mt-1" style={{ color: isEmpresa ? '#8fb8cc' : '#15803D' }}>
                               S/ {fmtS(ahorro)} vs banco
                             </p>
                           </div>
@@ -402,9 +446,9 @@ export default function HistorialPage() {
                       <button
                         onClick={e => { e.stopPropagation(); router.push(`/dashboard/operaciones/${op.id}`); }}
                         className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                        style={{ color: '#94A3B8' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = '#0F172A'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = '#94A3B8'; }}
+                        style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#94A3B8' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = isEmpresa ? '#ffffff' : '#0F172A'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = isEmpresa ? 'rgba(143,184,204,0.6)' : '#94A3B8'; }}
                       >
                         Ver detalle completo <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -419,7 +463,7 @@ export default function HistorialPage() {
         {/* ── PAGINATION ── */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-1">
-            <p className="text-[11px]" style={{ color: '#CBD5E1' }}>
+            <p className="text-[11px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>
               {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} de {filtered.length}
             </p>
             <div className="flex items-center gap-2">
@@ -427,18 +471,22 @@ export default function HistorialPage() {
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="w-7 h-7 rounded-lg flex items-center justify-center transition disabled:opacity-25"
-                style={{ border: '1px solid #E2E8F0', color: '#94A3B8' }}
+                style={isEmpresa
+                  ? { border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.6)', background: 'rgba(255,255,255,0.05)' }
+                  : { border: '1px solid #E2E8F0', color: '#94A3B8' }}
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
-              <span className="text-[11px] font-semibold tabular-nums" style={{ color: '#64748B' }}>
+              <span className="text-[11px] font-semibold tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748B' }}>
                 {page} / {totalPages}
               </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="w-7 h-7 rounded-lg flex items-center justify-center transition disabled:opacity-25"
-                style={{ border: '1px solid #E2E8F0', color: '#94A3B8' }}
+                style={isEmpresa
+                  ? { border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.6)', background: 'rgba(255,255,255,0.05)' }
+                  : { border: '1px solid #E2E8F0', color: '#94A3B8' }}
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>

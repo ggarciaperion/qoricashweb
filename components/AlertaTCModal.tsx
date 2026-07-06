@@ -122,7 +122,8 @@ export default function AlertaTCModal({ user, currentCompra, currentVenta }: Pro
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-sm hover:shadow-primary-500/40 hover:shadow-md transition-all duration-200 group"
+        className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white transition-all duration-200 group"
+        style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
         title="Alertas de tipo de cambio"
       >
         <Bell className="w-3.5 h-3.5 group-hover:animate-[wiggle_0.4s_ease-in-out]" />

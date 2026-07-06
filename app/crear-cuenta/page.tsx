@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { User, Building2, CheckCircle2, AlertCircle, Search, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
@@ -105,6 +105,7 @@ const SELECT_ARROW_STYLE: React.CSSProperties = {
 
 export default function CrearCuentaPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const loginStore = useAuthStore((state) => state.login);
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -156,6 +157,16 @@ export default function CrearCuentaPage() {
     acceptPrivacy: false,
     acceptPromotions: false,
   });
+
+  // Si viene desde /empresa, saltar directo al formulario de empresa
+  useEffect(() => {
+    if (searchParams.get('tipo') === 'empresa') {
+      setTipoPersona('juridica');
+      setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' }));
+      setPaso(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Ubigeo
   const [departamentos, setDepartamentos] = useState<string[]>([]);
@@ -568,9 +579,9 @@ export default function CrearCuentaPage() {
 
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col" style={{ backgroundImage: "url('/pg.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50" style={{ background: 'rgba(30,41,59,1)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+      <header className="sticky top-0 z-50" style={{ background: 'transparent', boxShadow: 'none' }}>
         <div className="w-full max-w-[960px] mx-auto px-10 py-3.5">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition" style={{ transform: 'translateX(-30px)' }}>
@@ -587,7 +598,7 @@ export default function CrearCuentaPage() {
       </header>
 
       {/* Layout centrado */}
-      <div className="flex flex-1 overflow-y-auto" style={{ backgroundColor: '#FAFAF8', backgroundImage: 'radial-gradient(rgba(30,41,59,0.08) 1.5px, transparent 1.5px)', backgroundSize: '22px 22px' }}>
+      <div className="flex flex-1 overflow-y-auto">
         <div className="flex items-center gap-4 w-full max-w-6xl mx-auto px-10 py-6 min-h-full" style={{ position: 'relative' }}>
 
 
@@ -598,21 +609,8 @@ export default function CrearCuentaPage() {
               className={`relative w-full${tipoPersona === 'juridica' ? ' h-full flex items-center' : ''}`}
               style={{ transform: 'translateX(-60px)' }}
             >
-              {/* Blob verde orgánico */}
-              <div style={{
-                position: 'absolute',
-                ...(tipoPersona === 'juridica'
-                  ? { top: '8%', bottom: '8%', left: '-2%', right: '-2%' }
-                  : { inset: '-1% 0%' }),
-                background: '#22C55E',
-                borderRadius: tipoPersona === 'juridica'
-                  ? '42% 58% 30% 70% / 35% 55% 45% 65%'
-                  : '30% 70% 40% 60% / 50% 30% 70% 50%',
-                zIndex: 0,
-                pointerEvents: 'none',
-              }} />
               <img
-                src={tipoPersona === 'juridica' ? '/qq.png' : '/registro-hero.png'}
+                src={tipoPersona === 'juridica' ? '/qq.webp' : '/registro-hero.webp'}
                 alt="QoriCash"
                 className="w-full object-contain"
                 style={{ position: 'relative', zIndex: 1 }}
@@ -683,10 +681,10 @@ export default function CrearCuentaPage() {
 
                 {/* Título */}
                 <div className="mb-4" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.22s both' }}>
-                  <h1 className="text-xl font-black mb-1" style={{ color: '#1E293B' }}>
+                  <h1 className="text-xl font-black mb-1" style={{ color: '#ffffff' }}>
                     ¡Bienvenido a <span style={{ color: '#22C55E' }}>QoriCash</span>!
                   </h1>
-                  <p className="text-xs" style={{ color: 'rgba(30,41,59,0.5)' }}>Tu cuenta ha sido creada exitosamente</p>
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>Tu cuenta ha sido creada exitosamente</p>
                 </div>
 
                 {/* Pill + Card QoriCoins */}
@@ -724,7 +722,7 @@ export default function CrearCuentaPage() {
                 </button>
 
                 <p className="mt-3 text-[10px] tracking-widest" style={{
-                  color: 'rgba(30,41,59,0.25)',
+                  color: 'rgba(255,255,255,0.4)',
                   animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.62s both',
                 }}>
                   QORICASH · FOREX EXCHANGE
@@ -809,7 +807,7 @@ export default function CrearCuentaPage() {
                         }}/>
                       ))}
                     </div>
-                    <p className="text-sm font-semibold mb-3" style={{ color: '#1E293B' }}>Creando tu cuenta…</p>
+                    <p className="text-sm font-semibold mb-3" style={{ color: '#ffffff' }}>Creando tu cuenta…</p>
                     {/* 3 dots parpadeantes */}
                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                       {[0, 1, 2].map(i => (
@@ -843,10 +841,10 @@ export default function CrearCuentaPage() {
                           style={{ animation: 'checkTrace 0.42s cubic-bezier(0.4,0,0.2,1) 0.7s forwards' }}/>
                       </svg>
                     </div>
-                    <p className="text-base font-black mb-1" style={{ color: '#1E293B', animation: 'confirmText 0.4s 0.85s ease both', opacity: 0 }}>
+                    <p className="text-base font-black mb-1" style={{ color: '#ffffff', animation: 'confirmText 0.4s 0.85s ease both', opacity: 0 }}>
                       ¡Cuenta creada!
                     </p>
-                    <p className="text-xs" style={{ color: 'rgba(30,41,59,0.45)', animation: 'confirmText 0.4s 1.0s ease both', opacity: 0 }}>
+                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)', animation: 'confirmText 0.4s 1.0s ease both', opacity: 0 }}>
                       Preparando tu bienvenida…
                     </p>
                   </div>
@@ -861,7 +859,7 @@ export default function CrearCuentaPage() {
           {/* Flecha retroceso (visible solo en pasos > 0) */}
           <div className="mb-3" style={{ minHeight: '32px' }}>
             {paso > 0 && (
-              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: 'rgba(30,41,59,0.5)' }}>
+              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                 Volver
               </button>
@@ -872,47 +870,49 @@ export default function CrearCuentaPage() {
           <div className="text-center mb-5">
             <h1 className="text-2xl font-display font-black mb-1">
               {paso === 0 ? (
-                <><span style={{ color: '#1E293B' }}>Crear </span><span style={{ color: '#22C55E' }}>Cuenta</span></>
+                <><span style={{ color: '#ffffff' }}>Crear </span><span style={{ color: '#22C55E' }}>Cuenta</span></>
 
               ) : (
                 <>
-                  <span style={{ color: '#1E293B' }}>Crear cuenta </span>
+                  <span style={{ color: '#ffffff' }}>Crear cuenta </span>
                   <span style={{ color: '#22C55E' }}>{tipoPersona === 'natural' ? 'Persona Natural' : 'Empresa'}</span>
                 </>
               )}
             </h1>
-            <p className="text-sm" style={{ color: 'rgba(30,41,59,0.50)' }}>Únete a QoriCash en 3 simples pasos</p>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Únete a QoriCash en 3 simples pasos</p>
           </div>
 
           {/* PASO 0 — Selección tipo de cliente */}
           {paso === 0 && (
             <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <h2 className="text-base font-bold text-center mb-4" style={{ color: 'rgba(30,41,59,0.6)' }}>Elige el tipo de cliente</h2>
+              <h2 className="text-base font-bold text-center mb-4" style={{ color: 'rgba(255,255,255,0.85)' }}>Elige el tipo de cliente</h2>
               <div className="grid grid-cols-2 gap-3">
                 {/* Persona Natural */}
                 <button
                   type="button"
                   onClick={() => { setTipoPersona('natural'); setFormData(prev => ({ ...prev, tipoDocumento: 'DNI' })); setPaso(1); }}
-                  className="group flex flex-col items-center p-5 bg-white rounded-2xl border-2 border-slate-200 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(8px)' }}
                 >
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.2)' }}>
                     <User className="w-6 h-6 text-primary" />
                   </div>
-                  <p className="font-black text-sm mb-1.5" style={{ color: '#1E293B' }}>Persona Natural</p>
-                  <p className="text-xs text-center" style={{ color: 'rgba(30,41,59,0.45)' }}>DNI · Carnet de Extranjería</p>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#ffffff' }}>Persona Natural</p>
+                  <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>DNI · Carnet de Extranjería</p>
                 </button>
 
                 {/* Empresa */}
                 <button
                   type="button"
                   onClick={() => { setTipoPersona('juridica'); setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' })); setPaso(1); }}
-                  className="group flex flex-col items-center p-5 bg-white rounded-2xl border-2 border-slate-200 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(8px)' }}
                 >
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.2)' }}>
                     <Building2 className="w-6 h-6 text-primary" />
                   </div>
-                  <p className="font-black text-sm mb-1.5" style={{ color: '#1E293B' }}>Empresa</p>
-                  <p className="text-xs text-center" style={{ color: 'rgba(30,41,59,0.45)' }}>Ficha RUC</p>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#ffffff' }}>Empresa</p>
+                  <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>Ficha RUC</p>
                 </button>
               </div>
             </div>
@@ -932,15 +932,15 @@ export default function CrearCuentaPage() {
                     ? 'bg-primary text-white'
                     : paso === num
                       ? 'bg-primary text-white shadow-md shadow-primary/30'
-                      : 'bg-gray-100 text-gray-400'
+                      : 'bg-white/20 text-white/60'
                 }`}>
                   {paso > num ? <CheckCircle2 className="w-4 h-4" /> : num}
                 </div>
-                <span className={`text-xs mt-1 font-semibold transition-colors ${paso >= num ? 'text-primary-600' : 'text-gray-400'}`}>{label}</span>
+                <span className={`text-xs mt-1 font-semibold transition-colors ${paso >= num ? 'text-primary-400' : 'text-white/50'}`}>{label}</span>
               </div>
               {num < 3 && (
                 <div className={`w-12 sm:w-16 h-0.5 mx-2 mb-4 rounded-full transition-all duration-500 ${
-                  paso > num ? 'bg-primary' : 'bg-gray-200'
+                  paso > num ? 'bg-primary' : 'bg-white/20'
                 }`} />
               )}
             </div>
@@ -948,7 +948,7 @@ export default function CrearCuentaPage() {
         </div>}
 
         {/* Card del formulario */}
-        {paso > 0 && <div className="bg-white rounded-2xl px-6 py-5" style={{ boxShadow: '0 2px 12px rgba(30,41,59,0.05)', border: '1px solid rgba(30,41,59,0.06)' }}>
+        {paso > 0 && <div className="rounded-2xl px-6 py-5" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}>
 
           {/* Animación creando cuenta (reemplaza contenido del card) */}
           {loading && (
@@ -963,8 +963,8 @@ export default function CrearCuentaPage() {
                 </div>
               </div>
               <div className="text-center">
-                <p className="text-sm font-bold" style={{ color: '#1E293B' }}>Creando tu cuenta</p>
-                <p className="text-xs mt-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Esto solo tomará un momento...</p>
+                <p className="text-sm font-bold" style={{ color: '#ffffff' }}>Creando tu cuenta</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Esto solo tomará un momento...</p>
               </div>
             </div>
           )}
@@ -1016,10 +1016,10 @@ export default function CrearCuentaPage() {
                 const isNatural = tipoPersona === 'natural';
                 const docLen = isNatural ? (formData.tipoDocumento === 'DNI' ? 8 : 9) : 11;
                 const valid = formData.dni.length === docLen && formData.email.includes('@') && pwdValid && formData.acceptTerms && captchaChecked;
-                const fieldsetCls = { border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0' };
+                const fieldsetCls = { border: '1px solid rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0' };
                 const legendCls = "ml-3 px-1";
-                const legendStyle = { color: 'rgba(30,41,59,0.45)', fontSize: '10px' };
-                const inputInnerCls = "w-full px-3 pb-2 bg-transparent text-sm text-slate-700 focus:outline-none";
+                const legendStyle = { color: 'rgba(255,255,255,0.6)', fontSize: '10px' };
+                const inputInnerCls = "w-full px-3 pb-2 bg-transparent text-sm text-white focus:outline-none placeholder-white/40";
                 return (
                   <div className="space-y-2.5">
                     {/* Documento */}
@@ -1030,7 +1030,7 @@ export default function CrearCuentaPage() {
                           <select
                             value={formData.tipoDocumento}
                             onChange={(e) => handleChange('tipoDocumento', e.target.value as TipoDocumento)}
-                            className="w-full px-2 pb-2 bg-transparent text-sm text-slate-700 appearance-none cursor-pointer focus:outline-none"
+                            className="w-full px-2 pb-2 bg-transparent text-sm text-white appearance-none cursor-pointer focus:outline-none"
                             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', paddingRight: '24px' }}
                           >
                             <option value="DNI">DNI</option>
@@ -1106,20 +1106,20 @@ export default function CrearCuentaPage() {
                     {/* Términos */}
                     <label className="flex items-start gap-2.5 cursor-pointer pt-0.5">
                       <input type="checkbox" checked={formData.acceptTerms} onChange={(e) => handleChange('acceptTerms', e.target.checked)} className="mt-0.5 h-3.5 w-3.5 text-primary border-slate-300 rounded" />
-                      <span className="text-xs" style={{ color: 'rgba(30,41,59,0.55)' }}>
+                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
                         Acepto los <a href="/terminos-condiciones" target="_blank" className="text-primary hover:underline">Términos y Condiciones</a> y la <a href="/politica-privacidad" target="_blank" className="text-primary hover:underline">Política de Privacidad</a>
                       </span>
                     </label>
 
                     {/* Captcha */}
-                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg" style={{ border: '1px solid rgba(30,41,59,0.1)' }}>
+                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
                       <div onClick={() => { if (!captchaChecked) { setCaptchaLoading(true); setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200); }}} className="flex-shrink-0 w-5 h-5 cursor-pointer flex items-center justify-center">
                         {captchaLoading ? <Loader2 className="w-5 h-5 animate-spin text-primary" /> : captchaChecked ? <CheckCircle2 className="w-5 h-5 text-primary" /> : <div className="w-5 h-5 border border-slate-300 rounded hover:border-primary transition" />}
                       </div>
-                      <span className="text-xs flex-1" style={{ color: 'rgba(30,41,59,0.6)' }}>No soy un robot</span>
+                      <span className="text-xs flex-1" style={{ color: 'rgba(255,255,255,0.7)' }}>No soy un robot</span>
                       <div className="flex flex-col items-center gap-0.5 opacity-50">
                         <img src="/logo-principal.png" alt="" className="h-5 w-auto" />
-                        <span className="text-[8px]" style={{ color: 'rgba(30,41,59,0.4)' }}>reCAPTCHA</span>
+                        <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.4)' }}>reCAPTCHA</span>
                       </div>
                     </div>
 
@@ -1188,10 +1188,10 @@ export default function CrearCuentaPage() {
             <div className="space-y-3 animate-in fade-in slide-in-from-right duration-300">
 
             {(() => {
-              const fsCls = { border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0' };
+              const fsCls = { border: '1px solid rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0' };
               const legCls = "ml-2 px-1";
-              const legSt = { color: 'rgba(30,41,59,0.45)', fontSize: '10px' };
-              const inpCls = "w-full px-3 pb-2 bg-transparent text-sm text-slate-700 focus:outline-none";
+              const legSt = { color: 'rgba(255,255,255,0.6)', fontSize: '10px' };
+              const inpCls = "w-full px-3 pb-2 bg-transparent text-sm text-white focus:outline-none placeholder-white/40";
               const arrSt = SELECT_ARROW_STYLE;
               const telefonoValido = formData.telefonoCodigo === '+51'
                 ? formData.telefono.length === 9 && formData.telefono.startsWith('9')
@@ -1207,15 +1207,15 @@ export default function CrearCuentaPage() {
                 return (
                   <div className="space-y-2.5">
                     {/* Documento — solo lectura */}
-                    <div className="rounded-xl border border-slate-200 overflow-hidden">
+                    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
                       <div className="px-4 py-3 flex gap-8">
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>Documento</p>
-                          <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>CE</p>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>Documento</p>
+                          <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>CE</p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>Número</p>
-                          <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{formData.dni}</p>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>Número</p>
+                          <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>{formData.dni}</p>
                         </div>
                       </div>
                     </div>
@@ -1242,7 +1242,7 @@ export default function CrearCuentaPage() {
                     <div className="flex gap-2">
                       <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
                         <legend className={legCls} style={legSt}>Código</legend>
-                        <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                        <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={arrSt}>
                           {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
                         </select>
                       </fieldset>
@@ -1264,7 +1264,7 @@ export default function CrearCuentaPage() {
                     {/* Nacionalidad */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Nacionalidad</legend>
-                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#334155' : '#CBD5E1' }}>
+                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#334155' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {NACIONALIDADES.map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
@@ -1273,7 +1273,7 @@ export default function CrearCuentaPage() {
                     {/* Ocupación */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Ocupación</legend>
-                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
+                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
                       </select>
@@ -1281,7 +1281,7 @@ export default function CrearCuentaPage() {
 
                     {/* Fecha de nacimiento */}
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5 ml-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Fecha de nacimiento</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5 ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Fecha de nacimiento</p>
                       <div className="flex gap-2">
                         <fieldset style={{ ...fsCls, flex: 1 }}>
                           <legend className={legCls} style={legSt}>Día</legend>
@@ -1308,7 +1308,7 @@ export default function CrearCuentaPage() {
                     </div>
 
                     {/* Datos de ubicación */}
-                    <p className="text-[10px] font-semibold uppercase tracking-wide pt-1 ml-1" style={{ color: 'rgba(30,41,59,0.45)' }}>Datos de ubicación</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wide pt-1 ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Datos de ubicación</p>
 
                     {/* País de residencia */}
                     <fieldset style={fsCls}>
@@ -1374,13 +1374,13 @@ export default function CrearCuentaPage() {
               return (
                 <div className="space-y-2.5">
                   {/* Card DNI + Nombres */}
-                  <div className="rounded-xl border border-slate-200 overflow-hidden">
+                  <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
                     <div className="px-4 py-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>{formData.tipoDocumento}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>{formData.tipoDocumento}</p>
                       {editingDni ? (
                         <div className="flex gap-2 mt-1">
                           <input type="text" value={dniEditValue} onChange={e => setDniEditValue(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                            className="flex-1 px-2 py-1 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary-400 focus:outline-none"
+                            className="flex-1 px-2 py-1 rounded-lg text-sm text-white focus:outline-none" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }}
                             placeholder="Ingresa tu número de documento" autoFocus />
                           <button type="button" onClick={async () => { setFormData(prev => ({ ...prev, dni: dniEditValue })); await handleLookup(dniEditValue); setEditingDni(false); }}
                             className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition">
@@ -1388,18 +1388,18 @@ export default function CrearCuentaPage() {
                           </button>
                         </div>
                       ) : (
-                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>{formData.dni}</p>
+                        <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>{formData.dni}</p>
                       )}
                     </div>
                     {!editingDni && (
                       <div className="px-4 py-3">
-                        <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(30,41,59,0.4)' }}>
+                        <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
                           {tipoPersona === 'juridica' ? 'Razón Social' : 'Nombres y Apellidos'}
                         </p>
-                        <p className="text-sm font-semibold" style={{ color: '#1E293B' }}>
+                        <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>
                           {tipoPersona === 'juridica'
-                            ? (formData.razonSocial || <span style={{ color: 'rgba(30,41,59,0.3)' }}>No encontrado</span>)
-                            : (`${formData.apellidoPaterno} ${formData.apellidoMaterno} ${formData.nombres}`.trim() || <span style={{ color: 'rgba(30,41,59,0.3)' }}>No encontrado</span>)
+                            ? (formData.razonSocial || <span style={{ color: 'rgba(255,255,255,0.4)' }}>No encontrado</span>)
+                            : (`${formData.apellidoPaterno} ${formData.apellidoMaterno} ${formData.nombres}`.trim() || <span style={{ color: 'rgba(255,255,255,0.4)' }}>No encontrado</span>)
                           }
                         </p>
                       </div>
@@ -1407,38 +1407,38 @@ export default function CrearCuentaPage() {
                     {/* Campos manuales si el lookup DNI falló */}
                     {dniLookupFailed && (
                       <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
-                        <p className="text-[10px]" style={{ color: 'rgba(30,41,59,0.45)' }}>No pudimos obtener tus datos automáticamente. Ingrésalos manualmente:</p>
+                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>No pudimos obtener tus datos automáticamente. Ingrésalos manualmente:</p>
                         <input type="text" value={formData.nombres}
                           onChange={e => handleChange('nombres', e.target.value)}
                           placeholder="Nombres"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
                         <input type="text" value={formData.apellidoPaterno}
                           onChange={e => handleChange('apellidoPaterno', e.target.value)}
                           placeholder="Apellido paterno"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
                         <input type="text" value={formData.apellidoMaterno}
                           onChange={e => handleChange('apellidoMaterno', e.target.value)}
                           placeholder="Apellido materno"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
                       </div>
                     )}
                     {/* Campo manual Razón Social si el lookup RUC falló */}
                     {rucLookupFailed && (
                       <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
-                        <p className="text-[10px]" style={{ color: 'rgba(30,41,59,0.45)' }}>No pudimos obtener la razón social. Ingrésala manualmente:</p>
+                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>No pudimos obtener la razón social. Ingrésala manualmente:</p>
                         <input type="text" value={formData.razonSocial}
                           onChange={e => handleChange('razonSocial', e.target.value)}
                           placeholder="Razón Social"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm text-slate-700 focus:border-primary focus:outline-none placeholder-slate-300" />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
                       </div>
                     )}
                   </div>
                   {!editingDni && (
-                    <button type="button" onClick={() => { setEditingDni(true); setDniEditValue(formData.dni); }} className="text-xs underline" style={{ color: 'rgba(30,41,59,0.45)' }}>
+                    <button type="button" onClick={() => { setEditingDni(true); setDniEditValue(formData.dni); }} className="text-xs underline" style={{ color: 'rgba(255,255,255,0.5)' }}>
                       ¿No son tus datos?
                     </button>
                   )}
@@ -1450,7 +1450,7 @@ export default function CrearCuentaPage() {
                       <input type="text" value={formData.personaContacto}
                         onChange={e => handleChange('personaContacto', e.target.value)}
                         autoComplete="off"
-                        className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-white focus:outline-none placeholder-slate-300"
                         placeholder="Nombre completo" />
                     </fieldset>
                   )}
@@ -1459,7 +1459,7 @@ export default function CrearCuentaPage() {
                   <div className="flex gap-2 pt-1">
                     <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
                       <legend className={legCls} style={legSt}>Código</legend>
-                      <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                      <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={arrSt}>
                         {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
                       </select>
                     </fieldset>
@@ -1472,7 +1472,7 @@ export default function CrearCuentaPage() {
                         if (isPeru) handleChange('telefono', raw.slice(0, 9));
                         else handleChange('telefono', raw);
                       }} autoComplete="off"
-                        className="w-full px-2 pb-1.5 bg-white text-sm text-slate-700 focus:outline-none placeholder-slate-300"
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-white focus:outline-none placeholder-slate-300"
                         placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                     </fieldset>
                   </div>
@@ -1529,18 +1529,18 @@ export default function CrearCuentaPage() {
 
               {/* Encabezado */}
               <div className="text-center pb-1">
-                <h2 className="text-base font-black mb-1" style={{ color: '#1E293B' }}>Verificamos que eres tú</h2>
-                <p className="text-xs" style={{ color: 'rgba(30,41,59,0.5)' }}>Ingresa el código que te enviaremos a tu correo</p>
+                <h2 className="text-base font-black mb-1" style={{ color: '#ffffff' }}>Verificamos que eres tú</h2>
+                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Ingresa el código que te enviaremos a tu correo</p>
               </div>
 
               {/* Card correo */}
-              <fieldset style={{ border: '1px solid #e2e8f0', borderRadius: '12px', padding: '0' }}>
-                <legend className="px-1" style={{ color: 'rgba(30,41,59,0.45)', fontSize: '10px', marginLeft: '56px' }}>Correo</legend>
+              <fieldset style={{ border: '1px solid rgba(255,255,255,0.25)', borderRadius: '12px', padding: '0' }}>
+                <legend className="px-1" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '10px', marginLeft: '56px' }}>Correo</legend>
                 <div className="px-3 pb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.08)' }}>
+                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
                   </div>
-                  <p className="text-sm font-semibold flex-1" style={{ color: '#1E293B', wordBreak: 'break-all' }}>{formData.email}</p>
+                  <p className="text-sm font-semibold flex-1" style={{ color: '#ffffff', wordBreak: 'break-all' }}>{formData.email}</p>
                 </div>
                 {codigoEnviado && (
                   <div className="flex items-center justify-center gap-1.5 pb-3 animate-in fade-in duration-300">
@@ -1590,9 +1590,9 @@ export default function CrearCuentaPage() {
               {codigoEnviado && (
                 <div className="text-center animate-in fade-in duration-300">
                   {countdown > 0 ? (
-                    <p className="text-xs" style={{ color: 'rgba(30,41,59,0.45)' }}>
+                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
                       Puedes reenviar el código en{' '}
-                      <span className="font-semibold tabular-nums" style={{ color: '#1E293B' }}>
+                      <span className="font-semibold tabular-nums" style={{ color: '#ffffff' }}>
                         {Math.floor(countdown / 60) > 0
                           ? `${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')} min`
                           : `${countdown}s`}
@@ -1673,7 +1673,7 @@ export default function CrearCuentaPage() {
                               : i === codigoValue.length
                                 ? '#94a3b8'
                                 : '#e2e8f0';
-                      const charColor = codigoValido === true ? '#22C55E' : codigoValido === false ? '#EF4444' : '#1E293B';
+                      const charColor = codigoValido === true ? '#22C55E' : codigoValido === false ? '#EF4444' : '#ffffff';
                       return (
                         <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: '34px' }}>
                           <span className="text-lg font-bold h-7 flex items-end justify-center transition-colors duration-300" style={{ color: charColor, minWidth: '34px', textAlign: 'center' }}>
@@ -1688,7 +1688,7 @@ export default function CrearCuentaPage() {
                   {codigoValidando && (
                     <div className="flex justify-center items-center gap-2 mt-3 animate-in fade-in duration-200">
                       <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#94a3b8' }} />
-                      <span className="text-xs" style={{ color: 'rgba(30,41,59,0.45)' }}>Verificando código...</span>
+                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Verificando código...</span>
                     </div>
                   )}
                   {codigoValido === true && (
@@ -1712,7 +1712,7 @@ export default function CrearCuentaPage() {
                   type="button"
                   onClick={() => { setNewEmailValue(formData.email); setShowChangeEmailModal(true); }}
                   className="text-xs underline transition hover:opacity-70"
-                  style={{ color: 'rgba(30,41,59,0.45)' }}
+                  style={{ color: 'rgba(255,255,255,0.5)' }}
                 >
                   ¿Necesitas cambiar de correo?
                 </button>
@@ -1726,7 +1726,7 @@ export default function CrearCuentaPage() {
                   disabled={loading || codigoValido !== true}
                   className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 animate-in fade-in duration-300"
                   style={{
-                    background: codigoValido === true ? '#22C55E' : 'rgba(30,41,59,0.12)',
+                    background: codigoValido === true ? '#22C55E' : 'rgba(255,255,255,0.15)',
                     cursor: codigoValido === true ? 'pointer' : 'not-allowed',
                   }}
                 >

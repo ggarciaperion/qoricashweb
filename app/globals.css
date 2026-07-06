@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Botón INICIAR OPERACIÓN — hover gradient + shimmer loop ── */
+.iniciar-op-btn {
+  transition: color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.iniciar-op-btn:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74, 104, 132, 0.45);
+}
+.iniciar-op-btn:hover span.relative {
+  color: #ffffff !important;
+}
+.iniciar-op-btn:active {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+.iniciar-op-btn .iniciar-op-gradient {
+  transition: opacity 0.3s ease;
+}
+.iniciar-op-btn:hover .iniciar-op-gradient {
+  opacity: 1;
+}
+.iniciar-op-btn .iniciar-op-shimmer {
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.08) 60%, transparent 100%);
+  transform: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.iniciar-op-btn:hover .iniciar-op-shimmer {
+  opacity: 1;
+}
+
+/* ── View Transitions — Personas ↔ Empresas ── */
+::view-transition-old(root) {
+  animation: vt-fade-out 0.45s cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 0.55s cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(0.98) translateY(-6px); }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: scale(1.02) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 @keyframes clockOrganic {
   0%   { transform: rotate(0deg); }
   15%  { transform: rotate(60deg); }

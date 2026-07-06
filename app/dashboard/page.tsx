@@ -145,8 +145,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
+    if (user?.document_type === 'RUC') { router.replace('/dashboard/empresa'); return; }
     loadData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.document_type]);
 
   /* sync profile form when user changes */
   useEffect(() => {
@@ -637,8 +638,8 @@ export default function DashboardPage() {
           <div className="flex gap-2 items-stretch" style={{ maxWidth: 'calc(4 * 148px + 3 * 8px)', margin: '2rem auto 0', width: '100%' }}>
             {/* Columna izquierda: Logos */}
             <div className="flex flex-col gap-1" style={{ width: '50%' }}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(30,41,59,0.42)' }}>Operaciones inmediatas</p>
-              <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(13,27,42,0.08)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Operaciones inmediatas</p>
+              <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12)' }}>
                 {/* Sección principal — operaciones inmediatas */}
                 <div className="flex flex-col items-center px-4 pt-5 pb-4">
                   <div className="flex items-center justify-around w-full gap-1">
@@ -647,7 +648,7 @@ export default function DashboardPage() {
                       { src: '/Interbank.png', alt: 'Interbank', h: 'h-12' },
                       { src: '/BanBif.png',    alt: 'BanBif',    h: 'h-11' },
                     ].map(({ src, alt, h }) => (
-                      <div key={alt} className="flex items-center justify-center rounded-lg p-1.5" style={{ background: '#F8FAFC', flex: 1 }}>
+                      <div key={alt} className="flex items-center justify-center rounded-lg p-1.5" style={{ background: 'rgba(255,255,255,0.25)', flex: 1 }}>
                         <img src={src} alt={alt} className={`${h} w-auto object-contain`} />
                       </div>
                     ))}
@@ -660,9 +661,9 @@ export default function DashboardPage() {
 
                 {/* Divisor con etiqueta */}
                 <div className="relative flex items-center px-4 py-0.5">
-                  <div className="flex-1" style={{ height: 1, background: 'rgba(13,27,42,0.07)' }} />
-                  <span className="mx-2 text-[7px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: '#F1F5F9', color: 'rgba(13,27,42,0.35)' }}>otros bancos</span>
-                  <div className="flex-1" style={{ height: 1, background: 'rgba(13,27,42,0.07)' }} />
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />
+                  <span className="mx-2 text-[7px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}>otros bancos</span>
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />
                 </div>
 
                 {/* Sección interbancaria */}
@@ -677,11 +678,11 @@ export default function DashboardPage() {
                       <img key={alt} src={src} alt={alt} className="h-6 w-auto object-contain" style={{ filter: 'grayscale(1)', opacity: 0.4 }} />
                     ))}
                   </div>
-                  <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: '#F8FAFC' }}>
-                    <p className="text-[8px] font-black uppercase tracking-[0.1em]" style={{ color: 'rgba(13,27,42,0.55)' }}>
+                  <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.85)' }}>
                       o cualquier otro banco
                     </p>
-                    <p className="text-[7px] font-semibold mt-0.5" style={{ color: 'rgba(13,27,42,0.35)' }}>
+                    <p className="text-[7px] font-semibold mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
                       Solo Lima · 2 a 24 hrs según horario
                     </p>
                   </div>

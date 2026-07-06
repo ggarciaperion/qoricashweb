@@ -46,6 +46,11 @@ const nextConfig: NextConfig = {
         source: "/flask/:path*",
         destination: "https://app.qoricash.pe/:path*",
       },
+      // Socket.IO proxy — funciona en Render (Vercel lo tenía en vercel.json, aquí va en next.config)
+      {
+        source: "/socket.io/:path*",
+        destination: "https://app.qoricash.pe/socket.io/:path*",
+      },
     ];
   },
 };

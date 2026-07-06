@@ -50,6 +50,7 @@ export function NuevaOperacionContent() {
   const pathname = usePathname();
   const isEmpresa = pathname.includes('/empresa');
   const { isAuthenticated, user, refreshUser } = useAuthStore();
+  const isDemoMode = typeof window !== 'undefined' && process.env.NODE_ENV !== 'production' && (user?.dni === '99999901' || user?.dni === '20601234567');
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
   const { clearReferral, hasCoupon: storeCoupon, referralCode: storeReferralCode } = useReferralStore();
 
@@ -278,6 +279,10 @@ export function NuevaOperacionContent() {
   const checkForActiveOperations = async () => {
     if (!user?.dni) return;
 
+    // ── DEMO MODE ──────────────────────────────────────────────────────
+    if (isDemoMode) { setHasActiveOperation(false); return; }
+    // ──────────────────────────────────────────────────────────────────
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe'}/api/web/my-operations`, {
         method: 'POST',
@@ -369,6 +374,17 @@ export function NuevaOperacionContent() {
 
   const loadBankAccounts = async () => {
     if (!user?.dni) return;
+
+    // ── DEMO MODE ──────────────────────────────────────────────────────
+    if (isDemoMode) {
+      setBankAccounts([
+        { id: 0, bank_name: 'BCP', account_number: '191-12345678-0-01', account_type: 'Ahorros', currency: '$', moneda: '$', banco: 'BCP', numero_cuenta: '191-12345678-0-01', tipo_cuenta: 'Ahorros', is_primary: true, origen: 'DEMO' },
+        { id: 1, bank_name: 'Interbank', account_number: '200-3001234567', account_type: 'Ahorros', currency: 'S/', moneda: 'S/', banco: 'Interbank', numero_cuenta: '200-3001234567', tipo_cuenta: 'Ahorros', is_primary: false, origen: 'DEMO' },
+        { id: 2, bank_name: 'BBVA', account_number: '0011-0141-01-00123456', account_type: 'Corriente', currency: '$', moneda: '$', banco: 'BBVA', numero_cuenta: '0011-0141-01-00123456', tipo_cuenta: 'Corriente', is_primary: false, origen: 'DEMO' },
+      ]);
+      return;
+    }
+    // ──────────────────────────────────────────────────────────────────
 
     try {
       const accountsResponse = await banksApi.getMyAccounts(user.dni);
@@ -603,6 +619,43 @@ export function NuevaOperacionContent() {
       const destAccount = bankAccounts.find(a => a.id === selectedDestinationAccount);
       const originAccount = bankAccounts.find(a => a.id === selectedOriginAccount);
 
+      // ── DEMO MODE ────────────────────────────────────────────────────
+      if (isDemoMode) {
+        await new Promise(r => setTimeout(r, 1200));
+        const demoOp = {
+          id: 9999,
+          codigo_operacion: 'DEMO-' + Math.floor(Math.random() * 90000 + 10000),
+          tipo: tipo === 'Compra' ? 'compra' : 'venta',
+          operation_type: tipo === 'Compra' ? 'compra' : 'venta',
+          monto_dolares: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
+          monto_soles: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
+          amount_usd: tipo === 'Compra' ? parseFloat(amountInput) : parseFloat(amountOutput),
+          amount_pen: tipo === 'Compra' ? parseFloat(amountOutput) : parseFloat(amountInput),
+          tipo_cambio: getAdjustedRate(),
+          exchange_rate: getAdjustedRate(),
+          estado: 'Pendiente',
+          status: 'Pendiente',
+          source_bank_name: originAccount?.banco || originAccount?.bank_name || 'BCP',
+          source_account: originAccount?.numero_cuenta || originAccount?.account_number || '191-12345678-0-01',
+          destination_bank_name: destAccount?.banco || destAccount?.bank_name || 'Interbank',
+          destination_account: destAccount?.numero_cuenta || destAccount?.account_number || '200-3001234567',
+          qoricash_account: getQoricashAccount(tipo === 'Compra' ? '$' : 'S/', user?.origen || 'Lima'),
+        };
+        const now = new Date();
+        setFormattedDate(now.toLocaleString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
+        setCreatedOperation(demoOp);
+        setTimeRemaining(900);
+        setHasActiveOperation(true);
+        createApiDoneRef.current = true;
+        if (createAnimDoneRef.current) {
+          setShowCreatingSuccess(true);
+          setTimeout(() => { setShowCreatingOverlay(false); setShowCreatingSuccess(false); setCurrentStep(3); }, 3500);
+        }
+        setIsSubmitting(false);
+        return;
+      }
+      // ────────────────────────────────────────────────────────────────
+
       const response = await operationsApi.createOperation({
         dni: user!.dni,
         tipo: tipo === 'Compra' ? 'compra' : 'venta',
@@ -778,6 +831,21 @@ export function NuevaOperacionContent() {
     setShowCancelOverlaySuccess(false);
     const startTime = Date.now();
 
+    // ── DEMO MODE ──────────────────────────────────────────────────────
+    if (isDemoMode) {
+      await new Promise(r => setTimeout(r, 2000));
+      setShowCancelOverlaySuccess(true);
+      setTimeout(() => {
+        setShowCancelOverlay(false);
+        setShowCancelOverlaySuccess(false);
+        setHasActiveOperation(false);
+        setCreatedOperation(null);
+        router.push(isEmpresa ? '/dashboard/empresa' : '/dashboard');
+      }, 2500);
+      return;
+    }
+    // ──────────────────────────────────────────────────────────────────
+
     try {
       const response = await operationsApi.cancelOperation(createdOperation.id, motivo);
 
@@ -847,7 +915,7 @@ export function NuevaOperacionContent() {
     setError(null);
 
     // Demo mode: simulate successful upload for demo user (dev only)
-    if (process.env.NODE_ENV !== 'production' && user.dni === '99999901') {
+    if (isDemoMode) {
       await new Promise(r => setTimeout(r, 3000));
       setDocsSubmittedThisSession(true);
       setIsUploadingKYC(false);
@@ -925,6 +993,19 @@ export function NuevaOperacionContent() {
     setShowProofSuccess(false);
     proofApiDoneRef.current = false;
     proofAnimDoneRef.current = false;
+
+    // ── DEMO MODE ──────────────────────────────────────────────────────
+    if (isDemoMode) {
+      await new Promise(r => setTimeout(r, 800));
+      proofApiDoneRef.current = true;
+      if (proofAnimDoneRef.current) {
+        setShowProofSuccess(true);
+        setTimeout(() => { setShowProofOverlay(false); setShowProofSuccess(false); setCurrentStep(4); }, 3000);
+      }
+      setIsUploadingProof(false);
+      return;
+    }
+    // ──────────────────────────────────────────────────────────────────
 
     try {
       const formData = new FormData();
@@ -1021,7 +1102,7 @@ export function NuevaOperacionContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? { backgroundImage: "url('/xc.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : { background: '#ffffff' }}>
+      <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando...</p>
@@ -1032,7 +1113,7 @@ export function NuevaOperacionContent() {
 
 
   return (
-    <div className="min-h-screen" style={isEmpresa ? { backgroundImage: "url('/xc.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : { background: '#ffffff' }}>
+    <div className="min-h-screen" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
       {/* Botón flotante WhatsApp - solo móvil */}
       <a
         href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
@@ -1096,6 +1177,20 @@ export function NuevaOperacionContent() {
                   </p>
                 </div>
               </div>
+
+              {/* DEMO MODE banner */}
+              {isDemoMode && (
+                <div className="mb-3 flex justify-center">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                    style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', color: '#f59e0b' }}>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500" />
+                    </span>
+                    Modo Demo — sin conexión a producción
+                  </span>
+                </div>
+              )}
 
               {/* Progress Stepper */}
               <div className="mb-5">
@@ -1270,7 +1365,7 @@ export function NuevaOperacionContent() {
 
                           {/* Datos de la cuenta */}
                           {qoricashAccount ? (
-                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: '#fff' }}>
+                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.12)' }}>
 
                               {/* Banco */}
                               <div className="flex items-center justify-between">
@@ -1321,37 +1416,63 @@ export function NuevaOperacionContent() {
 
                             </div>
                           ) : (
-                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: '#fff' }}>
+                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.12)' }}>
                               <p className="text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>No se pudo determinar la cuenta de destino. Contacta a soporte.</p>
                             </div>
                           )}
                         </div>
 
-                        {/* ── Resumen del flujo ── */}
-                        <div className="rounded-xl px-4 py-3" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.08)' }}>
-                          <div className="flex items-center gap-2">
-                            {/* Origen */}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[9px] font-semibold uppercase tracking-wide mb-1" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}>Transfieres desde:</p>
-                              <div className="flex items-center gap-1.5">
-                                {srcLogo && <img src={srcLogo} alt={srcBank} className="w-5 h-5 object-contain rounded flex-shrink-0" />}
-                                <span className="text-xs font-semibold truncate" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>{srcAcc || srcBank || '—'}</span>
+                        {/* ── Resumen del flujo — glass ── */}
+                        <div className="rounded-2xl p-3" style={isEmpresa
+                          ? { background: 'linear-gradient(135deg, rgba(74,104,132,0.22) 0%, rgba(13,27,42,0.28) 100%)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(143,184,204,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.18)' }
+                          : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                          <div className="flex items-stretch gap-2">
+
+                            {/* Tarjeta Origen */}
+                            <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
+                              ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
+                              : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.07)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)' }}>Transfieres desde</p>
+                              <div className="flex items-center gap-2 mb-1.5">
+                                {srcLogo
+                                  ? <img src={srcLogo} alt={srcBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f8fafc', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f1f5f9' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                }
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#1e293b' }}>{srcBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748b' }}>{srcAcc || '—'}</p>
+                                </div>
                               </div>
-                              <p className="text-xs font-bold mt-1" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>{montoEnviar}</p>
+                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>{montoEnviar}</p>
                             </div>
-                            {/* Flecha */}
-                            <div className="flex-shrink-0">
-                              <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path d="M1 7h18M13 1l6 6-6 6" stroke={isEmpresa ? '#8fb8cc' : '#22C55E'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                            </div>
-                            {/* Destino */}
-                            <div className="flex-1 min-w-0 text-right">
-                              <p className="text-[9px] font-semibold uppercase tracking-wide mb-1" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}>Recibirás en</p>
-                              <div className="flex items-center gap-1.5 justify-end">
-                                {dstLogo && <img src={dstLogo} alt={dstBank} className="w-5 h-5 object-contain rounded flex-shrink-0" />}
-                                <span className="text-xs font-semibold truncate" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>{dstAcc || dstBank || '—'}</span>
+
+                            {/* Flecha central */}
+                            <div className="flex flex-col items-center justify-center gap-1 flex-shrink-0 px-0.5">
+                              <div className="w-6 h-6 rounded-full flex items-center justify-center" style={isEmpresa ? { background: 'rgba(143,184,204,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                                <svg width="12" height="10" viewBox="0 0 14 10" fill="none">
+                                  <path d="M1 5h12M8 1l5 4-5 4" stroke={isEmpresa ? '#8fb8cc' : '#22C55E'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                               </div>
-                              <p className="text-xs font-bold mt-1" style={{ color: isEmpresa ? '#8fb8cc' : '#16A34A' }}>{montoRecibir}</p>
                             </div>
+
+                            {/* Tarjeta Destino */}
+                            <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
+                              ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
+                              : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.07)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)' }}>Recibirás en</p>
+                              <div className="flex items-center gap-2 mb-1.5">
+                                {dstLogo
+                                  ? <img src={dstLogo} alt={dstBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f8fafc', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f1f5f9' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                }
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#1e293b' }}>{dstBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748b' }}>{dstAcc || '—'}</p>
+                                </div>
+                              </div>
+                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#8fb8cc' : '#16A34A' }}>{montoRecibir}</p>
+                            </div>
+
                           </div>
                         </div>
 
@@ -1374,7 +1495,7 @@ export function NuevaOperacionContent() {
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-center" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : 'rgba(30,41,59,0.35)' }}>
+                        <p className="text-[11px] text-center" style={{ color: isEmpresa ? 'rgba(255,255,255,0.6)' : 'rgba(30,41,59,0.35)' }}>
                           Una vez realizada la transferencia, haz clic en "Ya transferí"
                         </p>
                       </>
@@ -1651,7 +1772,7 @@ export function NuevaOperacionContent() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
                         style={isEmpresa
                           ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: '#ffffff', border: '2px solid #D1D5DB' }}
+                          : { minHeight: '46px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '2px solid rgba(255,255,255,0.3)' }}
                       >
                         {selectedOriginAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedOriginAccount);
@@ -1683,7 +1804,7 @@ export function NuevaOperacionContent() {
                       {originDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setOriginDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.25)' }}>
                           {getOriginAccounts().length === 0 ? (
                             <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getOriginAccounts().map((account) => {
@@ -1765,7 +1886,7 @@ export function NuevaOperacionContent() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
                         style={isEmpresa
                           ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: '#ffffff', border: '2px solid #D1D5DB' }}
+                          : { minHeight: '46px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '2px solid rgba(255,255,255,0.3)' }}
                       >
                         {selectedDestinationAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedDestinationAccount);
@@ -1797,7 +1918,7 @@ export function NuevaOperacionContent() {
                       {destDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setDestDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.25)' }}>
                           {getDestinationAccounts().length === 0 ? (
                             <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getDestinationAccounts().map((account) => {
@@ -1961,7 +2082,7 @@ export function NuevaOperacionContent() {
                   </h3>
                   <p
                     className="mb-6"
-                    style={{ color: isEmpresa ? 'rgba(143,184,204,0.65)' : '#4B5563' }}
+                    style={{ color: isEmpresa ? '#ffffff' : '#4B5563' }}
                   >
                     Estamos verificando tu transferencia. Recibirás tu dinero pronto.
                   </p>
@@ -2268,8 +2389,10 @@ export function NuevaOperacionContent() {
 
       {/* Upload Proof Modal */}
       {isUploadProofModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: isEmpresa ? 'rgba(13,27,42,0.85)' : 'rgba(13,27,42,0.65)', backdropFilter: 'blur(4px)' }}>
-          <div className="rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420, ...(isEmpresa ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#fff' }) }}>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: isEmpresa ? 'rgba(4,10,20,0.7)' : 'rgba(13,27,42,0.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+          <div className="rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420, ...(isEmpresa
+            ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.6) 0%, rgba(26,51,83,0.55) 100%)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(143,184,204,0.22)', boxShadow: '0 32px 64px rgba(0,0,0,0.45)' }
+            : { background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }) }}>
 
             {/* Header institucional */}
             <div className="px-5 py-4 flex items-center justify-between rounded-t-2xl" style={{ background: isEmpresa ? 'rgba(74,104,132,0.4)' : '#1E293B' }}>

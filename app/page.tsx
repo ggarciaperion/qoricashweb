@@ -9,7 +9,7 @@ import AnimatedStat from '@/components/AnimatedStat';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import {
-  ArrowRight, Shield, Clock, TrendingUp, TrendingDown, Minus,
+  ArrowRight, ArrowLeft, Shield, Clock, TrendingUp, TrendingDown, Minus,
   Users, CheckCircle2, Lock, UserPlus, Banknote,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
   HelpCircle, Gift, Calculator as CalculatorIcon,
@@ -35,12 +35,14 @@ export default function Home() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
-  const [navHidden, setNavHidden] = useState(false);
   const lastScrollYRef = useRef(0);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [noticiasCorp, setNoticiasCorp] = useState<Array<{id:string;titulo:string;descripcion:string;categoria:string;imagen?:string;fecha:string}>>([]);
+  const [newsCorpIdx, setNewsCorpIdx] = useState(0);
+  const [bcrpData, setBcrpData] = useState<Array<{fecha:string;compra:number;venta:number}>>([]);
 
   const BANK_ACCOUNTS = {
     bcp:       { soles: '1937353150041',   dolares: '1917357790119'   },
@@ -115,8 +117,6 @@ export default function Home() {
       const current = window.scrollY;
       const prev = lastScrollYRef.current;
       setNavScrolled(current > 20);
-      if (current > prev && current > 80) setNavHidden(true);
-      else if (current < prev) setNavHidden(false);
       lastScrollYRef.current = current;
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -137,6 +137,22 @@ export default function Home() {
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!isEmpresaPage) return;
+    fetch('/api/noticias').then(r => r.json()).then(data => {
+      if (Array.isArray(data)) setNoticiasCorp(data.slice(0, 6));
+    }).catch(() => {});
+    fetch('/api/bcrp-tc').then(r => r.json()).then(res => {
+      if (res.ok && Array.isArray(res.data) && res.data.length > 0) setBcrpData(res.data);
+    }).catch(() => {});
+  }, [isEmpresaPage]);
+
+  useEffect(() => {
+    if (!isEmpresaPage || noticiasCorp.length < 2) return;
+    const t = setInterval(() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length), 6000);
+    return () => clearInterval(t);
+  }, [isEmpresaPage, noticiasCorp.length]);
 
   const handleLogout = async () => {
     setIsUserMenuOpen(false);
@@ -208,12 +224,12 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen">
+    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
       {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
 
 
       {/* ══ NAVBAR ══ */}
-      <header className={`fixed top-0 w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'transparent', borderBottom: 'none', transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)', transform: navHidden ? 'translateY(-100%)' : 'translateY(0)' }}>
+      <header className={`relative w-full z-50 ${navScrolled ? 'nav-scrolled' : ''}`} style={{ background: 'transparent', borderBottom: 'none' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -235,9 +251,6 @@ export default function Home() {
                   <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
                 )}
                 <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
-                {isEmpresaPage && (
-                  <span className="text-sm sm:text-base md:text-lg font-light tracking-[0.18em] leading-none" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', marginLeft: '6px', alignSelf: 'center' }}>Corporate</span>
-                )}
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
@@ -311,7 +324,7 @@ export default function Home() {
                     Iniciar Sesión
                     <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href="/crear-cuenta" className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#ffffff', color: 'var(--color-primary-600)' }}>
+                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#ffffff', color: 'var(--color-primary-600)' }}>
                     Regístrate
                   </Link>
                 </>
@@ -466,7 +479,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section className="relative min-h-screen flex flex-col overflow-hidden pt-[80px]" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
 
         <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-12 relative z-10">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-6 items-center w-full">
@@ -499,6 +512,7 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-3 mb-6 sm:mb-10">
                 {isEmpresaPage ? (
+                  isAuthenticated && (
                   <button
                     onClick={() => guardedAction(() => window.open('https://wa.me/51926011920?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo.', '_blank'))}
                     className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
@@ -507,6 +521,7 @@ export default function Home() {
                     Cotizar ahora
                     <ArrowRight className="w-4 h-4" />
                   </button>
+                  )
                 ) : (
                   <Link
                     href="/operaciones/nueva"
@@ -540,6 +555,77 @@ export default function Home() {
             <div className="order-1 lg:order-2 relative flex items-center justify-center">
 
               <div className="relative z-10 w-full max-w-[400px]">
+              {isEmpresaPage && !isAuthenticated ? (
+                /* ── Glass CTA — acceso herramientas corporativas ── */
+                <div className="relative overflow-hidden rounded-2xl p-7 flex flex-col gap-5"
+                  style={{
+                    background: 'rgba(8,18,30,0.45)',
+                    backdropFilter: 'blur(28px)',
+                    WebkitBackdropFilter: 'blur(28px)',
+                    border: '1px solid rgba(143,184,204,0.22)',
+                    boxShadow: '0 32px 64px rgba(0,0,0,0.35), inset 0 1px 0 rgba(143,184,204,0.15)',
+                  }}>
+
+                  {/* Reflejo superior espejo */}
+                  <div className="absolute top-0 left-0 right-0 h-px"
+                    style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.5), transparent)' }} />
+                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-32 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse, rgba(143,184,204,0.12) 0%, transparent 70%)' }} />
+
+                  {/* Icono */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: 'linear-gradient(135deg, rgba(143,184,204,0.2) 0%, rgba(30,58,80,0.4) 100%)', border: '1px solid rgba(143,184,204,0.25)' }}>
+                      <Building2 className="w-5 h-5" style={{ color: '#8fb8cc' }} />
+                    </div>
+                    <div>
+                      <p className="text-white font-extrabold text-sm leading-tight">Herramientas Corporativas</p>
+                      <p className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(143,184,204,0.6)' }}>Acceso exclusivo para empresas</p>
+                    </div>
+                  </div>
+
+                  {/* Divisor */}
+                  <div className="h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.2), transparent)' }} />
+
+                  {/* Features */}
+                  <div className="flex flex-col gap-2.5">
+                    {[
+                      { icon: TrendingUp,  text: 'TC preferencial para volúmenes corporativos' },
+                      { icon: Zap,         text: 'Cotización en tiempo real con ejecutivo dedicado' },
+                      { icon: HandCoins,   text: 'Maximiza el rendimiento de cada operación cambiaria' },
+                    ].map(({ icon: Icon, text }) => (
+                      <div key={text} className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.18)' }}>
+                          <Icon className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />
+                        </div>
+                        <p className="text-xs leading-snug" style={{ color: 'rgba(255,255,255,0.65)' }}>{text}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="flex flex-col gap-2.5 pt-1">
+                    <Link href="/crear-cuenta?tipo=empresa"
+                      className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                      style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', boxShadow: '0 6px 20px rgba(8,18,30,0.4)' }}>
+                      <UserPlus className="w-4 h-4" />
+                      Crear cuenta empresarial
+                    </Link>
+                    <Link href="/login?from=/empresa"
+                      className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                      style={{ background: 'rgba(143,184,204,0.08)', border: '1px solid rgba(143,184,204,0.22)', color: 'rgba(143,184,204,0.9)' }}>
+                      <Lock className="w-4 h-4" />
+                      Iniciar sesión
+                    </Link>
+                  </div>
+
+                  {/* Footer note */}
+                  <p className="text-center text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
+                    Registro gratuito · Sin permanencia · Atención personalizada
+                  </p>
+                </div>
+              ) : (
               <Calculator
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                 showContinueButton={true}
@@ -552,6 +638,7 @@ export default function Home() {
                   }
                 })}
               />
+              )}
 
                 {/* Mercado en Vivo button — oculto temporalmente */}
                 {/* <Link
@@ -584,7 +671,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className="py-4 sm:py-6" style={{ backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <section ref={banksSectionRef} className="py-4 sm:py-6" style={{ backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8">
 
           {/* Encabezado */}
@@ -743,11 +830,8 @@ export default function Home() {
       </section>
 
 
-      {/* ══════════════════════════════════════
-          AHORRO EN NÚMEROS
-      ══════════════════════════════════════ */}
-
-      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      {!isEmpresaPage && (
+      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
@@ -882,6 +966,173 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
+
+      {isEmpresaPage && isAuthenticated && (
+      <section className="py-14 sm:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+            {/* LEFT — TC Live + Sparkline + Tabla */}
+            <div>
+              <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: 'rgba(143,184,204,0.6)' }}>
+                <span className="relative flex w-1.5 h-1.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: '#4ade80', opacity: 0.6 }} />
+                  <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ background: '#4ade80' }} />
+                </span>
+                Tipo de cambio referencial BCR
+              </span>
+
+              {(() => {
+                const lastBcrp = bcrpData.length > 0 ? bcrpData[bcrpData.length - 1] : null;
+                const bcrpCompra = lastBcrp?.compra?.toFixed(3) ?? '···';
+                const bcrpVenta  = lastBcrp?.venta?.toFixed(3)  ?? '···';
+                return (
+                  <div className="flex items-end gap-8 mb-8">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Compra BCR</div>
+                      <div className="text-5xl font-black tabular-nums leading-none" style={{ color: '#ffffff' }}>{bcrpCompra}</div>
+                    </div>
+                    <div className="self-stretch w-px mb-1" style={{ background: 'rgba(143,184,204,0.1)' }} />
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Venta BCR</div>
+                      <div className="text-5xl font-black tabular-nums leading-none" style={{ color: '#22c55e' }}>{bcrpVenta}</div>
+                    </div>
+                    {lastBcrp && (
+                      <div className="self-end pb-1">
+                        <span className="text-[9px]" style={{ color: 'rgba(143,184,204,0.3)' }}>{lastBcrp.fecha}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Sparkline */}
+              <div className="rounded-xl overflow-hidden mb-4" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)' }}>
+                {(() => {
+                  const pts = bcrpData.length >= 2
+                    ? bcrpData.map(d => d.venta)
+                    : [3.412, 3.408, 3.405, 3.401, 3.399, 3.397, currentRates?.tipo_venta || 3.395];
+                  const labels = bcrpData.length >= 2
+                    ? bcrpData.map(d => d.fecha)
+                    : ['Lun','Mar','Mié','Jue','Vie','Sáb','Hoy'];
+                  const first = pts[0]; const last = pts[pts.length - 1];
+                  const pct = first > 0 ? ((last - first) / first * 100) : 0;
+                  const pctStr = `${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(2)}%`;
+                  const pctColor = pct >= 0 ? '#4ade80' : '#f87171';
+                  const min = Math.min(...pts) - 0.002;
+                  const max = Math.max(...pts) + 0.002;
+                  const W = 300; const H = 70;
+                  const cx = (i: number) => (i / (pts.length - 1)) * W;
+                  const cy = (v: number) => H - ((v - min) / (max - min)) * H;
+                  const pathD = pts.map((v, i) => `${i === 0 ? 'M' : 'L'}${cx(i).toFixed(1)},${cy(v).toFixed(1)}`).join(' ');
+                  const areaD = `${pathD} L${W},${H} L0,${H} Z`;
+                  return (
+                    <>
+                      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.45)' }}>Tipo de Cambio Referencial BCR · {pts.length} días</span>
+                        <span className="text-[10px] font-bold" style={{ color: pctColor }}>{pctStr}</span>
+                      </div>
+                      <div className="px-4 pb-3">
+                        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 70, overflow: 'visible' }} preserveAspectRatio="none">
+                          <defs>
+                            <linearGradient id="corpSparkGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <path d={areaD} fill="url(#corpSparkGrad)" />
+                          <path d={pathD} fill="none" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 3px rgba(34,197,94,0.4))' }} />
+                          <circle cx={cx(pts.length - 1)} cy={cy(pts[pts.length - 1])} r="3" fill="#22c55e" style={{ filter: 'drop-shadow(0 0 5px rgba(34,197,94,0.7))' }} />
+                        </svg>
+                        <div className="flex justify-between mt-1">
+                          {labels.map((d, i) => (
+                            <span key={i} className="text-[8px]" style={{ color: i === labels.length - 1 ? 'rgba(143,184,204,0.7)' : 'rgba(143,184,204,0.25)', fontWeight: i === labels.length - 1 ? 700 : 400 }}>{d}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Comparativa bancaria */}
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(143,184,204,0.1)' }}>
+                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(143,184,204,0.06)', borderBottom: '1px solid rgba(143,184,204,0.08)' }}>
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.5)' }}>Comparativa bancaria</span>
+                  <div className="flex gap-6">
+                    <span className="text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Compra</span>
+                    <span className="text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Venta</span>
+                  </div>
+                </div>
+                {(() => {
+                  const base_c = currentRates?.tipo_compra ?? 3.75;
+                  const base_v = currentRates?.tipo_venta ?? 3.77;
+                  return [
+                    { name: 'QoriCash', c: base_c, v: base_v, highlight: true },
+                    { name: 'BCP',       c: base_c - 0.065, v: base_v + 0.075, highlight: false },
+                    { name: 'Interbank', c: base_c - 0.058, v: base_v + 0.068, highlight: false },
+                    { name: 'BBVA',      c: base_c - 0.080, v: base_v + 0.090, highlight: false },
+                  ].map(({ name, c, v, highlight }, i, arr) => (
+                    <div key={name} className="flex items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(143,184,204,0.06)' : 'none', background: highlight ? 'rgba(34,197,94,0.05)' : 'transparent', borderLeft: highlight ? '2px solid rgba(34,197,94,0.5)' : '2px solid transparent' }}>
+                      <div className="flex-1 text-sm font-bold" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.5)' }}>{name}</div>
+                      <div className="flex gap-6">
+                        <span className="text-sm tabular-nums font-medium w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{c.toFixed(3)}</span>
+                        <span className="text-sm tabular-nums font-medium w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{v.toFixed(3)}</span>
+                      </div>
+                    </div>
+                  ));
+                })()}
+              </div>
+              <p className="text-[9px] mt-2 text-right" style={{ color: 'rgba(143,184,204,0.25)' }}>*Tasas bancarias referenciales. No constituyen oferta formal.</p>
+            </div>
+
+            {/* RIGHT — Ventajas corporativas */}
+            <div>
+              <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: 'rgba(143,184,204,0.6)' }}>Por qué elegirnos</span>
+              <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.15] mb-8" style={{ color: '#ffffff' }}>
+                El tipo de cambio <br /><span style={{ color: '#22c55e' }}>que su empresa</span> merece.
+              </h2>
+
+              <div className="flex flex-col gap-3 mb-8">
+                {[
+                  { icon: '⚡', title: 'Liquidación en menos de 15 min', sub: 'Confirmación en tiempo real' },
+                  { icon: '🔒', title: 'Tipo de cambio pactado y garantizado', sub: 'El TC acordado no varía, independientemente del monto' },
+                  { icon: '💼', title: 'Cotización personalizada para operaciones desde $5,000 a más', sub: 'Atención especializada para empresas de cualquier tamaño' },
+                  { icon: '0%', title: 'Sin comisiones ni cargos ocultos', sub: 'Solo el tipo de cambio, nada más' },
+                ].map(({ icon, title, sub }) => (
+                  <div key={title} className="flex items-start gap-4 px-4 py-3 rounded-xl" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)' }}>
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-sm" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.18)', color: '#22c55e' }}>{icon}</div>
+                    <div>
+                      <div className="text-sm font-bold text-white">{title}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: 'rgba(143,184,204,0.5)' }}>{sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl px-5 py-4 mb-6" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.03) 100%)', border: '1px solid rgba(34,197,94,0.18)' }}>
+                <div className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(34,197,94,0.65)' }}>Ahorro estimado por $10,000</div>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-black" style={{ color: '#22c55e' }}>S/ 800</span>
+                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>vs banco tradicional</span>
+                </div>
+              </div>
+
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2.5 font-bold px-7 py-3.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 6px 20px rgba(34,197,94,0.3)' }}
+              >
+                Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+      )}
 
       {/* ══════════════════════════════════════
           CÓMO FUNCIONA — 3 pasos
@@ -914,7 +1165,8 @@ export default function Home() {
         @keyframes blobMorph3 { 0%,100%{border-radius:50% 50% 45% 55%/55% 45% 55% 45%;transform:translate(0,0) scale(1)} 50%{border-radius:65% 35% 55% 45%/40% 65% 35% 60%;transform:translate(15px,20px) scale(1.05)} }
       `}</style>
 
-      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      {!isEmpresaPage && (
+      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.65)' }}>
@@ -1171,15 +1423,115 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* AlertaTCBanner */}
-      {!isAuthenticated && <AlertaTCBanner />}
+      {isEmpresaPage && isAuthenticated && (
+      <section className="pt-4 pb-14 sm:pt-6 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="flex items-start justify-between mb-8 gap-4">
+            <div>
+              <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: 'rgba(143,184,204,0.55)' }}>Mercados globales</span>
+              <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#ffffff' }}>
+                Noticias que mueven <span style={{ color: '#22c55e' }}>el tipo de cambio</span>
+              </h2>
+            </div>
+            {noticiasCorp.length > 0 && (
+              <div className="hidden sm:flex items-center gap-2 flex-shrink-0 mt-8">
+                <button onClick={() => setNewsCorpIdx(i => (i - 1 + noticiasCorp.length) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <button onClick={() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {noticiasCorp.length > 0 ? (
+            <>
+              {/* Main carousel card */}
+              <div className="rounded-2xl overflow-hidden mb-4" style={{ background: 'rgba(143,184,204,0.05)', border: '1px solid rgba(143,184,204,0.12)' }}>
+                <div className="grid md:grid-cols-5">
+                  {noticiasCorp[newsCorpIdx]?.imagen && (
+                    <div className="md:col-span-2 relative overflow-hidden" style={{ minHeight: 200 }}>
+                      <img
+                        src={noticiasCorp[newsCorpIdx].imagen}
+                        alt={noticiasCorp[newsCorpIdx].titulo}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(6,14,26,0.3), transparent)' }} />
+                    </div>
+                  )}
+                  <div className={`p-6 flex flex-col justify-between ${noticiasCorp[newsCorpIdx]?.imagen ? 'md:col-span-3' : 'md:col-span-5'}`}>
+                    <div>
+                      <span className="inline-block text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>
+                        {noticiasCorp[newsCorpIdx]?.categoria}
+                      </span>
+                      <h3 className="font-display font-bold text-lg leading-snug mb-3 text-white" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
+                        {noticiasCorp[newsCorpIdx]?.titulo}
+                      </h3>
+                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(143,184,204,0.6)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
+                        {noticiasCorp[newsCorpIdx]?.descripcion}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between mt-4 pt-4" style={{ borderTop: '1px solid rgba(143,184,204,0.1)' }}>
+                      <span className="text-[11px]" style={{ color: 'rgba(143,184,204,0.4)' }}>
+                        {noticiasCorp[newsCorpIdx]?.fecha
+                          ? new Date(noticiasCorp[newsCorpIdx].fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' })
+                          : ''}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {noticiasCorp.map((_, i) => (
+                          <button key={i} onClick={() => setNewsCorpIdx(i)} style={{ width: i === newsCorpIdx ? 20 : 6, height: 6, borderRadius: 3, background: i === newsCorpIdx ? '#22c55e' : 'rgba(143,184,204,0.25)', border: 'none', padding: 0, cursor: 'pointer', transition: 'all 0.3s' }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mini cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {noticiasCorp.filter((_, i) => i !== newsCorpIdx).slice(0, 3).map((n) => (
+                  <button key={n.id} onClick={() => setNewsCorpIdx(noticiasCorp.indexOf(n))} className="text-left rounded-xl p-3 transition-all hover:scale-[1.02]" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.09)', cursor: 'pointer' }}>
+                    <span className="inline-block text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.15)' }}>{n.categoria}</span>
+                    <p className="text-[11px] font-semibold text-white leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>{n.titulo}</p>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="rounded-2xl flex items-center justify-center" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)', height: 280 }}>
+              <div className="flex gap-1.5">
+                {[0, 0.15, 0.3].map(d => (
+                  <div key={d} className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'rgba(143,184,204,0.3)', animationDelay: `${d}s` }} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="text-center mt-10">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 8px 24px rgba(34,197,94,0.32)' }}
+            >
+              Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* AlertaTCBanner — solo en página personas */}
+      {!isAuthenticated && !isEmpresaPage && <AlertaTCBanner />}
 
 
       {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer className="text-gray-400" style={{ backgroundImage: "url('/ty.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
+      <footer className="text-gray-400" style={{ backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
         <div className="border-b border-white/5 py-4 px-6 sm:px-8 lg:px-10">
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -1207,9 +1559,27 @@ export default function Home() {
         <div className="w-full px-6 sm:px-8 lg:px-10 py-8">
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity w-fit">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
-                <span className="text-2xl font-display font-bold text-white">QoriCash</span>
+              <Link href="/" className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity w-fit">
+                {isEmpresaPage ? (
+                  <div className="relative inline-flex flex-shrink-0">
+                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-11 w-auto invisible" />
+                    <div className="absolute inset-0" style={{
+                      background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
+                      WebkitMaskImage: "url('/logo-principal.png')",
+                      maskImage: "url('/logo-principal.png')",
+                      WebkitMaskSize: '100% 100%',
+                      maskSize: '100% 100%',
+                      WebkitMaskRepeat: 'no-repeat',
+                      maskRepeat: 'no-repeat',
+                    }} />
+                  </div>
+                ) : (
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-11 w-auto" />
+                )}
+                <span className="text-2xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#ffffff' }}>QoriCash</span>
+                {isEmpresaPage && (
+                  <span className="text-sm font-light tracking-[0.18em] leading-none self-center" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Corporate</span>
+                )}
               </Link>
               <p className="text-sm text-gray-500 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>

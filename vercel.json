@@ -1,11 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "rewrites": [
-    {
-      "source": "/socket.io/:path*",
-      "destination": "https://app.qoricash.pe/socket.io/:path*"
-    }
-  ]
+  "framework": "nextjs"
 }
