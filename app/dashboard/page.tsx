@@ -509,7 +509,7 @@ export default function DashboardPage() {
                 <span className="relative inline-flex w-3.5 h-3.5 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.7)' }} />
               </span>
               <span className="text-xs font-black uppercase tracking-widest text-white">
-                Tipo de Cambio <span style={{ color: '#ef4444' }}>live</span>
+                Tipo de Cambio <span className="text-white">live</span>
               </span>
             </div>
             {currentRates ? (
