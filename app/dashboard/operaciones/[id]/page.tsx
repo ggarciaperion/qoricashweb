@@ -26,11 +26,6 @@ import {
 } from 'lucide-react';
 
 
-interface DemoInvoice {
-  serie: string; numero: string; tipo: string; fecha: string;
-  cliente: string; doc: string; subtotal: number; igv: number;
-  total: number; moneda: string; url: string;
-}
 
 export default function OperacionDetallesPage() {
   const router = useRouter();
@@ -39,7 +34,6 @@ export default function OperacionDetallesPage() {
   const { lastEvent } = useOperationEventStore();
 
   const [operation, setOperation] = useState<Operation | null>(null);
-  const [demoInvoice, setDemoInvoice] = useState<DemoInvoice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -462,50 +456,88 @@ export default function OperacionDetallesPage() {
           </div>
         )}
 
-        {/* ── BOLETA / FACTURA ELECTRÓNICA ── */}
-        {demoInvoice && (
-          <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
-            <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-gray-700 text-[10px] font-bold uppercase tracking-widest">{demoInvoice.tipo}</span>
-              </div>
-              <span className="flex items-center gap-1 text-[9px] font-semibold text-primary-600">
-                <BadgeCheck className="w-3 h-3" /> Emitida · Sunat
-              </span>
-            </div>
-            <div className="p-3 flex gap-3 items-start">
-              {/* Miniatura */}
-              <div className="w-20 h-20 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center flex-shrink-0">
-                <img
-                  src={demoInvoice.url}
-                  alt={demoInvoice.tipo}
-                  className="w-full h-full object-cover"
-                  onError={e => {
-                    const el = e.currentTarget as HTMLImageElement;
-                    el.style.display = 'none';
-                    el.parentElement!.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
-                  }}
-                />
-              </div>
-              {/* Info + botón */}
-              <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
-                <div>
-                  <p className="text-sm font-semibold text-gray-800 leading-tight">{demoInvoice.serie}-{demoInvoice.numero}</p>
-                  <p className="text-[11px] text-gray-400 mt-0.5">{demoInvoice.fecha} · {demoInvoice.moneda === 'PEN' ? 'S/' : '$'} {demoInvoice.total.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</p>
-                  <p className="text-[11px] text-gray-400">{demoInvoice.cliente}</p>
+        {/* ── COMPROBANTE DEL OPERADOR ── */}
+        {Array.isArray(operation.operator_proofs) && operation.operator_proofs.map((proof, idx) =>
+          proof.comprobante_url ? (
+            <div key={idx} className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+              <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Receipt className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-gray-700 text-[10px] font-bold uppercase tracking-widest">Comprobante de acreditación</span>
                 </div>
-                <a
-                  href={demoInvoice.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold transition self-start"
-                >
-                  <Download className="w-3 h-3" /> Ver / Descargar
-                </a>
+                <span className="text-[9px] text-gray-400">Emitido por QoriCash</span>
+              </div>
+              <div className="p-3 flex gap-3 items-start">
+                <div className="w-20 h-20 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center flex-shrink-0">
+                  <img
+                    src={proof.comprobante_url}
+                    alt="Comprobante operador"
+                    className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition"
+                    onClick={() => window.open(proof.comprobante_url, '_blank')}
+                    onError={e => {
+                      const el = e.currentTarget as HTMLImageElement;
+                      el.style.display = 'none';
+                      el.parentElement!.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>';
+                    }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800 leading-tight">Constancia de transferencia</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">QoriCash transfirió a tu cuenta</p>
+                  </div>
+                  <a
+                    href={proof.comprobante_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold transition self-start"
+                  >
+                    <Download className="w-3 h-3" /> Ver / Descargar
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+          ) : null
+        )}
+
+        {/* ── BOLETA / FACTURA ELECTRÓNICA ── */}
+        {Array.isArray(operation.invoices) && operation.invoices.map((inv, idx) =>
+          inv.nubefact_enlace_pdf ? (
+            <div key={idx} className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+              <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-gray-700 text-[10px] font-bold uppercase tracking-widest">
+                    {inv.invoice_type === '01' ? 'Factura electrónica' : 'Boleta electrónica'}
+                  </span>
+                </div>
+                <span className="flex items-center gap-1 text-[9px] font-semibold text-primary-600">
+                  <BadgeCheck className="w-3 h-3" /> Emitida · SUNAT
+                </span>
+              </div>
+              <div className="p-3 flex gap-3 items-start">
+                <div className="w-20 h-20 rounded-xl border border-gray-100 bg-gray-50 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-7 h-7 text-gray-300" />
+                </div>
+                <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800 leading-tight">
+                      {inv.invoice_number || (inv.invoice_type === '01' ? 'Factura' : 'Boleta')}
+                    </p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">Registrada ante SUNAT</p>
+                  </div>
+                  <a
+                    href={inv.nubefact_enlace_pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold transition self-start"
+                  >
+                    <Download className="w-3 h-3" /> Ver PDF
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : null
         )}
 
         {/* ── NOTES ── */}
