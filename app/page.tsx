@@ -247,6 +247,9 @@ export default function Home() {
                   <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
                 )}
                 <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
+                {isEmpresaPage && (
+                  <span className="lg:hidden text-[9px] font-bold tracking-[0.18em] uppercase self-end mb-1" style={{ color: '#8fb8cc' }}>Corporate</span>
+                )}
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
@@ -326,29 +329,21 @@ export default function Home() {
                 </>
               )}
             </div>
-            {/* Mobile — Empresas button / Corporate badge */}
+            {/* Mobile — Personas / Empresas texto plano */}
             {!isAuthenticated && (
-              <div className="lg:hidden flex items-center mr-1">
-                {isEmpresaPage ? (
-                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase px-2.5 py-1 rounded-full" style={{ background: 'rgba(143,184,204,0.15)', color: '#8fb8cc', border: '1px solid rgba(143,184,204,0.3)' }}>
-                    Corporate
-                  </span>
-                ) : (
-                  <button
-                    className="text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full transition-all"
-                    style={{ background: 'rgba(255,255,255,0.12)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.25)' }}
-                    onClick={() => {
-                      if ('startViewTransition' in document) {
-                        (document as any).startViewTransition(() => router.push('/empresa'));
-                      } else {
-                        router.push('/empresa');
-                      }
-                    }}
-                  >
-                    Empresas
-                  </button>
-                )}
-              </div>
+              <button
+                className="lg:hidden text-sm font-medium text-white/70 hover:text-white transition-colors mr-1"
+                onClick={() => {
+                  const href = isEmpresaPage ? '/' : '/empresa';
+                  if ('startViewTransition' in document) {
+                    (document as any).startViewTransition(() => router.push(href));
+                  } else {
+                    router.push(href);
+                  }
+                }}
+              >
+                {isEmpresaPage ? 'Personas' : 'Empresas'}
+              </button>
             )}
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -367,21 +362,29 @@ export default function Home() {
       {/* Mobile Menu Panel */}
       <div
         className={`lg:hidden fixed left-0 right-0 z-[49] rounded-b-3xl overflow-hidden transition-all duration-300 ease-out ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-        style={{ top: '80px', maxHeight: isMobileMenuOpen ? '82vh' : '0px', transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out', background: '#FFFFFF', borderBottom: '1px solid rgba(13,27,42,0.06)', boxShadow: '0 16px 40px rgba(0,0,0,0.12)' }}
+        style={{
+          top: '80px',
+          maxHeight: isMobileMenuOpen ? '82vh' : '0px',
+          transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
+          background: isEmpresaPage ? 'rgba(8,18,30,0.97)' : '#FFFFFF',
+          backdropFilter: isEmpresaPage ? 'blur(20px)' : undefined,
+          borderBottom: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(13,27,42,0.06)',
+          boxShadow: '0 16px 40px rgba(0,0,0,0.18)',
+        }}
       >
         <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
-          <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Menú</p>
+          <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : undefined }} >{isEmpresaPage ? 'QoriCash Corporate' : 'Menú'}</p>
           <div className="space-y-1 mb-4">
             {[
             ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
-              const cls = 'flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors';
+              const cls = 'flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors ' + (isEmpresaPage ? 'text-white/80 hover:bg-white/5' : 'text-gray-700 hover:bg-gray-50');
               const inner = (
                 <>
                   <div className={`w-9 h-9 rounded-xl ${bgCls} flex items-center justify-center flex-shrink-0`}>
                     <Icon className={`w-4 h-4 ${iconCls}`} />
                   </div>
                   <span className="font-medium flex-1">{label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                 </>
               );
               return isAnchor
@@ -389,40 +392,47 @@ export default function Home() {
                 : <Link key={href} href={href} className={cls} onClick={() => setIsMobileMenuOpen(false)}>{inner}</Link>;
             })}
           </div>
-          <div className="border-t border-gray-100 pt-4">
+          <div className="pt-4" style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid #f3f4f6' }}>
             {isAuthenticated ? (
               <>
-                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase px-2 mb-2">Mi Cuenta</p>
+                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : undefined }}>Mi Cuenta</p>
                 <div className="space-y-1">
-                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><UserIcon className="w-4 h-4 text-gray-600" /></div>
+                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
                     <span className="font-medium flex-1">Mi perfil</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Banknote className="w-4 h-4 text-gray-600" /></div>
+                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
                     <span className="font-medium flex-1">Mi Dashboard</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0"><HelpCircle className="w-4 h-4 text-primary-600" /></div>
+                  <a href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f0fdf4' }}><HelpCircle className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#16a34a' }} /></div>
                     <span className="font-medium flex-1">Ayuda</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-primary-400 group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
-                    <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0"><LogOut className="w-4 h-4 text-red-500" /></div>
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-colors" style={{ color: '#ef4444' }}>
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(239,68,68,0.1)' : '#fef2f2' }}><LogOut className="w-4 h-4 text-red-500" /></div>
                     <span className="font-medium">Cerrar Sesión</span>
                   </button>
                 </div>
               </>
             ) : (
               <div className="space-y-2">
-                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-xl group transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0"><Lock className="w-4 h-4 text-gray-600" /></div>
+                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-3 rounded-xl group transition-colors" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : '#f3f4f6' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#4b5563' }} /></div>
                   <span className="font-medium flex-1">Iniciar Sesión</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                 </Link>
-                <Link href="/crear-cuenta" className="flex items-center gap-3 px-4 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-bold shadow-lg shadow-primary-200 hover:from-primary-700 hover:to-primary-800 transition-all" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link
+                  href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all"
+                  style={isEmpresaPage
+                    ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' }
+                    : { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff' }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   <UserPlus className="w-4 h-4 flex-shrink-0" />
                   <span className="flex-1">Regístrate gratis</span>
                   <ArrowRight className="w-4 h-4" />
