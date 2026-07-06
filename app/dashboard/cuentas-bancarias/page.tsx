@@ -133,16 +133,24 @@ export default function CuentasBancariasPage() {
       borderRadius: 16,
       padding: '16px',
       boxShadow: '0 4px 20px rgba(74,104,132,0.35)',
-    } : {}}>
+    } : {
+      background: 'rgba(255,255,255,0.14)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255,255,255,0.25)',
+      borderRadius: 16,
+      padding: '16px',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)',
+    }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <div style={{
           width: 30, height: 30, borderRadius: 8,
-          background: isEmpresa ? 'rgba(255,255,255,0.2)' : (symbol === '$' ? 'rgba(22,163,74,0.10)' : 'rgba(30,41,59,0.07)'),
+          background: 'rgba(255,255,255,0.2)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ fontSize: 13, fontWeight: 800, color: isEmpresa ? '#ffffff' : (symbol === '$' ? '#16A34A' : '#1E293B') }}>{symbol}</span>
+          <span style={{ fontSize: 13, fontWeight: 800, color: '#ffffff' }}>{symbol}</span>
         </div>
-        <span style={{ fontWeight: 700, fontSize: 14, color: isEmpresa ? '#ffffff' : '#1E293B' }}>{label}</span>
+        <span style={{ fontWeight: 700, fontSize: 14, color: '#ffffff' }}>{label}</span>
         <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', background: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '2px 8px', fontWeight: 600 }}>
           {list.length}
         </span>
