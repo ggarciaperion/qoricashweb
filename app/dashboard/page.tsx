@@ -501,7 +501,7 @@ export default function DashboardPage() {
 
 
           {/* TC rates strip */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18)' }}>
             <div className="flex items-center gap-1.5 mr-1">
               <span className="relative flex w-2 h-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#ef4444' }} />
