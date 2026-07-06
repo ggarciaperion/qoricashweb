@@ -212,9 +212,17 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
-      {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
-
+    <main className="min-h-screen">
+      {/* ══ FONDO FIJO — personas page (mismo patrón que video empresa) ══ */}
+      {!isEmpresaPage && (
+        <div aria-hidden style={{
+          position: 'fixed', inset: 0, zIndex: -1,
+          backgroundImage: "url('/ty.webp')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }} />
+      )}
 
       {/* ══ NAVBAR ══ */}
       <header className="relative w-full z-50" style={{ background: 'transparent', borderBottom: 'none' }}>
