@@ -381,7 +381,6 @@ export default function Home() {
         }}
       >
         <div className="px-4 pt-5 pb-7 overflow-y-auto" style={{ maxHeight: '82vh' }}>
-          <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : undefined }} >{isEmpresaPage ? 'QoriCash Corporate' : 'Menú'}</p>
           <div className="space-y-1 mb-4">
             {[
             ].map(({ href, label, Icon, iconCls, bgCls, isAnchor }) => {
@@ -1018,7 +1017,7 @@ export default function Home() {
       </section>
       )}
 
-      {isEmpresaPage && (
+      {isEmpresaPage && isAuthenticated && (
       <section className="corp-dark py-6 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
@@ -1475,7 +1474,7 @@ export default function Home() {
       </section>
       )}
 
-      {isEmpresaPage && (
+      {isEmpresaPage && isAuthenticated && (
       <section className="corp-dark pt-6 pb-12 sm:pt-8 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
