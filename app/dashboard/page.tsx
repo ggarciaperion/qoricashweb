@@ -675,7 +675,7 @@ export default function DashboardPage() {
                       { src: '/Banco Pichincha.png', alt: 'Pichincha' },
                       { src: '/bancosantander.png',  alt: 'Santander' },
                     ].map(({ src, alt }) => (
-                      <img key={alt} src={src} alt={alt} className="h-6 w-auto object-contain" style={{ filter: 'brightness(0) invert(1)', opacity: 0.75 }} />
+                      <img key={alt} src={src} alt={alt} className="h-9 w-auto object-contain" style={{ filter: 'brightness(0) invert(1)', opacity: 0.75 }} />
                     ))}
                   </div>
                   <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
