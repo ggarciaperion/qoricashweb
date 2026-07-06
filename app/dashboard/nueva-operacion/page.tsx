@@ -1163,10 +1163,10 @@ export function NuevaOperacionContent() {
                   </button>
                 )}
                 <div className="text-center">
-                  <h1 className="text-xl font-bold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>
+                  <h1 className="text-xl font-bold mb-1" style={{ color: '#ffffff' }}>
                     {currentStep === 1 ? 'Nueva Operación' : currentStep === 2 ? 'Selección de cuentas' : currentStep === 3 ? 'Transfiere el dinero' : 'Operación en proceso'}
                   </h1>
-                  <p className="text-xs" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#4B5563' }}>
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
                     {currentStep === 1
                       ? 'Cotiza tu tipo de cambio'
                       : currentStep === 2
