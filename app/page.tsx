@@ -331,25 +331,30 @@ export default function Home() {
                 </>
               )}
             </div>
-            {/* Mobile — Personas / Empresas texto plano */}
-            {!isAuthenticated && (
-              <button
-                className="lg:hidden text-sm font-medium text-white/70 hover:text-white transition-colors mr-1"
-                onClick={() => {
-                  const href = isEmpresaPage ? '/' : '/empresa';
-                  if ('startViewTransition' in document) {
-                    (document as any).startViewTransition(() => router.push(href));
-                  } else {
-                    router.push(href);
-                  }
-                }}
-              >
-                {isEmpresaPage ? 'Personas' : 'Empresas'}
+            {/* Mobile — Personas/Empresas + separador + hamburger */}
+            <div className="lg:hidden flex items-center">
+              {!isAuthenticated && (
+                <>
+                  <button
+                    className="text-sm font-medium text-white/70 hover:text-white transition-colors px-2"
+                    onClick={() => {
+                      const href = isEmpresaPage ? '/' : '/empresa';
+                      if ('startViewTransition' in document) {
+                        (document as any).startViewTransition(() => router.push(href));
+                      } else {
+                        router.push(href);
+                      }
+                    }}
+                  >
+                    {isEmpresaPage ? 'Personas' : 'Empresas'}
+                  </button>
+                  <span className="h-4 w-px" style={{ background: 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+                </>
+              )}
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
-            )}
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            </div>
           </div>
         </nav>
       </header>
@@ -368,8 +373,9 @@ export default function Home() {
           top: '80px',
           maxHeight: isMobileMenuOpen ? '82vh' : '0px',
           transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
-          background: isEmpresaPage ? 'rgba(8,18,30,0.97)' : '#FFFFFF',
-          backdropFilter: isEmpresaPage ? 'blur(20px)' : undefined,
+          background: isEmpresaPage ? 'rgba(8,18,30,0.97)' : 'rgba(255,255,255,0.82)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderBottom: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(13,27,42,0.06)',
           boxShadow: '0 16px 40px rgba(0,0,0,0.18)',
         }}
@@ -513,8 +519,8 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
-        <div className="flex-1 flex items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-12 pb-6 sm:pb-12 relative z-10">
-          <div className="grid sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 items-center w-full">
+        <div className="flex-1 flex items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-2 sm:pt-12 pb-6 sm:pb-12 relative z-10">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 items-center w-full">
 
             {/* LEFT — Texto */}
             <div className="order-2 sm:order-1">
@@ -1013,7 +1019,7 @@ export default function Home() {
       )}
 
       {isEmpresaPage && (
-      <section className="corp-dark py-10 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
+      <section className="corp-dark py-6 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
