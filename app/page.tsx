@@ -212,7 +212,7 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+    <main className="min-h-screen" style={isEmpresaPage ? {} : { backgroundImage: "url('/ty.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
       {/* ══ MARKET TICKER — fixed debajo del navbar ══ */}
 
 
