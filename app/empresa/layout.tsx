@@ -14,8 +14,22 @@ export const metadata: Metadata = {
 
 export default function EmpresaLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="empresa-page" style={{ position: 'relative', minHeight: '100vh' }}>
+    <div className="empresa-page" style={{ position: 'relative', minHeight: '100vh', background: '#060E1A' }}>
       <style>{`
+        /* Fondo base oscuro inmediato antes de que cargue el video */
+        .empresa-page {
+          background: #060E1A;
+        }
+
+        /* Fade-in suave del contenido al montar la página */
+        @keyframes empresaFadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .empresa-page > *:not(style):not(video) {
+          animation: empresaFadeIn 0.45s ease-out both;
+        }
+
         /* Hero y bancos → transparentes para mostrar el video */
         .empresa-page section.corp-transparent {
           background: transparent !important;
@@ -52,7 +66,11 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
         }
       `}</style>
 
-      {/* Video background */}
+      {/* Video background — fondo oscuro (#060E1A) mientras carga */}
+      <div aria-hidden style={{
+        position: 'fixed', inset: 0, zIndex: -2,
+        background: '#060E1A',
+      }} />
       <video
         autoPlay
         muted
