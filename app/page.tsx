@@ -516,7 +516,7 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
+      <section className={`relative min-h-screen flex flex-col overflow-hidden ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
         <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-2 sm:pt-12 pb-6 sm:pb-12 relative z-10">
 
@@ -526,6 +526,13 @@ export default function Home() {
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
               <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
+            </h1>
+          )}
+
+          {/* H1 empresa — encima del card Herramientas Corporativas, solo móvil */}
+          {isEmpresaPage && (
+            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#FFFFFF' }}>
+              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
             </h1>
           )}
 
@@ -539,7 +546,7 @@ export default function Home() {
                 Fintech de cambio de divisas · Perú
               </span>
 
-              <h1 className={`font-display font-black leading-[1.05] mb-6 ${!isEmpresaPage ? 'hidden sm:block' : ''}`} style={{ color: '#FFFFFF' }}>
+              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: '#FFFFFF' }}>
                 {isEmpresaPage ? (
                   <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
                 ) : (
