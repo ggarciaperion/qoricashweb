@@ -59,6 +59,7 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
         loop
         playsInline
         preload="auto"
+        poster="/corpo-poster.jpg"
         style={{
           position: 'fixed',
           top: 0,
@@ -69,6 +70,7 @@ export default function EmpresaLayout({ children }: { children: React.ReactNode 
           zIndex: -1,
         }}
       >
+        <source src="/corpo.webm" type="video/webm" />
         <source src="/corpo.mp4" type="video/mp4" />
       </video>
 
