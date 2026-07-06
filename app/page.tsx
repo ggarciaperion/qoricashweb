@@ -501,7 +501,7 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
-        <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-2 sm:py-12 relative z-10">
+        <div className="flex-1 flex items-start sm:items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-2 sm:py-12 relative z-10">
           <div className="grid sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 items-center w-full">
 
             {/* LEFT — Texto */}
