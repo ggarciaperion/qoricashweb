@@ -804,18 +804,30 @@ export default function Home() {
                 >
                   {/* Logos — 2 filas de 3, uniformes */}
                   <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
-                    {[
-                      [{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }],
-                      [{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancoripley.png', alt: 'Ripley' }, { src: '/bancosantander.png', alt: 'Santander' }],
-                    ].map((row, ri) => (
-                      <div key={ri} className="flex items-center justify-center gap-3 w-full">
-                        {row.map(({ src, alt }) => (
-                          <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? '90px' : '72px', height: alt === 'GNB' ? '56px' : '44px' }}>
-                            <img src={src} alt={alt} style={{ maxWidth: alt === 'GNB' ? '90px' : '72px', maxHeight: alt === 'GNB' ? '56px' : '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                          </div>
-                        ))}
+                    {/* Fila 1 */}
+                    <div className="flex items-center justify-center gap-3 w-full">
+                      {[{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }].map(({ src, alt }) => (
+                        <div key={alt} className="flex items-center justify-center" style={{ width: '72px', height: '44px' }}>
+                          <img src={src} alt={alt} style={{ maxWidth: '72px', maxHeight: '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+                        </div>
+                      ))}
+                    </div>
+                    {/* Fila 2 — GNB + Santander + card Otros Bancos */}
+                    <div className="flex items-center justify-center gap-3 w-full">
+                      {[{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancosantander.png', alt: 'Santander' }].map(({ src, alt }) => (
+                        <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? '90px' : '72px', height: alt === 'GNB' ? '56px' : '44px' }}>
+                          <img src={src} alt={alt} style={{ maxWidth: alt === 'GNB' ? '90px' : '72px', maxHeight: alt === 'GNB' ? '56px' : '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+                        </div>
+                      ))}
+                      {/* Card Otros Bancos */}
+                      <div className="flex flex-col items-center justify-center rounded-lg" style={{
+                        width: '72px', height: '44px',
+                        border: isEmpresaPage ? '1px solid rgba(143,184,204,0.35)' : '1px solid rgba(34,197,94,0.35)',
+                        background: isEmpresaPage ? 'rgba(143,184,204,0.07)' : 'rgba(34,197,94,0.07)',
+                      }}>
+                        <span className="text-[7px] font-black uppercase tracking-[0.12em] leading-tight text-center" style={{ color: isEmpresaPage ? '#8fb8cc' : '#22C55E' }}>Otros<br/>Bancos</span>
                       </div>
-                    ))}
+                    </div>
                   </div>
                   {/* CCI Interbank */}
                   <div className={`absolute bottom-0 left-0 right-0 px-2 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
