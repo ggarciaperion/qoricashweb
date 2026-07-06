@@ -501,13 +501,13 @@ export default function DashboardPage() {
 
 
           {/* TC rates strip */}
-          <div className="flex items-center justify-center gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.07)' }}>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
             <div className="flex items-center gap-1.5 mr-1">
               <span className="relative flex w-2 h-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#ef4444' }} />
                 <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(30,41,59,0.35)' }}>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 Tipo de Cambio <span style={{ color: '#ef4444' }}>live</span>
               </span>
             </div>
@@ -531,7 +531,7 @@ export default function DashboardPage() {
 
           {/* Welcome + stats */}
           <div>
-            <h1 className="text-xl font-black mb-4" style={{ color: '#1E293B' }}>
+            <h1 className="text-xl font-black mb-4" style={{ color: '#ffffff' }}>
               ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
             </h1>
             {stats && currentRates && stats.total_operations > 0 && (() => {
@@ -545,12 +545,12 @@ export default function DashboardPage() {
                 { label: 'Spread',       target: spreadVal,             icon: TrendingUp, bg: '#431407', shadow: 'rgba(67,20,7,0.35)',    fmt: (n: number) => spreadVal ? `${n.toFixed(1)} pips` : '—'   },
               ];
               return (
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {cards.map(({ label, target, icon: Icon, bg, shadow, fmt }) => (
                     <div
                       key={label}
                       className="relative rounded-xl px-3 py-2.5 flex flex-col gap-1.5 transition-all hover:-translate-y-0.5 cursor-default overflow-hidden"
-                      style={{ width: 148, background: bg, boxShadow: `0 4px 14px ${shadow}` }}
+                      style={{ background: bg, boxShadow: `0 4px 14px ${shadow}` }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${shadow}`; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 14px ${shadow}`; }}
                     >
@@ -571,7 +571,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick actions */}
-          <div style={{ maxWidth: 'calc(4 * 148px + 3 * 8px)', margin: '1.5rem auto 0', width: '100%' }}>
+          <div className="mt-6 w-full">
 
           <div className="flex flex-wrap justify-center gap-3">
               {[
@@ -627,17 +627,17 @@ export default function DashboardPage() {
                     <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
                       style={{ color: primary ? 'white' : 'rgba(30,41,59,0.5)' }} />
                   </div>
-                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-600 group-hover:-translate-y-1"
-                    style={{ color: 'rgba(30,41,59,0.6)' }}>{label}</span>
+                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-400 group-hover:-translate-y-1"
+                    style={{ color: 'rgba(255,255,255,0.8)' }}>{label}</span>
                 </button>
               ))}
           </div>
           </div>
 
           {/* ── BANCOS PRINCIPALES + NOTICIAS + TASAS ───────────────── */}
-          <div className="flex gap-2 items-stretch" style={{ maxWidth: 'calc(4 * 148px + 3 * 8px)', margin: '2rem auto 0', width: '100%' }}>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch mt-8 w-full">
             {/* Columna izquierda: Logos */}
-            <div className="flex flex-col gap-1" style={{ width: '50%' }}>
+            <div className="flex flex-col gap-1 w-full sm:w-1/2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Operaciones inmediatas</p>
               <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12)' }}>
                 {/* Sección principal — operaciones inmediatas */}
@@ -690,8 +690,8 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Columna derecha: Noticias + Tasas */}
-            <div className="flex flex-col gap-1" style={{ width: '50%' }}>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(30,41,59,0.42)' }}>Noticias que mueven el TC</p>
+            <div className="flex flex-col gap-1 w-full sm:w-1/2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Noticias que mueven el TC</p>
               {/* Carrusel */}
               <div className="rounded-xl overflow-hidden relative" style={{ height: 90 }}>
                 {noticias.map((item, i) => (

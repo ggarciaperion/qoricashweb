@@ -232,7 +232,7 @@ export default function EmpresaDashboardPage() {
 
           {/* Quick actions */}
           <div className="space-y-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest px-1" style={{ color: 'rgba(30,41,59,0.4)' }}>Acciones rápidas</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest px-1" style={{ color: 'rgba(143,184,204,0.7)' }}>Acciones rápidas</p>
 
             <Link
               href="/dashboard/empresa/nueva-operacion"
@@ -296,7 +296,7 @@ export default function EmpresaDashboardPage() {
           {/* Recent operations */}
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest px-1" style={{ color: 'rgba(30,41,59,0.4)' }}>Operaciones recientes</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest px-1" style={{ color: 'rgba(143,184,204,0.7)' }}>Operaciones recientes</p>
               <Link href="/dashboard/historial" className="text-xs font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity" style={{ color: '#4A6884' }}>
                 Ver todas <ArrowRight className="w-3 h-3" />
               </Link>
@@ -306,6 +306,7 @@ export default function EmpresaDashboardPage() {
               className="rounded-2xl overflow-hidden"
               style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', border: '1px solid rgba(143,184,204,0.1)' }}
             >
+              <div className="overflow-x-auto">
               {isLoading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: 'rgba(74,104,132,0.3)', borderTopColor: '#4A6884' }} />
@@ -326,11 +327,11 @@ export default function EmpresaDashboardPage() {
                   </Link>
                 </div>
               ) : (
-                <table className="w-full text-sm">
+                <table className="w-full min-w-[400px] text-sm">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(30,41,59,0.06)' }}>
+                    <tr style={{ borderBottom: '1px solid rgba(143,184,204,0.1)' }}>
                       {['Fecha', 'Tipo', 'Monto', 'Estado'].map(h => (
-                        <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(30,41,59,0.35)' }}>{h}</th>
+                        <th key={h} className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.5)' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -341,23 +342,23 @@ export default function EmpresaDashboardPage() {
                       return (
                         <tr
                           key={op.id}
-                          style={{ borderBottom: i < recentOps.length - 1 ? '1px solid rgba(30,41,59,0.05)' : 'none' }}
+                          style={{ borderBottom: i < recentOps.length - 1 ? '1px solid rgba(143,184,204,0.08)' : 'none' }}
                         >
-                          <td className="px-4 py-3.5 text-xs" style={{ color: 'rgba(30,41,59,0.5)' }}>
+                          <td className="px-4 py-3.5 text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
                             {fmtDate(op.created_at)}
                           </td>
                           <td className="px-4 py-3.5">
                             <div className="flex items-center gap-1.5">
                               {isCompra
-                                ? <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-                                : <TrendingDown className="w-3.5 h-3.5 text-blue-500" />}
-                              <span className="text-xs font-semibold capitalize" style={{ color: '#0D1B2A' }}>
+                                ? <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                                : <TrendingDown className="w-3.5 h-3.5 text-blue-400" />}
+                              <span className="text-xs font-semibold capitalize" style={{ color: 'rgba(255,255,255,0.85)' }}>
                                 {isCompra ? 'Compra' : 'Venta'}
                               </span>
                             </div>
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className="text-xs font-bold" style={{ color: '#0D1B2A' }}>
+                            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.9)' }}>
                               $ {fmt$(op.amount_usd ?? 0)}
                             </span>
                           </td>
@@ -373,6 +374,7 @@ export default function EmpresaDashboardPage() {
                   </tbody>
                 </table>
               )}
+              </div>
             </div>
           </div>
         </div>

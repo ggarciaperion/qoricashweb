@@ -1623,7 +1623,7 @@ export default function Home() {
           </div>
         </div>
         <div className="w-full px-4 sm:px-8 lg:px-10 py-8">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity w-fit">
                 {isEmpresaPage ? (

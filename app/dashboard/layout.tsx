@@ -275,18 +275,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-3 shrink-0">
               <button
                 className="lg:hidden p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#1E293B')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)')}
+                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)')}
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
               </button>
               <div className="hidden md:flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.35)' }} />
+                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }} />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : 'rgba(30,41,59,0.35)' }}>Horario de atención</p>
-                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.6)' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : 'rgba(255,255,255,0.6)' }}>Horario de atención</p>
+                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.85)' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
                 </div>
               </div>
             </div>
@@ -298,9 +298,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-1 shrink-0">
               <button
                 className="p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#1E293B')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(30,41,59,0.4)')}
+                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
+                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)')}
               >
                 <Bell className="w-5 h-5" />
               </button>
@@ -315,12 +315,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   style={{ background: isEmpresaUser ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
                   {displayName?.charAt(0)?.toUpperCase() ?? 'U'}
                 </div>
-                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: isEmpresaUser ? '#ffffff' : '#1E293B' }}>
+                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: '#ffffff' }}>
                   {displayName}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.35)' }}
+                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }}
                 />
               </button>
             </div>
