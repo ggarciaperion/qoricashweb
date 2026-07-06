@@ -502,12 +502,13 @@ export default function DashboardPage() {
 
           {/* TC rates strip */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18)' }}>
-            <div className="flex items-center gap-1.5 mr-1">
-              <span className="relative flex w-2 h-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#ef4444' }} />
-                <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444' }} />
+            <div className="flex items-center gap-2 mr-1">
+              <span className="relative flex w-3.5 h-3.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#ef4444' }} />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-30" style={{ background: '#ef4444', animationDelay: '0.4s' }} />
+                <span className="relative inline-flex w-3.5 h-3.5 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.7)' }} />
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              <span className="text-xs font-black uppercase tracking-widest text-white">
                 Tipo de Cambio <span style={{ color: '#ef4444' }}>live</span>
               </span>
             </div>
