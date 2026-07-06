@@ -79,14 +79,14 @@ export default function AlertaTCBanner() {
       <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-primary-500/8 rounded-full blur-[100px] pointer-events-none" />
 
 
-      <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8 rounded-2xl overflow-hidden" style={{ background: '#1E293B' }}>
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-5 sm:py-8 rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
 
         <div className="grid lg:grid-cols-2 gap-8 items-center">
 
           {/* ── Texto ── */}
           <div>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-4">
+            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-3">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-400" />
@@ -95,17 +95,16 @@ export default function AlertaTCBanner() {
             </div>
 
             {/* Headline */}
-            <h2 className="text-2xl md:text-3xl font-display font-black text-white leading-[1.1] mb-3">
-              Te avisamos cuando el<br />
-              <span className="text-primary-400">dólar llega a tu precio.</span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-white leading-[1.1] mb-2 sm:mb-3">
+              Te avisamos cuando el <span className="text-primary-400">dólar llega a tu precio.</span>
             </h2>
 
-            <p className="text-gray-400 text-sm leading-relaxed mb-4 max-w-md">
+            <p className="text-gray-400 text-sm leading-relaxed mb-3 max-w-md">
               Configura un TC objetivo y recibe un email al instante. Sin aplicaciones, sin costo.
             </p>
 
             {/* Beneficios */}
-            <div className="grid grid-cols-2 gap-2 mb-5">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-3 sm:mb-5">
               {[
                 { icon: Zap,         text: 'Aviso en segundos' },
                 { icon: Bell,        text: 'Al alza y a la baja' },
@@ -142,14 +141,14 @@ export default function AlertaTCBanner() {
               </Link>
             </div>
 
-            <p className="mt-5 text-gray-600 text-xs flex items-center gap-1.5">
+            <p className="hidden sm:flex mt-4 text-gray-600 text-xs items-center gap-1.5">
               <CheckCircle className="w-3.5 h-3.5 text-primary-500" />
               Sin registro · Se configura en menos de 30 segundos
             </p>
           </div>
 
-          {/* ── Demo card ── */}
-          <div className="flex justify-center lg:justify-end">
+          {/* ── Demo card — solo visible en desktop ── */}
+          <div className="hidden lg:flex justify-end">
             <div className="relative w-full max-w-[320px]">
               <div className="absolute -inset-3 rounded-3xl blur-2xl" style={{ background: 'rgba(34,197,94,0.08)' }} />
               <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>

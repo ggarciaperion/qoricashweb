@@ -541,10 +541,12 @@ export default function Home() {
             {/* LEFT — Texto */}
             <div className="order-2 sm:order-1">
               {/* Pill label */}
-              <span className="inline-flex items-center gap-2 mb-4 sm:mb-7 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
-                Fintech de cambio de divisas · Perú
-              </span>
+              <div className="flex justify-center sm:justify-start mb-4 sm:mb-7">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
+                  Fintech de cambio de divisas · Perú
+                </span>
+              </div>
 
               <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: '#FFFFFF' }}>
                 {isEmpresaPage ? (
@@ -558,7 +560,7 @@ export default function Home() {
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
                 {isEmpresaPage
                   ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
                   : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
@@ -588,7 +590,7 @@ export default function Home() {
                 )}
               </div>
 
-<div className="flex flex-wrap items-center gap-6 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 {isEmpresaPage ? (
                   <>
                     <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Rentabilidad</span>
@@ -613,11 +615,11 @@ export default function Home() {
                 /* ── Glass CTA — acceso herramientas corporativas ── */
                 <div className="relative overflow-hidden rounded-2xl p-5 sm:p-7 flex flex-col gap-4 sm:gap-5"
                   style={{
-                    background: 'rgba(8,18,30,0.45)',
+                    background: 'rgba(143,184,204,0.1)',
                     backdropFilter: 'blur(28px)',
                     WebkitBackdropFilter: 'blur(28px)',
-                    border: '1px solid rgba(143,184,204,0.22)',
-                    boxShadow: '0 32px 64px rgba(0,0,0,0.35), inset 0 1px 0 rgba(143,184,204,0.15)',
+                    border: '1px solid rgba(143,184,204,0.25)',
+                    boxShadow: '0 32px 64px rgba(0,0,0,0.2), inset 0 1px 0 rgba(143,184,204,0.15)',
                   }}>
 
                   {/* Reflejo superior espejo */}
@@ -948,10 +950,10 @@ export default function Home() {
             <div className="reveal-right flex flex-col h-full">
 
               {/* Tabla */}
-              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ border: '1px solid rgba(13,27,42,0.1)' }}>
+              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.15)' }}>
 
-                {/* Encabezado único — fondo oscuro, todo en una fila */}
-                <div className="flex items-center px-4 py-3" style={{ background: '#1E293B', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                {/* Encabezado único */}
+                <div className="flex items-center px-4 py-3" style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                   <div className="flex-1 flex items-center gap-2">
                     <span className="text-xs font-bold text-white tracking-tight">Tipo de cambio hoy</span>
                     <span className="flex items-center gap-1 text-[9px] font-bold" style={{ color: '#4ade80' }}>
@@ -1007,7 +1009,7 @@ export default function Home() {
                       const compra = (base_c + dc).toFixed(3);
                       const venta  = (base_v + dv).toFixed(3);
                       return (
-                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(13,27,42,0.06)' : 'none' }}>
+                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
                           <div className="flex items-center gap-2.5 flex-1">
                             <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0 opacity-70" />
                             <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{name}</span>
@@ -1598,32 +1600,32 @@ export default function Home() {
           FOOTER
       ══════════════════════════════════════ */}
       <footer className="text-gray-400">
-        <div className="border-b border-white/5 py-4 px-4 sm:px-8 lg:px-10">
-          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
-              <div className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
-                <Shield className="w-4 h-4 text-primary-400 flex-shrink-0" />
+        <div className="border-b border-white/5 py-3 px-4 sm:px-8 lg:px-10">
+          <div className="max-w-5xl mx-auto flex flex-row items-center justify-between gap-2 sm:gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="text-white font-bold text-[11px] leading-tight">Empresa Registrada</div>
-                  <div className="text-gray-500 text-[10px]">RUC: 20615113698 · Lima, Perú</div>
+                  <div className="text-white font-bold text-[10px] sm:text-[11px] leading-tight">Empresa Registrada</div>
+                  <div className="text-gray-500 text-[9px] sm:text-[10px]">RUC: 20615113698 · Lima, Perú</div>
                 </div>
               </div>
-              <div className="rounded-xl px-4 py-2.5 flex items-center gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
-                <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0" />
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="text-white font-bold text-[11px] leading-tight">Registrados ante la SBS</div>
-                  <div className="text-gray-500 text-[10px]">Res. N° 00313-2026</div>
+                  <div className="text-white font-bold text-[10px] sm:text-[11px] leading-tight">Registrados ante la SBS</div>
+                  <div className="text-gray-500 text-[9px] sm:text-[10px]">Res. N° 00313-2026</div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[11px] text-gray-600">
+            <div className="hidden sm:flex items-center gap-5 text-[11px] text-gray-600">
               <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
               <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
             </div>
           </div>
         </div>
-        <div className="w-full px-4 sm:px-8 lg:px-10 py-8">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="w-full px-4 sm:px-8 lg:px-10 py-5 sm:py-8">
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-3 hover:opacity-80 transition-opacity w-fit">
                 {isEmpresaPage ? (
@@ -1647,31 +1649,31 @@ export default function Home() {
                   <span className="text-sm font-light tracking-[0.18em] leading-none self-center" style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Corporate</span>
                 )}
               </Link>
-              <p className="text-sm text-gray-400 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+              <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Servicios</h4>
-              <ul className="space-y-3 text-sm">
-                <li><Link href="/servicios#compra" className="hover:text-white transition-colors">Compra de dólares</Link></li>
-                <li><Link href="/servicios#venta" className="hover:text-white transition-colors">Venta de dólares</Link></li>
-                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors">Tipo de cambio</Link></li>
-                <li><Link href="/noticias" className="hover:text-white transition-colors">Noticias</Link></li>
-                <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors">Preguntas frecuentes</Link></li>
+              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Servicios</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/servicios#compra" className="hover:text-white transition-colors text-xs sm:text-sm">Compra de dólares</Link></li>
+                <li><Link href="/servicios#venta" className="hover:text-white transition-colors text-xs sm:text-sm">Venta de dólares</Link></li>
+                <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors text-xs sm:text-sm">Tipo de cambio</Link></li>
+                <li><Link href="/noticias" className="hover:text-white transition-colors text-xs sm:text-sm">Noticias</Link></li>
+                <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors text-xs sm:text-sm">Preguntas frecuentes</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Empresa</h4>
-              <ul className="space-y-3 text-sm">
-                <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link></li>
-                <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors">Términos y condiciones</Link></li>
-                <li><Link href="/politica-privacidad" className="hover:text-white transition-colors">Política de privacidad</Link></li>
-                <li><Link href="/politica-cookies" className="hover:text-white transition-colors">Política de cookies</Link></li>
-                <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors">Libro de reclamaciones</Link></li>
+              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Empresa</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors text-xs sm:text-sm">Sobre nosotros</Link></li>
+                <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors text-xs sm:text-sm">Términos y cond.</Link></li>
+                <li><Link href="/politica-privacidad" className="hover:text-white transition-colors text-xs sm:text-sm">Privacidad</Link></li>
+                <li><Link href="/politica-cookies" className="hover:text-white transition-colors text-xs sm:text-sm">Cookies</Link></li>
+                <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors text-xs sm:text-sm">Reclamaciones</Link></li>
               </ul>
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Contacto</h4>
-              <ul className="space-y-4 text-sm">
+            <div className="col-span-2 md:col-span-1">
+              <h4 className="text-white font-semibold mb-2 sm:mb-4 text-xs sm:text-sm uppercase tracking-wider">Contacto</h4>
+              <ul className="space-y-2 sm:space-y-4 text-sm flex flex-wrap gap-x-6 gap-y-2 sm:flex-nowrap sm:flex-col sm:gap-0">
                 <li className="flex items-start gap-3">
                   <svg className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                   <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a>
@@ -1694,7 +1696,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="max-w-5xl mx-auto border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+          <div className="max-w-5xl mx-auto border-t border-white/5 mt-6 sm:mt-10 pt-4 sm:pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-600">
             <p>© 2025 QoriCash. Todos los derechos reservados.</p>
             <div className="flex items-center gap-4">
               <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
