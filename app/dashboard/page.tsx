@@ -497,7 +497,7 @@ export default function DashboardPage() {
       )}
 
       {/* ── MAIN DASHBOARD ─────────────────────────────────────── */}
-      {!showProfile && <main className="p-4 sm:p-6 space-y-5">
+      {!showProfile && <main className="p-4 sm:p-6 space-y-5 max-w-2xl mx-auto w-full">
 
 
           {/* TC rates strip */}
