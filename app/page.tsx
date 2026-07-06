@@ -219,7 +219,7 @@ export default function Home() {
           position: 'fixed', inset: 0, zIndex: -1,
           backgroundImage: "url('/ty.webp')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: '25% center',
           backgroundRepeat: 'no-repeat',
         }} />
       )}
@@ -326,6 +326,30 @@ export default function Home() {
                 </>
               )}
             </div>
+            {/* Mobile — Empresas button / Corporate badge */}
+            {!isAuthenticated && (
+              <div className="lg:hidden flex items-center mr-1">
+                {isEmpresaPage ? (
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase px-2.5 py-1 rounded-full" style={{ background: 'rgba(143,184,204,0.15)', color: '#8fb8cc', border: '1px solid rgba(143,184,204,0.3)' }}>
+                    Corporate
+                  </span>
+                ) : (
+                  <button
+                    className="text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full transition-all"
+                    style={{ background: 'rgba(255,255,255,0.12)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.25)' }}
+                    onClick={() => {
+                      if ('startViewTransition' in document) {
+                        (document as any).startViewTransition(() => router.push('/empresa'));
+                      } else {
+                        router.push('/empresa');
+                      }
+                    }}
+                  >
+                    Empresas
+                  </button>
+                )}
+              </div>
+            )}
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -477,7 +501,7 @@ export default function Home() {
       ══════════════════════════════════════ */}
       <section className={`relative min-h-screen flex flex-col overflow-hidden pt-[80px] ${isEmpresaPage ? 'corp-transparent' : ''}`}>
 
-        <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-8 sm:py-12 relative z-10">
+        <div className="flex-1 flex items-center w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-2 sm:py-12 relative z-10">
           <div className="grid sm:grid-cols-2 gap-8 sm:gap-6 lg:gap-10 items-center w-full">
 
             {/* LEFT — Texto */}
