@@ -1561,7 +1561,7 @@ export default function CrearCuentaPage() {
                       const res = await fetch('/api/flask/api/web/send-verification-code', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: formData.email }),
+                        body: JSON.stringify({ email: formData.email, telefono: formData.telefono, telefonoCodigo: formData.telefonoCodigo }),
                       });
                       const data = await res.json();
                       if (data.success) {
@@ -1610,7 +1610,7 @@ export default function CrearCuentaPage() {
                           const res = await fetch('/api/flask/api/web/send-verification-code', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email: formData.email }),
+                            body: JSON.stringify({ email: formData.email, telefono: formData.telefono, telefonoCodigo: formData.telefonoCodigo }),
                           });
                           const data = await res.json();
                           if (data.success) {
