@@ -231,7 +231,7 @@ export default function SobreNosotros() {
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
               {[
                 { Icon: MapPin,  label: 'Dirección',   value: 'Av. Brasil N° 2790, Int. 504\nLima – Pueblo Libre' },
-                { Icon: Phone,   label: 'Teléfono',    value: '926 011 920'      },
+                { Icon: Phone,   label: 'Teléfono',    value: '910 624 404'      },
                 { Icon: Mail,    label: 'Correo',      value: 'info@qoricash.pe' },
               ].map(({ Icon, label, value }, i, arr) => (
                 <div
@@ -335,7 +335,7 @@ export default function SobreNosotros() {
               <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Contacto</p>
               <ul className="space-y-2.5 text-xs" style={{ color: '#475569' }}>
                 <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a></li>
-                <li><a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">926 011 920</a></li>
+                <li><a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">910 624 404</a></li>
                 <li style={{ lineHeight: 1.6 }}>Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</li>
                 <li style={{ lineHeight: 1.6 }}>Lun–Vie 9:00–18:00<br />Sáb 9:00–13:00</li>
               </ul>

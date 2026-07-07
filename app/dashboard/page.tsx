@@ -598,7 +598,7 @@ export default function DashboardPage() {
                 {
                   icon: HelpCircle,
                   label: 'Recibir\nayuda',
-                  action: () => window.open('https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash.', '_blank'),
+                  action: () => window.open('https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash.', '_blank'),
                   primary: false,
                 },
               ].map(({ icon: Icon, label, action, primary }) => (

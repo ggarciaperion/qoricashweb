@@ -982,7 +982,7 @@ export default function CrearCuentaPage() {
                 <p className="text-sm font-bold text-amber-800 mb-0.5">Documento ya registrado</p>
                 <p className="text-sm text-amber-700">Este número de documento ya tiene una cuenta en QoriCash.{' '}
                   <a
-                    href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20en%20QoriCash"
+                    href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20en%20QoriCash"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold underline hover:opacity-80 transition"

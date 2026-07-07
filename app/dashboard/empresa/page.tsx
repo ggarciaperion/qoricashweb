@@ -282,7 +282,7 @@ export default function EmpresaDashboardPage() {
                 Importe mayor a $ 5mil?
               </p>
               <a
-                href="https://wa.me/51926011920?text=Hola%2C%20soy%20cliente%20corporativo%20de%20QoriCash%20y%20necesito%20cotizar%20una%20operaci%C3%B3n."
+                href="https://wa.me/51910624404?text=Hola%2C%20soy%20cliente%20corporativo%20de%20QoriCash%20y%20necesito%20cotizar%20una%20operaci%C3%B3n."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-opacity hover:opacity-80"

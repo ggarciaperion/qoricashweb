@@ -1116,7 +1116,7 @@ export function NuevaOperacionContent() {
     <div className="min-h-screen" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
       {/* Botón flotante WhatsApp - solo móvil */}
       <a
-        href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
+        href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
         target="_blank"
         rel="noopener noreferrer"
         className="lg:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 bg-primary-500 text-white px-4 py-3 rounded-full shadow-xl hover:bg-primary-600 transition"
@@ -1270,7 +1270,7 @@ export function NuevaOperacionContent() {
                   <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.08)' }}>
                     <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}>¿Necesitas ayuda?</p>
                     <a
-                      href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda%20con%20mi%20operación"
+                      href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda%20con%20mi%20operación"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-xs font-semibold text-white px-3 py-2 rounded-xl transition"

@@ -36,7 +36,7 @@ function PageFooter() {
             <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Contacto</p>
             <ul className="space-y-2.5 text-xs" style={{ color: '#475569' }}>
               <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a></li>
-              <li><a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">926 011 920</a></li>
+              <li><a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">910 624 404</a></li>
               <li style={{ lineHeight: 1.6 }}>Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</li>
               <li style={{ lineHeight: 1.6 }}>Lun–Vie 9:00–18:00<br />Sáb 9:00–13:00</li>
             </ul>
@@ -251,7 +251,7 @@ export default function TerminosCondiciones() {
               { num: '10', title: 'Propiedad Intelectual', body: 'Todos los contenidos de la plataforma (logotipos, diseños, textos, código, bases de datos) son propiedad exclusiva de QORICASH S.A.C. o sus licenciantes. Queda prohibida su reproducción, distribución o uso sin autorización expresa.' },
               { num: '11', title: 'Modificaciones de los Términos', body: 'QoriCash se reserva el derecho de modificar estos Términos en cualquier momento. Los cambios serán notificados a través de la plataforma y/o correo electrónico. El uso continuado de los servicios después de las modificaciones constituye aceptación de los nuevos términos.' },
               { num: '12', title: 'Resolución de Controversias', body: 'Cualquier controversia derivada de estos Términos se resolverá inicialmente mediante negociación directa. De no alcanzarse un acuerdo, las partes se someterán a la jurisdicción de los tribunales de Lima, Perú.' },
-              { num: '13', title: 'Contacto y Atención al Cliente', items: ['Correo electrónico: info@qoricash.pe','Teléfono: 926 011 920','Horario de atención: Lunes a Viernes, 9:00 AM - 6:00 PM'], extra: 'Nos comprometemos a responder todas las consultas dentro de las 24 horas hábiles.' },
+              { num: '13', title: 'Contacto y Atención al Cliente', items: ['Correo electrónico: info@qoricash.pe','Teléfono: 910 624 404','Horario de atención: Lunes a Viernes, 9:00 AM - 6:00 PM'], extra: 'Nos comprometemos a responder todas las consultas dentro de las 24 horas hábiles.' },
             ].map(({ num, title, body, items, note, extra }: any) => (
               <div key={num} style={{ marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid #F1F5F9' }}>
                 <div className="flex items-center gap-3 mb-3">
@@ -275,7 +275,7 @@ export default function TerminosCondiciones() {
             <div style={{ background: '#0D1B2A', borderRadius: 12, padding: '24px' }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#22C55E' }}>Información Legal</p>
               <div className="space-y-2 text-xs" style={{ color: '#94A3B8' }}>
-                {[['Razón Social','QORICASH S.A.C.'],['RUC','20615113698'],['Nombre Comercial','QORICASH FX'],['Dirección','Av. Brasil N° 2790, Int. 504, Lima – Pueblo Libre'],['Correo Electrónico','info@qoricash.pe'],['Teléfono','926 011 920']].map(([k,v]) => (
+                {[['Razón Social','QORICASH S.A.C.'],['RUC','20615113698'],['Nombre Comercial','QORICASH FX'],['Dirección','Av. Brasil N° 2790, Int. 504, Lima – Pueblo Libre'],['Correo Electrónico','info@qoricash.pe'],['Teléfono','910 624 404']].map(([k,v]) => (
                   <div key={k} className="flex gap-2"><span style={{ color: '#475569', flexShrink: 0 }}>{k}:</span><span style={{ color: '#CBD5E1' }}>{v}</span></div>
                 ))}
               </div>

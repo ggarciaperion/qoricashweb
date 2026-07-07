@@ -72,8 +72,8 @@ export default function PreguntasFrecuentesPage() {
                   ) : (
                     <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
                       Puedes cambiar desde S/ 100 o $30 dólares. Para operaciones grandes contáctanos por{' '}
-                      <a href="https://wa.me/51926011920" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">
-                        WhatsApp 926 011 920
+                      <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">
+                        WhatsApp 910 624 404
                       </a>{' '}
                       para coordinar condiciones especiales.
                     </p>

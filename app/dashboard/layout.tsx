@@ -239,7 +239,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Mail className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">info@qoricash.pe</span>
             </a>
-            <a href="https://wa.me/51926011920?text=Hola,%20necesito%20ayuda" target="_blank" rel="noopener noreferrer"
+            <a href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
               style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.65)' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#16a34a'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.06)'; }}
@@ -385,7 +385,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
               )}
               <a
-                href="https://wa.me/51926011920?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
                 target="_blank" rel="noopener noreferrer"
                 onClick={() => setIsUserMenuOpen(false)}
                 className="flex items-center px-4 py-2.5 text-sm gap-3 transition"

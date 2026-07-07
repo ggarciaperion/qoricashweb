@@ -329,7 +329,7 @@ export default function Calculator({
         {dark ? (
           /* ── Card CTA empresa ── */
           <a
-            href="https://wa.me/51926011920?text=Hola%2C%20quiero%20cotizar%20con%20un%20ejecutivo%20especializado."
+            href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20con%20un%20ejecutivo%20especializado."
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col justify-between mt-4 rounded-2xl"
@@ -484,7 +484,7 @@ export default function Calculator({
           {/* Mejorar tasas — solo en personas */}
           {!d && (<><span className="select-none" style={{ color: '#E5E7EB' }}>|</span>
             <a
-              href="https://wa.me/51926011920?text=Hola%2C%20quiero%20mejorar%20mis%20tasas%20de%20cambio."
+              href="https://wa.me/51910624404?text=Hola%2C%20quiero%20mejorar%20mis%20tasas%20de%20cambio."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-200"
