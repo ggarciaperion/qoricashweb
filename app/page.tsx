@@ -287,13 +287,16 @@ export default function Home() {
                         }
                         setIsUserMenuOpen(!isUserMenuOpen);
                       }}
-                      className="relative flex items-center space-x-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
+                      className="relative flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
                     >
-                      <UserIcon className="w-4 h-4" />
-                      <span>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-black shrink-0"
+                        style={{ background: isEmpresaPage ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                        {((user?.razon_social || user?.nombres) ?? '?').charAt(0).toUpperCase()}
+                      </div>
+                      <span className="max-w-[100px] truncate">
                         {user?.document_type === 'RUC'
                           ? user?.razon_social || user?.nombres
-                          : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres}
+                          : user?.nombres}
                       </span>
                       <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                       <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
@@ -351,6 +354,12 @@ export default function Home() {
                   <span className="h-4 w-px" style={{ background: 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
                 </>
               )}
+              {isAuthenticated && user && (
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0 mr-0.5"
+                  style={{ background: isEmpresaPage ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                  {((user.razon_social || user.nombres) ?? '?').charAt(0).toUpperCase()}
+                </div>
+              )}
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -389,7 +398,7 @@ export default function Home() {
               <>
                 <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.4)' }}>Mi Cuenta</p>
                 <div className="space-y-0.5">
-                  <Link href="/perfil" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link href="/dashboard?perfil=1" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
                     <span className="font-medium flex-1 text-sm">Mi perfil</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
@@ -454,7 +463,7 @@ export default function Home() {
             }}
           >
             <button
-              onClick={() => { setIsUserMenuOpen(false); router.push('/perfil'); }}
+              onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard?perfil=1'); }}
               className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
               style={{ color: 'rgba(255,255,255,0.75)' }}
               onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}

@@ -274,13 +274,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Left: hamburger + horario */}
             <div className="flex items-center gap-3 shrink-0">
               <button
-                className="lg:hidden p-2 rounded-xl transition"
+                className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition"
                 style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
                 onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)')}
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
+                <span className="text-xs font-semibold uppercase tracking-wide">Menú</span>
               </button>
               <div className="hidden md:flex items-center gap-2">
                 <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }} />
@@ -294,8 +295,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Center spacer */}
             <div className="flex-1" />
 
-            {/* Right: bell + user */}
+            {/* Right: inicio + bell + user */}
             <div className="flex items-center gap-1 shrink-0">
+              <Link
+                href="/"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.7)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ffffff'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.7)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              >
+                <Home className="w-3.5 h-3.5" />
+                Página de inicio
+              </Link>
+              <div className="block w-px h-5 mx-1" style={{ background: isEmpresaUser ? 'rgba(143,184,204,0.2)' : 'rgba(255,255,255,0.2)' }} />
               <button
                 className="p-2 rounded-xl transition"
                 style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)' }}

@@ -208,7 +208,7 @@ export default function CuentasBancariasPage() {
             <div className="animate-spin" style={{ width: 28, height: 28, border: `3px solid ${isEmpresa ? 'rgba(143,184,204,0.2)' : '#e5e7eb'}`, borderTopColor: isEmpresa ? '#8fb8cc' : '#22C55E', borderRadius: '50%' }} />
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <CurrencySection label="Dólares" symbol="$"  list={dolares} />
             <CurrencySection label="Soles"   symbol="S/" list={soles} />
           </div>
