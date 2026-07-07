@@ -1,5 +1,6 @@
 import { getNoticias, CATEGORIAS, type Noticia } from '@/lib/noticias';
 import Link from 'next/link';
+import Image from 'next/image';
 import { TrendingUp, Calendar, BookOpen, ArrowLeft, ExternalLink } from 'lucide-react';
 
 export const revalidate = 60;
@@ -38,11 +39,13 @@ function NoticiaCard({ noticia, featured = false }: { noticia: Noticia; featured
     return (
       <Link href={`/noticias/${noticia.id}`} className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-primary-300 transition-all duration-300 flex">
         {noticia.imagen && (
-          <div className="relative w-40 flex-shrink-0 overflow-hidden">
-            <img
+          <div className="relative w-40 self-stretch flex-shrink-0 overflow-hidden">
+            <Image
               src={noticia.imagen}
               alt={noticia.titulo}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              fill
+              sizes="160px"
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
           </div>
         )}
@@ -78,10 +81,12 @@ function NoticiaCard({ noticia, featured = false }: { noticia: Noticia; featured
     <Link href={`/noticias/${noticia.id}`} className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-primary-300 transition-all duration-300 flex flex-col">
       {noticia.imagen && (
         <div className="relative h-32 overflow-hidden flex-shrink-0">
-          <img
+          <Image
             src={noticia.imagen}
             alt={noticia.titulo}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            fill
+            sizes="(max-width: 640px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
           />
         </div>
       )}

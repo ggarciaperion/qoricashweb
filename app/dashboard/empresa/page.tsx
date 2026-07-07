@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { operationsApi } from '@/lib/api/operations';
@@ -406,10 +407,12 @@ export default function EmpresaDashboardPage() {
                 {/* Imagen */}
                 {noticia.imagen && (
                   <div className="md:w-64 flex-shrink-0 relative overflow-hidden" style={{ height: 160 }}>
-                    <img
+                    <Image
                       src={noticia.imagen}
                       alt={noticia.titulo}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="256px"
+                      className="object-cover"
                       style={{ opacity: 0.75 }}
                     />
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 60%, rgba(13,27,42,0.6))' }} />

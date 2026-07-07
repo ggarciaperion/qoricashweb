@@ -1,5 +1,6 @@
 import { getNoticias, type Noticia } from '@/lib/noticias';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, TrendingUp, ExternalLink, BookOpen } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
@@ -83,11 +84,13 @@ export default async function NoticiaDetallePage({
 
             {/* Imagen cuadrada dentro del artículo */}
             {noticia.imagen && (
-              <div className="w-48 h-48 rounded-xl overflow-hidden shadow-md float-right ml-5 mb-3 flex-shrink-0">
-                <img
+              <div className="relative w-48 h-48 rounded-xl overflow-hidden shadow-md float-right ml-5 mb-3 flex-shrink-0">
+                <Image
                   src={noticia.imagen}
                   alt={noticia.titulo}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="192px"
+                  className="object-cover"
                 />
               </div>
             )}
@@ -161,8 +164,8 @@ export default async function NoticiaDetallePage({
                       className="flex gap-3 group"
                     >
                       {n.imagen && (
-                        <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
-                          <img src={n.imagen} alt={n.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+                          <Image src={n.imagen} alt={n.titulo} fill sizes="56px" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                         </div>
                       )}
                       <div className="min-w-0">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import { useOperationEventStore } from '@/lib/store/operationEventStore';
@@ -699,7 +700,7 @@ export default function DashboardPage() {
                   <a key={item.id} href={`/noticias/${item.id}`}
                     className="absolute inset-0 transition-opacity duration-700"
                     style={{ opacity: i === noticiaIdx ? 1 : 0, pointerEvents: i === noticiaIdx ? 'auto' : 'none' }}>
-                    {item.imagen && <img src={item.imagen} alt={item.titulo} className="absolute inset-0 w-full h-full object-cover" />}
+                    {item.imagen && <Image src={item.imagen} alt={item.titulo} fill sizes="50vw" className="object-cover" />}
                     <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)' }} />
                     <div className="absolute bottom-0 left-0 right-0 px-2 pb-5 pt-2">
                       <span className="text-[7px] font-bold uppercase tracking-wide block mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>

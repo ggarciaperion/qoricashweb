@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import Calculator from '@/components/Calculator';
 import AnimatedStat from '@/components/AnimatedStat';
@@ -1517,10 +1518,12 @@ export default function Home() {
                 <div className="grid sm:grid-cols-5">
                   {noticiasCorp[newsCorpIdx]?.imagen && (
                     <div className="sm:col-span-2 relative overflow-hidden" style={{ minHeight: 180 }}>
-                      <img
-                        src={noticiasCorp[newsCorpIdx].imagen}
+                      <Image
+                        src={noticiasCorp[newsCorpIdx].imagen!}
                         alt={noticiasCorp[newsCorpIdx].titulo}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 640px) 100vw, 40vw"
+                        className="object-cover"
                       />
                       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(6,14,26,0.3), transparent)' }} />
                     </div>
