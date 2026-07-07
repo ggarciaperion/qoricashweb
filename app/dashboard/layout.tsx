@@ -79,10 +79,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     exact ? pathname === href : pathname === href || pathname.startsWith(href + '/');
 
   return (
-    <div className="min-h-screen flex" style={isEmpresaUser
-      ? { backgroundColor: '#0D1B2A' }
-      : { backgroundImage: 'url(/dv.webp)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }
-    }>
+    <div className="min-h-screen flex" style={{ position: 'relative' }}>
+      {/* Background fijo que cubre toda la pantalla incluyendo safe areas del móvil */}
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: -1,
+        ...(isEmpresaUser
+          ? { backgroundColor: '#0D1B2A' }
+          : { backgroundImage: 'url(/dv.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }
+        ),
+      }} />
 
       {/* Mobile overlay */}
       {isSidebarOpen && (

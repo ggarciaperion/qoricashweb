@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Evita color sólido en safe areas del móvil (status bar / home indicator) */
+html,
+body {
+  background-color: #0D1B2A;
+}
+
 /* ── Botón INICIAR OPERACIÓN — hover gradient + shimmer loop ── */
 .iniciar-op-btn {
   transition: color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
