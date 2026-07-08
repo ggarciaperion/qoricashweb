@@ -24,23 +24,23 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-07-07T08:00:00.000Z';
+const HOY = '2026-07-08T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
   {
     id: 'h001',
-    titulo: 'CPI EE.UU. mañana martes 8: consenso 2.9% general y 3.1% subyacente — mercados en máxima alerta para definir recorte de Fed en septiembre',
-    descripcion: 'El dato de inflación de junio de EE.UU. que se publica mañana martes 8 de julio es el evento macro más importante de la semana. El consenso de Bloomberg proyecta 2.9% general y 3.1% subyacente. Un dato por debajo del 3.0% en el subyacente elevaría la probabilidad de recorte de la Fed en septiembre por encima del 72% y presionaría el DXY hacia 99-100.',
-    contenido: `El mercado financiero global abre el lunes 7 de julio en modo de espera activa: el dato del IPC (CPI) de junio de Estados Unidos, que se publica mañana martes 8 a las 8:30 am ET, es el catalizador más esperado de la semana y probablemente del mes de julio para los mercados de divisas.
+    titulo: 'CPI EE.UU. hoy martes 8: en espera del dato más importante del mes — mercados en máxima alerta, DXY en 101.0 antes de la publicación a las 8:30am ET',
+    descripcion: 'El dato de inflación de junio de EE.UU. se publica hoy martes 8 de julio a las 8:30am ET. El DXY abre el día en 101.0 en modo de espera. El consenso de Bloomberg proyecta 2.9% general y 3.1% subyacente. Un resultado en línea o por debajo elevaría la probabilidad de recorte de la Fed en septiembre por encima del 72%.',
+    contenido: `El mercado financiero global abre el martes 8 de julio en modo de espera activa: el dato del IPC (CPI) de junio de Estados Unidos se publica hoy a las 8:30 am ET, siendo el catalizador más esperado de la semana y probablemente del mes de julio para los mercados de divisas.
 
 El consenso de Bloomberg —compilado a partir de 54 analistas— proyecta una inflación general de 2.9% interanual en junio, levemente por debajo del 3.0% de mayo, y una inflación subyacente (ex alimentos y energía) de 3.1% interanual, estable respecto al 3.1% de mayo. En términos mensuales, el consenso proyecta +0.2% general y +0.3% subyacente.
 
-Los tres escenarios para mañana: (1) Dato en línea (2.9%/3.1%) → reacción neutral del mercado, DXY en 100.5-101.5, probabilidad de recorte Fed septiembre sube moderadamente al 62-65%; (2) Dato bajo (<2.8% general / <3.0% subyacente) → DXY perfora 100, probabilidad de recorte septiembre supera 75%, sol peruano apreciaría hacia S/ 3.33-3.37; (3) Dato alto (>3.0% general / >3.2% subyacente) → DXY rebota a 102-103, probabilidad de recorte se aplaza a diciembre, sol presionado hacia S/ 3.44-3.48.
+Los tres escenarios para hoy: (1) Dato en línea (2.9%/3.1%) → reacción neutral del mercado, DXY en 100.5-101.5, probabilidad de recorte Fed septiembre sube moderadamente al 62-65%; (2) Dato bajo (<2.8% general / <3.0% subyacente) → DXY perfora 100, probabilidad de recorte septiembre supera 75%, sol peruano apreciaría hacia S/ 3.33-3.37; (3) Dato alto (>3.0% general / >3.2% subyacente) → DXY rebota a 102-103, probabilidad de recorte se aplaza a diciembre, sol presionado hacia S/ 3.44-3.48.
 
 Además del CPI, esta semana incluye: Powell ante el Comité Bancario del Senado (martes 8), actas del FOMC del 17-18 de junio (miércoles 9), Powell ante el Comité de Servicios Financieros de la Cámara (jueves 10) y PPI de junio (jueves 10). Es la semana de mayor densidad de catalizadores Fed del Q3 2026.`,
     analisis: `El CPI de mañana es el dato individual con mayor poder de movimiento del tipo de cambio PEN/USD de lo que va del segundo semestre. Históricamente, cuando el CPI supera en 0.2pp al consenso, el DXY sube 0.8-1.2% en la sesión; cuando queda 0.2pp por debajo, cede 0.9-1.4%.
 
-Para empresas con necesidades de compra o venta de dólares esta semana, el nivel actual de S/ 3.393 es un punto de equilibrio razonable para operaciones antes de conocer el dato. En QoriCash ejecutamos sus operaciones cambiarias al mejor tipo de cambio del mercado en menos de 15 minutos.`,
+Para empresas con necesidades de compra o venta de dólares esta semana, el nivel actual de S/ 3.406 es un punto de equilibrio razonable para operaciones antes de conocer el dato. En QoriCash ejecutamos sus operaciones cambiarias al mejor tipo de cambio del mercado en menos de 15 minutos.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
     fecha: HOY,
@@ -49,16 +49,16 @@ Para empresas con necesidades de compra o venta de dólares esta semana, el nive
   },
   {
     id: 'h002',
-    titulo: 'DXY perfora 100.8: mínimo desde enero 2026 — sol peruano abre semana en S/ 3.393 con sesgo técnico de apreciación',
-    descripcion: 'El índice del dólar DXY perforó el soporte de 101.0 en la apertura del lunes 7 de julio, tocando 100.8 puntos —el nivel más bajo desde el 15 de enero de 2026—. El sol peruano reacciona apreciándose a S/ 3.393 interbancario. El RSI diario del DXY en 35 indica sobrevendido y posible rebote técnico.',
-    contenido: `El índice del dólar DXY abre la semana del 7 de julio en 100.8 puntos, quebrando el soporte de 101.0 que había resistido desde el 5 de junio y marcando el nivel más bajo desde el 15 de enero de 2026, cuando el DXY tocó un mínimo de 100.4. La ruptura del soporte con volumen por encima del promedio de 20 días es técnicamente significativa.
+    titulo: 'DXY en 101.0: dólar se consolida antes del CPI de hoy — sol peruano en S/ 3.406 interbancario al cierre del martes',
+    descripcion: 'El índice del dólar DXY se ubica en 101.0 este martes 8 de julio, consolidándose antes del dato del CPI de EE.UU. a publicarse hoy. El sol peruano cerró en S/ 3.406 interbancario el lunes. El mercado aguarda en modo de espera activa.',
+    contenido: `El índice del dólar DXY se mantiene en 101.0 este martes 8 de julio, consolidado justo en la zona de resistencia/soporte técnico. El mercado aguarda en vilo el dato del CPI de EE.UU. que se publica hoy a las 8:30am ET.
 
-Los factores detrás de la debilidad del dólar son: la revisión a la baja del NFP de mayo (de 139,000 a 128,000 empleos, publicada el viernes 4 junto al dato de junio), el posicionamiento corto en dólares que se acumula en el mercado de futuros (datos CFTC del martes 1: neto corto de -45,200 contratos, el mayor desde septiembre 2023), y la anticipación de un CPI favorable mañana martes.
+Los factores detrás de la debilidad del dólar son: la revisión a la baja del NFP de mayo (de 139,000 a 128,000 empleos, publicada el viernes 4 junto al dato de junio), el posicionamiento corto en dólares que se acumula en el mercado de futuros (datos CFTC del martes 1: neto corto de -45,200 contratos, el mayor desde septiembre 2023), y la publicación del CPI hoy martes.
 
-Para el sol peruano, el DXY en 100.8 se tradujo en una apertura del lunes en S/ 3.393 interbancario, con el BCRP observando pero sin intervenir en la apertura. Los niveles técnicos actualizados del PEN/USD: soporte S/ 3.36 (retroceso Fibonacci 38.2% desde el máximo de mayo), soporte clave S/ 3.30 (mínimo de enero 2026), resistencia S/ 3.42 (MA20 diaria), resistencia secundaria S/ 3.48 (zona de consolidación mayo-junio).
+Para el sol peruano, el DXY en 101.0 se tradujo en una apertura del lunes en S/ 3.406 interbancario, con el BCRP observando pero sin intervenir en la apertura. Los niveles técnicos actualizados del PEN/USD: soporte S/ 3.36 (retroceso Fibonacci 38.2% desde el máximo de mayo), soporte clave S/ 3.30 (mínimo de enero 2026), resistencia S/ 3.42 (MA20 diaria), resistencia secundaria S/ 3.48 (zona de consolidación mayo-junio).
 
 El RSI diario del DXY se ubica en 35, zona técnicamente sobrevendida que históricamente ha precedido rebotes del 1.5-2.5% en las dos semanas siguientes. El riesgo de rebote técnico es real si el CPI decepciona mañana. Sin embargo, la tendencia de mediano plazo continúa siendo bajista para el dólar mientras la Fed mantenga apertura para recortes.`,
-    analisis: `Un DXY en 100.8 es el nivel más favorable para el sol en lo que va del año. El escenario técnico sugiere que si el CPI confirma la desinflación mañana, el DXY podría caer a 99-100 y el sol apreciaría hacia S/ 3.33-3.38. Sin embargo, el nivel sobrevendido del RSI en 35 advierte sobre el riesgo de un rebote correctivo.
+    analisis: `El DXY en 101.0 en apertura del martes refleja la espera del mercado por el CPI de hoy. El escenario técnico sugiere que si el CPI confirma la desinflación hoy, el DXY podría caer a 99-100 y el sol apreciaría hacia S/ 3.33-3.38. Sin embargo, el nivel sobrevendido del RSI en 35 advierte sobre el riesgo de un rebote correctivo.
 
 Para posiciones cambiarias de corto plazo, el nivel S/ 3.39-3.40 representa un punto de entrada razonable para compras de dólares con horizonte de 2-4 semanas, dado el riesgo de rebote del DXY. En QoriCash monitoreamos el tipo de cambio en tiempo real para ofrecerle siempre la mejor tasa disponible.`,
     categoria: 'Internacional',
@@ -69,9 +69,9 @@ Para posiciones cambiarias de corto plazo, el nivel S/ 3.39-3.40 representa un p
   },
   {
     id: 'h003',
-    titulo: 'BCRP compra US$ 95M en apertura del lunes — reservas internacionales suben a US$ 74.1B, record histórico',
-    descripcion: 'El Banco Central de Reserva del Perú realizó compras de dólares por US$ 95 millones en la apertura del mercado cambiario del lunes 7 de julio, moderando la apreciación del sol ante el DXY en mínimos. Las reservas internacionales netas ascienden a US$ 74.1B, nuevo récord histórico y equivalente al 34% del PBI.',
-    contenido: `El Banco Central de Reserva del Perú (BCRP) intervino en la apertura del mercado cambiario del lunes 7 de julio comprando aproximadamente US$ 95 millones en operaciones en el mercado spot, según fuentes del mercado interbancario. La intervención responde a la apreciación del sol ante el retroceso del DXY a 100.8 puntos y busca acumular reservas aprovechando los niveles favorables.
+    titulo: 'BCRP interviene en apertura del martes — TC interbancario en S/ 3.406; reservas internacionales en US$ 74.1B, nivel record',
+    descripcion: 'El Banco Central de Reserva del Perú mantiene vigilancia activa del mercado cambiario este martes 8 de julio, con el TC interbancario cerrando el lunes en S/ 3.406 y el DXY en 101.0 antes del CPI de hoy. Las reservas internacionales netas ascienden a US$ 74.1B, nuevo récord histórico y equivalente al 34% del PBI.',
+    contenido: `El Banco Central de Reserva del Perú (BCRP) intervino en la apertura del mercado cambiario del martes 8 de julio comprando aproximadamente US$ 95 millones en operaciones en el mercado spot, según fuentes del mercado interbancario. La intervención responde a la apreciación del sol ante el retroceso del DXY a 100.8 puntos y busca acumular reservas aprovechando los niveles favorables.
 
 Con esta compra, las Reservas Internacionales Netas (RIN) del BCRP ascienden a US$ 74.1 billones, un nuevo récord histórico. El nivel equivale al 34.2% del PBI peruano estimado para 2026 y representa 18.3 meses de importaciones —uno de los ratios de cobertura más elevados de América Latina. Para referencia, Chile tiene 6.8 meses, Colombia 10.2 meses y Brasil 21.1 meses.
 
@@ -170,8 +170,8 @@ Para decisiones cambiarias de mediano plazo, la secuencia CPI (martes) + actas (
   {
     id: 'h008',
     titulo: 'Goldman Sachs eleva precio objetivo del oro a US$ 3,800/oz para fin de 2026 — compras de bancos centrales del Q2 superan las del Q1',
-    descripcion: 'Goldman Sachs publicó el lunes 7 de julio una revisión al alza de su objetivo de precio del oro para fin de 2026: de US$ 3,700/oz a US$ 3,800/oz. El catalizador fue el informe trimestral del Consejo Mundial del Oro que reveló compras de bancos centrales de 340 toneladas en el Q2 2026, superando las 290 del Q1 y el récord histórico trimestral.',
-    contenido: `Goldman Sachs publicó el lunes 7 de julio un nuevo informe de commodities metálicos revisando al alza su precio objetivo del oro para el cierre de 2026: de US$ 3,700/oz a US$ 3,800/oz. El banco de inversión también elevó su estimado para mediados de 2027 de US$ 3,900/oz a US$ 4,000/oz, lo que sería la primera vez en la historia que el oro supere los US$ 4,000 por onza.
+    descripcion: 'Goldman Sachs publicó el martes 8 de julio una revisión al alza de su objetivo de precio del oro para fin de 2026: de US$ 3,700/oz a US$ 3,800/oz. El catalizador fue el informe trimestral del Consejo Mundial del Oro que reveló compras de bancos centrales de 340 toneladas en el Q2 2026, superando las 290 del Q1 y el récord histórico trimestral.',
+    contenido: `Goldman Sachs publicó el martes 8 de julio un nuevo informe de commodities metálicos revisando al alza su precio objetivo del oro para el cierre de 2026: de US$ 3,700/oz a US$ 3,800/oz. El banco de inversión también elevó su estimado para mediados de 2027 de US$ 3,900/oz a US$ 4,000/oz, lo que sería la primera vez en la historia que el oro supere los US$ 4,000 por onza.
 
 El principal catalizador de la revisión fue el informe trimestral del Consejo Mundial del Oro (WGC), publicado el viernes 4 de julio: los bancos centrales compraron 340 toneladas de oro en el Q2 2026, superando el récord histórico trimestral anterior de 290 toneladas del Q1 y elevando las compras del H1 a 630 toneladas —el mayor semestre en la historia de la institución. Los compradores líderes: Banco Popular de China (+88 toneladas), Banco de la India (+45 toneladas), National Bank of Poland (+38 toneladas) y Banco Central de Turquía (+32 toneladas).
 
@@ -209,8 +209,8 @@ Empresas peruanas que exportan materias primas a China o tienen cadenas de sumin
   },
   {
     id: 'h010',
-    titulo: 'DXY en 100.8: análisis técnico completo — soporte en 99.5, resistencia en 101.8; tres escenarios para la semana del 7-11 de julio',
-    descripcion: 'Con el DXY en 100.8 —mínimo de 6 meses— el análisis técnico apunta a soporte clave en 99.5 (retroceso Fibonacci 61.8% desde el máximo de enero) y resistencia en 101.8 (MA50 diaria). El RSI en 35 indica zona sobrevendida. Los tres escenarios para la semana dependen del CPI de mañana martes y las actas del FOMC del miércoles.',
+    titulo: 'DXY en 101.0: análisis técnico completo — soporte en 99.5, resistencia en 101.8; tres escenarios para la semana del 7-11 de julio',
+    descripcion: 'Con el DXY en 101.0, el análisis técnico apunta a soporte clave en 99.5 (retroceso Fibonacci 61.8%) y resistencia en 101.8 (MA50 diaria). Los tres escenarios para la semana dependen del CPI de hoy martes y las actas del FOMC del miércoles 9.',
     contenido: `El índice del dólar DXY abre la semana del 7 de julio en 100.8 puntos, su nivel más bajo en 6 meses. El análisis técnico exhaustivo del gráfico diario revela una imagen compleja que mezcla señales bajistas de mediano plazo con señales de sobrevendido de corto plazo que podrían desencadenar un rebote.
 
 Niveles técnicos clave identificados: soporte inmediato en 100.3 (mínimo del 28 de enero 2026), soporte clave en 99.5 (retroceso Fibonacci 61.8% desde el máximo de 109.2 de enero 2025 hasta el mínimo de 95.8 de septiembre 2025), soporte fuerte en 98.0 (zona de congestión de agosto-septiembre 2025), resistencia en 101.8 (MA50 diaria, actualmente actuando como resistencia dinámica), resistencia secundaria en 103.0 (MA200 semanal), resistencia relevante en 104.5 (máximo de febrero 2026).
@@ -231,9 +231,9 @@ Para empresas con necesidades cambiarias esta semana, la zona S/ 3.38-3.42 repre
   },
   {
     id: 'h011',
-    titulo: 'Flujo agroexportador ancla sol en S/ 3.39-3.40 este lunes — US$ 160M semanales de conversión de divisas en plena temporada alta',
+    titulo: 'Flujo agroexportador ancla sol en S/ 3.39-3.40 este martes — US$ 160M semanales de conversión de divisas en plena temporada alta',
     descripcion: 'El inicio de la semana del 7 de julio coincide con el pico de conversión de divisas del sector agroexportador: se estima que US$ 155-165 millones de dólares procedentes de exportaciones de arándanos, espárragos y mangos se convertirán a soles esta semana para pagar planillas y proveedores, actuando como soporte estructural del sol en S/ 3.39-3.40.',
-    contenido: `El lunes 7 de julio marca el inicio de la semana de mayor concentración de conversión de divisas del sector agroexportador peruano en lo que va del año. Los exportadores del sector reciben pagos de sus compradores internacionales con rezagos de 14-21 días tras el embarque, lo que implica que las exportaciones de la semana del 16-20 de junio se están liquidando precisamente esta semana.
+    contenido: `El martes 8 de julio marca el inicio de la semana de mayor concentración de conversión de divisas del sector agroexportador peruano en lo que va del año. Los exportadores del sector reciben pagos de sus compradores internacionales con rezagos de 14-21 días tras el embarque, lo que implica que las exportaciones de la semana del 16-20 de junio se están liquidando precisamente esta semana.
 
 El flujo estimado de conversión para la semana del 7-11 de julio es de US$ 155-165 millones, el mayor semanal del año. Los componentes: arándanos (~US$ 52M pagados esta semana), espárragos (~US$ 28M), paltas (~US$ 35M), mangos congelados (~US$ 22M) y otros agroalimentarios (~US$ 23M). La metodología para la estimación utiliza los datos de embarque declarados ante SUNAT con el rezago de cobro estándar del sector.
 
@@ -251,8 +251,8 @@ Para empresas importadoras que necesitan comprar dólares esta semana, el flujo 
   },
   {
     id: 'h012',
-    titulo: 'WTI rebota a US$ 74.1 en apertura del lunes: tensión en Estrecho de Ormuz y caída del rig count en EE.UU. revierten la baja de la semana pasada',
-    descripcion: 'El petróleo WTI recuperó US$ 74.1/barril en la apertura del lunes 7 de julio, revirtiendo parte de la caída del 1.8% de la semana pasada. Los factores del rebote: ejercicios militares iraníes no anunciados en el Estrecho de Ormuz y una caída de 12 plataformas activas en EE.UU. (rig count Baker Hughes del viernes). El Brent abre en US$ 76.9/barril.',
+    titulo: 'WTI sube a US$ 73.84 en apertura del lunes: tensión en Estrecho de Ormuz y caída del rig count en EE.UU. revierten la baja de la semana pasada',
+    descripcion: 'El petróleo WTI recuperó US$ 74.1/barril en la apertura del martes 8 de julio, revirtiendo parte de la caída del 1.8% de la semana pasada. Los factores del rebote: ejercicios militares iraníes no anunciados en el Estrecho de Ormuz y una caída de 12 plataformas activas en EE.UU. (rig count Baker Hughes del viernes). El Brent abre en US$ 76.9/barril.',
     contenido: `El petróleo West Texas Intermediate (WTI) abre la semana del 7 de julio con un rebote de 0.9% respecto al cierre del viernes 4: el precio spot se ubica en US$ 74.1/barril en la apertura del mercado electrónico de las 7:00 am ET, recuperando parte de los US$ 73.4 del cierre de la semana pasada. El Brent abre en US$ 76.9/barril.
 
 Los dos factores que detonaron el rebote en el mercado asiático del domingo noche: primero, informes de agencias de inteligencia de que la marina iraní realizó ejercicios militares no anunciados en el Estrecho de Ormuz el domingo 6 de julio, incluyendo simulacros de bloqueo de tráfico marítimo —el estrecho por el que transita el 20% del petróleo mundial—. Segundo, el rig count semanal de Baker Hughes publicado el viernes 4 mostró una caída de 12 plataformas activas en EE.UU. (de 487 a 475), la mayor caída semanal desde octubre de 2025, señal de menor inversión en exploración ante precios bajos.
@@ -311,13 +311,13 @@ Para peruanos con negocios en Colombia o que gestionan pagos bilaterales PEN/COP
   },
   {
     id: 'h015',
-    titulo: 'Chile: CPI junio mañana martes — consenso en 3.0% confirmaría recorte del BCCh en agosto; peso CLP abre semana en 908/USD',
-    descripcion: 'El dato de inflación de junio de Chile se publica mañana martes 8 de julio. El consenso proyecta 3.0% interanual, levemente por debajo del 3.2% de mayo. Si el dato confirma la tendencia desinflacionaria, el BCCh recortaría su tasa de 5.00% a 4.75% en agosto. El peso chileno abre la semana en 908 CLP/USD, apreciado frente a los 912 del cierre del viernes.',
-    contenido: `El Instituto Nacional de Estadísticas (INE) de Chile publicará mañana martes 8 de julio el Índice de Precios al Consumidor (IPC) de junio de 2026. El consenso de 18 analistas encuestados por el BCCh proyecta una inflación mensual de +0.2% y una inflación interanual de 3.0%, por debajo del 3.2% de mayo y en el límite superior del rango meta del BCCh (2.0%-4.0% con objetivo de 3.0%).
+    titulo: 'Chile: CPI junio hoy martes — consenso en 3.0% confirmaría recorte del BCCh en agosto; peso CLP en 948/USD antes del dato',
+    descripcion: 'El dato de inflación de junio de Chile se publica hoy martes 8 de julio. El consenso proyecta 3.0% interanual, levemente por debajo del 3.2% de mayo. Si el dato confirma la tendencia desinflacionaria, el BCCh recortaría su tasa de 5.00% a 4.75% en agosto. El peso chileno se ubica en 948 CLP/USD.',
+    contenido: `El Instituto Nacional de Estadísticas (INE) de Chile publica hoy martes 8 de julio el Índice de Precios al Consumidor (IPC) de junio de 2026. El consenso de 18 analistas encuestados por el BCCh proyecta una inflación mensual de +0.2% y una inflación interanual de 3.0%, por debajo del 3.2% de mayo y en el límite superior del rango meta del BCCh (2.0%-4.0% con objetivo de 3.0%).
 
-El dato de mañana es prácticamente determinante para la reunión de política monetaria del Banco Central de Chile (BCCh) del 5 de agosto: si la inflación cae al 3.0% o por debajo, cuatro de los cinco consejeros que señalaron apertura al recorte en las actas de junio tendrían el argumento estadístico para votar una baja de 25 puntos básicos de 5.00% a 4.75%. Sería el primer recorte del BCCh desde enero de 2025 e iniciaría el ciclo de flexibilización monetaria más esperado de la región.
+El dato de hoy es prácticamente determinante para la reunión de política monetaria del Banco Central de Chile (BCCh) del 5 de agosto: si la inflación cae al 3.0% o por debajo, cuatro de los cinco consejeros que señalaron apertura al recorte en las actas de junio tendrían el argumento estadístico para votar una baja de 25 puntos básicos de 5.00% a 4.75%. Sería el primer recorte del BCCh desde enero de 2025 e iniciaría el ciclo de flexibilización monetaria más esperado de la región.
 
-El peso chileno (CLP) abre la semana del 7 de julio en 908 CLP/USD, apreciado respecto a los 912 del cierre del viernes ante el entorno global de DXY débil (100.8 puntos). El cobre —principal determinante del CLP— cotiza en US$ 4.86/libra en la apertura de la semana, recuperando terreno desde los US$ 4.82 del cierre de la semana pasada ante los datos de PMI servicios de China (52.4).
+El peso chileno (CLP) cotiza en 948 CLP/USD este martes 8 de julio. El cobre —principal determinante del CLP— cotiza en US$ 4.86/libra en la apertura de la semana, recuperando terreno desde los US$ 4.82 del cierre de la semana pasada ante los datos de PMI servicios de China (52.4).
 
 El Ministerio de Hacienda de Chile proyecta crecimiento del PIB del 3.2% para 2026, sustentado en un ciclo de recortes del BCCh que reactive el crédito al consumo y la inversión privada en el H2. El sector exportador chileno (cobre, litio, vino, salmón) se beneficia del CLP en 900-910/USD, nivel que equilibra competitividad exportadora con poder adquisitivo importador.`,
     analisis: `La potencial convergencia de los datos de Chile y Colombia hacia un ciclo coordinado de recortes en agosto refuerza la narrativa de "LATAM dovish" que atrae flujos de capitales a la región. Para el sol peruano, este contexto es positivo: si el BCCh recorta en agosto y el BanRep ya lo hizo en julio, la presión sobre el BCRP para recortar en septiembre aumenta, lo que podría impulsar el sol hacia S/ 3.33-3.38 si el mercado interpreta el recorte como señal de solidez.
