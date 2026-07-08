@@ -129,9 +129,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ) : (
               <img src="/logo-principal.png" alt="QoriCash" className="h-14 w-auto" />
             )}
-            <div className="flex items-baseline gap-1.5">
+            <div className="flex items-baseline gap-1.5 whitespace-nowrap">
               <span
-                className="text-2xl font-black tracking-tight leading-none"
+                className={`font-black tracking-tight leading-none ${isEmpresaUser ? 'text-xl' : 'text-2xl'}`}
                 style={isEmpresaUser
                   ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }
                   : { color: '#ffffff' }}
@@ -140,8 +140,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
               {isEmpresaUser && (
                 <span
-                  className="text-[11px] font-light tracking-wide"
-                  style={{ color: 'rgba(255,255,255,0.65)' }}
+                  className="text-[11px] font-light tracking-wide shrink-0"
+                  style={{ color: 'rgba(255,255,255,0.7)' }}
                 >
                   Corporate
                 </span>
