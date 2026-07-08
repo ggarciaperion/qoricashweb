@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ) : (
               <img src="/logo-principal.png" alt="QoriCash" className="h-14 w-auto" />
             )}
-            <div className="flex flex-col items-center">
+            <div className="flex items-baseline gap-1.5">
               <span
                 className="text-2xl font-black tracking-tight leading-none"
                 style={isEmpresaUser
@@ -140,8 +140,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
               {isEmpresaUser && (
                 <span
-                  className="text-[9px] font-bold tracking-[0.22em] uppercase mt-0.5"
-                  style={{ color: 'rgba(143,184,204,0.6)', letterSpacing: '0.22em' }}
+                  className="text-[11px] font-light tracking-wide"
+                  style={{ color: 'rgba(255,255,255,0.65)' }}
                 >
                   Corporate
                 </span>
