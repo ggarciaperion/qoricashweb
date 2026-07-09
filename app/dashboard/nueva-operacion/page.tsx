@@ -120,8 +120,14 @@ export function NuevaOperacionContent() {
   const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
   const [dniFront, setDnifront] = useState<File | null>(null);
   const [dniBack, setDniBack] = useState<File | null>(null);
-  // Flag local: documentos ya enviados en esta sesión (evita que el botón "Subir" reaparezca si el backend aún no actualizó has_complete_documents)
+  // Flag persistente: documentos enviados — sobrevive navegación via localStorage
   const [docsSubmittedThisSession, setDocsSubmittedThisSession] = useState(false);
+  const setDocsPersisted = (val: boolean, uid?: number) => {
+    const key = `kyc_pending_${uid ?? user?.id}`;
+    if (val) localStorage.setItem(key, '1');
+    else localStorage.removeItem(key);
+    setDocsSubmittedThisSession(val);
+  };
 
   // Estado de verificación automática de cuenta activada
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
@@ -218,6 +224,23 @@ export function NuevaOperacionContent() {
       loadExistingOperation(operationId);
     }
   }, [searchParams, isAuthenticated, user]);
+
+  // Restore docsSubmittedThisSession from localStorage when user loads
+  useEffect(() => {
+    if (!user?.id) return;
+    const key = `kyc_pending_${user.id}`;
+    if (localStorage.getItem(key) === '1' && !user.has_complete_documents) {
+      setDocsPersisted(true);
+    }
+  }, [user?.id]);
+
+  // Clear persisted flag once KYC is approved
+  useEffect(() => {
+    if (user?.has_complete_documents && user?.id) {
+      localStorage.removeItem(`kyc_pending_${user.id}`);
+      setDocsSubmittedThisSession(false);
+    }
+  }, [user?.has_complete_documents, user?.id]);
 
   const loadExistingOperation = async (operationId: string) => {
     try {
@@ -933,7 +956,7 @@ export function NuevaOperacionContent() {
     // Demo mode: simulate successful upload for demo user (dev only)
     if (isDemoMode) {
       await new Promise(r => setTimeout(r, 3000));
-      setDocsSubmittedThisSession(true);
+      setDocsPersisted(true);
       setIsUploadingKYC(false);
       setKycUploadDone(true);
       setTimeout(() => {
@@ -965,7 +988,7 @@ export function NuevaOperacionContent() {
       const data = await response.json();
 
       if (data.success) {
-        setDocsSubmittedThisSession(true);
+        setDocsPersisted(true);
         await refreshUser();
         setIsUploadingKYC(false);
         setKycUploadDone(true);
@@ -1583,6 +1606,16 @@ export function NuevaOperacionContent() {
                           0%   { transform: rotate(-60deg); }
                           100% { transform: rotate(300deg); }
                         }
+                        @keyframes scanLine {
+                          0%   { transform: translateX(-100%); opacity: 0; }
+                          10%  { opacity: 1; }
+                          90%  { opacity: 1; }
+                          100% { transform: translateX(200%); opacity: 0; }
+                        }
+                        @keyframes pulseOpacity {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0.55; }
+                        }
                       `}</style>
                       <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid #bfdbfe', boxShadow: '0 2px 12px rgba(59,130,246,0.08)' }}>
                         {/* Header */}
@@ -1611,8 +1644,12 @@ export function NuevaOperacionContent() {
                           </div>
                         </div>
                         {/* Body */}
-                        <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: '#eff6ff' }}>
-                          <p className="text-xs text-blue-700 leading-relaxed">
+                        <div className="relative px-4 py-3 flex items-center justify-between gap-3 overflow-hidden" style={{ background: '#eff6ff' }}>
+                          {/* Scan shimmer line */}
+                          <div className="absolute inset-0 pointer-events-none" style={{ animation: 'scanLine 2.4s ease-in-out infinite' }}>
+                            <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60px', background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.18), transparent)' }} />
+                          </div>
+                          <p className="text-xs text-blue-700 leading-relaxed relative">
                             Nuestro equipo está revisando tus documentos. Te avisaremos cuando tu cuenta esté activa.
                           </p>
                           <button
@@ -1694,8 +1731,12 @@ export function NuevaOperacionContent() {
                             <span className="relative block w-2.5 h-2.5 rounded-full bg-white" />
                           </div>
                         </div>
-                        <div className="px-4 py-3" style={{ background: '#dcfce7' }}>
-                          <p className="text-xs text-green-800 leading-relaxed">
+                        <div className="relative px-4 py-3 overflow-hidden" style={{ background: '#dcfce7' }}>
+                          {/* Scan shimmer line */}
+                          <div className="absolute inset-0 pointer-events-none" style={{ animation: 'scanLine 2.4s ease-in-out infinite' }}>
+                            <div style={{ position: 'absolute', top: 0, bottom: 0, width: '60px', background: 'linear-gradient(90deg, transparent, rgba(22,163,74,0.2), transparent)' }} />
+                          </div>
+                          <p className="text-xs text-green-800 leading-relaxed relative">
                             Hemos recibido tus documentos. Nuestro equipo los está validando. <b>Podrás operar en cuanto sean aprobados.</b>
                           </p>
                         </div>
