@@ -138,6 +138,12 @@ export function NuevaOperacionContent() {
   const [showVerifyOverlay, setShowVerifyOverlay] = useState(false);
   const [verifyStillPending, setVerifyStillPending] = useState(false);
   const [showKycBlockedToast, setShowKycBlockedToast] = useState(false);
+  const [cancelledNotification, setCancelledNotification] = useState<{
+    code: string;
+    notas?: string | null;
+    tipo?: string;
+  } | null>(null);
+  const cancelNotifTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Formatted date for display - compute on client side only
   const [formattedDate, setFormattedDate] = useState<string>('');
@@ -241,6 +247,62 @@ export function NuevaOperacionContent() {
       setDocsSubmittedThisSession(false);
     }
   }, [user?.has_complete_documents, user?.id]);
+
+  // Al montar: mostrar notificación de cancelación pendiente (guardada antes de navegación)
+  useEffect(() => {
+    const stored = sessionStorage.getItem('qc_op_cancelled_notif');
+    if (stored) {
+      try {
+        setCancelledNotification(JSON.parse(stored));
+        sessionStorage.removeItem('qc_op_cancelled_notif');
+      } catch {}
+    }
+  }, []);
+
+  // Polling cada 15 s en step 3 para detectar cancelación externa desde el sistema
+  useEffect(() => {
+    if (currentStep !== 3 || !createdOperation || !user?.dni || isDemoMode) return;
+
+    const API = process.env.NEXT_PUBLIC_API_URL || 'https://app.qoricash.pe';
+    const targetId = createdOperation.id;
+    const targetCode = createdOperation.codigo_operacion || createdOperation.operation_id;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`${API}/api/web/my-operations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dni: user!.dni }),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const ops: any[] = data.data || [];
+        const op = ops.find((o) => o.id === targetId || o.codigo_operacion === targetCode || o.operation_id === targetCode);
+        if (op && (op.estado === 'cancelado' || op.estado === 'expirado' || op.estado === 'rechazado')) {
+          const notif = { code: targetCode, notas: op.notas || op.notes, tipo: op.estado };
+          sessionStorage.setItem('qc_op_cancelled_notif', JSON.stringify(notif));
+          setCancelledNotification(notif);
+          setCreatedOperation(null);
+          setHasActiveOperation(false);
+          setCurrentStep(1);
+        }
+      } catch {}
+    };
+
+    const interval = setInterval(poll, 15000);
+    return () => clearInterval(interval);
+  }, [currentStep, createdOperation, user?.dni]);
+
+  // Auto-dismiss de notificación de cancelación tras 15 segundos
+  useEffect(() => {
+    if (!cancelledNotification) return;
+    if (cancelNotifTimerRef.current) clearTimeout(cancelNotifTimerRef.current);
+    cancelNotifTimerRef.current = setTimeout(() => {
+      setCancelledNotification(null);
+      sessionStorage.removeItem('qc_op_cancelled_notif');
+    }, 15000);
+    return () => { if (cancelNotifTimerRef.current) clearTimeout(cancelNotifTimerRef.current); };
+  }, [cancelledNotification]);
 
   const loadExistingOperation = async (operationId: string) => {
     try {
@@ -3119,6 +3181,78 @@ export function NuevaOperacionContent() {
           </div>
         </div>
       )}
+      {/* ── Notificación: operación cancelada externamente ── */}
+      {cancelledNotification && (
+        <div className="fixed inset-0 z-[300] flex items-start justify-center pt-6 px-4 pointer-events-none">
+          <div
+            className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl pointer-events-auto"
+            style={{ animation: 'opFadeUp 0.35s ease', border: '1px solid rgba(239,68,68,0.35)' }}
+          >
+            {/* Header rojo */}
+            <div className="flex items-center gap-3 px-5 py-4" style={{ background: '#991b1b' }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                <XCircle className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-black text-white leading-tight">
+                  {cancelledNotification.tipo === 'rechazado' ? 'Operación rechazada' : 'Operación cancelada'}
+                </p>
+                <p className="text-[11px] font-semibold mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                  {cancelledNotification.code}
+                </p>
+              </div>
+              {/* Barra de progreso de auto-dismiss */}
+              <style>{`
+                @keyframes shrinkBar { from { width: 100%; } to { width: 0%; } }
+              `}</style>
+              <button
+                onClick={() => { setCancelledNotification(null); sessionStorage.removeItem('qc_op_cancelled_notif'); }}
+                className="p-1.5 rounded-lg hover:bg-white/10 transition flex-shrink-0"
+              >
+                <X className="w-4 h-4 text-white/70" />
+              </button>
+            </div>
+            {/* Cuerpo */}
+            <div className="px-5 py-4" style={{ background: '#0f172a' }}>
+              <p className="text-sm leading-relaxed mb-1" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                {cancelledNotification.tipo === 'rechazado'
+                  ? 'Tu operación fue rechazada por nuestro equipo.'
+                  : 'Tu operación fue cancelada por nuestro sistema o equipo de operaciones.'}
+              </p>
+              {cancelledNotification.notas && (
+                <p className="text-xs mt-2 px-3 py-2 rounded-lg leading-relaxed" style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)' }}>
+                  {cancelledNotification.notas.replace(/\[.*?\]\s*/g, '').trim()}
+                </p>
+              )}
+              <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Puedes iniciar una nueva operación cuando desees.
+              </p>
+            </div>
+            {/* Acciones */}
+            <div className="flex gap-2 px-5 py-3" style={{ background: '#1e293b', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <button
+                onClick={() => { setCancelledNotification(null); sessionStorage.removeItem('qc_op_cancelled_notif'); }}
+                className="flex-1 py-2 px-4 rounded-xl text-xs font-bold text-white transition hover:brightness-110"
+                style={{ background: '#374151' }}
+              >
+                Entendido
+              </button>
+              <button
+                onClick={() => { setCancelledNotification(null); router.push(isEmpresa ? '/dashboard/empresa' : '/dashboard'); }}
+                className="flex-1 py-2 px-4 rounded-xl text-xs font-bold text-white transition hover:brightness-110"
+                style={{ background: '#16a34a' }}
+              >
+                Ver mis operaciones
+              </button>
+            </div>
+            {/* Barra de auto-dismiss */}
+            <div style={{ height: '3px', background: 'rgba(239,68,68,0.3)' }}>
+              <div style={{ height: '100%', background: '#ef4444', animation: 'shrinkBar 15s linear forwards' }} />
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
