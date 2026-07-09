@@ -85,9 +85,10 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
     watch,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<BankAccountFormData>({
     resolver: zodResolver(bankAccountSchema),
+    mode: 'onChange',
     defaultValues: {
       ownership_confirmed: false,
       currency: defaultCurrency,
@@ -664,7 +665,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting || success}
+                  disabled={isSubmitting || success || !isValid}
                   className="flex-1 py-2 px-3 rounded-lg text-sm font-bold text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                   style={isEmpresa
                     ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)' }
