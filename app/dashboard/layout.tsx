@@ -67,10 +67,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = async () => { await logout(); router.push('/'); };
 
-  const displayName =
-    user?.document_type === 'RUC'
-      ? user?.razon_social || user?.nombres
-      : user?.nombres?.split(' ')[0] || user?.nombres;
+  // Solo primer nombre para persona natural (máximo una palabra)
+  const displayName = user?.document_type === 'RUC'
+    ? (user?.razon_social || user?.nombres)
+    : (user?.nombres?.trim().split(/\s+/)[0] ?? '');
 
   const isEmpresaUser = user?.document_type === 'RUC';
   const NAV_ITEMS = isEmpresaUser ? NAV_ITEMS_EMPRESA : NAV_ITEMS_PERSONA;
