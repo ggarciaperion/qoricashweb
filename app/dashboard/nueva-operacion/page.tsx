@@ -1133,12 +1133,13 @@ export function NuevaOperacionContent() {
             <div className="p-1">
               {/* Header */}
               <div className="mb-4 relative flex items-center justify-center">
-                {/* Botón Volver — solo empresa en pasos 2 y 3 */}
-                {isEmpresa && (currentStep === 2 || currentStep === 3) && (
+                {/* Botón Volver — pasos 2 y 3 en ambos modos */}
+                {(currentStep === 2 || currentStep === 3) && (
                   <button
                     onClick={() => {
                       if (currentStep === 2) setCurrentStep(1);
-                      else router.push('/dashboard/empresa');
+                      else if (isEmpresa) router.push('/dashboard/empresa');
+                      else router.push('/dashboard');
                     }}
                     className="absolute left-0 inline-flex items-center transition text-sm"
                     style={{ color: '#ffffff' }}
@@ -1146,19 +1147,6 @@ export function NuevaOperacionContent() {
                     onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
                   >
                     <ArrowLeft className="w-4 h-4 mr-1" />
-                    <span className="font-medium">Volver</span>
-                  </button>
-                )}
-                {/* Título centrado */}
-                {!isEmpresa && (
-                  <button
-                    onClick={() => router.push('/dashboard')}
-                    className="absolute left-0 inline-flex items-center transition text-sm"
-                    style={{ color: 'rgba(30,41,59,0.45)' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
-                    onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.45)')}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-1.5" />
                     <span className="font-medium">Volver</span>
                   </button>
                 )}
@@ -1758,7 +1746,10 @@ export function NuevaOperacionContent() {
                           setAccountContext('cargo');
                           setIsAddAccountModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition px-2.5 py-1 rounded-lg border border-secondary/30 hover:border-secondary/60 hover:bg-secondary/5"
+                        className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
+                        style={isEmpresa
+                          ? { color: 'var(--color-secondary)', border: '1px solid rgba(var(--color-secondary-rgb),0.3)' }
+                          : { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -1872,7 +1863,10 @@ export function NuevaOperacionContent() {
                           setAccountContext('destino');
                           setIsAddAccountModalOpen(true);
                         }}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-secondary hover:text-secondary-700 transition px-2.5 py-1 rounded-lg border border-secondary/30 hover:border-secondary/60 hover:bg-secondary/5"
+                        className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
+                        style={isEmpresa
+                          ? { color: 'var(--color-secondary)', border: '1px solid rgba(var(--color-secondary-rgb),0.3)' }
+                          : { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
