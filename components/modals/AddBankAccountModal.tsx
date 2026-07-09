@@ -259,10 +259,10 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
           style={{
             background: isEmpresa
               ? 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)'
-              : 'rgba(255,255,255,0.82)',
+              : 'rgba(255,255,255,0.55)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.65)',
+            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.5)',
             boxShadow: isEmpresa ? undefined : '0 8px 32px rgba(0,0,0,0.12)',
             ...(overlayPhase !== 'idle' ? { height: 300, overflow: 'hidden' } : {}),
           }}
@@ -392,7 +392,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
           )}
 
           {/* Header */}
-          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={isEmpresa ? { background: 'rgba(13,27,42,0.5)', borderColor: 'rgba(143,184,204,0.15)' } : { background: 'linear-gradient(135deg, #14532d, #16a34a)', borderColor: 'rgba(22,163,74,0.3)' }}>
+          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={isEmpresa ? { background: 'rgba(13,27,42,0.5)', borderColor: 'rgba(143,184,204,0.15)' } : { background: '#16a34a', borderColor: 'rgba(22,163,74,0.3)' }}>
             <h2 className="text-base font-bold text-white">Agregar Cuenta Bancaria</h2>
             <button
               onClick={handleClose}

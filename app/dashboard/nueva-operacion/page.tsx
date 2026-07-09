@@ -2584,7 +2584,7 @@ export function NuevaOperacionContent() {
             {!isUploadingKYC && !kycUploadDone && (
               <>
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4" style={{ background: 'linear-gradient(135deg, #14532d, #16a34a)' }}>
+                <div className="flex items-center justify-between px-5 py-4" style={{ background: '#16a34a' }}>
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
                       <FileImage className="w-4 h-4 text-white" />
