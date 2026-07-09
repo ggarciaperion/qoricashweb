@@ -448,15 +448,17 @@ export function NuevaOperacionContent() {
   const kycApproved = !!(user?.has_complete_documents);
   // kycBlocked: cuenta bloqueada por alcanzar límite sin docs (backend: kyc_status='bloqueado')
   const kycBlocked = user?.kyc_status === 'bloqueado';
-  // kycPendingReview: usuario envió documentos y están en revisión (status Inactivo o docs recién enviados)
-  const kycPendingReview = docsSubmittedThisSession ||
+  // hasUploadedDocs: el backend ya tiene las URLs de los documentos (subidos pero aún no aprobados)
+  const hasUploadedDocs = isEmpresa
+    ? !!(user?.ficha_ruc_url)
+    : !!(user?.dni_front_url && user?.dni_back_url);
+  // kycPendingReview: docs subidos (via URL del backend, localStorage, o cuenta Inactiva con docs)
+  const kycPendingReview = docsSubmittedThisSession || hasUploadedDocs ||
     (user?.status === 'Inactivo' && !!(user?.has_complete_documents));
-  // kycNeedsDocs: usuario activo sin docs y sin haberlos enviado aún — debe subir docs
-  const kycNeedsDocs = !kycApproved && !kycBlocked && !kycPendingReview &&
-    !user?.has_complete_documents && !docsSubmittedThisSession;
+  // kycNeedsDocs: sin docs subidos, sin haber enviado, sin estar bloqueado
+  const kycNeedsDocs = !kycApproved && !kycBlocked && !kycPendingReview;
   // kycBlocksOperation: bloquea crear operación en web
-  const kycBlocksOperation = !kycApproved && (kycBlocked || docsSubmittedThisSession ||
-    (user?.status === 'Inactivo') || kycNeedsDocs);
+  const kycBlocksOperation = !kycApproved && (kycBlocked || kycPendingReview || kycNeedsDocs);
 
   // Get adjusted exchange rate with referral discount applied
   const getAdjustedRate = () => {
