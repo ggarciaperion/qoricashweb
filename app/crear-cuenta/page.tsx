@@ -1273,7 +1273,7 @@ export default function CrearCuentaPage() {
                     {/* Ocupación */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Ocupación</legend>
-                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
+                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#ffffff' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
                       </select>
@@ -1496,7 +1496,7 @@ export default function CrearCuentaPage() {
                       <legend className={legCls} style={legSt}>Ocupación</legend>
                       <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)}
                         className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
-                        style={{ ...arrSt, color: formData.ocupacion ? '#334155' : '#CBD5E1' }}>
+                        style={{ ...arrSt, color: formData.ocupacion ? '#ffffff' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
                       </select>
