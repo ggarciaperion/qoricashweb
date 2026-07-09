@@ -320,7 +320,7 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 {/* DNI */}
                 <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
                     Número de Documento
                   </label>
                   <div style={{ position: 'relative' }}>
@@ -329,7 +329,7 @@ export default function LoginPage() {
                       {...register('dni')}
                       type="text"
                       inputMode="numeric"
-                      placeholder="12345678"
+                      placeholder=""
                       maxLength={11}
                       autoComplete="off"
                       disabled={isLoading || isBlocked}
@@ -351,7 +351,7 @@ export default function LoginPage() {
 
                 {/* Password */}
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
                     Contraseña
                   </label>
                   <div style={{ position: 'relative' }}>
@@ -359,7 +359,7 @@ export default function LoginPage() {
                     <input
                       {...register('password')}
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
+                      placeholder=""
                       autoComplete="new-password"
                       disabled={isLoading || isBlocked}
                       style={{
@@ -389,7 +389,7 @@ export default function LoginPage() {
 
                 {/* Row: remember + forgot */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 13, color: '#64748b' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
                     <input type="checkbox" style={{ width: 15, height: 15, accentColor: '#1E293B', cursor: 'pointer' }} />
                     Recuérdame
                   </label>
