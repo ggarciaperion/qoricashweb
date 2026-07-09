@@ -70,7 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const displayName =
     user?.document_type === 'RUC'
       ? user?.razon_social || user?.nombres
-      : user?.apellidos ? `${user?.nombres} ${user?.apellidos}` : user?.nombres;
+      : user?.nombres?.split(' ')[0] || user?.nombres;
 
   const isEmpresaUser = user?.document_type === 'RUC';
   const NAV_ITEMS = isEmpresaUser ? NAV_ITEMS_EMPRESA : NAV_ITEMS_PERSONA;
