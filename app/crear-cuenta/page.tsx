@@ -187,6 +187,7 @@ export default function CrearCuentaPage() {
   const [transicionando, setTransicionando] = useState(false);
   const [codigoEnviado, setCodigoEnviado] = useState(false);
   const [codigoEnviando, setCodigoEnviando] = useState(false);
+  const [showSentAnim, setShowSentAnim] = useState(false);
   const [codigoValue, setCodigoValue] = useState('');
   const [showChangeEmailModal, setShowChangeEmailModal] = useState(false);
   const [newEmailValue, setNewEmailValue] = useState('');
@@ -1567,8 +1568,12 @@ export default function CrearCuentaPage() {
                       });
                       const data = await res.json();
                       if (data.success) {
-                        setCodigoEnviado(true);
-                        setCountdown(90);
+                        setShowSentAnim(true);
+                        setTimeout(() => {
+                          setShowSentAnim(false);
+                          setCodigoEnviado(true);
+                          setCountdown(90);
+                        }, 2000);
                       } else {
                         setError(data.message || 'Error al enviar el código');
                       }
@@ -1586,6 +1591,93 @@ export default function CrearCuentaPage() {
                     <><Loader2 className="w-4 h-4 animate-spin" />Enviando...</>
                   ) : 'Enviar código'}
                 </button>
+              )}
+
+              {/* Animación "código enviado" — 2 segundos */}
+              {showSentAnim && (
+                <div className="relative overflow-hidden rounded-2xl" style={{
+                  background: 'rgba(10,20,36,0.85)',
+                  border: '1px solid rgba(34,197,94,0.35)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                }}>
+                  <style>{`
+                    @keyframes planeUp {
+                      0%   { transform: translate(0, 0) rotate(-15deg); opacity: 1; }
+                      60%  { transform: translate(30px, -40px) rotate(-30deg); opacity: 1; }
+                      100% { transform: translate(60px, -70px) rotate(-40deg); opacity: 0; }
+                    }
+                    @keyframes checkPop {
+                      0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+                      60%  { transform: scale(1.2) rotate(4deg); opacity: 1; }
+                      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+                    }
+                    @keyframes trailFade {
+                      0%   { opacity: 0; transform: scaleX(0); }
+                      30%  { opacity: 1; transform: scaleX(1); }
+                      100% { opacity: 0; transform: scaleX(1); }
+                    }
+                    @keyframes sentTextIn {
+                      0%   { opacity: 0; transform: translateY(6px); }
+                      100% { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes pulseRing {
+                      0%   { transform: scale(1);   opacity: 0.6; }
+                      100% { transform: scale(1.8); opacity: 0; }
+                    }
+                  `}</style>
+
+                  <div className="flex flex-col items-center justify-center py-6 px-4 gap-3">
+                    {/* Icono animado */}
+                    <div className="relative w-16 h-16 flex items-center justify-center">
+                      {/* Ring pulse */}
+                      <div className="absolute inset-0 rounded-full" style={{
+                        border: '2px solid rgba(34,197,94,0.5)',
+                        animation: 'pulseRing 1s ease-out 0.3s forwards',
+                      }} />
+                      {/* Círculo verde */}
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{
+                        background: 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.15))',
+                        border: '1.5px solid rgba(34,197,94,0.4)',
+                      }}>
+                        {/* Avión que sale */}
+                        <svg
+                          width="26" height="26" viewBox="0 0 24 24" fill="none"
+                          style={{ animation: 'planeUp 0.9s cubic-bezier(0.4,0,0.2,1) 0.1s forwards', transformOrigin: 'center' }}
+                        >
+                          <path d="M22 2L11 13" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(34,197,94,0.15)"/>
+                        </svg>
+                        {/* Check que aparece */}
+                        <svg
+                          width="22" height="22" viewBox="0 0 24 24" fill="none"
+                          style={{ position: 'absolute', animation: 'checkPop 0.4s cubic-bezier(0.34,1.56,0.64,1) 1s both' }}
+                        >
+                          <polyline points="20 6 9 17 4 12" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Textos */}
+                    <div className="text-center" style={{ animation: 'sentTextIn 0.4s ease 0.2s both' }}>
+                      <p className="text-sm font-black" style={{ color: '#ffffff' }}>¡Código enviado!</p>
+                      <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                        Revisa tu correo <span style={{ color: 'rgba(34,197,94,0.9)', fontWeight: 600 }}>{formData.email}</span>
+                      </p>
+                    </div>
+
+                    {/* Barra de progreso */}
+                    <div className="w-full rounded-full overflow-hidden" style={{ height: '2px', background: 'rgba(255,255,255,0.08)' }}>
+                      <div style={{
+                        height: '100%',
+                        background: 'linear-gradient(90deg, #22C55E, #10b981)',
+                        borderRadius: '9999px',
+                        animation: 'trailFade 2s linear forwards',
+                        transformOrigin: 'left center',
+                      }} />
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* Contador reenvío */}
