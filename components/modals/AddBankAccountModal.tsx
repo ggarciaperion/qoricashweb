@@ -666,10 +666,10 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                 <button
                   type="submit"
                   disabled={isSubmitting || success || !isValid}
-                  className="flex-1 py-2 px-3 rounded-lg text-sm font-bold text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-2 px-3 rounded-lg text-sm font-bold text-white transition disabled:cursor-not-allowed"
                   style={isEmpresa
-                    ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)' }
-                    : { background: 'var(--color-primary-600)' }}
+                    ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)', opacity: (!isValid || isSubmitting || success) ? 0.45 : 1 }
+                    : { background: isValid && !isSubmitting && !success ? '#16a34a' : 'rgba(100,116,139,0.45)', opacity: 1 }}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center gap-1.5">

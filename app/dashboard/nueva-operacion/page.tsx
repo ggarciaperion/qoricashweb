@@ -1746,34 +1746,7 @@ export function NuevaOperacionContent() {
                     </div>
                   )}
 
-                  {/* Banner: necesita subir documentos (Activo, sin docs, sin haberlos enviado) */}
-                  {user?.status === 'Activo' && kycNeedsDocs && !kycBlocked && (
-                    <div className="flex justify-center mb-2">
-                      <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(251,191,36,0.4)', boxShadow: '0 2px 12px rgba(251,191,36,0.1)' }}>
-                        <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#0f172a' }}>
-                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.15)' }}>
-                            <AlertCircle className="w-3.5 h-3.5" style={{ color: '#fbbf24' }} />
-                          </div>
-                          <div>
-                            <p className="text-xs font-bold" style={{ color: '#fbbf24' }}>Validación de identidad requerida</p>
-                            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Sube tu {isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'} para operar</p>
-                          </div>
-                        </div>
-                        <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: '#fefce8' }}>
-                          <p className="text-xs text-yellow-800 leading-relaxed flex-1">
-                            Para realizar operaciones en nuestra plataforma necesitas <b>validar tu identidad</b>. Es un proceso único que toma menos de 10 minutos.
-                          </p>
-                          <button
-                            onClick={() => { setIsKYCModalOpen(true); setError(null); }}
-                            className="flex-shrink-0 flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-2 rounded-xl transition"
-                            style={{ background: '#ca8a04' }}
-                          >
-                            Validar
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
 
                   {/* Banner: KYC bloqueado (alcanzó límite sin docs) */}
                   {kycBlocked && (
@@ -1814,10 +1787,33 @@ export function NuevaOperacionContent() {
                       className="absolute rounded-xl py-2 px-3 text-center transition-all hover:brightness-110 active:scale-[0.97]"
                       style={{ top: '32px', left: 'calc(50% + 212px)', width: '190px', background: '#dc2626' }}
                     >
-                      <p className="text-xs font-black text-white leading-snug tracking-wide">ACTIVAR CUENTA<br/>PARA OPERAR</p>
+                      <p className="text-xs font-black text-white leading-snug tracking-wide">VALIDA TU IDENTIDAD<br/>PARA OPERAR</p>
                     </button>
                   )}
-                  <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]">
+                  <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]" style={{ position: 'relative' }}>
+                    {/* Overlay KYC centrado sobre la calculadora */}
+                    {kycNeedsDocs && !kycBlocked && (
+                      <div
+                        className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl px-6 text-center"
+                        style={{ background: 'rgba(10,20,36,0.82)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+                      >
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ background: 'rgba(251,191,36,0.15)', border: '1.5px solid rgba(251,191,36,0.35)' }}>
+                          <AlertCircle className="w-6 h-6" style={{ color: '#fbbf24' }} />
+                        </div>
+                        <p className="text-sm font-black text-white mb-1 leading-tight">Validación de identidad requerida</p>
+                        <p className="text-xs mb-4 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          Para operar en nuestra plataforma<br/>necesitas validar tu identidad primero.
+                        </p>
+                        <button
+                          onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                          className="flex items-center gap-2 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition hover:brightness-110 active:scale-[0.97]"
+                          style={{ background: '#ca8a04' }}
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          Validar identidad
+                        </button>
+                      </div>
+                    )}
                     <Calculator
                       showContinueButton
                       compact
@@ -2244,18 +2240,18 @@ export function NuevaOperacionContent() {
                   >
                     <RefreshCw
                       className="w-10 h-10 animate-spin"
-                      style={{ animationDuration: '2s', color: isEmpresa ? '#8fb8cc' : undefined }}
+                      style={{ animationDuration: '2s', color: isEmpresa ? '#8fb8cc' : '#ffffff' }}
                     />
                   </div>
                   <h3
                     className="text-xl font-bold mb-2"
-                    style={{ color: isEmpresa ? '#ffffff' : '#111827' }}
+                    style={{ color: '#ffffff' }}
                   >
                     Procesando tu operación
                   </h3>
                   <p
                     className="mb-6"
-                    style={{ color: isEmpresa ? '#ffffff' : '#4B5563' }}
+                    style={{ color: 'rgba(255,255,255,0.7)' }}
                   >
                     Estamos verificando tu transferencia. Recibirás tu dinero pronto.
                   </p>
