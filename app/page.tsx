@@ -1411,7 +1411,7 @@ export default function Home() {
               <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y demás.</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
               </div>
             </div>
 
