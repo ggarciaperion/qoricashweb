@@ -599,7 +599,7 @@ Para empresas con operaciones en múltiples países de la región, la gestión d
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29032777/pexels-photo-29032777.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
-
+];
 
 function getRedis(): Redis | null {
   if (
