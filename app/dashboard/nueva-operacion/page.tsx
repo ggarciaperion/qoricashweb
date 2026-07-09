@@ -1746,9 +1746,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de cargo */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>
+                      <label className="block text-sm font-semibold" style={{ color: '#ffffff' }}>
                         1. Su cuenta de origen
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#4B5563' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.7)' }}>
                           (desde donde usted paga)
                         </span>
                       </label>
@@ -1787,8 +1787,8 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#8fb8cc' : 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#ffffff' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff' }}>{moneda}</span>
                             </>
                           );
                         })() : (
@@ -1860,9 +1860,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de destino */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>
+                      <label className="block text-sm font-semibold" style={{ color: '#ffffff' }}>
                         2. Su cuenta de destino
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#4B5563' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.7)' }}>
                           (donde usted recibe)
                         </span>
                       </label>
@@ -1901,8 +1901,8 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#8fb8cc' : 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#ffffff' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff' }}>{moneda}</span>
                             </>
                           );
                         })() : (
@@ -2017,7 +2017,7 @@ export function NuevaOperacionContent() {
                       hasActiveOperation
                     }
                     className="w-full text-white py-4 rounded-lg font-bold text-base transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl group"
-                    style={isEmpresa ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)', boxShadow: '0 4px 16px rgba(74,104,132,0.35)' } : { background: 'linear-gradient(to right, var(--color-secondary), var(--color-secondary-700))' }}
+                    style={isEmpresa ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)', boxShadow: '0 4px 16px rgba(74,104,132,0.35)' } : { background: '#16a34a', boxShadow: '0 4px 16px rgba(22,163,74,0.35)' }}
                   >
                     {isSubmitting ? (
                       <>
