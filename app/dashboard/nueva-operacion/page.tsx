@@ -1250,9 +1250,9 @@ export function NuevaOperacionContent() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)' }}>
+                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(34,197,94,0.15)' }}>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(34,197,94,0.2)' }}>
                         <CheckCircle className="w-3.5 h-3.5" style={{ color: isEmpresa ? '#8fb8cc' : '#22C55E' }} />
                       </div>
                       <p className="text-xs font-bold text-white">Pasos a seguir</p>
@@ -1369,7 +1369,7 @@ export function NuevaOperacionContent() {
 
                           {/* Datos de la cuenta */}
                           {qoricashAccount ? (
-                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.12)' }}>
+                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.07)' }}>
 
                               {/* Banco */}
                               <div className="flex items-center justify-between">
@@ -1462,19 +1462,19 @@ export function NuevaOperacionContent() {
                             {/* Tarjeta Destino */}
                             <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
                               ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
-                              : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.07)' }}>
-                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)' }}>Recibirás en</p>
+                              : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(255,255,255,0.45)' }}>Recibirás en</p>
                               <div className="flex items-center gap-2 mb-1.5">
                                 {dstLogo
-                                  ? <img src={dstLogo} alt={dstBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f8fafc', padding: 3 }} />
-                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f1f5f9' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                  ? <img src={dstLogo} alt={dstBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
                                 }
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#1e293b' }}>{dstBank || '—'}</p>
-                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748b' }}>{dstAcc || '—'}</p>
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: '#ffffff' }}>{dstBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>{dstAcc || '—'}</p>
                                 </div>
                               </div>
-                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#8fb8cc' : '#16A34A' }}>{montoRecibir}</p>
+                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#8fb8cc' : '#4ade80' }}>{montoRecibir}</p>
                             </div>
 
                           </div>
@@ -1486,7 +1486,7 @@ export function NuevaOperacionContent() {
                             onClick={() => { if (timeRemaining > 0) { setIsCancelModalOpen(true); setError(null); } }}
                             disabled={timeRemaining === 0}
                             className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-40"
-                            style={isEmpresa ? { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.18)', color: 'rgba(255,255,255,0.7)' } : { background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}>
+                            style={isEmpresa ? { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.18)', color: 'rgba(255,255,255,0.7)' } : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.85)' }}>
                             Cancelar
                           </button>
                           <button type="button"
@@ -1499,7 +1499,7 @@ export function NuevaOperacionContent() {
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-center" style={{ color: isEmpresa ? 'rgba(255,255,255,0.6)' : 'rgba(30,41,59,0.35)' }}>
+                        <p className="text-[11px] text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>
                           Una vez realizada la transferencia, haz clic en "Ya transferí"
                         </p>
                       </>
