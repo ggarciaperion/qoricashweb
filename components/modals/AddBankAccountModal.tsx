@@ -52,7 +52,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
   const { user } = useAuthStore();
   const isEmpresa = user?.document_type === 'RUC';
 
-  const e_label  = isEmpresa ? { color: '#ffffff', fontWeight: 700 } : {};
+  const e_label  = isEmpresa ? { color: '#ffffff', fontWeight: 700 } : { color: '#ffffff' };
   const e_input  = isEmpresa ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : {};
   const e_select = isEmpresa ? { background: 'rgba(13,27,42,0.7)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : {};
 
@@ -432,7 +432,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                       className="w-4 h-4"
                       disabled={isSubmitting}
                     />
-                    <span className="text-sm" style={isEmpresa ? { color: 'rgba(255,255,255,0.85)' } : { color: '#374151' }}>Lima</span>
+                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>Lima</span>
                   </label>
                   <label className="flex items-center cursor-pointer gap-1.5">
                     <input
@@ -442,7 +442,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                       className="w-4 h-4"
                       disabled={isSubmitting}
                     />
-                    <span className="text-sm" style={isEmpresa ? { color: 'rgba(255,255,255,0.85)' } : { color: '#374151' }}>Provincia</span>
+                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>Provincia</span>
                   </label>
                 </div>
                 {errors.origen && (
@@ -464,7 +464,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                   Banco
                 </label>
                 {!selectedOrigen ? (
-                  <p className="text-xs italic py-1" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9ca3af' }}>Primero selecciona el origen</p>
+                  <p className="text-xs italic py-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Primero selecciona el origen</p>
                 ) : (
                   <div className="space-y-2">
                     <div className="grid grid-cols-4 gap-2">
