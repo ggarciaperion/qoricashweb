@@ -54,6 +54,8 @@ export interface User {
   // Validation status
   status?: 'Activo' | 'Inactivo';
   has_complete_documents?: boolean;
+  kyc_status?: 'pendiente' | 'completo' | 'bloqueado';
+  operations_without_docs_count?: number;
 }
 
 // Bank account types

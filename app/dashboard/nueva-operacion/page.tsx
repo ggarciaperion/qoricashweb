@@ -131,6 +131,7 @@ export function NuevaOperacionContent() {
   const [kycUploadDone, setKycUploadDone] = useState(false);
   const [showVerifyOverlay, setShowVerifyOverlay] = useState(false);
   const [verifyStillPending, setVerifyStillPending] = useState(false);
+  const [showKycBlockedToast, setShowKycBlockedToast] = useState(false);
 
   // Formatted date for display - compute on client side only
   const [formattedDate, setFormattedDate] = useState<string>('');
@@ -418,6 +419,21 @@ export function NuevaOperacionContent() {
     const hasDolares = bankAccounts.some(acc => acc.moneda === '$');
     return hasSoles && hasDolares;
   }, [bankAccounts]);
+
+  // ── KYC state helpers ─────────────────────────────────────────────────────
+  // kycApproved: documentos completos y aprobados → puede operar libremente
+  const kycApproved = !!(user?.has_complete_documents);
+  // kycBlocked: cuenta bloqueada por alcanzar límite sin docs (backend: kyc_status='bloqueado')
+  const kycBlocked = user?.kyc_status === 'bloqueado';
+  // kycPendingReview: usuario envió documentos y están en revisión (status Inactivo o docs recién enviados)
+  const kycPendingReview = docsSubmittedThisSession ||
+    (user?.status === 'Inactivo' && !!(user?.has_complete_documents));
+  // kycNeedsDocs: usuario activo sin docs y sin haberlos enviado aún — debe subir docs
+  const kycNeedsDocs = !kycApproved && !kycBlocked && !kycPendingReview &&
+    !user?.has_complete_documents && !docsSubmittedThisSession;
+  // kycBlocksOperation: bloquea crear operación en web
+  const kycBlocksOperation = !kycApproved && (kycBlocked || docsSubmittedThisSession ||
+    (user?.status === 'Inactivo') || kycNeedsDocs);
 
   // Get adjusted exchange rate with referral discount applied
   const getAdjustedRate = () => {
@@ -1239,24 +1255,24 @@ export function NuevaOperacionContent() {
                       <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(34,197,94,0.15)' }}>
                         <CheckCircle className="w-3.5 h-3.5" style={{ color: isEmpresa ? '#8fb8cc' : '#22C55E' }} />
                       </div>
-                      <p className="text-xs font-bold" style={{ color: isEmpresa ? '#ffffff' : '#1F2937' }}>Pasos a seguir</p>
+                      <p className="text-xs font-bold text-white">Pasos a seguir</p>
                     </div>
                     <ol className="space-y-2">
                       {[
-                        'Copia el número de cuenta de QoriCash.',
+                        'Copia el número de cuenta de Qoricash.',
                         'Realiza la transferencia desde tu banco.',
                         'Regresa aquí y haz clic en "Ya transferí".',
                       ].map((step, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold text-white" style={{ background: isEmpresa ? '#4A6884' : '#22C55E' }}>{i + 1}</span>
-                          <p className="text-[11px] leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#4B5563' }}>{step}</p>
+                          <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{step}</p>
                         </li>
                       ))}
                     </ol>
                   </div>
 
-                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.08)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}>¿Necesitas ayuda?</p>
+                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.45)' }}>¿Necesitas ayuda?</p>
                     <a
                       href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda%20con%20mi%20operación"
                       target="_blank"
@@ -1348,7 +1364,7 @@ export function NuevaOperacionContent() {
                           <div className="px-4 py-3 flex items-center gap-2" style={isEmpresa ? { background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(12px)' } : { background: '#1E293B' }}>
                             <img src="/logo-principal.png" alt="QoriCash" className="w-6 h-6 object-contain flex-shrink-0" style={isEmpresa ? { filter: 'brightness(0) invert(1)' } : {}} />
                             <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>Transfiere a esta cuenta —</p>
-                            <p className="text-sm font-bold text-white">QoriCash</p>
+                            <p className="text-sm font-bold text-white">Qoricash</p>
                           </div>
 
                           {/* Datos de la cuenta */}
@@ -1357,31 +1373,31 @@ export function NuevaOperacionContent() {
 
                               {/* Banco */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9CA3AF' }}>Banco</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>Banco</span>
                                 {qcLogo && <img src={qcLogo} alt={qoricashAccount.banco} className="w-10 h-10 object-contain rounded-lg" />}
                               </div>
 
-                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.07)' }} />
+                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.08)' }} />
 
                               {/* Titular */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9CA3AF' }}>Titular</span>
-                                <span className="text-sm font-semibold text-right max-w-[200px]" style={{ color: isEmpresa ? '#ffffff' : '#1F2937' }}>{qoricashAccount.titular}</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>Titular</span>
+                                <span className="text-sm font-semibold text-right max-w-[200px]" style={{ color: '#ffffff' }}>{qoricashAccount.titular}</span>
                               </div>
 
                               {/* RUC */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9CA3AF' }}>RUC</span>
-                                <span className="text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#1F2937' }}>{qoricashAccount.ruc}</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>RUC</span>
+                                <span className="text-sm font-semibold" style={{ color: '#ffffff' }}>{qoricashAccount.ruc}</span>
                               </div>
 
-                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.07)' }} />
+                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.08)' }} />
 
                               {/* Número de cuenta con botón copiar grande */}
                               <div>
-                                <p className="text-xs font-medium uppercase tracking-wide mb-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9CA3AF' }}>{qoricashAccount.useCCI ? 'CCI' : 'N° de Cuenta'}</p>
-                                <div className="flex items-center gap-2 p-3 rounded-xl" style={isEmpresa ? { background: 'rgba(143,184,204,0.06)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.1)' }}>
-                                  <span className="flex-1 text-base font-bold tracking-wider select-all" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>{accountNumber}</span>
+                                <p className="text-xs font-medium uppercase tracking-wide mb-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>{qoricashAccount.useCCI ? 'CCI' : 'N° de Cuenta'}</p>
+                                <div className="flex items-center gap-2 p-3 rounded-xl" style={isEmpresa ? { background: 'rgba(143,184,204,0.06)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                                  <span className="flex-1 text-base font-bold tracking-wider select-all" style={{ color: '#ffffff' }}>{accountNumber}</span>
                                   <button
                                     type="button"
                                     onClick={() => copyToClipboard(accountNumber, 'account')}
@@ -1397,9 +1413,9 @@ export function NuevaOperacionContent() {
                               </div>
 
                               {/* Monto exacto a transferir */}
-                              <div className="rounded-xl px-3 py-2.5" style={isEmpresa ? { background: 'rgba(74,104,132,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)' }}>
-                                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(22,163,74,0.7)' }}>Monto exacto a transferir</p>
-                                <p className="text-xl font-bold mt-0.5" style={{ color: isEmpresa ? '#8fb8cc' : '#15803d' }}>{montoEnviar}</p>
+                              <div className="rounded-xl px-3 py-2.5" style={isEmpresa ? { background: 'rgba(74,104,132,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)' }}>
+                                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>Monto exacto a transferir</p>
+                                <p className="text-xl font-bold mt-0.5" style={{ color: isEmpresa ? '#8fb8cc' : '#4ade80' }}>{montoEnviar}</p>
                               </div>
 
                             </div>
@@ -1419,19 +1435,19 @@ export function NuevaOperacionContent() {
                             {/* Tarjeta Origen */}
                             <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
                               ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
-                              : { background: 'rgba(30,41,59,0.04)', border: '1px solid rgba(30,41,59,0.07)' }}>
-                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)' }}>Transfieres desde</p>
+                              : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(255,255,255,0.45)' }}>Transfieres desde</p>
                               <div className="flex items-center gap-2 mb-1.5">
                                 {srcLogo
-                                  ? <img src={srcLogo} alt={srcBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f8fafc', padding: 3 }} />
-                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.08)' : '#f1f5f9' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                  ? <img src={srcLogo} alt={srcBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
                                 }
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#1e293b' }}>{srcBank || '—'}</p>
-                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748b' }}>{srcAcc || '—'}</p>
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: '#ffffff' }}>{srcBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>{srcAcc || '—'}</p>
                                 </div>
                               </div>
-                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>{montoEnviar}</p>
+                              <p className="text-sm font-extrabold" style={{ color: '#ffffff' }}>{montoEnviar}</p>
                             </div>
 
                             {/* Flecha central */}
@@ -1628,6 +1644,123 @@ export function NuevaOperacionContent() {
                     </div>
                   )}
 
+                  {/* Toast: KYC bloquea operación */}
+                  {showKycBlockedToast && (
+                    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4" style={{ animation: 'fadeInDown 0.3s ease' }}>
+                      <div className="flex items-start gap-3 rounded-2xl px-4 py-3 shadow-xl" style={{ background: '#0f172a', border: '1px solid rgba(251,191,36,0.3)' }}>
+                        <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'rgba(251,191,36,0.15)' }}>
+                          <AlertCircle className="w-4 h-4" style={{ color: '#fbbf24' }} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-white leading-tight mb-0.5">
+                            {kycBlocked ? 'Cuenta con restricción KYC' : docsSubmittedThisSession || (user?.status === 'Inactivo' && user?.has_complete_documents) ? 'Documentos en revisión' : 'Validación de identidad requerida'}
+                          </p>
+                          <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                            {kycBlocked
+                              ? 'Has alcanzado el límite operativo sin documentación. Sube tus documentos para continuar.'
+                              : docsSubmittedThisSession || (user?.status === 'Inactivo' && user?.has_complete_documents)
+                                ? 'Tus documentos están siendo verificados. Podrás operar en cuanto sean aprobados.'
+                                : 'Para operar en nuestra plataforma necesitas validar tu identidad primero.'}
+                          </p>
+                        </div>
+                        <button onClick={() => setShowKycBlockedToast(false)} className="flex-shrink-0 p-1 rounded-lg hover:bg-white/10 transition mt-0.5">
+                          <X className="w-4 h-4 text-white/60" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Banner: docs enviados, status Activo (en revisión sin Inactivar cuenta) */}
+                  {user?.status === 'Activo' && docsSubmittedThisSession && (
+                    <div className="flex justify-center mb-2">
+                      <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid #bfdbfe', boxShadow: '0 2px 12px rgba(59,130,246,0.08)' }}>
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#16a34a' }}>
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <circle cx="7" cy="7" r="6" stroke="white" strokeWidth="1.2" />
+                              <line x1="7" y1="7" x2="7" y2="3.5" stroke="white" strokeWidth="1.2" strokeLinecap="round"
+                                style={{ transformOrigin: '7px 7px', animation: 'clockTick 6s steps(12) infinite' }} />
+                              <line x1="7" y1="7" x2="7" y2="2.2" stroke="rgba(255,255,255,0.75)" strokeWidth="0.9" strokeLinecap="round"
+                                style={{ transformOrigin: '7px 7px', animation: 'clockSweep 1.2s linear infinite' }} />
+                              <circle cx="7" cy="7" r="0.8" fill="white" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-white">Documentos recibidos · En revisión</p>
+                            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.75)' }}>Validación aprox. 10 minutos en horario hábil</p>
+                          </div>
+                          <div className="ml-auto flex-shrink-0 relative w-2.5 h-2.5">
+                            <span className="absolute inset-0 rounded-full animate-ping" style={{ background: 'rgba(255,255,255,0.4)' }} />
+                            <span className="relative block w-2.5 h-2.5 rounded-full bg-white" />
+                          </div>
+                        </div>
+                        <div className="px-4 py-3" style={{ background: '#dcfce7' }}>
+                          <p className="text-xs text-green-800 leading-relaxed">
+                            Hemos recibido tus documentos. Nuestro equipo los está validando. <b>Podrás operar en cuanto sean aprobados.</b>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Banner: necesita subir documentos (Activo, sin docs, sin haberlos enviado) */}
+                  {user?.status === 'Activo' && kycNeedsDocs && !kycBlocked && (
+                    <div className="flex justify-center mb-2">
+                      <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(251,191,36,0.4)', boxShadow: '0 2px 12px rgba(251,191,36,0.1)' }}>
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#0f172a' }}>
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.15)' }}>
+                            <AlertCircle className="w-3.5 h-3.5" style={{ color: '#fbbf24' }} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold" style={{ color: '#fbbf24' }}>Validación de identidad requerida</p>
+                            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Sube tu {isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'} para operar</p>
+                          </div>
+                        </div>
+                        <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: '#fefce8' }}>
+                          <p className="text-xs text-yellow-800 leading-relaxed flex-1">
+                            Para realizar operaciones en nuestra plataforma necesitas <b>validar tu identidad</b>. Es un proceso único que toma menos de 10 minutos.
+                          </p>
+                          <button
+                            onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                            className="flex-shrink-0 flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-2 rounded-xl transition"
+                            style={{ background: '#ca8a04' }}
+                          >
+                            Validar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Banner: KYC bloqueado (alcanzó límite sin docs) */}
+                  {kycBlocked && (
+                    <div className="flex justify-center mb-2">
+                      <div className="w-full max-w-[400px] rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(239,68,68,0.3)', boxShadow: '0 2px 12px rgba(239,68,68,0.08)' }}>
+                        <div className="flex items-center gap-3 px-4 py-3" style={{ background: '#0f172a' }}>
+                          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.15)' }}>
+                            <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-red-400">Cuenta con restricción KYC</p>
+                            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Límite operativo sin documentación alcanzado</p>
+                          </div>
+                        </div>
+                        <div className="px-4 py-3 flex items-center justify-between gap-3" style={{ background: '#fef2f2' }}>
+                          <p className="text-xs text-red-800 leading-relaxed flex-1">
+                            Has alcanzado el límite de operaciones sin documentación completa. <b>Sube tus documentos</b> para continuar operando sin restricciones.
+                          </p>
+                          <button
+                            onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                            className="flex-shrink-0 flex items-center gap-1.5 text-white text-[10px] font-bold px-3 py-2 rounded-xl transition"
+                            style={{ background: '#dc2626' }}
+                          >
+                            Subir docs
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Calculadora oficial */}
                   <div className="relative flex justify-center mt-12">
                   {/* KYC side banner — fuera del calc, flotando a la derecha */}
@@ -1647,7 +1780,10 @@ export function NuevaOperacionContent() {
                       compact
                       darkTheme={isEmpresa}
                       onOperationReady={(opType, amountRaw, rate) => {
-                        if (hasActiveOperation || user?.status === 'Inactivo') return;
+                        if (hasActiveOperation || kycBlocksOperation) {
+                          if (kycBlocksOperation) setShowKycBlockedToast(true);
+                          return;
+                        }
                         setTipo(opType);
                         setAmountInput(amountRaw);
                         setSelectedOriginAccount(null);
