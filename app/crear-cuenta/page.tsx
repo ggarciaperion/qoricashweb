@@ -1640,10 +1640,20 @@ export default function CrearCuentaPage() {
               {codigoEnviado && (
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                   {/* Slots visuales con guiones */}
+                  <style>{`
+                    @keyframes caretBlink {
+                      0%, 100% { opacity: 1; }
+                      50% { opacity: 0; }
+                    }
+                    .otp-caret { animation: caretBlink 1s step-start infinite; }
+                  `}</style>
                   <div
-                    className="relative flex justify-center gap-2.5 cursor-text py-1"
+                    className="relative flex justify-center gap-2.5 py-2"
+                    style={{ cursor: 'text', minHeight: '52px' }}
                     onClick={() => document.getElementById('codigo-hidden-input')?.focus()}
                   >
+                    {/* Input superpuesto sobre los slots — mismo tamaño, transparente.
+                        Así el browser móvil hace scroll a la posición correcta (no al -9999px). */}
                     <input
                       id="codigo-hidden-input"
                       type="text"
@@ -1669,16 +1679,22 @@ export default function CrearCuentaPage() {
                       autoFocus
                       autoComplete="one-time-code"
                       style={{
-                        position: 'fixed',
-                        left: '-9999px',
-                        top: '-9999px',
-                        width: '1px',
-                        height: '1px',
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
                         opacity: 0,
-                        pointerEvents: 'none',
+                        color: 'transparent',
+                        caretColor: 'transparent',
+                        background: 'transparent',
+                        border: 'none',
+                        outline: 'none',
+                        zIndex: 10,
+                        cursor: 'text',
                       }}
                     />
                     {Array.from({ length: 6 }).map((_, i) => {
+                      const isActive = i === codigoValue.length && codigoValido === null && !codigoValidando;
                       const lineColor = codigoValido === true
                         ? '#22C55E'
                         : codigoValido === false
@@ -1687,14 +1703,18 @@ export default function CrearCuentaPage() {
                             ? '#CBD5E1'
                             : i < codigoValue.length
                               ? '#22C55E'
-                              : i === codigoValue.length
-                                ? '#94a3b8'
-                                : '#e2e8f0';
+                              : isActive
+                                ? '#ffffff'
+                                : 'rgba(255,255,255,0.25)';
                       const charColor = codigoValido === true ? '#22C55E' : codigoValido === false ? '#EF4444' : '#ffffff';
                       return (
-                        <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: '34px' }}>
-                          <span className="text-lg font-bold h-7 flex items-end justify-center transition-colors duration-300" style={{ color: charColor, minWidth: '34px', textAlign: 'center' }}>
-                            {codigoValue[i] || ''}
+                        <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: '34px', position: 'relative', zIndex: 1 }}>
+                          <span className="text-lg font-bold h-7 flex items-end justify-center transition-colors duration-300" style={{ color: charColor, minWidth: '34px', textAlign: 'center', position: 'relative' }}>
+                            {codigoValue[i]
+                              ? codigoValue[i]
+                              : isActive
+                                ? <span className="otp-caret" style={{ display: 'inline-block', width: '2px', height: '20px', background: '#ffffff', borderRadius: '1px', marginBottom: '2px' }} />
+                                : ''}
                           </span>
                           <div className="w-full transition-colors duration-300" style={{ height: '2px', borderRadius: '2px', background: lineColor }} />
                         </div>
