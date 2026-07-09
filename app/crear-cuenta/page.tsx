@@ -1254,7 +1254,7 @@ export default function CrearCuentaPage() {
                           if (isPeru && raw.length === 1 && raw !== '9') return;
                           if (isPeru) handleChange('telefono', raw.slice(0, 9));
                           else handleChange('telefono', raw);
-                        }} className={inpCls} placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
+                        }} className={inpCls} placeholder='' maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                       </fieldset>
                     </div>
                     {formData.telefonoCodigo === '+51' && formData.telefono && !formData.telefono.startsWith('9') && (
@@ -1645,6 +1645,7 @@ export default function CrearCuentaPage() {
                     <input
                       id="codigo-hidden-input"
                       type="text"
+                      inputMode="text"
                       value={codigoValue}
                       onChange={(e) => {
                         const raw = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -1656,10 +1657,24 @@ export default function CrearCuentaPage() {
                         }
                         setCodigoValue(result);
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Backspace' && codigoValue.length > 0) {
+                          e.preventDefault();
+                          setCodigoValue(prev => prev.slice(0, -1));
+                        }
+                      }}
                       maxLength={6}
                       autoFocus
-                      className="absolute opacity-0 w-0 h-0 pointer-events-none"
-                      style={{ position: 'absolute' }}
+                      autoComplete="one-time-code"
+                      style={{
+                        position: 'fixed',
+                        left: '-9999px',
+                        top: '-9999px',
+                        width: '1px',
+                        height: '1px',
+                        opacity: 0,
+                        pointerEvents: 'none',
+                      }}
                     />
                     {Array.from({ length: 6 }).map((_, i) => {
                       const lineColor = codigoValido === true
