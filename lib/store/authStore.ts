@@ -8,11 +8,13 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  isAccountDeleted: boolean;
 
   // Actions
   login: (credentials: LoginRequest) => Promise<boolean>;
   register: (data: RegisterRequest) => Promise<boolean>;
   logout: () => Promise<void>;
+  forceLogoutDeleted: () => void;
   loadUser: () => void;
   updateUser: (user: User) => void;
   refreshUser: () => Promise<boolean>;
@@ -26,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      isAccountDeleted: false,
 
   /**
    * Login user
@@ -48,6 +51,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
           isLoading: false,
           error: null,
+          isAccountDeleted: false,
         });
 
         return true;
@@ -132,6 +136,25 @@ export const useAuthStore = create<AuthState>()(
   },
 
   /**
+   * Force logout when admin deletes the account.
+   * Does NOT call the backend (user no longer exists).
+   */
+  forceLogoutDeleted: () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('qoricash-auth-storage');
+      sessionStorage.removeItem('authToken');
+      sessionStorage.removeItem('user');
+    }
+    set({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
+      isAccountDeleted: true,
+    });
+  },
+
+  /**
    * Load user from localStorage on app start
    */
   loadUser: () => {
@@ -155,7 +178,8 @@ export const useAuthStore = create<AuthState>()(
   },
 
   /**
-   * Refresh user data from backend
+   * Refresh user data from backend.
+   * If the backend returns 404 the account was deleted — force logout.
    */
   refreshUser: async (): Promise<boolean> => {
     const currentUser = get().user;
@@ -175,8 +199,13 @@ export const useAuthStore = create<AuthState>()(
       }
 
       return false;
-    } catch (error) {
-      console.error('[AuthStore] Error refreshing user data:', error);
+    } catch (error: any) {
+      // 404 = account was deleted by admin
+      if (error.response?.status === 404) {
+        get().forceLogoutDeleted();
+      } else {
+        console.error('[AuthStore] Error refreshing user data:', error);
+      }
       return false;
     }
   },

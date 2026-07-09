@@ -21,6 +21,7 @@ interface UseSocketOptions {
   onDocumentsApproved?: (data: SocketMessage) => void;
   onOperationExpired?: (data: SocketMessage) => void;
   onOperationUpdated?: (data: any) => void;
+  onClientDeleted?: () => void;
 }
 
 export const useSocket = (options: UseSocketOptions = {}) => {
@@ -68,6 +69,16 @@ export const useSocket = (options: UseSocketOptions = {}) => {
     // Actualización de operación para staff (compatibilidad)
     socket.on('operacion_actualizada', (data: any) => {
       options.onOperationUpdated?.(data);
+    });
+
+    // Cuenta eliminada por admin
+    socket.on('client_deleted', (data: { client_id?: number; client_dni?: string }) => {
+      if (
+        (data.client_id && user?.id && data.client_id === user.id) ||
+        (data.client_dni && user?.dni && data.client_dni === user.dni)
+      ) {
+        options.onClientDeleted?.();
+      }
     });
 
     // Actualización de operación para el CLIENTE WEB (nuevo evento)

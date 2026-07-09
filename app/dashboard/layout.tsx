@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
+import { useSocket } from '@/lib/hooks/useSocket';
 import {
   TrendingUp,
   TrendingDown,
@@ -45,11 +46,18 @@ const NAV_ITEMS_EMPRESA = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, isAccountDeleted, forceLogoutDeleted, refreshUser } = useAuthStore();
   const { currentRates, isConnected, fetchRates } = useExchangeStore();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [deletedCountdown, setDeletedCountdown] = useState(8);
+
+  const handleAccountDeleted = useCallback(() => {
+    forceLogoutDeleted();
+  }, [forceLogoutDeleted]);
+
+  useSocket({ onClientDeleted: handleAccountDeleted });
 
   useEffect(() => {
     fetchRates();
@@ -58,8 +66,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated) router.push('/login');
+    if (!isAuthenticated && !isAccountDeleted) router.push('/login');
+  }, [isAuthenticated, isAccountDeleted]);
+
+  // Polling: verifica cada 60s que la cuenta aún existe en el backend
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const interval = setInterval(() => { refreshUser(); }, 60_000);
+    return () => clearInterval(interval);
   }, [isAuthenticated]);
+
+  // Countdown cuando la cuenta fue eliminada → redirige a /crear-cuenta
+  useEffect(() => {
+    if (!isAccountDeleted) return;
+    setDeletedCountdown(8);
+    const tick = setInterval(() => {
+      setDeletedCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(tick);
+          router.push('/crear-cuenta');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [isAccountDeleted]);
 
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -425,6 +457,76 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </div>
       </div>
+      {/* Modal: cuenta eliminada por admin */}
+      {isAccountDeleted && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 flex items-center justify-center z-[99999] px-4"
+          style={{ background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl overflow-hidden"
+            style={{
+              background: 'linear-gradient(160deg, rgba(13,27,42,0.97) 0%, rgba(10,22,36,0.99) 100%)',
+              border: '1px solid rgba(239,68,68,0.2)',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(239,68,68,0.06) inset',
+            }}
+          >
+            {/* Header */}
+            <div className="px-6 pt-8 pb-6 text-center">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+                style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)' }}
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+              </div>
+              <h3 className="text-white font-extrabold text-lg mb-2">Cuenta no disponible</h3>
+              <p className="text-sm leading-relaxed mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                Tu cuenta ha sido eliminada del sistema. La sesión ha sido cerrada.
+              </p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                Si crees que es un error, contáctanos por WhatsApp.
+              </p>
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 24px' }} />
+
+            {/* Footer */}
+            <div className="px-6 py-5 space-y-3">
+              <div className="flex items-center justify-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <span>Redirigiendo en</span>
+                <span
+                  className="font-black text-sm tabular-nums"
+                  style={{ color: '#ef4444' }}
+                >
+                  {deletedCountdown}s
+                </span>
+              </div>
+              <button
+                onClick={() => router.push('/crear-cuenta')}
+                className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
+                style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 16px rgba(34,197,94,0.25)' }}
+              >
+                Registrarse nuevamente
+              </button>
+              <a
+                href="https://wa.me/51910624404?text=Hola%2C%20mi%20cuenta%20fue%20eliminada%20y%20necesito%20ayuda."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition-all"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.65)' }}
+              >
+                Contactar soporte
+              </a>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
