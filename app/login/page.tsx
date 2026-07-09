@@ -317,7 +317,7 @@ export default function LoginPage() {
             {/* ── Form body ── */}
             <div style={{ padding: '16px 24px 20px', background: 'transparent' }}>
 
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 {/* DNI */}
                 <div style={{ marginBottom: 12 }}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
@@ -331,6 +331,7 @@ export default function LoginPage() {
                       inputMode="numeric"
                       placeholder="12345678"
                       maxLength={11}
+                      autoComplete="off"
                       disabled={isLoading || isBlocked}
                       onKeyDown={e => { if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault(); }}
                       onPaste={e => { const t = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,11); e.preventDefault(); document.execCommand('insertText', false, t); }}
@@ -359,6 +360,7 @@ export default function LoginPage() {
                       {...register('password')}
                       type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••"
+                      autoComplete="new-password"
                       disabled={isLoading || isBlocked}
                       style={{
                         width: '100%', paddingLeft: 36, paddingRight: 42, paddingTop: 9, paddingBottom: 9,
