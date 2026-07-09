@@ -162,7 +162,7 @@ export default function ForgotPasswordModal({
                     <input
                       type="text"
                       {...register('dni')}
-                      placeholder="DNI (8), CE (9) o RUC (11) dígitos"
+                      placeholder=""
                       maxLength={11}
                       className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all placeholder:font-normal"
                       style={{
@@ -204,7 +204,7 @@ export default function ForgotPasswordModal({
                     <input
                       type="email"
                       {...register('email')}
-                      placeholder="correo@ejemplo.com"
+                      placeholder=""
                       className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all placeholder:font-normal"
                       style={{
                         background: 'rgba(255,255,255,0.06)',
