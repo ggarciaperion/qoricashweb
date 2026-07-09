@@ -1047,6 +1047,7 @@ export default function CrearCuentaPage() {
                             onChange={(e) => handleChange('dni', e.target.value.replace(/\D/g, ''))}
                             onBlur={() => setDniTouched(true)}
                             onFocus={() => setDniTouched(false)}
+                            inputMode="numeric"
                             maxLength={docLen}
                             autoComplete="off"
                             className={inputInnerCls}
@@ -1254,7 +1255,7 @@ export default function CrearCuentaPage() {
                           if (isPeru && raw.length === 1 && raw !== '9') return;
                           if (isPeru) handleChange('telefono', raw.slice(0, 9));
                           else handleChange('telefono', raw);
-                        }} className={inpCls} placeholder='' maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
+                        }} inputMode="tel" className={inpCls} placeholder='' maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                       </fieldset>
                     </div>
                     {formData.telefonoCodigo === '+51' && formData.telefono && !formData.telefono.startsWith('9') && (
@@ -1472,8 +1473,9 @@ export default function CrearCuentaPage() {
                         if (isPeru) handleChange('telefono', raw.slice(0, 9));
                         else handleChange('telefono', raw);
                       }} autoComplete="off"
+                        inputMode="tel"
                         className="w-full px-2 pb-1.5 bg-transparent text-sm text-white focus:outline-none placeholder-slate-300"
-                        placeholder={formData.telefonoCodigo === '+51' ? '9XXXXXXXX' : 'Número'} maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
+                        placeholder='' maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                     </fieldset>
                   </div>
                   {formData.telefonoCodigo === '+51' && formData.telefono && !formData.telefono.startsWith('9') && (
