@@ -259,11 +259,11 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
           style={{
             background: isEmpresa
               ? 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)'
-              : 'rgba(255,255,255,0.55)',
+              : 'rgba(255,255,255,0.14)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.5)',
-            boxShadow: isEmpresa ? undefined : '0 8px 32px rgba(0,0,0,0.12)',
+            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.25)',
+            boxShadow: isEmpresa ? undefined : '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)',
             ...(overlayPhase !== 'idle' ? { height: 300, overflow: 'hidden' } : {}),
           }}
         >
