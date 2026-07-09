@@ -582,9 +582,9 @@ export default function CrearCuentaPage() {
     <div className="h-screen flex flex-col" style={{ backgroundImage: "url('/pg.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* Header */}
       <header className="sticky top-0 z-50" style={{ background: 'transparent', boxShadow: 'none' }}>
-        <div className="w-full max-w-[960px] mx-auto px-10 py-3.5">
+        <div className="w-full max-w-[960px] mx-auto px-4 sm:px-10 py-3.5">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition" style={{ transform: 'translateX(-30px)' }}>
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
               <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
               <span className="text-xl font-display font-black tracking-tight text-white">Qoricash</span>
             </Link>
@@ -599,7 +599,7 @@ export default function CrearCuentaPage() {
 
       {/* Layout centrado */}
       <div className="flex flex-1 overflow-y-auto">
-        <div className="flex items-center gap-4 w-full max-w-6xl mx-auto px-10 py-6 min-h-full" style={{ position: 'relative' }}>
+        <div className="flex items-center gap-4 w-full max-w-6xl mx-auto px-4 sm:px-10 py-6 min-h-full" style={{ position: 'relative' }}>
 
 
 
@@ -622,8 +622,8 @@ export default function CrearCuentaPage() {
           <div className="hidden lg:block" style={{ position: 'absolute', left: '50%', top: '5%', height: '90%', width: '1px', background: 'linear-gradient(to bottom, transparent 0%, rgba(30,41,59,0.15) 20%, rgba(30,41,59,0.15) 80%, transparent 100%)', pointerEvents: 'none' }} />
 
           {/* Formulario — centrado al mismo nivel que la imagen */}
-          <div className="flex-1 flex flex-col items-start justify-start self-stretch pl-10 pt-8 pb-10">
-          <div className="w-full max-w-[340px]">
+          <div className="flex-1 flex flex-col items-center lg:items-start justify-start self-stretch px-0 lg:pl-10 pt-6 pb-10">
+          <div className="w-full max-w-[340px] mx-auto lg:mx-0">
 
           {/* ── PANTALLA DE ÉXITO ── */}
           {success && (
