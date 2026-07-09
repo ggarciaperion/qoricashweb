@@ -257,10 +257,13 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
       <div className="flex min-h-full items-center justify-center p-3">
         <div className="relative rounded-xl shadow-xl max-w-sm w-full max-h-[92vh] overflow-y-auto"
           style={{
-            background: 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)',
-            backdropFilter: 'blur(18px)',
-            WebkitBackdropFilter: 'blur(18px)',
-            border: '1px solid rgba(143,184,204,0.15)',
+            background: isEmpresa
+              ? 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)'
+              : 'rgba(255,255,255,0.82)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.65)',
+            boxShadow: isEmpresa ? undefined : '0 8px 32px rgba(0,0,0,0.12)',
             ...(overlayPhase !== 'idle' ? { height: 300, overflow: 'hidden' } : {}),
           }}
         >
@@ -389,7 +392,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
           )}
 
           {/* Header */}
-          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={{ background: 'rgba(13,27,42,0.5)', borderColor: 'rgba(143,184,204,0.15)' }}>
+          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={isEmpresa ? { background: 'rgba(13,27,42,0.5)', borderColor: 'rgba(143,184,204,0.15)' } : { background: 'linear-gradient(135deg, #14532d, #16a34a)', borderColor: 'rgba(22,163,74,0.3)' }}>
             <h2 className="text-base font-bold text-white">Agregar Cuenta Bancaria</h2>
             <button
               onClick={handleClose}
@@ -476,8 +479,12 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                             onClick={() => setValue('bank_name', bank.value, { shouldValidate: true })}
                             className="flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border-2 transition-all"
                             style={isSelected
-                              ? { borderColor: 'rgba(143,184,204,0.5)', background: 'rgba(74,104,132,0.25)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
-                              : { borderColor: 'rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }
+                              ? isEmpresa
+                                ? { borderColor: 'rgba(143,184,204,0.5)', background: 'rgba(74,104,132,0.25)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
+                                : { borderColor: '#16a34a', background: 'rgba(22,163,74,0.08)' }
+                              : isEmpresa
+                                ? { borderColor: 'rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }
+                                : { borderColor: '#e5e7eb', background: 'rgba(255,255,255,0.7)' }
                             }
                           >
                             {logo ? (
@@ -485,7 +492,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                             ) : (
                               <Building2 className="w-6 h-6 text-gray-400" />
                             )}
-                            <span className="text-[9px] font-semibold text-white leading-tight text-center">{bank.label}</span>
+                            <span className={`text-[9px] font-semibold leading-tight text-center ${isEmpresa ? 'text-white' : 'text-gray-700'}`}>{bank.label}</span>
                           </button>
                         );
                       })}
@@ -502,8 +509,12 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                             onClick={() => setValue('bank_name', bank.value, { shouldValidate: true })}
                             className="flex flex-col items-center justify-center gap-1.5 p-2 rounded-lg border-2 transition-all"
                             style={{ width: 'calc(25% - 4px)', ...(isSelected
-                              ? { borderColor: 'rgba(143,184,204,0.5)', background: 'rgba(74,104,132,0.25)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
-                              : { borderColor: 'rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' })
+                              ? isEmpresa
+                                ? { borderColor: 'rgba(143,184,204,0.5)', background: 'rgba(74,104,132,0.25)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
+                                : { borderColor: '#16a34a', background: 'rgba(22,163,74,0.08)' }
+                              : isEmpresa
+                                ? { borderColor: 'rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }
+                                : { borderColor: '#e5e7eb', background: 'rgba(255,255,255,0.7)' })
                             }}
                           >
                             {logo ? (
@@ -511,7 +522,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                             ) : (
                               <Building2 className="w-6 h-6 text-gray-400" />
                             )}
-                            <span className="text-[9px] font-semibold text-white leading-tight text-center">{bank.label}</span>
+                            <span className={`text-[9px] font-semibold leading-tight text-center ${isEmpresa ? 'text-white' : 'text-gray-700'}`}>{bank.label}</span>
                           </button>
                         );
                       })}
