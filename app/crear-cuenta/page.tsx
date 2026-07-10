@@ -1268,7 +1268,7 @@ export default function CrearCuentaPage() {
                     {/* Nacionalidad */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Nacionalidad</legend>
-                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#334155' : '#CBD5E1' }}>
+                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#ffffff' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {NACIONALIDADES.map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
@@ -1289,21 +1289,21 @@ export default function CrearCuentaPage() {
                       <div className="flex gap-2">
                         <fieldset style={{ ...fsCls, flex: 1 }}>
                           <legend className={legCls} style={legSt}>Día</legend>
-                          <select value={formData.diaNac} onChange={e => handleChange('diaNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.diaNac ? '#334155' : '#CBD5E1' }}>
+                          <select value={formData.diaNac} onChange={e => handleChange('diaNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.diaNac ? '#ffffff' : '#CBD5E1' }}>
                             <option value="">DD</option>
                             {DIAS.map(d => <option key={d} value={d}>{d}</option>)}
                           </select>
                         </fieldset>
                         <fieldset style={{ ...fsCls, flex: 2 }}>
                           <legend className={legCls} style={legSt}>Mes</legend>
-                          <select value={formData.mesNac} onChange={e => handleChange('mesNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.mesNac ? '#334155' : '#CBD5E1' }}>
+                          <select value={formData.mesNac} onChange={e => handleChange('mesNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.mesNac ? '#ffffff' : '#CBD5E1' }}>
                             <option value="">MM</option>
                             {MESES.map((m, i) => <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>)}
                           </select>
                         </fieldset>
                         <fieldset style={{ ...fsCls, flex: 1.5 }}>
                           <legend className={legCls} style={legSt}>Año</legend>
-                          <select value={formData.anioNac} onChange={e => handleChange('anioNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.anioNac ? '#334155' : '#CBD5E1' }}>
+                          <select value={formData.anioNac} onChange={e => handleChange('anioNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.anioNac ? '#ffffff' : '#CBD5E1' }}>
                             <option value="">AAAA</option>
                             {ANIOS.map(y => <option key={y} value={String(y)}>{y}</option>)}
                           </select>
@@ -1323,7 +1323,7 @@ export default function CrearCuentaPage() {
                     {/* Departamento */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Departamento</legend>
-                      <select value={formData.departamento} onChange={e => handleChange('departamento', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.departamento ? '#334155' : '#CBD5E1' }}>
+                      <select value={formData.departamento} onChange={e => handleChange('departamento', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.departamento ? '#ffffff' : '#CBD5E1' }}>
                         <option value="">Seleccionar</option>
                         {departamentos.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
@@ -1332,7 +1332,7 @@ export default function CrearCuentaPage() {
                     {/* Provincia */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Provincia</legend>
-                      <select value={formData.provincia} onChange={e => handleChange('provincia', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.provincia ? '#334155' : '#CBD5E1' }} disabled={!formData.departamento}>
+                      <select value={formData.provincia} onChange={e => handleChange('provincia', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.provincia ? '#ffffff' : '#CBD5E1' }} disabled={!formData.departamento}>
                         <option value="">Seleccionar</option>
                         {provincias.map(p => <option key={p} value={p}>{p}</option>)}
                       </select>
@@ -1341,7 +1341,7 @@ export default function CrearCuentaPage() {
                     {/* Distrito */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Distrito</legend>
-                      <select value={formData.distrito} onChange={e => handleChange('distrito', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.distrito ? '#334155' : '#CBD5E1' }} disabled={!formData.provincia}>
+                      <select value={formData.distrito} onChange={e => handleChange('distrito', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.distrito ? '#ffffff' : '#CBD5E1' }} disabled={!formData.provincia}>
                         <option value="">Seleccionar</option>
                         {distritos.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
@@ -1491,7 +1491,7 @@ export default function CrearCuentaPage() {
                       <legend className={legCls} style={legSt}>Relación con la empresa</legend>
                       <select value={formData.relacionEmpresa} onChange={e => handleChange('relacionEmpresa', e.target.value)}
                         className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
-                        style={{ ...arrSt, color: formData.relacionEmpresa ? '#334155' : '#CBD5E1' }}>
+                        style={{ ...arrSt, color: formData.relacionEmpresa ? '#ffffff' : '#CBD5E1' }}>
                         <option value="" disabled>Seleccionar</option>
                         {RELACIONES_EMPRESA.map(r => <option key={r} value={r}>{r}</option>)}
                       </select>
