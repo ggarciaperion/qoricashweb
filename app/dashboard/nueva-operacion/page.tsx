@@ -2293,7 +2293,7 @@ export function NuevaOperacionContent() {
                 </form>
               ) : (
                 /* STEP 4: Adjunta y finaliza */
-                <div className="text-center py-8">
+                <div className="text-center py-12 pt-16 flex flex-col items-center justify-center">
                   <style jsx>{`
                     @keyframes pulse-ring {
                       0% {

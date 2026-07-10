@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useOperationEventStore } from '@/lib/store/operationEventStore';
 
 function useCountUp(target: number, duration = 900, active = true) {
   const [value, setValue] = useState(0);
@@ -74,6 +75,9 @@ export default function HistorialPage() {
   const [page, setPage]         = useState(1);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
+  const { lastEvent } = useOperationEventStore();
+  const lastEventRef = useRef<typeof lastEvent>(null);
+
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
     (async () => {
@@ -86,6 +90,20 @@ export default function HistorialPage() {
       finally { setLoading(false); }
     })();
   }, [isAuthenticated]);
+
+  // Actualización en tiempo real: cuando llega un evento de operación, actualizar el estado en la lista
+  useEffect(() => {
+    if (!lastEvent) return;
+    if (lastEventRef.current?.timestamp === lastEvent.timestamp) return;
+    lastEventRef.current = lastEvent;
+
+    setOps(prev => prev.map(op => {
+      const matchById   = op.id === lastEvent.id;
+      const matchByCode = op.codigo_operacion === lastEvent.operation_id;
+      if (!matchById && !matchByCode) return op;
+      return { ...op, estado: lastEvent.status_key };
+    }));
+  }, [lastEvent]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { setPage(1); setExpandedId(null); }, [tab]);
 

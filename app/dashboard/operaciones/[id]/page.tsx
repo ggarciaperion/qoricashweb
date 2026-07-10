@@ -246,11 +246,15 @@ export default function OperacionDetallesPage() {
     ? `$ ${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
     : `S/ ${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`;
 
-  const timelineSteps = [
-    { label: 'Operación creada',       sub: formatDate(operation.fecha_creacion),                              done: true,  active: false },
-    { label: 'Comprobante recibido',   sub: operation.comprobante_url ? 'Archivo adjunto' : 'Pendiente',       done: !!operation.comprobante_url, active: !operation.comprobante_url && estado === 'pendiente' },
-    { label: 'En procesamiento',       sub: estado === 'en_proceso' || estado === 'completado' ? 'En curso' : 'Pendiente', done: estado === 'en_proceso' || estado === 'completado', active: estado === 'en_proceso' },
-    { label: 'Acreditado en tu cuenta',sub: estado === 'completado' ? formatDate(operation.fecha_actualizacion) : 'Pendiente', done: estado === 'completado', active: false },
+  const isCancelled = estado === 'cancelado' || estado === 'rechazado';
+  const timelineSteps = isCancelled ? [
+    { label: 'Operación creada', sub: formatDate(operation.fecha_creacion), done: true, active: false, cancelled: false },
+    { label: estado === 'rechazado' ? 'Operación rechazada' : 'Operación cancelada', sub: formatDate(operation.fecha_actualizacion) || 'Anulado', done: false, active: false, cancelled: true },
+  ] : [
+    { label: 'Operación creada',        sub: formatDate(operation.fecha_creacion),                                                                                        done: true,                                                               active: false,                                               cancelled: false },
+    { label: 'Comprobante recibido',    sub: (!!operation.comprobante_url || estado === 'en_proceso' || estado === 'completado') ? 'Archivo adjunto' : 'Pendiente',       done: !!operation.comprobante_url || estado === 'en_proceso' || estado === 'completado', active: !operation.comprobante_url && estado === 'pendiente', cancelled: false },
+    { label: 'En procesamiento',        sub: estado === 'en_proceso' || estado === 'completado' ? 'En curso' : 'Pendiente',                                               done: estado === 'en_proceso' || estado === 'completado',                  active: estado === 'en_proceso',                             cancelled: false },
+    { label: 'Acreditado en tu cuenta', sub: estado === 'completado' ? formatDate(operation.fecha_actualizacion) : 'Pendiente',                                           done: estado === 'completado',                                            active: false,                                               cancelled: false },
   ];
 
   return (
@@ -394,18 +398,21 @@ export default function OperacionDetallesPage() {
                   <div className={`absolute left-[11px] top-6 bottom-0 w-0.5 ${step.done ? 'bg-primary-300' : 'bg-white/15'}`} style={{ height: '32px' }} />
                 )}
                 <div className={`w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 z-10 transition-all ${
-                  step.done   ? 'bg-primary-500 shadow-md shadow-primary-200'
+                  step.cancelled ? 'bg-red-500/80 shadow-md shadow-red-900/40'
+                  : step.done   ? 'bg-primary-500 shadow-md shadow-primary-200'
                   : step.active ? 'bg-blue-500 ring-2 ring-blue-300/40'
                   : 'bg-white/10 border border-white/20'
                 }`}>
-                  {step.done
+                  {step.cancelled
+                    ? <XCircle className="w-3 h-3 text-white" />
+                    : step.done
                     ? <CheckCircle2 className="w-3 h-3 text-white" />
                     : step.active
                     ? <RefreshCw className="w-3 h-3 text-white animate-spin" />
                     : <div className="w-1.5 h-1.5 rounded-full bg-white/30" />}
                 </div>
                 <div className="pb-5 flex-1">
-                  <p className={`text-sm font-semibold leading-tight ${step.done ? 'text-white' : step.active ? 'text-blue-300' : 'text-white/30'}`}>{step.label}</p>
+                  <p className={`text-sm font-semibold leading-tight ${step.cancelled ? 'text-red-400' : step.done ? 'text-white' : step.active ? 'text-blue-300' : 'text-white/30'}`}>{step.label}</p>
                   <p className="text-[11px] text-white/45 mt-0.5">{step.sub}</p>
                 </div>
               </div>
