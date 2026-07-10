@@ -123,8 +123,8 @@ export default function HistorialPage() {
   const spreadProm   = completed.length
     ? completed.reduce((s, o) => s + ((o.tipo_cambio ?? 0) - BANK_REF), 0) / completed.length
     : 0;
-  const rentabilidad = completed.reduce((s, o) =>
-    s + ((o.tipo_cambio ?? 0) - BANK_REF) * (o.monto_dolares ?? 0), 0);
+  const rentabilidad = Math.abs(completed.reduce((s, o) =>
+    s + ((o.tipo_cambio ?? 0) - BANK_REF) * (o.monto_dolares ?? 0), 0));
 
   const animVolUSD      = useCountUp(volUSD,       900, !loading);
   const animSpread      = useCountUp(spreadProm,    900, !loading);
