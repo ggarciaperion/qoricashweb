@@ -141,8 +141,8 @@ export default function AlertaTCBanner() {
               </Link>
             </div>
 
-            <p className="hidden sm:flex mt-4 text-gray-600 text-xs items-center gap-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-primary-500" />
+            <p className="hidden sm:flex mt-4 text-white text-xs items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-primary-400" />
               Sin registro · Se configura en menos de 30 segundos
             </p>
           </div>
@@ -255,16 +255,34 @@ export default function AlertaTCBanner() {
     {/* ── Modal prospecto ── */}
     {modalOpen && (
       <div
-        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+        style={{ background: 'rgba(0,0,0,0.78)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
         onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
       >
-        <div className="w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden" style={{ background: '#0D1B2A', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <div
+          className="w-full max-w-lg rounded-2xl overflow-hidden"
+          style={{
+            background: 'rgba(6,14,26,0.92)',
+            backdropFilter: 'blur(32px)',
+            WebkitBackdropFilter: 'blur(32px)',
+            border: '1px solid rgba(143,184,204,0.18)',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(143,184,204,0.1)',
+          }}
+        >
 
           {/* Header */}
-          <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #112238 100%)' }}>
-            <div className="absolute -top-6 -left-6 w-24 h-24 rounded-full bg-primary-500/10 blur-2xl pointer-events-none" />
+          <div
+            className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
+            style={{ background: 'rgba(143,184,204,0.06)', borderBottom: '1px solid rgba(143,184,204,0.12)' }}
+          >
+            {/* Top highlight line */}
+            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.35), transparent)' }} />
+            <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)' }} />
             <div className="relative flex items-center gap-3">
-              <div className="relative w-9 h-9 rounded-xl bg-primary-500/15 border border-primary-500/25 flex items-center justify-center flex-shrink-0">
+              <div
+                className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)' }}
+              >
                 <Bell className="w-[18px] h-[18px] text-primary-400" />
                 <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-400">
                   <span className="absolute inset-0 rounded-full bg-primary-400 animate-ping opacity-75" />
@@ -272,11 +290,17 @@ export default function AlertaTCBanner() {
               </div>
               <div>
                 <p className="text-white font-extrabold text-sm leading-tight">Recibe el aviso sin registrarte</p>
-                <p className="text-primary-400/70 text-[10px] font-medium mt-0.5">Sin contraseña · Solo tu email · 100% gratis</p>
+                <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(143,184,204,0.7)' }}>Sin contraseña · Solo tu email · 100% gratis</p>
               </div>
             </div>
-            <button onClick={closeModal} className="relative text-gray-500 hover:text-white transition-colors p-1">
-              <X className="w-5 h-5" />
+            <button
+              onClick={closeModal}
+              className="relative w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+              style={{ color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)'; (e.currentTarget as HTMLButtonElement).style.color = '#ffffff'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.4)'; }}
+            >
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -286,27 +310,29 @@ export default function AlertaTCBanner() {
               <div className="flex flex-col items-center gap-4 py-6 text-center">
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-xl animate-pulse" />
-                  <div className="relative w-16 h-16 rounded-full bg-primary-500/15 border border-primary-500/40 flex items-center justify-center">
+                  <div className="relative w-16 h-16 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.4)' }}>
                     <CheckCircle className="w-8 h-8 text-primary-400" />
                   </div>
                 </div>
                 <div>
                   <p className="text-white font-black text-xl mb-1">¡Alerta activa!</p>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
                     Te escribiremos a <strong className="text-primary-400">{form.email}</strong> en el momento exacto.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 mt-1">
                   <Link
                     href="/crear-cuenta"
-                    className="group inline-flex items-center justify-center gap-2 bg-primary-500/15 hover:bg-primary-500/25 border border-primary-500/30 text-primary-300 text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
+                    className="group inline-flex items-center justify-center gap-2 text-primary-300 text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
+                    style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.28)' }}
                   >
                     Gestionar todas mis alertas
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                   <button
                     onClick={closeModal}
-                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm text-gray-500 hover:text-gray-300 transition-colors"
+                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm transition-colors"
+                    style={{ color: 'rgba(255,255,255,0.35)' }}
                   >
                     Cerrar
                   </button>
@@ -316,30 +342,30 @@ export default function AlertaTCBanner() {
               <form onSubmit={handleProspecto} className="space-y-4">
 
                 {/* Configurador de alerta */}
-                <div className="bg-white/[0.04] rounded-xl border border-white/8 px-4 py-5 space-y-4">
-                  <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Configura tu alerta</p>
+                <div className="rounded-xl px-4 py-5 space-y-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' }}>
+                  <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.55)' }}>Configura tu alerta</p>
 
                   {/* ¿Compra o vende dólares? */}
                   <div>
-                    <p className="text-[10px] text-gray-500 font-semibold mb-2">¿Qué operación realizas?</p>
+                    <p className="text-[10px] font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>¿Qué operación realizas?</p>
                     <div className="grid grid-cols-2 gap-2">
                       {([
-                        { val: 'venta',  label: 'Yo compro dólares',  sub: 'Te interesa el TC Venta',  icon: '💵' },
-                        { val: 'compra', label: 'Yo vendo dólares',   sub: 'Te interesa el TC Compra', icon: '🏦' },
+                        { val: 'venta',  label: 'Yo compro dólares',  sub: 'TC Venta',  icon: '💵' },
+                        { val: 'compra', label: 'Yo vendo dólares',   sub: 'TC Compra', icon: '🏦' },
                       ] as const).map(({ val, label, sub, icon }) => (
                         <button
                           key={val}
                           type="button"
                           onClick={() => setForm((f) => ({ ...f, moneda: val }))}
-                          className={`flex flex-col items-center gap-1 py-3 px-2 rounded-xl border-2 transition-all duration-200 text-center ${
-                            form.moneda === val
-                              ? 'bg-primary-500/15 border-primary-500/60 text-white'
-                              : 'bg-transparent border-white/8 text-gray-500 hover:border-white/20 hover:text-gray-300'
-                          }`}
+                          className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl transition-all duration-200 text-center"
+                          style={form.moneda === val
+                            ? { background: 'rgba(34,197,94,0.15)', border: '2px solid rgba(34,197,94,0.5)', color: '#ffffff' }
+                            : { background: 'rgba(255,255,255,0.03)', border: '2px solid rgba(143,184,204,0.15)', color: 'rgba(255,255,255,0.45)' }
+                          }
                         >
                           <span className="text-lg leading-none">{icon}</span>
                           <span className="text-xs font-bold leading-tight">{label}</span>
-                          <span className={`text-[10px] font-medium ${form.moneda === val ? 'text-primary-400' : 'text-gray-600'}`}>{sub}</span>
+                          <span className="text-[10px] font-medium" style={{ color: form.moneda === val ? 'rgba(34,197,94,0.9)' : 'rgba(255,255,255,0.25)' }}>{sub}</span>
                         </button>
                       ))}
                     </div>
@@ -348,16 +374,18 @@ export default function AlertaTCBanner() {
                   {/* Toggle condición */}
                   <div className="grid grid-cols-2 gap-2">
                     {([
-                      { val: 'sobre', label: 'Por encima de', icon: TrendingUp,  activeClass: 'bg-primary-500 border-primary-500 text-white shadow-lg shadow-primary-500/30' },
-                      { val: 'bajo',  label: 'Por debajo de', icon: TrendingDown, activeClass: 'bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/30' },
-                    ] as const).map(({ val, label, icon: Icon, activeClass }) => (
+                      { val: 'sobre', label: 'Por encima de', icon: TrendingUp,  activeStyle: { background: 'rgba(34,197,94,0.2)', border: '1.5px solid rgba(34,197,94,0.6)', color: '#ffffff', boxShadow: '0 4px 12px rgba(34,197,94,0.2)' } },
+                      { val: 'bajo',  label: 'Por debajo de', icon: TrendingDown, activeStyle: { background: 'rgba(239,68,68,0.2)', border: '1.5px solid rgba(239,68,68,0.6)', color: '#ffffff', boxShadow: '0 4px 12px rgba(239,68,68,0.2)' } },
+                    ] as const).map(({ val, label, icon: Icon, activeStyle }) => (
                       <button
                         key={val}
                         type="button"
                         onClick={() => setForm((f) => ({ ...f, tipo: val }))}
-                        className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
-                          form.tipo === val ? activeClass : 'bg-transparent border-white/10 text-gray-500 hover:border-white/20 hover:text-gray-300'
-                        }`}
+                        className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all duration-200"
+                        style={form.tipo === val
+                          ? activeStyle
+                          : { background: 'rgba(255,255,255,0.03)', border: '1.5px solid rgba(143,184,204,0.15)', color: 'rgba(255,255,255,0.4)' }
+                        }
                       >
                         <Icon className="w-3.5 h-3.5" />
                         {label}
@@ -367,13 +395,15 @@ export default function AlertaTCBanner() {
 
                   {/* Input TC centrado y prominente */}
                   <div className="flex flex-col items-center gap-1.5">
-                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Tipo de cambio</p>
-                    <div className={`relative flex items-center rounded-2xl border-2 transition-all duration-200 ${
-                      form.tipo === 'sobre'
-                        ? 'border-primary-500/40 focus-within:border-primary-500 bg-primary-500/5'
-                        : 'border-red-500/40 focus-within:border-red-500 bg-red-500/5'
-                    }`}>
-                      <span className="pl-5 pr-1 text-gray-400 text-xl font-black pointer-events-none select-none">S/</span>
+                    <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.55)' }}>Tipo de cambio</p>
+                    <div
+                      className="relative flex items-center rounded-2xl transition-all duration-200"
+                      style={form.tipo === 'sobre'
+                        ? { border: '2px solid rgba(34,197,94,0.4)', background: 'rgba(34,197,94,0.06)' }
+                        : { border: '2px solid rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.06)' }
+                      }
+                    >
+                      <span className="pl-5 pr-1 text-xl font-black pointer-events-none select-none" style={{ color: 'rgba(255,255,255,0.5)' }}>S/</span>
                       <input
                         type="number"
                         step="0.0001"
@@ -387,18 +417,22 @@ export default function AlertaTCBanner() {
                           if (parts[1] && parts[1].length > 4) return;
                           setForm((f) => ({ ...f, valor: raw }));
                         }}
-                        className="w-36 bg-transparent pr-5 py-3.5 text-3xl font-black text-white placeholder-gray-700 focus:outline-none text-center tracking-tight"
+                        className="w-36 bg-transparent pr-5 py-3.5 text-3xl font-black text-white placeholder-white/20 focus:outline-none text-center tracking-tight"
                         required
                       />
                     </div>
-                    <p className="text-[10px] text-gray-700">Máximo 4 decimales · ej: 3.4150</p>
+                    <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>Máximo 4 decimales · ej: 3.4150</p>
                   </div>
 
                   {/* Preview dinámico */}
                   {form.valor && parseFloat(form.valor) > 0 && (
-                    <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                      form.tipo === 'sobre' ? 'bg-primary-500/10 text-primary-300' : 'bg-red-500/10 text-red-300'
-                    }`}>
+                    <div
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all"
+                      style={form.tipo === 'sobre'
+                        ? { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: 'rgba(134,239,172,0.9)' }
+                        : { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: 'rgba(252,165,165,0.9)' }
+                      }
+                    >
                       {form.tipo === 'sobre'
                         ? <TrendingUp className="w-3.5 h-3.5 flex-shrink-0" />
                         : <TrendingDown className="w-3.5 h-3.5 flex-shrink-0" />}
@@ -418,7 +452,10 @@ export default function AlertaTCBanner() {
                     placeholder="Nombre o empresa"
                     value={form.nombre}
                     onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 focus:border-primary-500/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none transition-all focus:bg-white/[0.07]"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition-all"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }}
+                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
+                    onBlur={e => { e.currentTarget.style.border = '1px solid rgba(143,184,204,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
                     required
                   />
                   <input
@@ -426,7 +463,10 @@ export default function AlertaTCBanner() {
                     placeholder="tu@email.com"
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 focus:border-primary-500/50 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none transition-all focus:bg-white/[0.07]"
+                    className="w-full rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition-all"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }}
+                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
+                    onBlur={e => { e.currentTarget.style.border = '1px solid rgba(143,184,204,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
                     required
                   />
                 </div>
@@ -463,9 +503,9 @@ export default function AlertaTCBanner() {
                   )}
                 </button>
 
-                <p className="text-center text-[11px] text-gray-600">
+                <p className="text-center text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
                   ¿Ya tienes cuenta?{' '}
-                  <Link href="/login" className="text-primary-500 hover:text-primary-400 transition-colors font-semibold" onClick={closeModal}>
+                  <Link href="/login" className="text-primary-400 hover:text-primary-300 transition-colors font-semibold" onClick={closeModal}>
                     Inicia sesión
                   </Link>
                   {' '}para gestionar todas tus alertas

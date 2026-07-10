@@ -1477,7 +1477,7 @@ export default function Home() {
 
           <div className="text-center">
             <Link
-              href="/operaciones/nueva"
+              href={isAuthenticated ? '/dashboard' : '/login'}
               className="inline-flex items-center gap-2.5 text-white font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5"
               style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 8px 24px rgba(34,197,94,0.35)' }}
             >
