@@ -1852,51 +1852,84 @@ export function NuevaOperacionContent() {
                       <p className="text-xs font-black text-white leading-snug tracking-wide">VALIDA TU IDENTIDAD<br/>PARA OPERAR</p>
                     </button>
                   )}
-                  <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]" style={{ position: 'relative' }}>
-                    {/* Overlay KYC centrado sobre la calculadora */}
-                    {kycNeedsDocs && !kycBlocked && (
-                      <div
-                        className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl px-6 text-center"
-                        style={{ background: 'rgba(10,20,36,0.82)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
-                      >
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center mb-3" style={{ background: 'rgba(251,191,36,0.15)', border: '1.5px solid rgba(251,191,36,0.35)' }}>
-                          <AlertCircle className="w-6 h-6" style={{ color: '#fbbf24' }} />
+                  {/* KYC pendiente: reemplaza la calculadora (no renderizar ambas juntas) */}
+                  {kycNeedsDocs && !kycBlocked ? (
+                    <div className="w-full max-w-[400px] mx-auto">
+                      <div className="rounded-2xl overflow-hidden" style={{
+                        background: 'rgba(255,255,255,0.10)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255,255,255,0.18)',
+                        boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+                      }}>
+                        {/* Header */}
+                        <div className="flex items-center gap-3 px-5 py-4" style={{ background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.18)', border: '1.5px solid rgba(251,191,36,0.4)' }}>
+                            <AlertCircle className="w-5 h-5" style={{ color: '#fbbf24' }} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-black text-white leading-tight">Validación requerida para operar</p>
+                            <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                              Proceso único · aprox. 10 minutos
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-sm font-black text-white mb-1 leading-tight">Validación de identidad requerida</p>
-                        <p className="text-xs mb-4 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                          Para operar en nuestra plataforma<br/>necesitas validar tu identidad primero.
-                        </p>
-                        <button
-                          onClick={() => { setIsKYCModalOpen(true); setError(null); }}
-                          className="flex items-center gap-2 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition hover:brightness-110 active:scale-[0.97]"
-                          style={{ background: '#ca8a04' }}
-                        >
-                          <Upload className="w-3.5 h-3.5" />
-                          Validar identidad
-                        </button>
+                        {/* Body */}
+                        <div className="px-5 py-5">
+                          <p className="text-xs leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                            Para realizar operaciones en nuestra plataforma necesitas validar tu identidad.
+                            Sube tu <b style={{ color: '#ffffff' }}>{isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'}</b> y en menos de 10 minutos podrás operar.
+                          </p>
+                          {/* Pasos */}
+                          <div className="space-y-2.5 mb-5">
+                            {(isEmpresa
+                              ? [{ icon: '📄', text: 'Ficha RUC de tu empresa' }]
+                              : [{ icon: '🪪', text: 'Foto del DNI — parte delantera' }, { icon: '🪪', text: 'Foto del DNI — parte trasera' }]
+                            ).map((item, idx) => (
+                              <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <span className="text-base">{item.icon}</span>
+                                <span className="text-xs text-white font-medium">{item.text}</span>
+                                <div className="ml-auto w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                                  <div className="w-2 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.3)' }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <button
+                            onClick={() => { setIsKYCModalOpen(true); setError(null); }}
+                            className="w-full flex items-center justify-center gap-2 text-white text-sm font-black py-3 rounded-xl transition-all hover:brightness-110 active:scale-[0.98]"
+                            style={{ background: '#16a34a', boxShadow: '0 4px 16px rgba(22,163,74,0.35)' }}
+                          >
+                            <Upload className="w-4 h-4" />
+                            Subir documentos ahora
+                          </button>
+                        </div>
                       </div>
-                    )}
-                    <Calculator
-                      showContinueButton
-                      compact
-                      darkTheme={isEmpresa}
-                      onOperationReady={(opType, amountRaw, rate) => {
-                        if (hasActiveOperation || kycBlocksOperation) {
-                          if (kycBlocksOperation) setShowKycBlockedToast(true);
-                          return;
-                        }
-                        setTipo(opType);
-                        setAmountInput(amountRaw);
-                        setSelectedOriginAccount(null);
-                        setSelectedDestinationAccount(null);
-                        const computed = opType === 'Compra'
-                          ? (parseFloat(amountRaw) * rate).toFixed(2)
-                          : (parseFloat(amountRaw) / rate).toFixed(2);
-                        setAmountOutput(computed);
-                        setCurrentStep(2);
-                      }}
-                    />
-                  </div>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-hidden rounded-2xl w-full max-w-[400px]">
+                      <Calculator
+                        showContinueButton
+                        compact
+                        darkTheme={isEmpresa}
+                        onOperationReady={(opType, amountRaw, rate) => {
+                          if (hasActiveOperation || kycBlocksOperation) {
+                            if (kycBlocksOperation) setShowKycBlockedToast(true);
+                            return;
+                          }
+                          setTipo(opType);
+                          setAmountInput(amountRaw);
+                          setSelectedOriginAccount(null);
+                          setSelectedDestinationAccount(null);
+                          const computed = opType === 'Compra'
+                            ? (parseFloat(amountRaw) * rate).toFixed(2)
+                            : (parseFloat(amountRaw) / rate).toFixed(2);
+                          setAmountOutput(computed);
+                          setCurrentStep(2);
+                        }}
+                      />
+                    </div>
+                  )}
                   </div>
                 </div>
               ) : currentStep === 2 ? (
