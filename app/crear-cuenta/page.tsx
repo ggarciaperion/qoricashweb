@@ -1760,6 +1760,9 @@ export default function CrearCuentaPage() {
                           else if (letters === 3 && digits < 3 && /[0-9]/.test(c)) { result += c; digits++; }
                         }
                         setCodigoValue(result);
+                        if (result.length === 6) {
+                          (document.getElementById('codigo-hidden-input') as HTMLInputElement | null)?.blur();
+                        }
                       }}
                       onKeyDown={(e) => {
                         if (e.key === 'Backspace' && codigoValue.length > 0) {
