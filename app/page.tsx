@@ -250,7 +250,7 @@ export default function Home() {
                 <div className="flex flex-col items-start">
                   <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white leading-tight" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
                   {isEmpresaPage && (
-                    <span className="lg:hidden text-[8px] font-bold tracking-[0.2em] uppercase w-full text-center" style={{ color: '#8fb8cc' }}>Corporate</span>
+                    <span className="text-[8px] font-semibold tracking-[0.28em] uppercase" style={{ color: 'rgba(143,184,204,0.65)', letterSpacing: '0.28em' }}>Corporate</span>
                   )}
                 </div>
               </Link>
