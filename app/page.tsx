@@ -247,7 +247,7 @@ export default function Home() {
                 ) : (
                   <img src="/logo-principal.png" alt="QoriCash" className="h-8 sm:h-11 md:h-12 w-auto" />
                 )}
-                <div className="flex flex-col items-start">
+                <div className="flex flex-row items-baseline gap-2">
                   <span className="text-xl sm:text-2xl md:text-3xl font-display font-black tracking-tight text-white leading-tight" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>Qoricash</span>
                   {isEmpresaPage && (
                     <span className="text-[8px] font-semibold tracking-[0.28em] uppercase" style={{ color: 'rgba(143,184,204,0.65)', letterSpacing: '0.28em' }}>Corporate</span>
