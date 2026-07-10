@@ -341,7 +341,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Right: inicio + bell + user */}
             <div className="flex items-center gap-1 shrink-0">
               <Link
-                href="/"
+                href={isEmpresaUser ? '/empresa' : '/'}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
                 style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.7)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ffffff'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)'; }}

@@ -680,7 +680,7 @@ export default function Home() {
                 dark={isEmpresaPage}
                 onOperationReady={() => guardedAction(() => {
                   if (isEmpresaPage) {
-                    router.push(isAuthenticated ? '/dashboard/empresa' : '/login?from=/empresa');
+                    router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa');
                   } else {
                     router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login');
                   }
