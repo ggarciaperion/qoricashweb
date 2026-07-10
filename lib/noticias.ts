@@ -24,9 +24,287 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-07-09T08:00:00.000Z';
+const HOY = '2026-07-10T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'h001',
+    titulo: 'PPI junio EE.UU. +0.1% — por debajo del consenso: corte Fed septiembre sube a 63% y DXY cede a 100.1',
+    descripcion: 'El PPI de junio de EE.UU. registró +0.1% mensual y +2.5% anual este viernes 10 de julio, ambos por debajo del consenso (+0.2%/+2.7%). El mercado reaccionó: probabilidad de corte Fed en septiembre salta del 52% al 63% según CME FedWatch. DXY cede a 100.1 y los activos emergentes avanzan.',
+    contenido: `El Buró de Estadísticas Laborales (BLS) publicó este viernes 10 de julio el índice de precios al productor (PPI) de junio de 2026: +0.1% mensual y +2.5% interanual, por debajo del consenso de Bloomberg (52 analistas) que esperaba +0.2% mensual y +2.7% interanual. El PPI subyacente excluyendo alimentos y energía registró +0.2% mensual y +2.9% interanual —también por debajo del consenso de +3.1%—. El dato confirma que la desinflación en la cadena de suministro sigue intacta.
+
+La reacción de mercados fue inmediata y significativa: la herramienta CME FedWatch elevó la probabilidad implícita de un recorte de 25bps de la Fed en septiembre del 52% —donde cerró ayer tras las actas FOMC— al 63%, el nivel más alto desde el CPI favorable de mayo. El DXY retrocedió de 100.9 a 100.1, el Nasdaq avanza 0.9%, el S&P 500 sube 0.6% y el Dow gana 0.4%. Los Treasuries a 10 años ceden 6bps a 4.27%, consolidando la tendencia bajista de rendimientos.
+
+El PPI de servicios —componente más relevante para la Fed dado su peso en el PCE— registró +0.1% mensual, la lectura más baja desde enero de 2025. Los servicios de transporte y almacenamiento contribuyeron al dato benigno con -0.3% mensual, reflejo de la normalización de la cadena logística global post-pandemia. El gobernador de la Fed, Christopher Waller, declaró horas después que el dato "es coherente con el progreso hacia el objetivo del 2%".
+
+El próximo catalizador es el PCE (inflación preferida de la Fed) publicado el 31 de julio, días antes de la reunión del FOMC del 29-30 de julio. Si el PCE subyacente confirma la tendencia benigna del PPI y el CPI, el primer recorte de la Fed en cuatro años podría anunciarse en septiembre.`,
+    analisis: `Un PPI de +0.1% mensual es la mejor noticia posible para los mercados en este momento: confirma que el proceso de desinflación no se ha detenido y que la Fed tiene margen para recortar tasas sin comprometer su credibilidad. Para el sol peruano, el DXY en 100.1 es el nivel más bajo en lo que va del año —condición directamente favorable para la estabilidad y apreciación del PEN. El escenario base para el Q3 mejora significativamente con este dato.
+
+Para empresas con pagos en dólares planificados para agosto-septiembre, el contexto post-PPI refuerza la hipótesis de que el dólar seguirá debilitándose moderadamente. Para exportadores peruanos que reciben dólares, evaluar la cobertura de la exposición cambiaria ante el riesgo de apreciación adicional del sol. En QoriCash asesoramos a nuestros clientes para tomar las mejores decisiones según su perfil de exposición.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/12504957/pexels-photo-12504957.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h002',
+    titulo: 'Sol peruano aprecia a S/ 3.392 post-PPI — DXY en 100.1 y mejor cierre semanal del año: análisis para las próximas dos semanas',
+    descripcion: 'El tipo de cambio PEN/USD cae a S/ 3.392 este viernes 10 de julio, reaccionando al PPI benigno de EE.UU. Es el nivel más bajo desde el 15 de enero de 2026. El BCRP intervino con compras de US$ 310M para suavizar la apreciación. Soporte técnico en S/ 3.38; próximo catalizador: PCE del 31 de julio.',
+    contenido: `El tipo de cambio PEN/USD opera en S/ 3.392 este viernes 10 de julio —su nivel más bajo desde el 15 de enero de 2026—, apreciándose 0.4% desde el S/ 3.406 del cierre de ayer en reacción directa al PPI benigno de EE.UU. publicado esta mañana. El movimiento del sol es consistente con la dinámica de monedas emergentes: el BRL se aprecia 0.6% (5.03/USD), el CLP gana 0.7% (907/USD) y el COP avanza 0.5% (4,110/USD).
+
+El BCRP intervino esta mañana comprando aproximadamente US$ 310M en el mercado spot para suavizar la velocidad de apreciación, en línea con su política de reducir la volatilidad cambiaria sin defender niveles específicos. Con esta compra, las reservas internacionales del BCRP alcanzan un nuevo récord histórico de US$ 74.4 billones, reforzando la capacidad de intervención del banco central ante episodios de volatilidad futura.
+
+El análisis técnico del PEN/USD muestra una semana de apreciación del 0.4% (desde S/ 3.410 el lunes a S/ 3.392 hoy), la mejor semana del año para el sol. Los niveles técnicos clave: soporte inmediato en S/ 3.38 (MA50 diaria y mínimo de enero 2026), soporte relevante en S/ 3.32 (mínimo histórico 2026), resistencia en S/ 3.42 (MA20 diaria), resistencia secundaria en S/ 3.50 (máximo de mayo).
+
+Para las próximas dos semanas, el escenario base (65% de probabilidad) prevé que el sol opere en el rango S/ 3.38-3.42 mientras el mercado digiere el PPI y aguarda el PCE del 31 de julio. Si el FOMC del 29-30 de julio señala inicio de ciclo bajista, el sol podría perforar S/ 3.38 y apuntar a S/ 3.32-3.35 en agosto.`,
+    analisis: `La apreciación del sol a S/ 3.392 tiene fundamento tanto técnico como macroeconómico: el PPI benigno redujo la presión del DXY y el diferencial de tasas BCRP-Fed mantiene atractivo el carry en soles. Para empresas importadoras con pagos en dólares próximos, el nivel actual es históricamente favorable —cercano al soporte de S/ 3.38— para anticipar compras. Para exportadores que convertirán dólares, evaluar cobertura parcial dado que el sol podría apreciarse más si el PCE confirma la desinflación.
+
+El riesgo principal al alza del dólar sería un dato de empleo de julio sorpresivamente fuerte (se publica el 7 de agosto) que cambiara el escenario de recorte. En ese escenario el sol retrocedería hacia S/ 3.44-3.46. En QoriCash ofrecemos el mejor tipo de cambio del mercado con liquidación en minutos.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/29611783/pexels-photo-29611783.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h003',
+    titulo: 'BCRP compra US$ 310M para moderar apreciación del sol — reservas alcanzan récord histórico de US$ 74.4B',
+    descripcion: 'El Banco Central de Reserva del Perú intervino hoy comprando US$ 310M en el mercado cambiario spot para suavizar la apreciación del sol post-PPI de EE.UU. Las reservas internacionales netas alcanzan un nuevo máximo histórico de US$ 74.4 billones, el nivel más alto en la historia del BCRP.',
+    contenido: `El BCRP realizó hoy su mayor intervención de compra de dólares del mes de julio, adquiriendo US$ 310M en el mercado interbancario entre las 9:30 y las 11:00 am (hora Lima) para suavizar la velocidad de apreciación del sol post-PPI de EE.UU. Con esta operación, las reservas internacionales netas del banco central ascienden a US$ 74.4 billones —un nuevo récord histórico y el nivel más alto entre los bancos centrales comparables de la región—.
+
+La intervención fue preventiva y técnica: el BCRP no está defendiendo un nivel específico del tipo de cambio, sino moderando la volatilidad de un movimiento puntual de apreciación. Esta es la cuarta intervención de compra de dólares del mes de julio, con un total acumulado de US$ 1,180M —señal de que el banco central está administrando activamente la acumulación de reservas durante el periodo de mayor flujo agroexportador.
+
+El directorio del BCRP mantiene la tasa de referencia en 4.50%, el mismo nivel de la Fed (4.25%-4.50%). El diferencial de tasas es actualmente de 0-25bps. Si la Fed recorta 25bps en septiembre sin movimiento del BCRP, el diferencial se elevaría a 25-50bps a favor del sol —factor apreciador estructural que el BCRP deberá gestionar en el H2 2026.
+
+Con US$ 74.4B en reservas (31.6% del PBI), el Perú mantiene uno de los colchones de estabilidad más sólidos de América Latina, superando a Colombia (US$ 60B), Chile (US$ 42B) y México (US$ 213B en términos absolutos pero menor como % del PBI).`,
+    analisis: `La intervención del BCRP por US$ 310M confirma que el banco central está activo en la gestión del tipo de cambio y que no permitirá apreciaciones bruscas que afecten la competitividad exportadora. Para empresas con necesidades de dólares, la señal es clara: el BCRP tiene capacidad ilimitada de intervención con US$ 74.4B en reservas y lo usará si fuera necesario. El TC seguirá en rango administrado. En QoriCash le ofrecemos la mejor tasa del mercado para sus operaciones cambiarias del día.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19985010/pexels-photo-19985010.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h004',
+    titulo: 'Arándanos: julio marca pico de temporada con US$ 285M exportados en la semana del 7 al 11 — récord histórico semanal',
+    descripcion: 'La semana del 7 al 11 de julio de 2026 registra un flujo exportador de arándanos peruanos de US$ 285M, el mayor de la historia para una sola semana. La Libertad y Lambayeque concentran el 68% del volumen. El flujo genera presión apreciadora sobre el sol y sostiene el nivel de S/ 3.38-3.42.',
+    contenido: `La semana del 7 al 11 de julio de 2026 se perfila como la de mayor exportación de arándanos en la historia del Perú: el flujo estimado de conversión de divisas del sector supera US$ 285M —el mayor semanal desde el inicio de registros sistemáticos del MINCETUR—. Las regiones de La Libertad (38%) y Lambayeque (30%) concentran el 68% del volumen, con las empresas Camposol, Hortifrut-Tal y Inka Fresh liderando los embarques.
+
+Los destinos de la semana son EE.UU. (46% del valor FOB, principalmente Whole Foods, Costco y Walmart), Países Bajos como hub redistributor europeo (25%), y China vía vuelos charter a Shanghai y Guangzhou (17%). El precio promedio de exportación de la semana se ubica en US$ 3.95/kg —por encima del promedio de la temporada de US$ 3.80/kg— gracias a una calidad excepcional del fruto por las condiciones climáticas de La Libertad.
+
+El flujo de conversión de dólares a soles de US$ 285M en una semana equivale a una oferta de divisas de aproximadamente US$ 57M diarios —nivel superior a la demanda habitual del sistema financiero para importaciones y pagos externos—. Este exceso de oferta de dólares es el principal factor que genera presión apreciadora sobre el sol en julio y agosto, y explica en parte por qué el BCRP interviene comprando dólares para evitar una apreciación excesiva.
+
+Las proyecciones de ADEX indican que el pico exportador se extenderá hasta la tercera semana de agosto, con flujos semanales de US$ 240-290M hasta esa fecha. La temporada 2026 cerrará con exportaciones estimadas de US$ 2,300-2,500M —otro récord histórico anual—.`,
+    analisis: `El pico agroexportador de arándanos es el ancla estacional más importante del sol entre julio y agosto: US$ 285M semanales de conversión de divisas generan una demanda estructural de soles que sostiene la moneda aun cuando el contexto externo es adverso. Para empresas del sector con costos en soles e ingresos en dólares, el TC actual de S/ 3.39-3.42 es el rango de operación de la temporada. En QoriCash ofrecemos las mejores condiciones para la conversión de divisas agroexportadoras con liquidación en el día.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5980178/pexels-photo-5980178.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h005',
+    titulo: 'Tía María: Southern Peru inicia movimiento de tierras en Arequipa — inversión de US$ 1,400M activa la región con 8,500 empleos',
+    descripcion: 'Southern Peru Copper Corporation inició esta semana el movimiento de tierras de la primera etapa del proyecto cuprífero Tía María, en La Joya (Arequipa), luego de obtener la licencia de construcción en junio 2026. El proyecto demandará US$ 1,400M en inversión y generará 8,500 empleos directos en su fase de construcción.',
+    contenido: `Southern Peru Copper Corporation (SPCC), subsidiaria de Grupo México, inició formalmente el movimiento de tierras de la primera etapa del proyecto minero Tía María en el distrito de La Joya, provincia de Islay, región Arequipa, según comunicó la empresa el miércoles 8 de julio. El inicio de obras llega tras 16 años de gestiones administrativas, estudios de impacto ambiental y diálogo comunitario que culminaron con la aprobación de la licencia de construcción por el MINEM en junio de 2026.
+
+El proyecto contempla la explotación de mineral de cobre de tajo abierto en los yacimientos La Tapada y Tía María, con una capacidad de procesamiento de 120,000 toneladas métricas diarias. La producción anual estimada es de 120,000 TMF de cátodos de cobre de alta pureza. En su plena capacidad (2030), Tía María aportará aproximadamente el 7% de la producción nacional de cobre. El costo C1 estimado es de US$ 2.20/libra, uno de los más competitivos de Sudamérica.
+
+La inversión total del proyecto es de US$ 1,400M, distribuidos en infraestructura minera (US$ 680M), planta de óxidos y SX-EW (US$ 420M) y obras de soporte ambiental incluyendo una planta desalinizadora en el litoral de Islay (US$ 300M). Durante la fase de construcción (2026-2029), el proyecto generará 8,500 empleos directos y 22,000 indirectos. SPCC estima un aporte fiscal de US$ 4,200M en royalties, impuesto a la renta y regalías mineras durante los primeros 15 años de operación.
+
+La gestión social fue determinante para el inicio de obras: SPCC suscribió un convenio con las comunidades de Cocachacra y Punta de Bombón que incluye un fondo de desarrollo local de US$ 85M, capacitación técnica para 1,200 jóvenes de la región y prioridad de empleo local para el 35% de los puestos de trabajo operativos.`,
+    analisis: `El inicio de Tía María es una señal de primer orden para el clima de inversión minera en Perú: si un proyecto con 16 años de historia conflictiva puede arrancar, el mensaje al mercado es que el país ha mejorado sustancialmente el entorno de licenciamiento social y ambiental. Esto puede atraer inversión adicional en otros proyectos del pipeline (Yanacocha Sulfuros, La Granja, Michiquillay). Para el tipo de cambio, US$ 1,400M en inversión durante 3-4 años equivalen a un ingreso adicional de divisas de ~US$ 350-400M anuales. En QoriCash asesoramos a proveedores del sector minero para optimizar sus conversiones PEN/USD.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/5505961/pexels-photo-5505961.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h006',
+    titulo: 'Refinería La Pampilla logra producción récord de 95,000 barriles diarios en H1 2026 tras modernización por US$ 340M',
+    descripcion: 'La Refinería La Pampilla —operada por Repsol en Ventanilla, Lima— alcanzó un promedio histórico de 95,000 barriles por día (bpd) en el H1 2026, su récord productivo tras la modernización de US$ 340M concluida en diciembre 2025. La planta cubre el 42% de la demanda nacional de combustibles derivados del petróleo.',
+    contenido: `La Refinería La Pampilla (Relapasa), operada por Repsol en Ventanilla (Callao), alcanzó un promedio de producción de 95,000 barriles por día (bpd) en el primer semestre de 2026, su máximo histórico desde el inicio de operaciones en 1967, según comunicó Repsol al MINEM el 7 de julio. El hito se logra tras concluir en diciembre 2025 la modernización de US$ 340M que actualizó las unidades de destilación atmosférica, hidrotratamiento de naftas y producción de diésel de ultra-bajo azufre (DUBA).
+
+La planta procesa crudos ligeros y medianos provenientes de Ecuador (58%), Colombia (24%) y Perú (18%, Lote 192 y Lote X). En el H1 2026 produjo: diésel DUBA (48% del volumen), gasolinas de 84, 90 y 97 octanos (28%), GLP (12%), kerosene de aviación para el aeropuerto Jorge Chávez (8%) y asfaltos (4%). La cobertura de La Pampilla equivale al 42% de la demanda nacional de derivados del petróleo —el resto lo aporta Petroperú Talara (35%) y las importaciones directas (23%).
+
+La modernización redujo significativamente el contenido de azufre en el diésel producido: de 50 partes por millón (ppm) a menos de 10 ppm, en cumplimiento del Decreto Supremo 010-2017 que entrará en plena vigencia en 2027. Esto mejora la calidad del aire en Lima y cumple con los estándares Euro 5. Las emisiones de CO2 de la planta cayeron 12% respecto a 2024.
+
+El precio de procesamiento (cracking margin) promedio del H1 fue de US$ 8.2 por barril —nivel rentable a los precios actuales del WTI (US$ 73/barril) y con el tipo de cambio en S/ 3.40—. Repsol estima que La Pampilla generará US$ 180M en ingresos por licencias y ventas mayoristas en 2026.`,
+    analisis: `Una refinería más eficiente y productiva en el Perú tiene impacto directo en la cadena de precios de combustibles al consumidor: mayor producción local reduce la dependencia de importaciones de derivados y modera la presión inflacionaria en combustibles. Para el tipo de cambio, menos importaciones de combustibles = menos demanda de dólares para pagos al exterior = factor marginalmente apreciador del sol. El contexto es positivo para la estabilidad de precios domésticos y para el costo de transporte que impacta en la logística nacional.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h007',
+    titulo: 'Oro avanza +1.2% a US$ 4,175 post-PPI benigno: DXY débil y expectativas dovish de la Fed impulsan el metal',
+    descripcion: 'El oro al contado sube 1.2% a US$ 4,175 por onza este viernes 10 de julio, recuperando terreno tras el dato de PPI de EE.UU. por debajo del consenso. El DXY en 100.1 y la suba de probabilidad de corte de la Fed al 63% para septiembre son los catalizadores. Goldman Sachs mantiene objetivo de US$ 4,500/oz.',
+    contenido: `El precio del oro al contado (XAU/USD) avanza 1.2% a US$ 4,175 por onza este viernes 10 de julio, recuperando terreno tras la corrección de US$ 4,130 a US$ 4,128 del jueves. El alza responde directamente al PPI de junio de EE.UU. publicado hoy —+0.1% mensual, por debajo del consenso de +0.2%—, que elevó la probabilidad de recorte de la Fed en septiembre del 52% al 63% y presionó el DXY a 100.1.
+
+La mecánica es directa: DXY más débil → precio del oro más alto (correlación histórica de -0.72). Adicionalmente, la expectativa de tasas de interés reales más bajas en EE.UU. reduce el costo de oportunidad de mantener oro, que no genera rendimiento. El nivel de US$ 4,175 sitúa al metal a tan solo US$ 45 del récord histórico de US$ 4,220/oz marcado el 2 de junio de 2026.
+
+Goldman Sachs reiteró hoy su precio objetivo de US$ 4,500/oz para diciembre de 2026, sustentado en tres pilares: (1) compras récord de bancos centrales emergentes —China, India, Polonia, Turquía sumaron 290 toneladas en Q2 2026—; (2) expectativa de inicio de ciclo bajista de la Fed; (3) flujos de ETFs de oro que acumulan US$ 14.2B en inflows en lo que va del año, incluyendo US$ 1.8B esta semana post-PPI.
+
+Para el Perú, el oro en US$ 4,175 tiene implicación directa en los ingresos de exportación: el país produce aproximadamente 100 toneladas anuales de oro fino (Yanacocha, Lagunas Norte, Shahuindo, Buenaventura). A este precio, el valor de la producción anual supera US$ 13,400M —el mayor de la historia peruana en producción de oro—.`,
+    analisis: `El avance del oro a US$ 4,175 confirma que la tendencia alcista de largo plazo está intacta y que el PPI benigno le da un nuevo impulso. Para el sol peruano, mayor precio del oro equivale a más ingresos de exportación y mayor oferta de dólares en el mercado cambiario —factor de soporte para la moneda. La perspectiva para H2 2026 es positiva: si la Fed recorta en septiembre, el DXY cedería adicionalmente y el oro podría acercarse a US$ 4,500. El momento para convertir dólares de exportación minera es favorecer el sol a los niveles actuales de S/ 3.39-3.42.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29483248/pexels-photo-29483248.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h008',
+    titulo: 'WTI rebota +1.1% a US$ 73.50: PPI favorable mejora apetito de riesgo — OPEP+ mantiene disciplina de producción',
+    descripcion: 'El petróleo WTI avanza 1.1% a US$ 73.50 por barril este viernes 10 de julio, revirtiendo parcialmente la caída de ayer (-1.09%). El rebote responde a la mejora del apetito de riesgo global post-PPI benigno. La OPEP+ reitera su compromiso de recortes y el Brent avanza a US$ 75.80.',
+    contenido: `El petróleo West Texas Intermediate (WTI) cotiza a US$ 73.50 por barril este viernes 10 de julio, avanzando 1.1% desde el cierre de US$ 72.72 del jueves y revirtiendo parcialmente la corrección de ayer. El Brent también avanza 1.0% a US$ 75.80/barril, con el diferencial Brent-WTI estable en US$ 2.30.
+
+El rebote responde principalmente a la mejora del apetito de riesgo global tras el PPI benigno de EE.UU.: cuando los mercados de acciones suben (S&P +0.6%, Nasdaq +0.9%) y el DXY cede, el petróleo suele acompañar el movimiento al alza por la combinación de menor costo de oportunidad del crudo y mayor demanda esperada ante menor riesgo de recesión.
+
+El soporte fundamental proviene de la OPEP+: el secretario general Haitham Al-Ghais reiteró hoy que el cartel mantiene su compromiso de los recortes voluntarios de 2.2 mbpd hasta finales de 2026. Arabia Saudita mantiene sus recortes voluntarios adicionales de 1.0 mbpd. El precio de equilibrio fiscal de Arabia Saudita (breakeven) es de aproximadamente US$ 90/barril, por lo que el cartel tiene incentivos fuertes para defender los precios actuales.
+
+El análisis técnico muestra que el WTI encontró soporte en US$ 72.50 (zona de demanda histórica) y la recuperación de US$ 73.50 lo devuelve al rango de consolidación de las últimas tres semanas (US$ 72.50-US$ 76.00). Si el WTI supera US$ 76, el siguiente objetivo sería US$ 78-80 (proyección para Q3 2026 de Goldman Sachs).`,
+    analisis: `El WTI en US$ 73.50 sigue en un rango favorable para el Perú: por debajo de US$ 75-80/barril, los costos de importación de combustibles son manejables para la economía doméstica y la inflación permanece bajo control. Para el tipo de cambio, un WTI estable implica que la demanda de dólares para importaciones energéticas no aumenta —factor neutral a marginalmente positivo para el sol. Si el WTI rebota hacia US$ 80+, podría haber presión adicional de importaciones que demanden más dólares. En QoriCash monitoreamos el precio del crudo como variable complementaria al análisis del TC PEN/USD.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/3207536/pexels-photo-3207536.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h009',
+    titulo: 'Cobre LME +0.8% a US$ 4.68/libra: PPI benigno de EE.UU. y señales de estímulo del PBOC impulsan el metal rojo',
+    descripcion: 'El cobre en el LME avanza 0.8% a US$ 4.68/libra (US$ 10,317/tonelada) este viernes 10 de julio. El impulso viene del PPI benigno de EE.UU. —que mejora las perspectivas de demanda global— y de señales del Banco Popular de China (PBOC) sobre posibles herramientas de liquidez adicionales en el Q3 2026.',
+    contenido: `El cobre a tres meses en el London Metal Exchange (LME) avanza 0.8% a US$ 4.68/libra (US$ 10,317/tonelada) este viernes 10 de julio, cotizando en su nivel más alto en dos semanas. El metal rojo se beneficia de la confluencia de dos catalizadores: el PPI benigno de EE.UU. que mejora el apetito de riesgo global, y las señales del PBOC de posibles medidas de estímulo monetario para el Q3 2026 si el crecimiento muestra señales de desaceleración.
+
+La demanda física de cobre sigue sólida: los stocks certificados en los almacenes del LME cayeron 28,500 toneladas en la semana al 9 de julio —su mayor reducción semanal desde febrero— señal de demanda activa de compradores industriales en Asia. Los inventarios del Shanghai Futures Exchange (SHFE) también retrocedieron 12,000 toneladas, confirmando que la demanda china, aunque moderada, sigue absorbiendo el metal disponible.
+
+Para el Perú, el cobre en US$ 4.68/libra es muy relevante: el país exporta aproximadamente 2.8-3.0 millones de TMF anuales (25-26% de la producción mundial). A este precio, el valor de la exportación anual se aproxima a US$ 29,000-30,000M —el 48% del total de exportaciones peruanas y el mayor ingreso de divisas del país—. Antamina, Cerro Verde, Quellaveco y Las Bambas son los principales contribuyentes.
+
+El nivel de US$ 4.68/libra está por encima del costo de producción C1 de todas las grandes operaciones peruanas (US$ 1.80-2.50/libra) garantizando márgenes operativos sólidos. Si el PBOC reduce el RRR en julio o agosto —como especula el mercado— el cobre podría avanzar hacia US$ 4.80-4.90/libra.`,
+    analisis: `El cobre en US$ 4.68/libra representa un precio muy favorable para las finanzas públicas y la balanza de pagos del Perú. Para el sol peruano, mayor precio del cobre = más ingresos de exportación = más oferta de dólares en el mercado spot = soporte para el PEN. La correlación histórica entre el precio del cobre y la fortaleza del sol es positiva. El escenario de estímulos adicionales del PBOC en Q3 es el catalizador más importante a monitorear para el cobre en las próximas semanas. En QoriCash estamos al tanto de estos movimientos para ofrecerle siempre el mejor tipo de cambio.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/2892618/pexels-photo-2892618.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h010',
+    titulo: 'Bitcoin +2.1% a US$ 64,200 post-PPI: apetito de riesgo mejora y ETFs acumulan US$ 420M en entradas netas en el día',
+    descripcion: 'Bitcoin avanza 2.1% a US$ 64,200 este viernes 10 de julio, su mejor jornada en dos semanas. El catalizador es el PPI benigno de EE.UU. que mejoró el apetito de riesgo global. Los ETFs spot de Bitcoin en EE.UU. registraron entradas netas de US$ 420M solo hoy, el mayor flujo desde la semana del 30 de junio.',
+    contenido: `Bitcoin (BTC) cotiza a US$ 64,200 este viernes 10 de julio, avanzando 2.1% desde el US$ 62,872 del cierre de ayer y marcando su mejor jornada en dos semanas. El movimiento sigue la mejora del apetito de riesgo global tras el PPI benigno de EE.UU.: el Nasdaq avanza 0.9% y los activos de riesgo en general reaccionan positivamente. La correlación BTC-Nasdaq de 30 días se mantiene en 0.71.
+
+Los ETFs spot de Bitcoin en EE.UU. registraron entradas netas de US$ 420M solo en el día de hoy —el mayor flujo diario desde el 30 de junio—. El iShares Bitcoin Trust de BlackRock lideró con US$ 195M de inflows, seguido del Fidelity Wise Origin Fund (US$ 112M) y el Ark 21Shares Bitcoin ETF (US$ 87M). El total de activos bajo manejo (AUM) de los ETFs Bitcoin en EE.UU. supera ya US$ 116B.
+
+El análisis técnico muestra que Bitcoin ha recuperado el soporte de US$ 63,500 (MA10 diaria) y apunta hacia la resistencia de US$ 65,500 (MA50 diaria). El RSI en 14 periodos subió de 48 a 54, saliendo de la zona neutral hacia territorio más constructivo. El siguiente nivel clave al alza es US$ 68,000 (máximo del 22 de junio) y la zona psicológica de US$ 70,000.
+
+El factor macro dominante para el corto plazo sigue siendo el timing del primer recorte de la Fed: históricamente, en los 60 días siguientes al primer recorte de un ciclo, el BTC ha subido entre 25% y 45%. Si la probabilidad de corte en septiembre sigue subiendo (hoy en 63%), el mercado comenzará a "pricear" esa liquidez adicional en los activos de mayor riesgo, con el BTC como uno de los principales beneficiarios.`,
+    analisis: `Bitcoin en US$ 64,200 está en zona de acumulación técnica: los grandes inversores institucionales (ETFs, fondos de pensiones) siguen aumentando exposición a pesar de la volatilidad de corto plazo. Para el mercado cambiario peruano, un rally de Bitcoin y activos cripto suele coincidir con mayor apetito de riesgo global, lo que presiona el DXY a la baja y favorece las monedas emergentes como el sol. Monitorear el nivel de US$ 65,500 como señal de continuación. Si lo supera con volumen, el BTC podría atacar los US$ 68,000-70,000 en julio. El entorno post-PPI es positivo para los activos de riesgo en general.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/14902679/pexels-photo-14902679.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h011',
+    titulo: 'DXY cierra la semana en 100.1 — análisis técnico: tres escenarios para el PEN/USD en las próximas dos semanas',
+    descripcion: 'El índice del dólar DXY cierra la semana del 7 al 11 de julio en 100.1 puntos, su nivel más bajo desde enero 2026. El PPI benigno de hoy fue el catalizador definitivo. TradingView analiza los tres escenarios técnicos para el tipo de cambio PEN/USD hasta el FOMC del 29-30 de julio.',
+    contenido: `El índice del dólar (DXY) cierra la semana del 7 al 11 de julio de 2026 en 100.1 puntos, retrocediendo 0.8% en la semana y marcando su nivel más bajo desde el 15 de enero de 2026. El catalizador definitivo de la sesión de hoy fue el PPI de junio (+0.1% mensual, por debajo del consenso), que elevó la probabilidad de recorte de la Fed en septiembre al 63%. El DXY ha perdido 1.8% en las últimas dos semanas, desde los 101.9 del cierre del 27 de junio.
+
+El análisis técnico del DXY muestra tres escenarios para las próximas dos semanas (hasta el FOMC del 29-30 de julio):
+
+**Escenario bajista para el dólar (35% de probabilidad):** DXY perfora el soporte de 99.5 (mínimo de enero 2026). Se activaría si las solicitudes de desempleo de la próxima semana superan 240,000 y/o el PCE del 31 de julio sale por debajo del 3.0% subyacente. El sol se apreciaría hacia S/ 3.35-3.38 y el BCRP compraría dólares activamente.
+
+**Escenario base (55% de probabilidad):** DXY fluctúa entre 99.5 y 101.5 mientras el mercado espera el FOMC y el PCE del 31 de julio. El sol opera en el rango S/ 3.38-3.42. El BCRP mantiene intervenciones moderadas de compra de US$ 200-400M semanales.
+
+**Escenario alcista para el dólar (10% de probabilidad):** DXY rebota hacia 102-103 si un dato de empleo o actividad sorprende fuertemente al alza. El sol retrocedería hacia S/ 3.44-3.46. Este escenario tiene baja probabilidad dado el contexto post-PPI.
+
+El catalizador más importante de las próximas dos semanas es el PCE subyacente del 31 de julio (un día antes del FOMC). Si confirma la tendencia desinflacionaria del CPI (+2.9% a/a) y el PPI (+2.5% a/a), el primer recorte de la Fed en cuatro años quedaría casi asegurado para septiembre.`,
+    analisis: `El DXY en 100.1 al cierre de la semana es la mejor señal técnica para el sol en lo que va de 2026: el dólar ha perdido el nivel psicológico y técnico de 101.0 y se acerca al soporte de largo plazo de 99.5. Para empresas con necesidades de comprar dólares en las próximas 2 semanas, el rango S/ 3.38-3.42 es históricamente favorable —cercano al soporte—. Para exportadores que venderán dólares, considerar que si el PCE del 31 confirma desinflación, el sol podría apreciarse adicionalmente hacia S/ 3.35-3.38 en agosto. En QoriCash le asesoramos para optimizar el timing de sus operaciones cambiarias.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/31738798/pexels-photo-31738798.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h012',
+    titulo: 'S&P Merval +2.3% y bonos argentinos al alza: PPI benigno de EE.UU. impulsa activos emergentes de LATAM',
+    descripcion: 'El índice bursátil S&P Merval de Buenos Aires avanza 2.3% este viernes 10 de julio, alcanzando un nuevo máximo histórico. Los bonos soberanos argentinos (GD30, GD35) suben hasta 1.8% en precio. El riesgo país (EMBI) de Argentina cae 45bps a 612bps. El PPI benigno de EE.UU. mejora el apetito por activos emergentes.',
+    contenido: `El S&P Merval, índice de referencia de la Bolsa de Valores de Buenos Aires, avanza 2.3% este viernes 10 de julio y alcanza un nuevo máximo histórico en términos nominales en pesos. En términos de dólares (medido en CCL), el Merval sube 1.8%. Las acciones líderes: Banco Macro (+3.8%), YPF (+3.2%), Loma Negra (+2.9%) y Pampa Energía (+2.5%) lideran los avances en el sector financiero y energético.
+
+Los bonos soberanos argentinos en dólares (hard currency) también suben: GD30 +1.4%, GD35 +1.8%, GD41 +1.2%. El riesgo país (EMBI Argentina) cae 45bps hasta 612bps —el nivel más bajo desde el inicio del programa de Milei en diciembre de 2023, aunque todavía muy por encima del grado de inversión—. El catalizador es el PPI benigno de EE.UU.: cuando la Fed se acerca a un ciclo de recortes, los activos de mayor riesgo (emergentes, deuda soberana EM) tienden a comprimir spreads.
+
+El contexto macro de Argentina sigue siendo favorable en relación a los últimos años: superávit fiscal por octavo mes consecutivo en junio, inflación mensual en 3.1% (menor nivel en 36 meses), reservas del BCRA superando US$ 35B y tipo de cambio oficial en CTS 1,285/USD bajo el esquema de flotación con bandas. El FMI desembolsó su cuarto tramo por US$ 3.2B el 2 de julio tras la revisión trimestral que confirmó cumplimiento de metas.
+
+Para inversores institucionales internacionales, Argentina ofrece un "carry" atractivo en dólares: los bonos GD30 y GD35 rinden entre 8.5% y 9.2% anual en dólares, frente a los Treasuries de EE.UU. a 10 años en 4.27%. El diferencial de 420-490bps compensa parcialmente el riesgo soberano. El próximo catalizador para los bonos argentinos es la reunión del FMI en septiembre, donde se revisará el programa.`,
+    analisis: `La performance positiva del Merval y los bonos argentinos en la semana refleja que el mercado va reconociendo los avances del programa Milei, aunque con cautela. Para el contexto regional, una Argentina más estable reduce el "ruido" de riesgo en LATAM que podría afectar marginalmente la percepción de otras monedas de la región, incluido el sol. El efecto sobre el PEN/USD es indirecto: menor prima de riesgo regional → mayor demanda de activos emergentes → flujos hacia soles en el margen. Impacto positivo pero no determinante para el TC peruano.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/15574935/pexels-photo-15574935.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h013',
+    titulo: 'Argentina: reservas BCRA superan US$ 35B por primera vez desde 2019 — FMI desembolsa US$ 3.2B en revisión de julio',
+    descripcion: 'El Banco Central de la República Argentina (BCRA) reportó reservas internacionales brutas de US$ 35.1B al 9 de julio, el nivel más alto desde octubre de 2019. El FMI completó su cuarta revisión del programa EFF y aprobó el desembolso de US$ 3.2B. El peso oficial cierra en 1,285 ARS/USD dentro de las bandas.',
+    contenido: `El BCRA informó que las reservas internacionales brutas alcanzaron US$ 35.1B al cierre del 9 de julio de 2026, superando por primera vez desde octubre de 2019 el umbral de US$ 35B. El incremento de US$ 2.8B en el mes de julio responde al desembolso del FMI (US$ 3.2B) y a las compras netas del BCRA en el mercado de cambios ($680M desde el 1 de julio), parcialmente compensadas por pagos de deuda externa.
+
+El Directorio del FMI completó el 2 de julio la cuarta revisión del Acuerdo de Facilidades Extendidas (EFF) suscrito con Argentina y aprobó el desembolso de US$ 3.2B —el cuarto tramo de los US$ 20B comprometidos en el acuerdo de diciembre de 2023—. La revisión confirmó que Argentina cumplió todas las metas cuantitativas del programa: superávit fiscal primario (US$ 6.8B acumulado en H1 2026), reducción del déficit cuasifiscal del BCRA, y reservas brutas por encima del umbral mínimo acordado.
+
+El Directorio del FMI destacó "el notable ajuste fiscal logrado sin precedentes en la historia Argentina" y reconoció que "la inflación ha bajado significativamente aunque sigue siendo elevada". La próxima revisión es en octubre, donde se definirá si Argentina puede acceder a la siguiente cuota del programa. El mercado anticipa el acceso sin inconvenientes.
+
+El tipo de cambio oficial cerró en 1,285 ARS/USD el 9 de julio, dentro del esquema de flotación administrada con bandas ($1,000-$1,400 actualizadas en junio). La brecha con el dólar blue (1,298 ARS/USD) se mantiene en el 1.0% histórico mínimo del gobierno actual, señal de que el mercado confía en la sostenibilidad del esquema cambiario.`,
+    analisis: `Argentina con US$ 35.1B en reservas y el programa FMI en curso es una fotografía macroeconómica impensable hace solo 24 meses. Para el contexto regional, la mejora de percepción de Argentina reduce el "contagio de riesgo" que afecta a toda América Latina cuando hay episodios de inestabilidad en el país. Para el Perú, un entorno regional más estable facilita que el sol mantenga sus niveles actuales de S/ 3.39-3.42 sin presiones adicionales de aversión al riesgo LATAM. El impacto en PEN/USD es neutral-positivo en el margen.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/16228260/pexels-photo-16228260.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h014',
+    titulo: 'Colombia: BanRep evalúa segundo recorte en agosto — COP se aprecia a 4,110/USD y economía creció 3.2% en Q1',
+    descripcion: 'El Banco de la República de Colombia evalúa un segundo recorte de tasas de 25bps en agosto tras el primer movimiento del 4 de julio a 9.00%. El COP se apreció a 4,110/USD post-PPI de EE.UU. La economía colombiana creció 3.2% en el Q1 2026, por encima del consenso. Inflación junio en 4.0% anual.',
+    contenido: `El Banco de la República de Colombia (BanRep) evalúa un segundo recorte de su tasa de referencia de 25bps en su reunión de agosto, luego del primer movimiento del ciclo actual el pasado 4 de julio —de 9.25% a 9.00%—. El gobernador Leonardo Villar declaró el miércoles 8 que "el proceso desinflacionario está consolidado y hay espacio para continuar normalizando la política monetaria", aunque condicionó el ritmo a los próximos datos de inflación.
+
+El peso colombiano (COP) se apreció hoy a 4,110/USD —su nivel más bajo en cuatro meses— beneficiado por la mejora del apetito de riesgo post-PPI de EE.UU. y el rally de activos emergentes. La apreciación del COP desde los 4,420/USD de inicio del mes es del 7.0% en 10 días, uno de los movimientos más rápidos de monedas emergentes. El petróleo Brent en US$ 75.80/barril también provee soporte al COP dado que Colombia exporta aproximadamente 600,000 barriles diarios.
+
+El DANE publicó hoy la segunda estimación del PIB del Q1 2026: crecimiento del 3.2% interanual, por encima del 3.1% de la primera estimación y del consenso (2.9%). Los sectores con mayor dinamismo: construcción (+8.4%), servicios financieros (+6.8%), minería (+5.2%) y agricultura (+4.9%). El consumo privado creció 2.8%, señal de que la reducción de tasas está empezando a impactar la actividad.
+
+Para el H2 2026, el mercado proyecta que el BanRep recortará su tasa hasta 8.00%-8.25% (dos o tres recortes adicionales de 25bps). Con inflación en 4.2% a/a y tasa en 9.00%, la tasa real de Colombia es de aproximadamente 4.8%, la más alta de la región junto a Perú —significativamente restrictiva y con margen amplio de relajación sin comprometer el objetivo de inflación.`,
+    analisis: `El ciclo de recortes del BanRep colombiano, junto al inicio anunciado del BCCh en Chile y la expectativa de recorte de la Fed en septiembre, perfilan un ciclo de relajación monetaria coordinado en las Américas para el H2 2026. Para el Perú y el sol, este contexto regional de tasas a la baja favorece los flujos hacia activos de mayor yield relativo, lo que incluye soles. El COP en 4,110/USD implica un tipo de cambio implícito PEN/COP de 1,209 pesos colombianos por sol —relevante para empresas con operaciones binacionales. Impacto en TC PEN/USD: neutral-positivo.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19676231/pexels-photo-19676231.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'h015',
+    titulo: 'Chile: inflación junio confirma 3.0% y BCCh recorta tasas 25bps en agosto — CLP se aprecia a 903/USD en jornada positiva',
+    descripcion: 'El INE de Chile confirmó hoy que la inflación de junio 2026 fue del 3.0% interanual —dentro del punto central de la meta del BCCh— y por debajo del 3.2% de mayo. El dato valida el recorte de 25bps en agosto que el Banco Central señaló en sus actas del 3 de julio. El peso chileno (CLP) se aprecia a 903/USD post-PPI de EE.UU.',
+    contenido: `El Instituto Nacional de Estadísticas (INE) de Chile confirmó este viernes 10 de julio que el IPC de junio de 2026 registró una variación anual de 3.0% —exactamente en el punto central de la meta del Banco Central de Chile (BCCh) de 2%-4%— y por debajo del 3.2% de mayo. La variación mensual fue de 0.2%, en línea con la estacionalidad histórica de junio. El dato es el nivel más bajo de inflación anual desde octubre de 2021.
+
+El resultado confirma lo que las actas del BCCh del 3 de julio ya anticipaban: "cuatro de los cinco consejeros están inclinados hacia un inicio de la flexibilización monetaria" en la reunión de agosto. El mercado de derivados de tasa (OIS) asigna hoy una probabilidad del 92% a un recorte de 25bps en agosto, llevando la tasa desde 5.00% a 4.75%. El consenso de economistas (Bloomberg survey) proyecta que el BCCh recortará 75bps adicionales hasta finales de 2026, cerrando el año en 4.25%.
+
+El peso chileno (CLP) se apreció hoy con fuerza: desde los 907/USD del cierre de ayer a 903/USD ahora, beneficiado por la confluencia del dato de inflación favorable, el PPI benigno de EE.UU. y el cobre en US$ 4.68/libra (+0.8%). El nivel de 903/USD es el más bajo desde el 10 de marzo de 2026. El tipo de cambio implícito PEN/CLP es de 265 pesos chilenos por sol (903 ÷ 3.40).
+
+Los fundamentos de Chile siguen sólidos: producción de cobre en 5.7M de toneladas proyectadas para 2026, superávit fiscal del 0.4% del PBI en H1 2026 (MEF), y crecimiento del PIB del 2.8% en Q1 2026. El Ministerio de Hacienda de Chile proyecta 3.2% de crecimiento para el año completo, asumiendo inicio de recortes en agosto y cobre sobre US$ 4.50/libra.`,
+    analisis: `Chile cumpliendo su meta de inflación del 3.0% y con el BCCh a punto de iniciar recortes es una señal positiva para toda la región: el país más técnico de América Latina está normalizando su política monetaria con éxito, lo que da "licencia" a otros bancos centrales como el BCRP para eventualmente hacer lo mismo. Para el tipo de cambio peruano, un Chile estable con CLP en apreciación reduce el riesgo regional y favorece la estabilidad del sol. El impacto en PEN/USD es neutral-positivo. En QoriCash le ofrecemos el mejor tipo de cambio PEN/USD del mercado para cualquier operación con Chile o el resto de América Latina.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29713911/pexels-photo-29713911.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
   {
     id: 'f001',
     titulo: 'Mercados mixtos este jueves post-actas FOMC: S&P +0.09%, Nasdaq +0.74%, Dow -0.92% — mercado dirige foco a jobless claims',
