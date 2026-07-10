@@ -1217,16 +1217,6 @@ export function NuevaOperacionContent() {
 
   return (
     <div className="min-h-screen" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
-      {/* Botón flotante WhatsApp - solo móvil */}
-      <a
-        href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda%20con%20mi%20operación%20de%20cambio"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="lg:hidden fixed bottom-6 right-4 z-50 flex items-center gap-2 bg-primary-500 text-white px-4 py-3 rounded-full shadow-xl hover:bg-primary-600 transition"
-      >
-        <MessageCircle className="w-5 h-5" />
-        <span className="text-sm font-semibold">WhatsApp</span>
-      </a>
 
       {/* Main Layout: Sidebar + Content */}
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-1 pb-4">
@@ -1456,7 +1446,7 @@ export function NuevaOperacionContent() {
 
                           {/* Datos de la cuenta */}
                           {qoricashAccount ? (
-                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.07)' }}>
+                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
 
                               {/* Banco */}
                               <div className="flex items-center justify-between">
@@ -1507,7 +1497,7 @@ export function NuevaOperacionContent() {
 
                             </div>
                           ) : (
-                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)' } : { background: 'rgba(255,255,255,0.12)' }}>
+                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
                               <p className="text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>No se pudo determinar la cuenta de destino. Contacta a soporte.</p>
                             </div>
                           )}
