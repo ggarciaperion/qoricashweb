@@ -1,6 +1,12 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 export default function WhatsAppButton() {
+  const pathname = usePathname();
+  // Solo mostrar en la página de inicio
+  if (pathname !== '/') return null;
+
   const phoneNumber = '51910624404'; // Código de país + número
   const message = 'Hola, quiero hacer una consulta sobre los servicios de QoriCash.';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
