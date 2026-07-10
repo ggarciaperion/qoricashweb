@@ -687,7 +687,7 @@ export default function Home() {
                   if (isEmpresaPage) {
                     router.push(isAuthenticated ? '/dashboard/empresa' : '/login?from=/empresa');
                   } else {
-                    router.push(isAuthenticated ? '/dashboard' : '/login');
+                    router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login');
                   }
                 })}
               />
