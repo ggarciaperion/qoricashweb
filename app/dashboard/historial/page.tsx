@@ -434,14 +434,14 @@ export default function HistorialPage() {
                           </p>
                         </div>
 
-                        {/* Banco */}
+                        {/* Banco destino */}
                         <div className="rounded-xl px-2 py-2 min-w-0"
                           style={isEmpresa
                             ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
                             : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
                           <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Banco</p>
                           <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#ffffff' }}>
-                            {op.banco_cliente ?? '—'}
+                            {op.destination_bank_name || op.banco_cliente || op.source_bank_name || '—'}
                           </p>
                         </div>
 

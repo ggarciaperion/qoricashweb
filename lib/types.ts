@@ -104,6 +104,8 @@ export interface Operation {
   origen?: string; // 'web' | 'sistema' | 'app' | 'plataforma'
   source_bank_name?: string; // Banco del cliente derivado de sus cuentas bancarias
   source_account?: string;
+  destination_bank_name?: string; // Banco destino donde el cliente recibe sus fondos
+  destination_account?: string;
   operation_type?: string;
   operator_proofs?: Array<{ comprobante_url?: string }>;
   invoices?: Array<{ nubefact_enlace_pdf?: string; invoice_type?: string; invoice_number?: string }>;
