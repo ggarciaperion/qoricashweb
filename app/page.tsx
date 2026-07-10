@@ -297,7 +297,7 @@ export default function Home() {
                       <span className="max-w-[100px] truncate">
                         {user?.document_type === 'RUC'
                           ? user?.razon_social || user?.nombres
-                          : user?.nombres}
+                          : user?.nombres?.trim().split(/\s+/)[0]}
                       </span>
                       <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                       <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
