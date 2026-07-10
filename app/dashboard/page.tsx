@@ -498,7 +498,7 @@ export default function DashboardPage() {
       )}
 
       {/* ── MAIN DASHBOARD ─────────────────────────────────────── */}
-      {!showProfile && <main className="p-4 sm:p-6 space-y-5 max-w-2xl mx-auto w-full">
+      {!showProfile && <main className="p-3 sm:p-5 space-y-4 sm:space-y-5 max-w-2xl mx-auto w-full">
 
 
           {/* TC rates strip */}
@@ -533,7 +533,7 @@ export default function DashboardPage() {
 
           {/* Welcome + stats */}
           <div>
-            <h1 className="text-xl font-black mb-4" style={{ color: '#ffffff' }}>
+            <h1 className="text-lg sm:text-xl font-black mb-3 sm:mb-4" style={{ color: '#ffffff' }}>
               ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
             </h1>
             {stats && currentRates && stats.total_operations > 0 && (() => {
@@ -573,9 +573,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick actions */}
-          <div className="mt-6 w-full">
+          <div className="mt-4 sm:mt-6 w-full">
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
               {[
                 {
                   icon: RefreshCw,
@@ -609,7 +609,7 @@ export default function DashboardPage() {
                   style={{ outline: 'none' }}
                 >
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:-translate-y-1"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:-translate-y-1"
                     style={primary
                       ? { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 14px rgba(34,197,94,0.30)' }
                       : { background: 'white', border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 2px 8px rgba(30,41,59,0.06)' }}
@@ -626,7 +626,7 @@ export default function DashboardPage() {
                         : '0 2px 8px rgba(30,41,59,0.06)';
                     }}
                   >
-                    <Icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110"
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-110"
                       style={{ color: primary ? 'white' : 'rgba(30,41,59,0.5)' }} />
                   </div>
                   <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-400 group-hover:-translate-y-1"
@@ -637,7 +637,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── BANCOS PRINCIPALES + NOTICIAS + TASAS ───────────────── */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch mt-8 w-full">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch mt-5 sm:mt-8 w-full">
             {/* Columna izquierda: Logos */}
             <div className="flex flex-col gap-1 w-full sm:w-1/2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Operaciones inmediatas</p>
@@ -692,7 +692,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Columna derecha: Noticias + Tasas */}
-            <div className="hidden sm:flex flex-col gap-1 w-full sm:w-1/2">
+            <div className="flex flex-col gap-1 w-full sm:w-1/2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Noticias que mueven el TC</p>
               {/* Carrusel */}
               <div className="rounded-xl overflow-hidden relative" style={{ height: 90 }}>

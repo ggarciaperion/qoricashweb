@@ -39,30 +39,30 @@ export default function PromocionesPage() {
   return (
     <div className="min-h-screen">
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-5 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg shadow-md">
-                <Gift className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg shadow-md">
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Promociones
               </h1>
             </div>
-            <p className="text-sm text-gray-600 ml-11">
+            <p className="text-xs sm:text-sm text-gray-600 ml-9 sm:ml-11">
               Descubre beneficios exclusivos diseñados para ti
             </p>
           </div>
 
-          {/* Botón Nueva Operación - A la derecha del título */}
+          {/* Botón Nueva Operación */}
           {isAuthenticated && (
             <button
               onClick={() => router.push('/dashboard/nueva-operacion')}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
               <span>Nueva operación</span>
             </button>
           )}

@@ -148,8 +148,8 @@ export default function HistorialPage() {
   );
 
   return (
-    <main className="min-h-screen py-8 px-4" style={isEmpresa ? bgStyle : { background: 'transparent' }}>
-      <div className="max-w-2xl mx-auto space-y-6">
+    <main className="min-h-screen py-4 sm:py-8 px-3 sm:px-4" style={isEmpresa ? bgStyle : { background: 'transparent' }}>
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
 
         {/* ── HEADER ── */}
         <div className="flex items-center justify-between">
@@ -177,7 +177,7 @@ export default function HistorialPage() {
         <div className="grid grid-cols-3 gap-3">
           {/* Vol. cambiado */}
           <div
-            className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
+            className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
             style={isEmpresa
               ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
               : { background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', border: '1px solid #1E293B' }}
@@ -195,7 +195,7 @@ export default function HistorialPage() {
 
           {/* Spread */}
           <div
-            className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
+            className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
             style={isEmpresa
               ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
               : { background: 'linear-gradient(135deg, #0E7490 0%, #0891B2 100%)', border: '1px solid #0E7490' }}
@@ -213,7 +213,7 @@ export default function HistorialPage() {
 
           {/* Rentabilidad acumulada */}
           <div
-            className="rounded-2xl px-4 py-3.5 relative overflow-hidden"
+            className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
             style={isEmpresa
               ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
               : { background: 'linear-gradient(135deg, #15803D 0%, #22C55E 100%)', border: '1px solid #15803D' }}
@@ -267,6 +267,7 @@ export default function HistorialPage() {
 
         {/* ── TABLE ── */}
         {rows.length === 0 ? (
+
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3"
               style={isEmpresa
@@ -277,8 +278,9 @@ export default function HistorialPage() {
             <p className="text-sm font-medium" style={{ color: isEmpresa ? '#ffffff' : '#94A3B8' }}>Sin operaciones aquí</p>
           </div>
         ) : (
+          <div className="overflow-x-auto rounded-2xl">
           <div
-            className="rounded-2xl overflow-hidden"
+            className="min-w-[380px] rounded-2xl overflow-hidden"
             style={isEmpresa
               ? { border: '1px solid rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
               : { border: '1px solid rgba(255,255,255,0.22)', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
@@ -391,7 +393,7 @@ export default function HistorialPage() {
                         ? { background: 'rgba(13,27,42,0.3)', borderTop: '1px solid rgba(143,184,204,0.1)' }
                         : { background: 'rgba(255,255,255,0.08)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
                     >
-                      <div className="grid grid-cols-4 gap-1.5 mb-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-3">
                         {/* Código */}
                         <div className="rounded-xl px-2 py-2 min-w-0"
                           style={isEmpresa
@@ -452,6 +454,7 @@ export default function HistorialPage() {
                 </div>
               );
             })}
+          </div>
           </div>
         )}
 

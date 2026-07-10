@@ -180,25 +180,21 @@ export default function CuentasBancariasPage() {
   return (
     <>
       <div style={{ ...bgStyle }}>
-      <div style={{ padding: '28px 24px', maxWidth: 860, margin: '0 auto' }}>
+      <div className="px-4 sm:px-6 py-5 sm:py-7 max-w-4xl mx-auto">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+        <div className="flex items-center justify-between mb-5 sm:mb-7">
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#ffffff', margin: 0 }}>Cuentas Bancarias</h1>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', margin: '4px 0 0' }}>Administra tus cuentas registradas</p>
+            <h1 className="text-lg sm:text-xl font-extrabold text-white m-0">Cuentas Bancarias</h1>
+            <p className="text-xs sm:text-sm mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Administra tus cuentas registradas</p>
           </div>
           <button
             onClick={() => setAddModalOpen(true)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: isEmpresa ? '#22C55E' : '#1E293B',
-              color: '#fff', border: 'none',
-              borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
-            }}
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white transition-opacity"
+            style={{ background: isEmpresa ? '#22C55E' : '#1E293B', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
-            <Plus size={15} />
+            <Plus size={14} />
             Añadir
           </button>
         </div>
