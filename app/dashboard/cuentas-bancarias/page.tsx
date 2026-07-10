@@ -22,6 +22,7 @@ export default function CuentasBancariasPage() {
   const isEmpresa = user?.document_type === 'RUC';
 
   const bgStyle = isEmpresa ? {
+    backgroundColor: '#0A1628',
     backgroundImage: "url('/xc.webp')",
     backgroundSize: 'cover' as const,
     backgroundPosition: 'center' as const,

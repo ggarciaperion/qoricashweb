@@ -98,7 +98,7 @@ export default function PerfilPage() {
   return (
     <div
       className="min-h-full"
-      style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
     >
       <main
         className="p-4 sm:p-6 space-y-3 max-w-2xl mx-auto"

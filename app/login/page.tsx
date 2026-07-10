@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CreditCard, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import BgImage from '@/components/BgImage';
 import { useAuthStore } from '@/lib/store';
 import { authApi } from '@/lib/api/auth';
 import Image from 'next/image';
@@ -192,7 +193,8 @@ export default function LoginPage() {
 
       `}</style>
 
-      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundImage: "url('/df.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', position: 'relative', overflow: 'hidden' }}>
+      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', position: 'relative', overflow: 'hidden', backgroundColor: '#0A1628' }}>
+        <BgImage src="/df.webp" color="#0A1628" zIndex={0} />
 
         <div style={{ position: 'relative', width: '100%', maxWidth: 420, animation: 'qcCardIn 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
 

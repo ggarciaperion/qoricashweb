@@ -113,7 +113,7 @@ export default function EmpresaDashboardPage() {
   const venta = currentRates?.tipo_venta ?? 0;
 
   return (
-    <div className="min-h-full" style={{ backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+    <div className="min-h-full" style={{ backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
 
       {/* ── HERO BANNER ──────────────────────────────────────────── */}
       <div

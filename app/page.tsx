@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import Calculator from '@/components/Calculator';
 import AnimatedStat from '@/components/AnimatedStat';
+import BgImage from '@/components/BgImage';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import {
@@ -216,13 +217,7 @@ export default function Home() {
     <main className="min-h-screen">
       {/* ══ FONDO FIJO — personas page (mismo patrón que video empresa) ══ */}
       {!isEmpresaPage && (
-        <div aria-hidden style={{
-          position: 'fixed', inset: 0, zIndex: -1,
-          backgroundImage: "url('/ty.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: '25% center',
-          backgroundRepeat: 'no-repeat',
-        }} />
+        <BgImage src="/ty.webp" fixed color="#0A1628" bgPosition="25% center" zIndex={-1} />
       )}
 
       {/* ══ NAVBAR ══ */}

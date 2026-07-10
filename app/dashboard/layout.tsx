@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import BgImage from '@/components/BgImage';
 import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -113,13 +114,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen flex" style={{ position: 'relative' }}>
       {/* Background fijo que cubre toda la pantalla incluyendo safe areas del móvil */}
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: -1,
-        ...(isEmpresaUser
-          ? { backgroundColor: '#0D1B2A' }
-          : { backgroundImage: 'url(/dv.webp)', backgroundSize: 'cover', backgroundPosition: 'center' }
-        ),
-      }} />
+      {isEmpresaUser ? (
+        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#0D1B2A' }} />
+      ) : (
+        <BgImage src="/dv.webp" fixed color="#0A1628" zIndex={-1} />
+      )}
 
       {/* Mobile overlay */}
       {isSidebarOpen && (

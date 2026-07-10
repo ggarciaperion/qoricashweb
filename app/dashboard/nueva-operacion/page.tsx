@@ -1205,7 +1205,7 @@ export function NuevaOperacionContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
+      <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando...</p>
@@ -1216,7 +1216,7 @@ export function NuevaOperacionContent() {
 
 
   return (
-    <div className="min-h-screen" style={isEmpresa ? { backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
+    <div className="min-h-screen" style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
 
       {/* Main Layout: Sidebar + Content */}
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-1 pb-4">

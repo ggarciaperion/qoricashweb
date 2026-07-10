@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { User, Building2, CheckCircle2, AlertCircle, Search, Loader2, Eye, EyeOff } from 'lucide-react';
 import { getDepartamentos, getProvincias, getDistritos } from '@/lib/ubigeo';
+import BgImage from '@/components/BgImage';
 import { useAuthStore } from '@/lib/store';
 
 type TipoPersona = 'natural' | 'juridica';
@@ -580,7 +581,8 @@ export default function CrearCuentaPage() {
 
 
   return (
-    <div className="h-screen flex flex-col" style={{ backgroundImage: "url('/pg.webp')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+    <div className="h-screen flex flex-col" style={{ position: 'relative', backgroundColor: '#0A1628' }}>
+      <BgImage src="/pg.webp" color="#0A1628" zIndex={0} />
       {/* Header */}
       <header className="sticky top-0 z-50" style={{ background: 'transparent', boxShadow: 'none' }}>
         <div className="w-full max-w-[960px] mx-auto px-4 sm:px-10 py-3.5">
