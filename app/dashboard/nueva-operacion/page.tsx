@@ -48,8 +48,8 @@ export function NuevaOperacionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const isEmpresa = pathname.includes('/empresa') || user?.document_type === 'RUC';
   const { isAuthenticated, user, refreshUser } = useAuthStore();
+  const isEmpresa = pathname.includes('/empresa') || user?.document_type === 'RUC';
   const isDemoMode = typeof window !== 'undefined' && process.env.NODE_ENV !== 'production' && (user?.dni === '99999901' || user?.dni === '20601234567');
   const { currentRates, fetchRates, isConnected, startRateSubscription } = useExchangeStore();
   const { clearReferral, hasCoupon: storeCoupon, referralCode: storeReferralCode } = useReferralStore();
