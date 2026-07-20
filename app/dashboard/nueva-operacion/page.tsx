@@ -231,6 +231,16 @@ export function NuevaOperacionContent() {
     }
   }, [searchParams, isAuthenticated, user]);
 
+  // Precargar monto y tipo desde calculadora del homepage
+  useEffect(() => {
+    const tipoParam = searchParams.get('tipo') as 'Compra' | 'Venta' | null;
+    const montoParam = searchParams.get('monto');
+    if (montoParam && parseFloat(montoParam) > 0) {
+      if (tipoParam === 'Compra' || tipoParam === 'Venta') setTipo(tipoParam);
+      setAmountInput(montoParam);
+    }
+  }, []);
+
   // Restore docsSubmittedThisSession from localStorage when user loads
   useEffect(() => {
     if (!user?.id) return;

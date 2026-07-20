@@ -678,11 +678,14 @@ export default function Home() {
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                 showContinueButton={true}
                 dark={isEmpresaPage}
-                onOperationReady={() => guardedAction(() => {
+                onOperationReady={(operationType, amountUSD, exchangeRate) => guardedAction(() => {
+                  const params = amountUSD && parseFloat(amountUSD) > 0
+                    ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
+                    : '';
                   if (isEmpresaPage) {
-                    router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa');
+                    router.push(isAuthenticated ? `/dashboard/empresa/nueva-operacion${params}` : '/login?from=/empresa');
                   } else {
-                    router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login');
+                    router.push(isAuthenticated ? `/dashboard/nueva-operacion${params}` : '/login');
                   }
                 })}
               />
