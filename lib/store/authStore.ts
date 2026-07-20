@@ -219,8 +219,7 @@ export const useAuthStore = create<AuthState>()(
 }),
     {
       name: 'qoricash-auth-storage',
-      // Usar sessionStorage para cerrar sesión al cerrar navegador (seguridad)
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

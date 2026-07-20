@@ -43,8 +43,8 @@ export const authApi = {
 
     // Clear session storage
     if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('authToken');
-      sessionStorage.removeItem('user');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
     }
 
     return response.data;
@@ -135,8 +135,8 @@ export const authApi = {
    */
   isAuthenticated(): boolean {
     if (typeof window === 'undefined') return false;
-    const token = sessionStorage.getItem('authToken');
-    const user = sessionStorage.getItem('user');
+    const token = localStorage.getItem('authToken');
+    const user = localStorage.getItem('user');
     return !!(token && user);
   },
 
@@ -145,7 +145,7 @@ export const authApi = {
    */
   getStoredUser(): User | null {
     if (typeof window === 'undefined') return null;
-    const userStr = sessionStorage.getItem('user');
+    const userStr = localStorage.getItem('user');
     if (!userStr) return null;
     try {
       return JSON.parse(userStr);
@@ -159,9 +159,9 @@ export const authApi = {
    */
   storeAuth(user: User, token?: string) {
     if (typeof window === 'undefined') return;
-    sessionStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
     if (token) {
-      sessionStorage.setItem('authToken', token);
+      localStorage.setItem('authToken', token);
     }
   },
 };
