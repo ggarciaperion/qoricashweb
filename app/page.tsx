@@ -71,16 +71,12 @@ export default function Home() {
 
   const { currentRates } = useExchangeStore();
 
-  // Auto-redirigir según perfil de usuario autenticado
+  // Auto-redirigir al dashboard si el usuario ya está autenticado
   useEffect(() => {
     if (!isAuthenticated || !user) return;
     const isRUC = user.document_type === 'RUC';
-    if (isRUC && !isEmpresaPage) {
-      router.replace('/empresa');
-    } else if (!isRUC && isEmpresaPage) {
-      router.replace('/');
-    }
-  }, [isAuthenticated, user, isEmpresaPage]);
+    router.replace(isRUC ? '/dashboard/empresa' : '/dashboard');
+  }, [isAuthenticated, user]);
 
   const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
   useEffect(() => {
