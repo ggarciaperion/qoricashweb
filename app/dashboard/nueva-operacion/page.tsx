@@ -2017,9 +2017,7 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={isEmpresa
-                          ? { color: 'var(--color-secondary)', border: '1px solid rgba(var(--color-secondary-rgb),0.3)' }
-                          : { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
+                        style={{ color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -2134,9 +2132,7 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={isEmpresa
-                          ? { color: 'var(--color-secondary)', border: '1px solid rgba(var(--color-secondary-rgb),0.3)' }
-                          : { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
+                        style={{ color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
