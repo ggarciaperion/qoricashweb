@@ -2347,7 +2347,7 @@ export function NuevaOperacionContent() {
                     Estamos verificando tu transferencia. Recibirás tu dinero pronto.
                   </p>
                   <button
-                    onClick={() => router.push(isEmpresa ? '/dashboard/empresa' : '/dashboard/historial')}
+                    onClick={() => router.push('/dashboard/historial')}
                     className="text-white py-3 px-8 rounded-lg font-semibold transition flex items-center gap-2 mx-auto"
                     style={isEmpresa
                       ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)' }
