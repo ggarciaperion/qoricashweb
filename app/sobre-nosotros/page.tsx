@@ -69,7 +69,9 @@ export default function SobreNosotros() {
                 Democratizar el acceso a tipos de cambio justos y competitivos, eliminando las barreras
                 tradicionales mediante una plataforma digital segura, rápida y transparente. Atendemos
                 a cualquier persona identificada con DNI o Carnet de Extranjería, desde cualquier parte
-                del mundo, siempre que cuente con una cuenta bancaria en el Perú.
+                del mundo, siempre que cuente con una cuenta bancaria en el Perú. Para empresas,
+                ofrecemos <strong style={{ color: '#0D1B2A' }}>Qoricash Corporate</strong>, una solución especializada
+                para gestionar operaciones de cambio corporativas con condiciones preferenciales.
               </p>
             </div>
 
