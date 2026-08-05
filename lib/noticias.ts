@@ -24,9 +24,310 @@ export const CATEGORIAS = [
 const REDIS_KEY = 'qoricash:noticias';
 
 // ── Fecha base de hoy para los fallbacks ─────────────────────────────────────
-const HOY = '2026-08-04T08:00:00.000Z';
+const HOY = '2026-08-05T08:00:00.000Z';
 
 const FALLBACK_NOTICIAS: Noticia[] = [
+  {
+    id: 'g001',
+    titulo: 'Nóminas de EE.UU. previstas en 145,000 para el viernes 7 de agosto; Fed en modo de espera mientras Warsh descarta recorte de emergencia',
+    descripcion: 'El consenso de Wall Street proyecta 145,000 nuevos empleos no agrícolas para el informe de nóminas del viernes 7 de agosto, con la tasa de desempleo estable en 4.1%. El presidente de la Reserva Federal, Kevin Warsh, descartó este martes cualquier recorte de emergencia antes del FOMC de septiembre y reiteró que el dato del viernes es el último insumo clave antes de la reunión del 17 de septiembre.',
+    contenido: `El informe de empleo no agrícola (Non-Farm Payrolls) del viernes 7 de agosto se perfila como el dato macroeconómico más importante de la semana a nivel global. El consenso de economistas encuestados por Bloomberg proyecta 145,000 nuevos puestos de trabajo en julio, con la tasa de desempleo manteniéndose estable en 4.1% y los salarios por hora promedio creciendo 3.7% anual —cifra suficientemente moderada para no alarmar al Fed sobre presiones inflacionarias salariales.
+
+El presidente de la Reserva Federal, Kevin Warsh, en declaraciones a Reuters este martes 5 de agosto, descartó categóricamente la posibilidad de un recorte de emergencia antes del FOMC del 17 de septiembre: "No es el escenario que estamos contemplando. Los datos no justifican una acción extraordinaria entre reuniones. El proceso deliberativo del FOMC es el mecanismo apropiado para ajustar la política monetaria". Esta declaración cerró la puerta a especulaciones que algunos operadores habían planteado la semana pasada.
+
+Warsh añadió que "las nóminas del viernes son el último insumo crítico que el comité analizará antes de la reunión de septiembre. Si el mercado laboral muestra señales de enfriamiento consistentes con nuestra proyección de equilibrio, tendremos mayor claridad sobre el camino apropiado". El mercado interpreta estas palabras como una confirmación de que el recorte de septiembre sigue siendo el escenario central, pero con la condición de que el empleo no sorprenda significativamente al alza.
+
+Los futuros del Fed Funds Rate mantienen una probabilidad del 69% para el recorte de 25 puntos básicos en septiembre. El bono del Tesoro a 2 años opera en 4.30% y el a 10 años en 4.48%. El DXY consolida en 103.2 puntos, ligeramente por debajo del cierre del lunes (103.4), en una jornada de martes que los traders describen como "calma antes de la tormenta del viernes".`,
+    analisis: `La semana del 5 de agosto es de alta incertidumbre pero bajo volumen: el mercado espera el dato del viernes y no quiere tomar posiciones direccionales fuertes antes de tener la información. Para el PEN/USD, esto se traduce en un rango de consolidación estrecho de S/ 3.380–3.392 durante los días martes-jueves.
+
+El riesgo asimétrico es claro: si las nóminas son débiles (por debajo de 120,000), el DXY puede caer hacia 102–102.5 y el sol apreciarse a S/ 3.37–3.375; si las nóminas sorprenden al alza (más de 180,000), el DXY podría subir hacia 104–104.5 y el sol ceder a S/ 3.395–3.41. Estrategia prudente para empresas peruanas: cubrir necesidades de dólares antes del viernes en la ventana de S/ 3.382–3.390.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/8788264/pexels-photo-8788264.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g002',
+    titulo: 'Sol peruano consolida en S/ 3.383 este martes; BCRP no interviene y exportadores mineros sostienen oferta de divisas',
+    descripcion: 'El tipo de cambio PEN/USD opera en S/ 3.383 en la sesión del martes 5 de agosto, prácticamente sin variación frente al cierre del lunes (S/ 3.382), en una jornada de baja volatilidad previa al dato de nóminas del viernes. El BCRP no interviene en el mercado y los exportadores mineros sostienen la oferta de dólares con liquidaciones programadas.',
+    contenido: `El tipo de cambio PEN/USD opera en S/ 3.383 durante la sesión de este martes 5 de agosto en el mercado interbancario de Lima, con una variación de apenas +0.03% respecto al cierre del lunes (S/ 3.382). La jornada es de bajo volumen y mínima volatilidad: el rango intradía hasta el mediodía ha sido de apenas S/ 3.381–3.386, el más estrecho en una jornada de martes desde principios de junio. El mercado cambiario peruano está en modo de espera, ajustando posiciones menores pero sin comprometerse direccionalmente antes del catalizador del viernes.
+
+El Banco Central de Reserva del Perú (BCRP) no ha realizado operaciones de intervención cambiaria esta semana. La institución tiene incentivos para permanecer al margen en el contexto actual: el sol se mantiene estable sin presiones especulativas, los fundamentales exportadores proveen oferta natural de dólares, y la volatilidad implícita del PEN es baja. Una intervención del BCRP en este entorno sería interpretada por el mercado como una señal de alarma que podría generar más volatilidad, no menos.
+
+Las tres principales empresas mineras exportadoras del país tienen programadas liquidaciones de dólares por US$ 180 millones durante la semana del 5 al 9 de agosto para cubrir planillas y pagos a proveedores locales en soles. Este flujo predecible de ventas de dólares actúa como ancla natural del tipo de cambio, impidiendo que el dólar rebote significativamente incluso si el DXY global sube levemente.
+
+Las reservas internacionales netas del BCRP se mantienen en US$ 80,420 millones al cierre del lunes, el nivel más alto del año. Este colchón otorga a la institución la capacidad de intervenir en ambas direcciones ante cualquier evento de cola que genere volatilidad extrema en el mercado local.`,
+    analisis: `El sol en S/ 3.383 con bajo volumen y sin intervención del BCRP es la imagen de un mercado cambiario sano y equilibrado. La estabilidad de esta semana es el entorno ideal para que empresas peruanas realicen sus operaciones de compraventa de divisas sin las presiones de una jornada volátil.
+
+Para importadores que necesitan dólares esta semana, el rango S/ 3.380–3.390 es atractivo en términos históricos de los últimos tres meses. Para exportadores que quieren vender dólares, el nivel es razonable pero conviene no esperar hasta el viernes post-nóminas, ya que una sorpresa positiva de empleo podría apreciar el dólar y reducir el tipo de cambio que reciben.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: true,
+    imagen: 'https://images.pexels.com/photos/29007044/pexels-photo-29007044.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g003',
+    titulo: 'BCRP proyecta PBI de 3.4% para 2026 en su Reporte de Inflación de agosto: inversión privada y exportaciones como motores',
+    descripcion: 'El Banco Central de Reserva del Perú publicó este martes su Reporte de Inflación de agosto de 2026, revisando al alza la proyección de crecimiento del PBI a 3.4% para el año, desde el 3.2% del reporte de mayo. La revisión se sustenta en el dinamismo del sector exportador y la aceleración de la inversión privada minera en el segundo trimestre.',
+    contenido: `El Banco Central de Reserva del Perú (BCRP) publicó este martes 5 de agosto su Reporte de Inflación de agosto de 2026, el documento trimestral más relevante de la institución para la lectura de la economía peruana. El informe revisa al alza la proyección de crecimiento del PBI para 2026 a 3.4% desde el 3.2% estimado en el reporte de mayo, con un rango de proyección de 3.1%–3.7% dependiendo del comportamiento del entorno externo en el segundo semestre.
+
+Los motores del crecimiento identificados por el BCRP son tres: primero, el sector exportador, que en el primer semestre registró ingresos de divisas récord impulsados por el cobre en US$ 4.88/libra, el oro en US$ 3,370/oz y las agroexportaciones en crecimiento de doble dígito. Segundo, la inversión privada en el sector minero: el inicio de las obras de expansión de Quellaveco, el avance del proyecto Pampacancha en Las Bambas y los estudios de Los Chancas proyectan un flujo de inversión minera de US$ 3,200 millones en el segundo semestre. Tercero, la recuperación del consumo privado: la masa salarial real crece 2.8% en términos anuales.
+
+La inflación proyectada para fin de año es de 2.6%–2.8%, dentro del rango meta de 1%–3% del BCRP. La inflación de julio fue de 2.4% anual y la de agosto se proyecta en 2.5%, con el riesgo principal siendo los precios de alimentos ante el impacto de La Niña en la producción agrícola del sur andino. El BCRP mantuvo su tasa de referencia en 4.25% en la reunión de julio y no da señales concretas de recorte antes del cuarto trimestre.
+
+El reporte también destaca el superávit primario del Gobierno Central en el primer semestre: 0.4% del PBI, el primero en cuatro años, que refleja tanto el incremento de los ingresos tributarios de empresas mineras como la contención del gasto corriente. La deuda pública se ubica en 33.8% del PBI, por debajo del promedio de la región (52.4%) y del límite constitucional del 40%.`,
+    analisis: `La revisión al alza del PBI a 3.4% por el BCRP es una señal positiva para la percepción de riesgo país del Perú. Un crecimiento sólido con baja inflación y superávit fiscal es la combinación más favorable para mantener el sol apreciado: implica que no hay necesidad de expandir la base monetaria para financiar déficit, que los ingresos tributarios crecen naturalmente, y que el perfil de deuda pública permanece sostenible.
+
+Para el tipo de cambio PEN/USD, el escenario macroeconómico del BCRP es estructuralmente favorable al sol: crecimiento de 3.4%, inflación de 2.6%–2.8%, reservas de US$ 80,400 millones y superávit primario son los fundamentos que llevan a los analistas de riesgo país a mantener el diferencial de tasas Perú-EE.UU. comprimido en niveles mínimos históricos. El PEN debería mantenerse apreciado en el rango S/ 3.37–3.42 durante el segundo semestre.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29007044/pexels-photo-29007044.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g004',
+    titulo: 'Cobre peruano acumula US$ 11,800 millones en exportaciones al cierre de julio: récord histórico en siete meses',
+    descripcion: 'Las exportaciones peruanas de cobre acumularon US$ 11,800 millones entre enero y julio de 2026, superando por primera vez en la historia el umbral de US$ 10,000 millones en los primeros siete meses del año. El precio promedio de exportación fue de US$ 4.84/libra, 18% por encima del promedio de enero-julio de 2025.',
+    contenido: `Las exportaciones peruanas de cobre acumularon US$ 11,800 millones entre enero y julio de 2026, según datos preliminares del Ministerio de Energía y Minas publicados este martes. El resultado es el mayor acumulado en siete meses de la historia de las exportaciones mineras peruanas, superando el récord previo de US$ 10,850 millones del mismo período de 2024. El precio promedio de exportación en el período fue de US$ 4.84 por libra, 18% por encima del promedio de enero-julio de 2025.
+
+Los principales productores exportadores del período son Cerro Verde (Arequipa) con US$ 2,840 millones acumulados (+21%), Las Bambas (Apurímac) con US$ 2,180 millones (+14%) y Antamina (Ancash) con US$ 2,060 millones (+19%). Southern Copper aportó US$ 1,720 millones y Quellaveco US$ 1,440 millones. Los cinco productores concentran el 86% de las exportaciones de cobre del país.
+
+El volumen de producción también creció: las minas peruanas produjeron 1,620,000 toneladas métricas de cobre fino en los primeros siete meses, un 5.2% más que en el mismo período de 2025. El crecimiento de volumen, combinado con precios históricamente altos, explica la magnitud del incremento en valor exportado. Perú consolida su posición como segundo productor mundial de cobre con una participación del 12% de la producción global.
+
+La expansión de Quellaveco en su segunda fase (100,000 toneladas anuales adicionales de capacidad) sigue en cronograma y se espera que entre en operación plena en el cuarto trimestre de 2026, lo que elevará la capacidad productiva total del Perú en cobre a más de 3 millones de toneladas anuales para 2027.`,
+    analisis: `US$ 11,800 millones en exportaciones de cobre en siete meses implican un ingreso promedio de US$ 1,686 millones mensuales de divisas provenientes de solo este producto. Esta cifra, combinada con los ingresos del oro y las agroexportaciones, genera una oferta estructural de dólares en el mercado local de más de US$ 3,700 millones mensuales, lo que explica por qué el BCRP puede mantenerse sin intervenir y el sol se aprecia de manera ordenada.
+
+Para empresas proveedoras del sector minero, el nivel de actividad de exportación de cobre confirma que el ciclo de inversión y operación minera continuará activo durante todo 2026 y 2027. El contexto actual de precios altos y producciones récord es el mejor entorno negociador que los proveedores habrán tenido en años.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/32325794/pexels-photo-32325794.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g005',
+    titulo: 'Turismo de naturaleza en el Perú crece 34% en julio: Manu, Pacaya-Samiria y Colca lideran la demanda de viajeros europeos',
+    descripcion: 'El ecoturismo peruano registró un crecimiento del 34% en llegadas de visitantes extranjeros durante julio de 2026, impulsado por la demanda de alemanes, franceses y holandeses hacia destinos de naturaleza. El gasto promedio del ecoturista en Perú es de US$ 1,840 por viaje, 64% superior al promedio del turismo general.',
+    contenido: `El turismo de naturaleza y ecoturismo en el Perú registró un crecimiento extraordinario del 34% en llegadas de visitantes extranjeros durante julio de 2026 frente al mismo mes del año anterior, según datos del Ministerio de Comercio Exterior y Turismo publicados este martes. Los destinos que lideraron el crecimiento fueron la Reserva Nacional de Tambopata en Madre de Dios (+42%), el Parque Nacional del Manu (+38%), la Reserva Nacional Pacaya-Samiria en Loreto (+31%) y el Cañón del Colca en Arequipa (+29%).
+
+El perfil del ecoturista europeo —que representa el 58% de los visitantes de naturaleza— es el de un viajero de ingresos medios-altos, con edades entre 35 y 55 años, que viaja en grupos pequeños y contrata paquetes de 12–18 días con operadores especializados. Alemania aportó el 18% de los ecoturistas del mes (+41%), seguida por Francia (14%), Países Bajos (11%) y Reino Unido (10%). Las certificaciones de sostenibilidad que recibieron más de 40 operadores peruanos en el primer semestre han sido decisivas.
+
+El gasto promedio del ecoturista extranjero en Perú es de US$ 1,840 por viaje —64% por encima del promedio general del turismo receptivo— lo que convierte al ecoturismo en el segmento de mayor valor por viajero. Los lodges de Tambopata operan al 94% de ocupación durante julio y agosto, con listas de espera para las temporadas de 2027.
+
+El crecimiento del turismo de naturaleza también beneficia a comunidades nativas: el programa de Mincetur reporta que 180 comunidades nativas del Amazonas recibieron ingresos directos por US$ 8.4 millones en el primer semestre de 2026 a través de guías, artesanías y alojamiento comunitario.`,
+    analisis: `El ecoturismo de alto valor (US$ 1,840/viajero promedio) es un segmento estratégico para la economía peruana porque genera divisas con bajo impacto ambiental, distribuye el ingreso hacia comunidades rurales y amazónicas, y construye la marca-país en mercados premium internacionales. El crecimiento del 34% en julio confirma que la apuesta por la certificación de sostenibilidad está dando resultados.
+
+Para el mercado cambiario, el turismo de naturaleza provee un flujo adicional de divisas de alto valor en los meses de temporada alta (julio-agosto), que refuerza la oferta de dólares en el sistema. Este flujo es relativamente predecible y estable, lo que lo convierte en un componente valioso del superávit de cuenta corriente de servicios del Perú.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/10549835/pexels-photo-10549835.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g006',
+    titulo: 'Petróleo Brent cae a US$ 83.8/barril este martes por datos de inventarios EIA y debilidad del PMI manufacturero chino',
+    descripcion: 'El petróleo Brent retrocede a US$ 83.8 por barril este martes 5 de agosto, cediendo 0.9% desde el cierre del lunes (US$ 84.6), tras un incremento inesperado de inventarios de la EIA de 2.1 millones de barriles y el PMI manufacturero chino de julio en 49.1 puntos, tercer mes consecutivo en zona de contracción.',
+    contenido: `El petróleo Brent opera en US$ 83.8 por barril en la sesión de este martes 5 de agosto, retrocediendo 0.9% respecto al cierre del lunes. La corrección responde a dos factores: el dato adelantado de inventarios de la EIA que mostró un incremento inesperado de 2.1 millones de barriles cuando el consenso esperaba una reducción de 0.5 millones, y la persistente debilidad del PMI manufacturero chino de julio (49.1 puntos, zona de contracción por tercer mes consecutivo).
+
+El petróleo WTI también retrocede y opera en US$ 80.4/barril (-0.8%). Las posiciones especulativas netas en el Brent muestran que los fondos no comerciales redujeron sus posiciones largas netas en 18,000 contratos la semana pasada, señal de que el sentimiento bullish del crudo se está debilitando en el margen.
+
+La OPEP+ mantiene los recortes de producción acordados en la reunión de junio: Arabia Saudita produce 9.0 millones de barriles diarios, 500,000 bpd por debajo de su capacidad. Sin embargo, el mercado percibe un riesgo creciente de que algunos miembros excedan sus cuotas ante la necesidad de ingresos fiscales: Irak y Emiratos Árabes Unidos mostraron producción por encima de sus cuotas en el segundo trimestre.
+
+Para Perú, un Brent en US$ 83.8 implica un costo de importación de derivados de petróleo levemente menor que a principios de semana, lo que puede contribuir marginalmente a moderar la inflación de agosto.`,
+    analisis: `El Brent en US$ 83.8 mantiene la presión sobre el cartel para defender el precio o seguir recortando producción. El rango técnico del Brent para agosto se proyecta en US$ 80–88, con el nivel de US$ 85 como resistencia clave. Una ruptura por encima implicaría que la demanda china sorprende al alza; por debajo de US$ 80, que los inventarios globales siguen acumulándose.
+
+Para las empresas peruanas importadoras de combustible —sectores pesca, minería, transporte y agroindustria— el nivel de US$ 83.8 es manejable. El precio del diésel en el mercado interno depende también del tipo de cambio: con el sol apreciado en S/ 3.383, el costo en soles del barril importado se reduce adicionalmente frente a los niveles de hace tres meses.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/3207536/pexels-photo-3207536.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g007',
+    titulo: 'Oro avanza a US$ 3,385/oz este martes impulsado por compras de ETFs y cobertura ante incertidumbre de nóminas del viernes',
+    descripcion: 'El precio del oro al contado sube a US$ 3,385 por onza troy en la sesión del martes 5 de agosto, ganando 0.4% frente al cierre del lunes. El avance responde a entradas netas de US$ 145 millones en ETFs respaldados por oro en el lunes y a la demanda de cobertura ante la incertidumbre generada por el dato de nóminas del viernes 7.',
+    contenido: `El precio del oro al contado sube a US$ 3,385 por onza troy en la sesión de este martes 5 de agosto, ganando 0.4% (US$ 13/oz) respecto al cierre del lunes (US$ 3,372). El movimiento alcista refleja dos factores: el regreso de los flujos hacia los ETFs de oro físico —que registraron entradas netas de US$ 145 millones en el lunes— y la demanda de cobertura por parte de fondos que buscan protección ante el resultado impredecible de las nóminas del viernes.
+
+El SPDR Gold Shares (GLD), el mayor ETF de oro del mundo, reportó entradas netas de US$ 82 millones el lunes, la mayor cifra en una jornada de apertura de semana en los últimos dos meses. Los analistas del mercado de metales preciosos interpretan estos flujos como una señal de que los inversores institucionales están construyendo posiciones de cobertura ante escenarios de alta incertidumbre.
+
+Los fundamentos del oro siguen siendo sólidos: el Consejo Mundial del Oro confirma que las compras de bancos centrales en el primer semestre de 2026 superaron las 420 toneladas métricas. China (145 toneladas), India (82 toneladas), Turquía (64 toneladas) y Polonia (38 toneladas) lideran la demanda oficial. La desdolarización de reservas —proceso por el que los bancos centrales reducen su exposición al dólar en favor del oro— es la tendencia estructural que sostiene el piso del precio.
+
+Técnicamente, el oro opera por encima de todas sus medias móviles relevantes y el RSI de 14 días está en 55, zona neutral con sesgo alcista. La siguiente resistencia significativa está en US$ 3,400, que el mercado intentará alcanzar si el DXY cae hacia 102.5–103.0 tras el dato de nóminas.`,
+    analisis: `El oro en US$ 3,385 con flujos positivos de ETFs es consistente con el escenario de incertidumbre controlada antes del dato de nóminas del viernes. Si el empleo es débil y el Fed confirma el recorte de septiembre, el dólar caerá y el oro podría probar los US$ 3,400–3,420. Si el empleo sorprende al alza, retrocedería hacia US$ 3,340–3,360.
+
+Para las exportaciones peruanas de oro —alrededor de US$ 1,400 millones mensuales al precio actual— el nivel de US$ 3,385 es altamente rentable. El costo de extracción de las principales minas peruanas está en el rango de US$ 900–1,200/oz, lo que implica márgenes de US$ 2,185–2,485 por onza. Este contexto de precios récord es el mejor entorno de rentabilidad minera aurífera que el país ha conocido.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29483248/pexels-photo-29483248.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g008',
+    titulo: 'Mercados globales en pausa: S&P 500 plano, Nasdaq cede 0.2% y VIX en 14.8 antes de nóminas clave del viernes',
+    descripcion: 'Los mercados financieros globales inician el martes 5 de agosto en modo de espera, con el S&P 500 prácticamente plano (+0.05%), el Nasdaq cediendo 0.2% y el VIX en 14.8 puntos. El mercado evita posiciones direccionales antes del dato de nóminas del viernes 7 de agosto, que determinará si el Fed recorta en septiembre.',
+    contenido: `Los mercados de renta variable globales inician el martes 5 de agosto en modo de consolidación, con los futuros del S&P 500 prácticamente planos (+0.05%), los futuros del Nasdaq 100 cediendo 0.2% y el Dow Jones en -0.1%. El índice de volatilidad VIX opera en 14.8 puntos —el nivel más bajo de la semana pasada, que promedió 15.4— señalando que el mercado está en un estado de calma relativa pero vigilante.
+
+Los mercados europeos también abren con cautela: el Euro Stoxx 50 cede 0.1%, el DAX alemán está prácticamente plano y el FTSE 100 avanza 0.2% impulsado por las energéticas. Los mercados asiáticos cerraron con resultados mixtos: el Nikkei 225 japonés ganó 0.4% ante la perspectiva de que el Fed recorte antes que el Banco de Japón, y el Hang Seng de Hong Kong cayó 0.3% ante la debilidad persistente del PMI manufacturero chino.
+
+Los sectores que lideran en el S&P 500 este martes son Utilities (+0.4%) y Healthcare (+0.3%), mientras que Technology (-0.3%) y Consumer Discretionary (-0.2%) retrasan. Este patrón de rotación hacia defensivos es consistente con un mercado que está reduciendo el riesgo antes de un dato macro importante. Los volúmenes de negociación son 18% inferiores al promedio de las últimas cuatro semanas.
+
+El mercado de bonos corporativos también está en pausa: el spread de los High Yield de EE.UU. sobre los Tesoros permanece en 285 puntos básicos —el nivel más ajustado desde 2007, señal de que el mercado crediticio no percibe riesgo de recesión en el horizonte de 12 meses.`,
+    analisis: `Los mercados en pausa con VIX en 14.8 son un reflejo del equilibrio entre el escenario positivo (recorte del Fed en septiembre + aterrizaje suave) y el riesgo de sorpresa de nóminas. El S&P 500 necesita el dato del viernes para decidir si intenta nuevos máximos históricos o consolida en el rango 5,400–5,500.
+
+Para gestores de portafolio con exposición a acciones americanas y soles peruanos, la semana ofrece una ventana de baja volatilidad para rebalancear posiciones. Si el viernes las nóminas son favorables (débiles → confirman recorte del Fed), los activos de riesgo se apreciarán simultáneamente. Si son desfavorables (fuertes → dudan el recorte), habrá corrección tanto en acciones como en el sol peruano.`,
+    categoria: 'Internacional',
+    fuente: 'Bloomberg',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/31650949/pexels-photo-31650949.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g009',
+    titulo: 'DXY en 103.2 este martes: el dólar cede gradualmente antes de nóminas; euro a 1.0952 y yen a 149.5',
+    descripcion: 'El índice del dólar (DXY) opera en 103.2 puntos este martes 5 de agosto, cediendo 0.2 puntos desde el cierre del lunes (103.4) en una sesión de bajo volumen. El euro avanza a 1.0952 y el yen japonés se aprecia a 149.5 por dólar ante las expectativas de compresión del diferencial de tasas Fed-BoJ a partir de septiembre.',
+    contenido: `El índice del dólar estadounidense (DXY) opera en 103.2 puntos en la sesión de este martes 5 de agosto, cediendo 0.2 puntos (0.2%) respecto al cierre del lunes (103.4). El dólar está en proceso de gradual debilitamiento estructural ante las expectativas de recorte del Fed en septiembre y el diferencial de tasas que se reducirá en favor de otras divisas desarrolladas. El rango técnico de la sesión del martes es estrecho: 103.05–103.45, confirmando la falta de dirección antes del catalizador del viernes.
+
+El euro (EUR/USD) avanza a 1.0952, recuperando desde el 1.0918 del cierre del lunes en un movimiento impulsado por el acta de la reunión del BCE de julio —publicada esta mañana— que revela que "varios miembros del consejo consideran prematuro descartar un alza adicional de tasas si la inflación de servicios no cede antes de octubre". Esta comunicación más hawkish de lo esperado del BCE apoya al euro.
+
+El yen japonés (USD/JPY) se aprecia a 149.5 desde los 150.1 del cierre del lunes, beneficiado por la expectativa de que el Banco de Japón evalúe una normalización de su política monetaria en octubre, especialmente si el Fed recorta en septiembre. Un Fed que baja + un BoJ que sube implica compresión del diferencial de tasas, desincentivando el carry trade yen-dólar y apreciando el yen.
+
+Las divisas de materias primas (AUD, NZD, CAD) ganan entre 0.1% y 0.3% en línea con el cobre firme y el petróleo relativamente estable.`,
+    analisis: `El DXY en 103.2 continúa la tendencia de debilitamiento gradual del dólar que favorece al sol peruano y a las divisas de países exportadores de materias primas. Para el PEN/USD, cada punto que cae el DXY equivale aproximadamente a S/ 0.008–0.012 de apreciación del sol.
+
+El nivel de 103.2 del DXY es coherente con la cotización actual del sol de S/ 3.383. Si el DXY cae hacia 102.5–103.0 esta semana, el sol podría apreciarse hacia S/ 3.370–3.378. Para importadores peruanos: las condiciones son favorables para comprar dólares antes del dato del viernes.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g010',
+    titulo: 'PEN/USD técnico martes 5 de agosto: el sol defiende S/ 3.380 con volumen decreciente; RSI en 37 limita caídas adicionales del dólar',
+    descripcion: 'El análisis técnico del tipo de cambio PEN/USD en la jornada del martes 5 de agosto muestra al sol peruano defendiendo el soporte de S/ 3.380 con volumen un 22% por debajo del promedio. El RSI de 14 días en 37 indica dólar en zona de sobreventa relativa frente al sol, lo que limita las caídas adicionales del tipo de cambio en el corto plazo.',
+    contenido: `El tipo de cambio PEN/USD muestra la siguiente estructura técnica en la jornada del martes 5 de agosto. El USD/PEN opera en S/ 3.383, consolidando el canal bajista iniciado el 29 de julio. El volumen de operaciones al mediodía es un 22% inferior al promedio diario de las últimas cuatro semanas y el rango intradía es de apenas S/ 3.381–3.386, el más estrecho de la semana.
+
+Los indicadores técnicos muestran: RSI de 14 días en 37 —zona de sobreventa relativa del dólar frente al sol, que históricamente señala una pausa o reversión parcial antes de reanudar la tendencia bajista—; MACD cruzado a la baja con divergencia en los últimos tres días que sugiere pérdida de momentum; Media Móvil de 20 días en S/ 3.398, por encima del precio actual confirmando tendencia bajista del dólar; Media Móvil de 200 días en S/ 3.412.
+
+Niveles clave para la semana: Soporte inmediato en S/ 3.380 (si se perfora, próximo nivel en S/ 3.368). Resistencia inmediata en S/ 3.390–3.395. Resistencia fuerte en S/ 3.412 (MA200).
+
+Escenarios del viernes: Nóminas débiles (menor a 120,000) llevarían el USD/PEN a probar S/ 3.368–3.375. Nóminas en línea (130,000–160,000) implicarían consolidación en S/ 3.378–3.390. Nóminas fuertes (mayor a 180,000) generarían rebote hacia S/ 3.395–3.410.`,
+    analisis: `El RSI en 37 es una señal de precaución para quienes esperan apreciación adicional del sol sin el catalizador del viernes: en niveles de sobreventa técnica el mercado puede revertir sorpresivamente incluso sin datos macro que lo justifiquen. La estrategia más robusta es comprar dólares en el nivel actual si hay necesidades de corto plazo, y reservar liquidez para aprovechar el movimiento post-nóminas.
+
+Para empresas con exposición cambiaria en ambas direcciones, el contexto de baja volatilidad de esta semana es ideal para establecer contratos forward o tipo de cambio a plazo, asegurando el tipo de cambio actual antes de que el dato del viernes genere mayor incertidumbre.`,
+    categoria: 'Nacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g011',
+    titulo: 'Bitcoin cae a US$ 103,400 este martes: RSI en 42 y soporte clave en US$ 101,000–102,000',
+    descripcion: 'Bitcoin retrocede a US$ 103,400 en la sesión del martes 5 de agosto, cediendo 2.3% desde el cierre del lunes (US$ 105,800), en una corrección técnica que lleva el RSI a 42. El soporte clave está en US$ 101,000–102,000 (media móvil de 50 días), donde los compradores institucionales típicamente regresan.',
+    contenido: `Bitcoin (BTC/USD) opera en US$ 103,400 en la sesión de este martes 5 de agosto, retrocediendo 2.3% desde el cierre del lunes en una corrección técnica que continúa el proceso de consolidación post-rally de la semana pasada. El activo alcanzó un máximo de US$ 108,500 el jueves 31 de julio durante el rally post-FOMC y ha estado corrigiendo gradualmente desde entonces, en lo que los analistas técnicos catalogan como una corrección saludable antes de intentar nuevamente el máximo histórico de US$ 109,800.
+
+Los indicadores técnicos muestran: RSI de 14 días en 42 —zona neutral con sesgo bajista de corto plazo—, MACD con cruce a la baja en el gráfico de 4 horas, y Bandas de Bollinger contrayéndose en el gráfico diario, señal de que pronto habrá un movimiento direccional mayor cuya dirección dependerá del dato del viernes.
+
+Los ETFs de Bitcoin spot en EE.UU. registraron ligeras salidas netas el lunes: -US$ 38 millones según datos de CoinShares. Sin embargo, el BlackRock iShares Bitcoin Trust registró entradas de +US$ 15 millones, limitando el carácter bajista. Los saldos de Bitcoin en exchanges regulados siguen en mínimos de tres años, señal de que los holders de largo plazo no están distribuyendo posiciones.
+
+Ethereum opera en US$ 3,450 (-2.1%), Solana en US$ 180 (-2.3%) y BNB en US$ 532 (-1.8%). La corrección generalizada del mercado cripto es coherente con el modo de espera de los mercados tradicionales.`,
+    analisis: `La caída de Bitcoin a US$ 103,400 con RSI en 42 es técnicamente una zona de compra táctica para inversores de mediano plazo: el soporte de la MA50 en US$ 101,000–102,000 ha sido un nivel de entrada confiable en las últimas tres correcciones del año. Si el dato de nóminas del viernes es favorable al recorte del Fed, Bitcoin podría recuperar rápidamente hacia US$ 107,000–109,000.
+
+Para peruanos con exposición a cripto que necesitan convertir a soles, el nivel actual (US$ 103,400 × S/ 3.383 = S/ 349,791 por BTC) es inferior al máximo de la semana pasada. Si el objetivo es maximizar el valor en soles, puede ser mejor esperar al rebote post-nóminas antes de convertir, aunque esto implica asumir riesgo bidireccional.`,
+    categoria: 'Internacional',
+    fuente: 'TradingView',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/14902679/pexels-photo-14902679.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g012',
+    titulo: 'Argentina cierra julio con superávit fiscal primario del 0.15% del PBI: séptimo mes consecutivo de equilibrio fiscal',
+    descripcion: 'El Ministerio de Economía de Argentina publicó este martes el resultado fiscal de julio de 2026: superávit primario de ARS 980,000 millones, equivalente al 0.15% del PBI mensualizado —el séptimo mes consecutivo con resultado positivo. El acumulado enero-julio suma 1.5% del PBI, por encima de la meta del FMI de 1.0% para el año.',
+    contenido: `El Ministerio de Economía de Argentina publicó este martes el informe de ejecución presupuestaria de julio de 2026: el Sector Público Nacional registró un superávit primario de ARS 980,000 millones, equivalente al 0.15% del PBI mensualizado. El resultado es el séptimo mes consecutivo de superávit primario —una racha sin precedentes en la historia fiscal argentina reciente— y acumula 1.5% del PBI en enero-julio, por encima de la meta del FMI de 1.0% para el año.
+
+Los ingresos fiscales de julio crecieron 48% en términos nominales frente a julio de 2025, impulsados por el IVA (+52%), Ganancias (+44%) y derechos de exportación (+61%). El gasto primario creció 39% nominal, por debajo de la inflación proyectada del 41% anualizado, lo que implica una reducción real. El ajuste se concentra en transferencias a provincias (-12% real) y subsidios energéticos (-28% real).
+
+La deuda pública argentina opera con menores presiones: el riesgo país medido por el EMBI Argentina cayó a 580 puntos básicos, el nivel más bajo desde 2019 (desde los 1,400 puntos de enero de 2024). Los bonos soberanos argentinos registran rendimientos del 8.8%–9.1% —todavía elevados pero en proceso de normalización.
+
+El tipo de cambio oficial (ARS 1,512/USD) permanece sin modificaciones desde hace 14 días, reflejando la confianza en el ancla cambiaria. La brecha con el blue (ARS 1,554) está en el 2.8%, mínimo histórico.`,
+    analisis: `El superávit fiscal de 1.5% del PBI en siete meses es un logro político-económico significativo para Argentina, aunque el desafío de mantenerlo ante presiones sociales crecientes sigue siendo enorme. El mercado financiero reconoce el esfuerzo pero exige consistencia en el tiempo para comprimir aún más el riesgo país hacia los 400–450 puntos básicos.
+
+Para Perú, el contraste es notable: Argentina ajusta con dolor después de décadas de desequilibrios; Perú mantiene la disciplina fiscal de manera estructural con un costo social mucho menor. Esta diferencia explica por qué el riesgo país peruano (EMBI Perú en 140 puntos) es cuatro veces menor que el argentino.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/15574935/pexels-photo-15574935.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g013',
+    titulo: 'Colombia: BanRep mantiene tasa en 5.75% y condiciona el recorte de septiembre a la inflación de agosto',
+    descripcion: 'El Banco de la República de Colombia (BanRep) mantuvo su tasa de política monetaria en 5.75% en la reunión del lunes 4 de agosto. El comunicado señala que el recorte adicional de 25 puntos básicos en septiembre está condicionado a que la inflación de agosto, publicada el 5 de septiembre, muestre moderación sostenida hacia el 3%.',
+    contenido: `El Banco de la República de Colombia (BanRep) anunció este martes los resultados de su reunión monetaria: la tasa de intervención se mantiene en 5.75%, en línea con las expectativas del 94% de los analistas. La decisión fue unánime entre los siete miembros de la junta directiva. El comunicado adopta un tono de espera vigilante: reconoce los avances en la desinflación pero advierte que la inflación de servicios —todavía en 5.8% anual— sigue siendo persistentemente elevada.
+
+La inflación general de Colombia en julio fue de 3.9% anual, publicada el viernes por el DANE, por debajo del 4.1% de junio. La tendencia de desinflación es clara pero el BanRep quiere ver que la inflación de servicios converja hacia el 5% antes de acelerar los recortes. El proceso de transmisión de la política monetaria hacia los precios de servicios tarda típicamente 6–9 meses.
+
+El peso colombiano (COP/USD) reacciona con calma a la decisión: opera en COP 4,178 por dólar en la tarde del martes, prácticamente sin cambios. El mercado ya descontaba la pausa y la atención se centra ahora en los datos de inflación de agosto y en cómo el Fed recortará en septiembre.
+
+Las proyecciones del BanRep para el cierre de 2026 sitúan la inflación en 3.2%–3.5% y el PBI en 2.8%–3.2%, con la tasa de intervención terminando el año entre 4.75% y 5.25%.`,
+    analisis: `La pausa del BanRep en 5.75% con perspectiva de recorte en septiembre es coherente con el ciclo monetario global: Colombia sigue a la Fed con un rezago de 1–2 reuniones, al igual que el BCRP peruano. Para el peso colombiano, el mantenimiento de la tasa alta es positivo en el margen: el carry trade COP-USD sigue siendo atractivo.
+
+Para empresas peruanas con operaciones en Colombia, la estabilidad del COP en 4,178 por dólar facilita la planificación financiera. El tipo de cambio cruzado PEN/COP (S/ 3.383 / COP 4,178 ≈ COP 1.235 por sol) es favorable para las exportaciones peruanas de alimentos procesados y servicios tecnológicos al mercado colombiano.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/19676238/pexels-photo-19676238.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+  {
+    id: 'g014',
+    titulo: 'Chile: peso chileno alcanza CLP 922 por dólar, mínimo del año, ante cobre firme y expectativa de recorte del BCCh el 26 de agosto',
+    descripcion: 'El peso chileno (CLP) se aprecia a CLP 922 por dólar en la sesión del martes 5 de agosto, su nivel más fuerte del año, impulsado por el cobre en US$ 4.88/libra y la probabilidad del 78% que el mercado asigna a un recorte del Banco Central de Chile el 26 de agosto.',
+    contenido: `El peso chileno (CLP/USD) se aprecia a CLP 922 por dólar en la sesión de este martes 5 de agosto, alcanzando el nivel más fuerte del año y el más apreciado desde agosto de 2024. La apreciación de 0.65% desde el cierre del lunes (CLP 928) responde a: cobre firme en US$ 4.88/libra en el LME, DXY cediendo a 103.2, y las minutas del BCCh publicadas hoy que muestran que cuatro de los cinco miembros del directorio consideran que las condiciones para recortar están prácticamente dadas.
+
+Las minutas de la reunión del Banco Central de Chile revelan el debate interno: cuatro miembros consideran que la inflación de 3.5% anual y la desaceleración del mercado laboral justifican un recorte en agosto; el quinto prefiere esperar hasta septiembre. La probabilidad de mercado para el recorte del 26 de agosto sube a 78% desde el 75% del viernes.
+
+Codelco —la empresa pública chilena de cobre que genera el 12% de los ingresos fiscales del país— reporta ingresos del primer semestre de 2026 un 22% superiores al mismo período de 2025 gracias a los precios del metal. Mayor recaudación fiscal permite que el gobierno no emita deuda adicional en el mercado local, facilitando el trabajo del BCCh para bajar su tasa.
+
+El Banco Central de Chile informó que su intervención cambiaria del segundo trimestre absorbió entre US$ 1,500 y US$ 2,000 millones de la oferta de divisas para moderar la apreciación excesiva del peso y proteger la competitividad exportadora.`,
+    analisis: `El peso chileno en CLP 922 es un indicador adelantado importante para el sol peruano: ambas monedas tienen alta correlación (R² mayor a 0.85 en los últimos 12 meses) dado que ambas dependen del precio del cobre y el DXY. Si el CLP puede llegar a CLP 922 con estos fundamentos, el PEN tiene espacio para apreciarse hacia S/ 3.370–3.375 si las nóminas del viernes son favorables.
+
+Para el comercio bilateral Chile-Perú, la apreciación del peso chileno hace que los productos peruanos sean relativamente más baratos en el mercado chileno. Las exportaciones peruanas de arándanos, palta y productos pesqueros hacia Chile se benefician marginalmente de este tipo de cambio cruzado.`,
+    categoria: 'Internacional',
+    fuente: 'Infobae',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/29032777/pexels-photo-29032777.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
+
+  {
+    id: 'g015',
+    titulo: 'Sector eléctrico peruano: consumo nacional de energía crece 4.8% en julio y MINEM proyecta déficit de generación en el norte para 2027',
+    descripcion: 'El Ministerio de Energía y Minas (MINEM) reportó que el consumo eléctrico nacional alcanzó 4,820 GWh en julio de 2026, creciendo 4.8% frente al mismo mes del año anterior, impulsado por la minería y la agroindustria del norte. El organismo proyecta un déficit de generación en la región norte para 2027 si no se ejecutan cuatro proyectos de transmisión aprobados en la última convocatoria de ProInversión.',
+    contenido: `El Ministerio de Energía y Minas (MINEM) publicó este martes su informe mensual del sector eléctrico correspondiente a julio de 2026: el consumo nacional de energía eléctrica alcanzó 4,820 gigawatios hora (GWh) en el mes, un crecimiento del 4.8% frente a los 4,600 GWh de julio de 2025. El crecimiento es el mayor en un mes de julio desde 2018 y refleja la expansión de la demanda industrial —especialmente minería y agroindustria— que juntas representan el 58% del consumo total del Sistema Eléctrico Interconectado Nacional (SEIN).
+
+El crecimiento de la demanda eléctrica está liderado por la gran minería, cuyo consumo en julio sumó 1,420 GWh (+8.2% frente a julio 2025), consistente con el aumento de producción de cobre y oro reportado por las principales minas del país. La expansión de Quellaveco y la mayor producción de Antamina y Las Bambas han requerido ampliaciones de subestaciones y líneas de transmisión que actualmente operan cerca del 85% de su capacidad nominal.
+
+El MINEM advierte en el informe que existe riesgo de déficit de generación en la región norte del país (Piura, Lambayeque, La Libertad) para el período 2027–2028 si no se completan cuatro proyectos de transmisión aprobados en la convocatoria de ProInversión del primer trimestre de 2026. Los proyectos —con inversión total de US$ 780 millones— están en etapa de cierre financiero, pero los plazos de construcción (18–24 meses) implican que deben iniciar obras antes de enero de 2027 para evitar cuellos de botella de oferta.
+
+La generación eléctrica del mes estuvo dominada por hidroeléctricas (52%), termoeléctricas a gas natural (31%), energías renovables (11%) y centrales de respaldo (6%). La generación renovable creció 22% impulsada por los parques solares de Marcona y Tacna que entraron en operación en el primer semestre.`,
+    analisis: `El crecimiento del consumo eléctrico del 4.8% en julio es un indicador adelantado de actividad económica real: la electricidad no se puede almacenar fácilmente, por lo que su consumo refleja la producción industrial en tiempo casi real. Un crecimiento del 4.8% es consistente con el PBI proyectado del 3.4% del BCRP, con el sector productivo tirando más fuerte que el promedio.
+
+Para el tipo de cambio, la expansión de la minería y la agroindustria —los dos mayores consumidores industriales de electricidad— refuerza la narrativa de exportaciones récord y oferta estructural de dólares en el mercado local. El riesgo del déficit de generación en el norte para 2027 es un factor de atención para inversores en proyectos mineros de esa región: Quellaveco y Los Chancas necesitan certeza de suministro eléctrico para sus planes de expansión.`,
+    categoria: 'Nacional',
+    fuente: 'Gestión',
+    fecha: HOY,
+    destacada: false,
+    imagen: 'https://images.pexels.com/photos/10407689/pexels-photo-10407689.jpeg?auto=compress&cs=tinysrgb&w=1200',
+  },
   {
     id: 'f001',
     titulo: 'ISM Manufacturero de EE.UU. sube a 49.8 en julio y supera expectativas; Warsh reitera que el recorte del Fed en septiembre depende de las nóminas del viernes 7',
@@ -43,7 +344,7 @@ Los futuros de fondos federales asignan una probabilidad del 68% al recorte de 2
 El dato crítico será el viernes con las nóminas. Si el empleo sorprende al alza (>180,000 nuevos puestos) o la tasa de desempleo baja, el mercado podría revertir las expectativas de recorte en septiembre, generando un repunte del DXY y presión alcista sobre el tipo de cambio PEN/USD hacia S/ 3.40–3.42. Si el empleo es débil o en línea con las expectativas, el recorte de septiembre se consolida y el sol puede apreciarse aún más. Es una semana de alta incertidumbre: prudente no concentrar todas las operaciones de divisas en un solo momento.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: true,
     imagen: 'https://images.pexels.com/photos/12504957/pexels-photo-12504957.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -63,7 +364,7 @@ Las reservas internacionales netas del BCRP se mantienen en US$ 80,400 millones,
 El riesgo principal de esta semana es el dato de nóminas no agrícolas del viernes 7 de agosto. Si el empleo sorprende al alza, el mercado podría revertir las expectativas de recorte del Fed en septiembre, empujando el dólar de vuelta hacia S/ 3.39–3.42. Estrategia prudente: cubrir las necesidades de dólares del próximo mes en la ventana de esta semana antes del jueves, y no esperar a que el sol se aprecie aún más si hay exposición cambiaria pendiente.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: true,
     imagen: 'https://images.pexels.com/photos/37430652/pexels-photo-37430652.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -83,7 +384,7 @@ El MEF también colocó S/ 400 millones adicionales en bonos a 5 años (vencimie
 Para empresas con excedentes de tesorería en soles, el nivel del 5.78% a 10 años es atractivo en términos históricos pero puede comprimirse aún más si el BCRP inicia recortes en el cuarto trimestre. Quien quiera capturar la tasa actual antes de que caiga puede participar en el mercado secundario de bonos soberanos a través de bancos o SABs locales. La curva de rendimientos en soles está en proceso de aplanamiento, favoreciendo el tramo largo.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/19985009/pexels-photo-19985009.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -103,7 +404,7 @@ Camposol, la mayor empresa exportadora de arándanos del país, reportó esta ma
 Para proveedores del sector agroindustrial, el dinamismo del arándano peruano es una oportunidad: la demanda de cartón para empaque, servicios de frío de cadena, servicios logísticos portuarios y mano de obra temporal en el norte del país permanecerá elevada durante toda la temporada. Las empresas de servicio con exposición al sector agro no tradicional tienen un trimestre favorable por delante.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/5980178/pexels-photo-5980178.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -123,7 +424,7 @@ La carretera Longitudinal de la Sierra, una vez completada en 2028, conectará d
 Para el tipo de cambio, la mayor inversión pública implica mayor demanda de bienes de capital importados (maquinaria, equipos), lo que incrementa la demanda de dólares en el mercado local. Sin embargo, el superávit primario del primer semestre (0.4% del PBI) y las reservas del BCRP en US$ 80,400 millones dan amplio margen para absorber esta demanda adicional sin presionar el tipo de cambio hacia niveles de S/ 3.40 o superiores.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/434659/pexels-photo-434659.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -143,7 +444,7 @@ Los rendimientos de los Tesoros reaccionaron con moderación a las declaraciones
 Para empresas peruanas con deuda en dólares que vence o se refinancia en 2026–2027, el inicio del ciclo de recortes del Fed implica que los costos de financiamiento en dólares caerán gradualmente. Si pueden esperar, refinanciar en el segundo semestre será más barato que en el primero. El plazo ideal para renegociar deudas en USD es el cuarto trimestre de 2026, cuando la tasa del Fed podría estar ya en 3.00%-3.25%.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/4705378/pexels-photo-4705378.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -163,7 +464,7 @@ Para Perú, el nivel de US$ 4.88/libra se traduce en ingresos de exportación su
 Para empresas del sector minero y sus cadenas de proveedores, el precio alto del cobre refuerza la continuidad de los planes de inversión de las grandes mineras en Perú. Anglo American (Quellaveco), MMG (Las Bambas) y Freeport-McMoRan (Cerro Verde) tienen aprobados proyectos de expansión que requieren proveedores locales de explosivos, servicios de mantenimiento e ingeniería. El dinamismo del cobre es una señal de contrato para los próximos 18–24 meses en el ecosistema de servicios mineros peruano.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/5505961/pexels-photo-5505961.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -183,7 +484,7 @@ El contexto macro de fondo también sigue siendo favorable: la perspectiva de re
 Para inversores peruanos que consideran oro como cobertura de portafolio, US$ 3,372 está cerca de máximos históricos y la rentabilidad del 30% en lo que va del año es difícil de mantener al mismo ritmo. La exposición al oro tiene sentido como cobertura ante incertidumbre geopolítica, pero concentrar más del 10-15% del portafolio en un activo que no genera rendimiento corriente tiene un costo de oportunidad significativo frente a bonos soberanos peruanos al 5.78% o depósitos a plazo al 7%+.`,
     categoria: 'Internacional',
     fuente: 'Bloomberg',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/8442330/pexels-photo-8442330.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -203,7 +504,7 @@ Las posiciones especulativas netas en el DXY (medidas por el reporte COT de la C
 El escenario técnico del DXY sugiere que el rango de la semana estará entre 103.0 y 104.2, con la dirección definitiva determinada por el dato del viernes. Un DXY que cierre la semana por encima de 104 sería una señal bajista para el sol peruano; por debajo de 103, sería alcista para el PEN. El nivel actual de S/ 3.382 es un buen punto de referencia para dimensionar el riesgo cambiario de la semana.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29611783/pexels-photo-29611783.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -230,7 +531,7 @@ El volumen de operaciones de divisas en Lima la semana pasada fue un 35% superio
 La gestión táctica de riesgo cambiario para esta semana sugiere: comprar entre el 50% y el 70% de las necesidades de dólares en los días lunes-jueves (antes del dato del viernes), y reservar el 30%-50% para el post-datos según cómo reaccione el mercado. Esta estrategia de compras escalonadas reduce el riesgo de timing y asegura un costo promedio razonable independientemente de la sorpresa del viernes.`,
     categoria: 'Nacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29611783/pexels-photo-29611783.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -250,7 +551,7 @@ Ethereum retrocede a US$ 3,520 (-1.8%) y Solana a US$ 184 (-2.2%), ambos en lín
 Para peruanos con tenencias de Bitcoin u otras criptos denominadas en dólares que planean convertir a soles, el nivel actual (US$ 105,800 con PEN/USD en S/ 3.382) implica que cada BTC vale S/ 357,814. Si la intención es cubrir gastos en soles en el corto plazo, el contexto de sol apreciado + Bitcoin corrigiendo ligeramente hace razonable ejecutar la conversión en tramos esta semana, usando QoriCash para maximizar el tipo de cambio en la última etapa de cripto→USD→soles.`,
     categoria: 'Internacional',
     fuente: 'TradingView',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/7267611/pexels-photo-7267611.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -270,7 +571,7 @@ El FMI completó el 15 de julio el quinto desembolso de su programa Extended Fun
 Para empresas peruanas con negocios en Argentina, la estabilidad cambiaria actual es la mejor ventana para estructurar contratos de mediano plazo con pagos en dólares al tipo oficial del BCRA. Con la brecha en 2.8%, prácticamente no hay riesgo de un salto discreto del tipo de cambio oficial en el corto plazo. Sin embargo, con una inflación todavía en 2.9% mensual, cualquier contrato a más de 6 meses en pesos argentinos debe incluir cláusulas de ajuste o denominarse en dólares.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/34004034/pexels-photo-34004034.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -290,7 +591,7 @@ El petróleo, en tanto, representó el 44% de las exportaciones totales en el se
 Para empresas peruanas que exportan a Colombia, el crecimiento del 2.6% del PBI en Q2 de Colombia implica mayor demanda de importaciones y mayor poder de compra doméstico. Los exportadores peruanos de alimentos procesados, prendas de vestir y maquinaria liviana hacia Colombia tienen un contexto favorable. El tipo de cambio PEN/COP implícito (S/ 3.382 / COP 4,178 = COP 1.23 por sol) sigue siendo competitivo para las exportaciones peruanas al mercado colombiano.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/29477129/pexels-photo-29477129.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -310,7 +611,7 @@ El contexto regional también favorece el recorte chileno: si el BCCh recorta en
 Para el mercado cambiario peruano, la apreciación del peso chileno a CLP 928 es una referencia positiva: ambas monedas comparten la fortaleza del cobre como fundamento, y el hecho de que el CLP se aprecie refuerza la narrativa de monedas emergentes productoras de cobre como ganadoras del escenario de dólar débil + demanda china en recuperación. El PEN en S/ 3.382 y el CLP en 928 son dos caras de la misma moneda.`,
     categoria: 'Internacional',
     fuente: 'Infobae',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/19821189/pexels-photo-19821189.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
@@ -330,7 +631,7 @@ Machu Picchu recibió 672,000 visitas en el semestre, el 94% de la capacidad má
 Para el tipo de cambio PEN/USD, el turismo elevado implica mayor ingreso de dólares de los turistas que cambian su moneda extranjera a soles para sus gastos locales. Este flujo es constante y predecible, lo que refuerza la oferta de divisas en el mercado interbancario. El segundo semestre —que incluye las temporadas alta de julio-agosto y las fiestas patrias— promete superar el primer semestre, lo que podría llevar el total anual de turismo a 6 millones de visitantes, el mejor de la historia del país.`,
     categoria: 'Nacional',
     fuente: 'Gestión',
-    fecha: HOY,
+    fecha: '2026-08-04T08:00:00.000Z',
     destacada: false,
     imagen: 'https://images.pexels.com/photos/1570610/pexels-photo-1570610.jpeg?auto=compress&cs=tinysrgb&w=1200',
   },
