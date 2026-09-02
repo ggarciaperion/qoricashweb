@@ -238,6 +238,9 @@ export default function Home() {
                 ) : (
                   <img src="/logo-principal.png" alt="QoriCash" className="h-48 sm:h-52 md:h-56 w-auto" />
                 )}
+                {isEmpresaPage && (
+                  <span className="text-[9px] font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(143,184,204,0.55)' }}>Corporate</span>
+                )}
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
