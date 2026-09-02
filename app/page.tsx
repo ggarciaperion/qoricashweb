@@ -224,7 +224,7 @@ export default function Home() {
               <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
                 {isEmpresaPage ? (
                   <div className="relative inline-flex flex-shrink-0">
-                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-14 sm:h-16 md:h-18 w-auto invisible" />
+                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-40 sm:h-44 md:h-48 w-auto invisible" />
                     <div className="absolute inset-0" style={{
                       background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
                       WebkitMaskImage: "url('/logo-principal.png')",
@@ -236,7 +236,7 @@ export default function Home() {
                     }} />
                   </div>
                 ) : (
-                  <img src="/logo-principal.png" alt="QoriCash" className="h-14 sm:h-16 md:h-18 w-auto" />
+                  <img src="/logo-principal.png" alt="QoriCash" className="h-40 sm:h-44 md:h-48 w-auto" />
                 )}
               </Link>
             </div>
