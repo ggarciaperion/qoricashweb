@@ -201,8 +201,8 @@ export default function Calculator({
         style={{
           top: '50%', transform: 'translateY(-50%)',
           right: '-96px',
-          background: d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : '#22C55E',
-          boxShadow: d ? '0 6px 20px rgba(74,104,132,0.4)' : '0 6px 20px rgba(34,197,94,0.3)',
+          background: d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : '#000000',
+          boxShadow: d ? '0 6px 20px rgba(74,104,132,0.4)' : '0 6px 20px rgba(0,0,0,0.2)',
           width: '86px',
           fontSize: '10px',
         }}
