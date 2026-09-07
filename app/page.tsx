@@ -508,7 +508,7 @@ export default function Home() {
           {!isEmpresaPage && (
             <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
-              <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
+              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', color: '#2563EB' }}>que siempre</span>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
             </h1>
           )}
@@ -538,7 +538,7 @@ export default function Home() {
                 ) : (
                   <>
                     <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
-                    <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
+                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', color: '#2563EB' }}>que siempre</span>
                     <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
                   </>
                 )}
