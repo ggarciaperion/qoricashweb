@@ -205,7 +205,7 @@ export default function LoginPage() {
 
           {/* Logo — fuera del card */}
           <div style={{ textAlign: 'center', marginBottom: 12 }}>
-            <Image src="/QC.png" alt="QoriCash" width={80} height={80} style={{ objectFit: 'contain', display: 'inline-block' }} />
+            <Image src="/QC.png" alt="QoriCash" width={80} height={80} style={{ objectFit: 'contain', display: 'inline-block', mixBlendMode: 'multiply' }} />
           </div>
 
           {/* Card */}
