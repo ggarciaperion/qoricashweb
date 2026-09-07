@@ -1235,7 +1235,7 @@ export default function Home() {
             {/* ── CARD 01 — Cotiza en línea ── */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', animation: 'cardGlow 4s ease-in-out infinite' }}>
               {/* Illustration zone */}
-              <div className="relative overflow-hidden px-7 pt-7 pb-5" style={{ background: '#000000', height: '210px' }}>
+              <div className="relative overflow-hidden px-7 pt-7 pb-5" style={{ background: '#1E293B', height: '210px' }}>
                 {/* Ghost number */}
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>01</span>
                 {/* Top-right glow */}
@@ -1291,16 +1291,16 @@ export default function Home() {
               </div>
 
               {/* Text body */}
-              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
+              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 01</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Cotiza en línea</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
               </div>
             </div>
 
             {/* ── CARD 02 — Transfiere ── */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.4s' }}>
-              <div className="relative overflow-hidden px-7 py-5 flex flex-col justify-center" style={{ background: '#000000', height: '210px' }}>
+              <div className="relative overflow-hidden px-7 py-5 flex flex-col justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>02</span>
                 <div className="absolute top-0 left-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%)', transform: 'translate(-30%, -30%)' }} />
 
@@ -1400,16 +1400,16 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
+              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 02</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Transfiere a QoriCash</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
               </div>
             </div>
 
             {/* ── CARD 03 — Recibe tu dinero ── */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.8s' }}>
-              <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#000000', height: '210px' }}>
+              <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>03</span>
                 {/* Central green glow */}
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 60%, rgba(34,197,94,0.12), transparent 65%)' }} />
@@ -1458,10 +1458,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
+              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 03</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Recibe tu dinero</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
               </div>
             </div>
 
