@@ -1291,10 +1291,10 @@ export default function Home() {
               </div>
 
               {/* Text body */}
-              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
+              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 01</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Cotiza en línea</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
               </div>
             </div>
 
@@ -1400,10 +1400,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
+              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 02</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Transfiere a QoriCash</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
               </div>
             </div>
 
@@ -1458,10 +1458,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
+              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#000000' }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Paso 03</span>
+                <h3 className="font-display font-bold text-lg mb-2" style={{ color: '#ffffff' }}>Recibe tu dinero</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
               </div>
             </div>
 
