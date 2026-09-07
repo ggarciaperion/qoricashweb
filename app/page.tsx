@@ -877,7 +877,7 @@ export default function Home() {
               { icon: Shield,       label: 'Datos protegidos por ley' },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.6)' : '#6B7280' }}>
-                <Icon className="w-3.5 h-3.5 text-primary" />{label}
+                <Icon className="w-3.5 h-3.5" style={{ color: isEmpresaPage ? '#8fb8cc' : '#000000' }} />{label}
               </span>
             ))}
           </div>
