@@ -86,12 +86,12 @@ export default function AlertaTCBanner() {
           {/* ── Texto ── */}
           <div>
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-primary-500/10 border border-primary-500/20 rounded-full px-4 py-1.5 mb-3">
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-3" style={{ background: '#000000', border: '1px solid rgba(255,255,255,0.1)' }}>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-400" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
               </span>
-              <span className="text-primary-400 text-xs font-bold tracking-[0.15em] uppercase">Alertas de Tipo de Cambio</span>
+              <span className="text-white text-xs font-bold tracking-[0.15em] uppercase">Alertas de Tipo de Cambio</span>
             </div>
 
             {/* Headline */}
@@ -125,7 +125,7 @@ export default function AlertaTCBanner() {
               <button
                 onClick={openModal}
                 className="group relative overflow-hidden inline-flex items-center justify-center gap-2 font-bold px-7 py-3.5 rounded-full transition-all duration-200 text-sm text-white"
-                style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 20px rgba(34,197,94,0.25)' }}
+                style={{ background: '#000000', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
               >
                 <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none" />
                 <Bell className="w-4 h-4" />
@@ -141,8 +141,8 @@ export default function AlertaTCBanner() {
               </Link>
             </div>
 
-            <p className="hidden sm:flex mt-4 text-white text-xs items-center gap-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-primary-400" />
+            <p className="hidden sm:flex mt-4 text-xs items-center gap-1.5" style={{ color: '#000000' }}>
+              <CheckCircle className="w-3.5 h-3.5" style={{ color: '#000000' }} />
               Sin registro · Se configura en menos de 30 segundos
             </p>
           </div>
