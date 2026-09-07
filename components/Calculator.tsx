@@ -241,8 +241,8 @@ export default function Calculator({
             style={{
               width: 'calc(50% - 6px)',
               left: operationType === 'Compra' ? '6px' : 'calc(50% + 0px)',
-              background: d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : 'linear-gradient(135deg, #22C55E 0%, #16a34a 100%)',
-              boxShadow: d ? '0 4px 14px rgba(74,104,132,0.4)' : '0 4px 14px rgba(34,197,94,0.35)',
+              background: d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : '#000000',
+              boxShadow: d ? '0 4px 14px rgba(74,104,132,0.4)' : '0 4px 14px rgba(0,0,0,0.18)',
               transition: 'left 0.38s cubic-bezier(0.34, 1.45, 0.64, 1)',
             }}
           />
