@@ -897,8 +897,8 @@ export default function Home() {
                   Cada sol importa.<br />
                   <span style={{ color: '#2563EB' }}>No lo pierdas</span> en el banco.
                 </h2>
-                <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase text-primary">
-                  <span className="w-3 h-px bg-primary inline-block" />Lo que ganas
+                <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase" style={{ color: '#000000' }}>
+                  <span className="w-3 h-px inline-block" style={{ background: '#000000' }} />Lo que ganas
                 </span>
               </div>
 
@@ -914,15 +914,15 @@ export default function Home() {
                       {speedClock && (
                         <div className="relative flex items-center justify-center flex-shrink-0" style={{ width: '22px', height: '22px' }}>
                           {/* Ghost trail sutil */}
-                          <Clock className="absolute w-4 h-4 text-primary" style={{ animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite', opacity: 0.12, filter: 'blur(1.5px)', animationDelay: '-0.3s' }} />
+                          <Clock className="absolute w-4 h-4" style={{ color: '#000000', animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite', opacity: 0.12, filter: 'blur(1.5px)', animationDelay: '-0.3s' }} />
                           {/* Icono principal */}
-                          <Clock className="relative w-4 h-4 text-primary" style={{ animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite' }} />
+                          <Clock className="relative w-4 h-4" style={{ color: '#000000', animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite' }} />
                         </div>
                       )}
                       <div className="flex items-baseline gap-0.5">
-                        <span className="text-xs font-bold text-primary">{prefix}</span>
-                        <span className="text-3xl font-black text-primary tabular-nums leading-none"><AnimatedStat value={value} label="" /></span>
-                        <span className="text-sm font-bold text-primary ml-0.5">{suffix}</span>
+                        <span className="text-xs font-bold" style={{ color: '#000000' }}>{prefix}</span>
+                        <span className="text-3xl font-black tabular-nums leading-none" style={{ color: '#000000' }}><AnimatedStat value={value} label="" /></span>
+                        <span className="text-sm font-bold ml-0.5" style={{ color: '#000000' }}>{suffix}</span>
                       </div>
                     </div>
                     <div className="text-[11px] font-semibold leading-tight" style={{ color: '#0D1117' }}>{label}</div>
