@@ -544,7 +544,7 @@ export default function Calculator({
                 disabled={!couponApplied && (!couponCode || couponStatus === 'loading')}
                 className="px-4 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
                 style={{
-                  background: couponApplied ? 'rgba(239,68,68,0.08)' : d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : '#16a34a',
+                  background: couponApplied ? 'rgba(239,68,68,0.08)' : d ? 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' : '#000000',
                   border: couponApplied ? '2px solid rgba(239,68,68,0.25)' : '2px solid transparent',
                   color: couponApplied ? '#dc2626' : '#fff',
                 }}
