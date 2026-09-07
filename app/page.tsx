@@ -724,7 +724,7 @@ export default function Home() {
           {/* Encabezado */}
           <div className="mb-7 text-center">
             <h2 className="font-display font-black leading-[1.05]" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
-              Operamos con los bancos <span className={isEmpresaPage ? '' : 'text-primary'} style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>principales del Peru</span>
+              Operamos con los bancos <span style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#2563EB' }}>principales del Peru</span>
             </h2>
           </div>
 
@@ -895,7 +895,7 @@ export default function Home() {
               <div>
                 <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#0D1117' }}>
                   Cada sol importa.<br />
-                  <span className="text-primary">No lo pierdas</span> en el banco.
+                  <span style={{ color: '#2563EB' }}>No lo pierdas</span> en el banco.
                 </h2>
                 <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase text-primary">
                   <span className="w-3 h-px bg-primary inline-block" />Lo que ganas

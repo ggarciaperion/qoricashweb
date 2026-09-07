@@ -96,7 +96,7 @@ export default function AlertaTCBanner() {
 
             {/* Headline */}
             <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-white leading-[1.1] mb-2 sm:mb-3">
-              Te avisamos cuando el <span className="text-primary-400">dólar llega a tu precio.</span>
+              Te avisamos cuando el <span style={{ color: '#2563EB' }}>dólar llega a tu precio.</span>
             </h2>
 
             <p className="text-gray-400 text-sm leading-relaxed mb-3 max-w-md">
