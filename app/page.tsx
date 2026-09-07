@@ -669,16 +669,17 @@ export default function Home() {
                 </div>
               ) : (
               <div style={!isEmpresaPage ? {
-                background: '#ffffff',
+                background: '#000000',
                 borderRadius: 20,
-                border: '1px solid rgba(0,0,0,0.07)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
                 overflow: 'hidden',
               } : {}}>
               <Calculator
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                 showContinueButton={true}
                 dark={isEmpresaPage}
+                darkTheme={!isEmpresaPage}
                 onOperationReady={(operationType, amountUSD, exchangeRate) => guardedAction(() => {
                   const params = amountUSD && parseFloat(amountUSD) > 0
                     ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
