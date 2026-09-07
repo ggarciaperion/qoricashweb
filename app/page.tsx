@@ -585,9 +585,9 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />Registrados ante la SBS</span>
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />En 15 minutos</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />0 comisiones</span>
+                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: '#000000' }} />Registrados ante la SBS</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: '#000000' }} />En 15 minutos</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: '#000000' }} />0 comisiones</span>
                   </>
                 )}
               </div>
