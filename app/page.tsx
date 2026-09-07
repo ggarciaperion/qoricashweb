@@ -1239,7 +1239,7 @@ export default function Home() {
                 {/* Ghost number */}
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>01</span>
                 {/* Top-right glow */}
-                <div className="absolute top-0 right-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.18), transparent 70%)', transform: 'translate(30%, -30%)' }} />
+                <div className="absolute top-0 right-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%)', transform: 'translate(30%, -30%)' }} />
 
                 {/* Dos opciones: Web o Asesor */}
                 <div className="relative z-10 flex flex-col gap-3 justify-center h-full" style={{ animation: 'floatUp 4s ease-in-out infinite' }}>
@@ -1273,7 +1273,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.02]"
-                    style={{ background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.3)' }}
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
                   >
                     <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#25D366' }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
@@ -1282,8 +1282,8 @@ export default function Home() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold" style={{ color: '#25D366' }}>Contacta con un Trader</div>
-                      <div className="text-[9px]" style={{ color: 'rgba(37,211,102,0.6)' }}>Respuesta inmediata por WhatsApp</div>
+                      <div className="text-[10px] font-bold" style={{ color: 'rgba(255,255,255,0.9)' }}>Contacta con un Trader</div>
+                      <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.4)' }}>Respuesta inmediata por WhatsApp</div>
                     </div>
                   </a>
 
@@ -1332,7 +1332,7 @@ export default function Home() {
 
                     {/* Moneda $ moviéndose der → izq (QoriCash → Tu banco) */}
                     <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{ animation: 'moneyFlyLeft 2s ease-in-out infinite', left: '50%', marginLeft: '-12px' }}>
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center font-black text-[11px] text-white" style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)', boxShadow: '0 0 10px rgba(34,197,94,0.5)', border: '1px solid rgba(34,197,94,0.6)' }}>$</div>
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center font-black text-[11px] text-black" style={{ background: '#ffffff', boxShadow: '0 0 10px rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.6)' }}>$</div>
                     </div>
 
                     {/* Carril →  (tu banco envía a QoriCash) */}
@@ -1356,18 +1356,18 @@ export default function Home() {
                     {/* Carril ← (QoriCash devuelve a tu banco) */}
                     <div className="flex flex-col gap-0.5">
                       <div className="relative w-full h-4 overflow-hidden">
-                        <div className="absolute top-1/2 -translate-y-px h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(34,197,94,0.1), rgba(34,197,94,0.45), rgba(34,197,94,0.1))' }} />
+                        <div className="absolute top-1/2 -translate-y-px h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.25), rgba(255,255,255,0.05))' }} />
                         {[0, 0.55, 1.1].map((d) => (
                           <div key={d} className="absolute top-1/2 -translate-y-1/2 right-0" style={{ animation: `slideArrowLeft 1.6s ease-in-out ${d}s infinite` }}>
                             <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                              <path d="M10 5.5H1M4.5 2.5l-3 3 3 3" stroke="#22c55e" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M10 5.5H1M4.5 2.5l-3 3 3 3" stroke="rgba(255,255,255,0.55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           </div>
                         ))}
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-[7px]" style={{ color: 'rgba(34,197,94,0.4)' }}>recibes</span>
-                        <span className="text-[8px] font-bold" style={{ color: 'rgba(34,197,94,0.55)' }}>S/ / USD</span>
+                        <span className="text-[7px]" style={{ color: 'rgba(255,255,255,0.3)' }}>recibes</span>
+                        <span className="text-[8px] font-bold" style={{ color: 'rgba(255,255,255,0.4)' }}>S/ / USD</span>
                       </div>
                     </div>
 
@@ -1375,19 +1375,16 @@ export default function Home() {
 
                   {/* Right: QoriCash */}
                   <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)' }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)' }}>
                       <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        {/* Moneda exterior */}
-                        <circle cx="14" cy="14" r="11" stroke="#22c55e" strokeWidth="1.3" opacity="0.4"/>
-                        <circle cx="14" cy="14" r="8.5" stroke="#22c55e" strokeWidth="1" opacity="0.25"/>
-                        {/* Letra Q estilizada */}
-                        <circle cx="14" cy="13.5" r="5" stroke="#22c55e" strokeWidth="1.8" opacity="0.85"/>
-                        <path d="M17 17l3 3" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" opacity="0.85"/>
-                        {/* Brillo */}
-                        <path d="M10 11.5 Q11.5 9.5 14 9.5" stroke="#22c55e" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+                        <circle cx="14" cy="14" r="11" stroke="rgba(255,255,255,0.4)" strokeWidth="1.3" opacity="0.4"/>
+                        <circle cx="14" cy="14" r="8.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1" opacity="0.25"/>
+                        <circle cx="14" cy="13.5" r="5" stroke="rgba(255,255,255,0.85)" strokeWidth="1.8" opacity="0.85"/>
+                        <path d="M17 17l3 3" stroke="rgba(255,255,255,0.85)" strokeWidth="2" strokeLinecap="round" opacity="0.85"/>
+                        <path d="M10 11.5 Q11.5 9.5 14 9.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
                       </svg>
                     </div>
-                    <span className="text-[9px] font-bold" style={{ color: '#22c55e' }}>QoriCash</span>
+                    <span className="text-[9px] font-bold" style={{ color: 'rgba(255,255,255,0.7)' }}>QoriCash</span>
                   </div>
 
                 </div>
@@ -1412,7 +1409,7 @@ export default function Home() {
               <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#000000', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>03</span>
                 {/* Central green glow */}
-                <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 60%, rgba(34,197,94,0.12), transparent 65%)' }} />
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 60%, rgba(255,255,255,0.06), transparent 65%)' }} />
 
                 {/* Check cargando → check completo */}
                 <div className="relative z-10 flex flex-col items-center gap-4">
@@ -1423,9 +1420,9 @@ export default function Home() {
                       {/* Track gris */}
                       <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2.5"/>
                       {/* Progreso verde */}
-                      <circle cx="26" cy="26" r="22" fill="none" stroke="#22c55e" strokeWidth="2.5"
+                      <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5"
                         strokeLinecap="round" strokeDasharray="138"
-                        style={{ animation: 'checkRing 3.5s ease-in-out infinite', filter: 'drop-shadow(0 0 4px rgba(34,197,94,0.6))' }}/>
+                        style={{ animation: 'checkRing 3.5s ease-in-out infinite', filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.4))' }}/>
                     </svg>
 
                     {/* Porcentaje mientras carga */}
@@ -1437,8 +1434,8 @@ export default function Home() {
                     {/* Check cuando completa */}
                     <div className="absolute flex flex-col items-center" style={{ animation: 'checkDone 3.5s ease-in-out infinite', opacity: 0 }}>
                       <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                        <circle cx="18" cy="18" r="16" fill="rgba(34,197,94,0.15)"/>
-                        <path d="M10 18l6 6 10-10" stroke="#22c55e" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="18" cy="18" r="16" fill="rgba(255,255,255,0.1)"/>
+                        <path d="M10 18l6 6 10-10" stroke="#ffffff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </div>
                   </div>
@@ -1447,11 +1444,11 @@ export default function Home() {
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative h-5">
                       <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.4)', animation: 'procText 3.5s ease-in-out infinite' }}>Verificando transferencia...</span>
-                      <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-bold" style={{ color: '#22c55e', animation: 'doneText 3.5s ease-in-out infinite', opacity: 0 }}>¡Transferencia enviada!</span>
+                      <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-bold" style={{ color: '#ffffff', animation: 'doneText 3.5s ease-in-out infinite', opacity: 0 }}>¡Transferencia enviada!</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                      <Clock className="w-3 h-3 text-green-400" />
-                      <span className="text-[10px] font-bold text-green-400">menos de 15 min</span>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                      <Clock className="w-3 h-3 text-white" />
+                      <span className="text-[10px] font-bold text-white">menos de 15 min</span>
                     </div>
                   </div>
 
