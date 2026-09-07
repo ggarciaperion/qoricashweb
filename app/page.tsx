@@ -963,18 +963,18 @@ export default function Home() {
                   const qc_venta  = currentRates?.tipo_venta?.toFixed(3)  || sellRate;
                   return (
                     <div className="flex items-center px-4 py-3" style={{
-                      background: 'rgba(34,197,94,0.05)',
-                      borderBottom: '1px solid rgba(34,197,94,0.1)',
-                      borderLeft: '2px solid #22C55E',
+                      background: 'rgba(0,0,0,0.03)',
+                      borderBottom: '1px solid rgba(0,0,0,0.08)',
+                      borderLeft: '2px solid #000000',
                     }}>
                       <div className="flex items-center gap-2.5 flex-1">
                         <img src="/logo-principal.png" alt="QoriCash" className="h-5 w-auto object-contain flex-shrink-0" />
                         <span className="text-sm font-black" style={{ color: '#0D1117' }}>QoriCash</span>
-                        <span className="text-[8px] font-black uppercase tracking-wider bg-primary text-white px-1.5 py-0.5 rounded-full">Mejor</span>
+                        <span className="text-[8px] font-black uppercase tracking-wider text-white px-1.5 py-0.5 rounded-full" style={{ background: '#2563EB' }}>Mejor</span>
                       </div>
                       <div className="flex gap-1">
-                        <span className="w-14 text-right text-sm font-black tabular-nums text-primary">{qc_compra}</span>
-                        <span className="w-14 text-right text-sm font-black tabular-nums text-primary">{qc_venta}</span>
+                        <span className="w-14 text-right text-sm font-black tabular-nums" style={{ color: '#0D1117' }}>{qc_compra}</span>
+                        <span className="w-14 text-right text-sm font-black tabular-nums" style={{ color: '#0D1117' }}>{qc_venta}</span>
                       </div>
                     </div>
                   );
