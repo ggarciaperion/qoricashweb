@@ -193,23 +193,24 @@ export default function LoginPage() {
 
       `}</style>
 
-      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', position: 'relative', overflow: 'hidden', backgroundColor: '#0A1628' }}>
-        <BgImage src="/df.webp" color="#0A1628" zIndex={0} />
+      <main style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', position: 'relative', overflow: 'hidden', backgroundColor: '#F5F7FA' }}>
 
         <div style={{ position: 'relative', width: '100%', maxWidth: 420, animation: 'qcCardIn 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
 
           {/* Back link */}
-          <Link href={fromPage} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#ffffff', fontSize: 12, fontWeight: 500, textDecoration: 'none', marginBottom: 8 }}>
-            <ArrowLeft size={14} color="#ffffff" />
+          <Link href={fromPage} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#6B7280', fontSize: 12, fontWeight: 500, textDecoration: 'none', marginBottom: 8 }}>
+            <ArrowLeft size={14} color="#6B7280" />
             Volver al inicio
           </Link>
 
           {/* Card */}
           <div style={{
-            background: 'transparent',
+            background: '#ffffff',
             borderRadius: 20,
             overflow: 'hidden',
             position: 'relative',
+            border: '1px solid rgba(0,0,0,0.07)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
           }}>
 
             {/* ── Animation overlay — glass neutro ── */}
@@ -312,8 +313,8 @@ export default function LoginPage() {
             {/* ── Header strip ── */}
             <div style={{ background: 'transparent', padding: '16px 32px 14px', textAlign: 'center' }}>
               <Image src="/logo-principal.png" alt="QoriCash" width={40} height={40} style={{ objectFit: 'contain', margin: '0 auto 8px' }} />
-              <h1 style={{ fontSize: 17, fontWeight: 800, color: '#ffffff', margin: 0 }}>Iniciar sesión</h1>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
+              <h1 style={{ fontSize: 17, fontWeight: 800, color: '#0D1117', margin: 0 }}>Iniciar sesión</h1>
+              <p style={{ fontSize: 11, color: '#6B7280', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
             </div>
 
             {/* ── Form body ── */}
@@ -322,7 +323,7 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 {/* DNI */}
                 <div style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
                     Número de Documento
                   </label>
                   <div style={{ position: 'relative' }}>
@@ -339,12 +340,12 @@ export default function LoginPage() {
                       onPaste={e => { const t = e.clipboardData.getData('text').replace(/\D/g,'').slice(0,11); e.preventDefault(); document.execCommand('insertText', false, t); }}
                       style={{
                         width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 9, paddingBottom: 9,
-                        border: errors.dni ? '1px solid #fca5a5' : '1px solid rgba(255,255,255,0.5)',
+                        border: errors.dni ? '1px solid #fca5a5' : '1px solid #E5E7EB',
                         borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
-                        background: errors.dni ? 'rgba(254,242,242,0.3)' : 'transparent', boxSizing: 'border-box',
+                        background: errors.dni ? '#fef2f2' : '#ffffff', boxSizing: 'border-box',
                         transition: 'border-color 0.15s',
                       }}
-                      onFocus={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#22C55E'; }}
+                      onFocus={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#0D1117'; }}
                       onBlur={e => { if (!errors.dni) e.currentTarget.style.borderColor = '#e2e8f0'; }}
                     />
                   </div>
@@ -353,7 +354,7 @@ export default function LoginPage() {
 
                 {/* Password */}
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#374151', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>
                     Contraseña
                   </label>
                   <div style={{ position: 'relative' }}>
@@ -366,12 +367,12 @@ export default function LoginPage() {
                       disabled={isLoading || isBlocked}
                       style={{
                         width: '100%', paddingLeft: 36, paddingRight: 42, paddingTop: 9, paddingBottom: 9,
-                        border: errors.password ? '1px solid #fca5a5' : '1px solid rgba(255,255,255,0.5)',
+                        border: errors.password ? '1px solid #fca5a5' : '1px solid #E5E7EB',
                         borderRadius: 10, fontSize: 14, color: '#1E293B', outline: 'none',
-                        background: errors.password ? 'rgba(254,242,242,0.3)' : 'transparent', boxSizing: 'border-box',
+                        background: errors.password ? '#fef2f2' : '#ffffff', boxSizing: 'border-box',
                         transition: 'border-color 0.15s',
                       }}
-                      onFocus={e => { if (!errors.password) e.currentTarget.style.borderColor = '#22C55E'; }}
+                      onFocus={e => { if (!errors.password) e.currentTarget.style.borderColor = '#0D1117'; }}
                       onBlur={e => { if (!errors.password) e.currentTarget.style.borderColor = '#e2e8f0'; }}
                     />
                     <button
@@ -391,14 +392,14 @@ export default function LoginPage() {
 
                 {/* Row: remember + forgot */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', fontSize: 13, color: '#374151' }}>
                     <input type="checkbox" style={{ width: 15, height: 15, accentColor: '#1E293B', cursor: 'pointer' }} />
                     Recuérdame
                   </label>
                   <button
                     type="button"
                     onClick={() => setIsForgotPasswordModalOpen(true)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#22C55E', fontWeight: 600, padding: 0 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#6B7280', fontWeight: 600, padding: 0 }}
                   >
                     ¿Olvidaste tu contraseña?
                   </button>
@@ -410,13 +411,13 @@ export default function LoginPage() {
                   disabled={isLoading || isBlocked}
                   style={{
                     width: '100%', padding: '11px', borderRadius: 11, border: 'none',
-                    background: isBlocked ? '#94a3b8' : '#16a34a', color: '#fff', fontSize: 14, fontWeight: 700,
+                    background: isBlocked ? '#94a3b8' : '#000000', color: '#fff', fontSize: 14, fontWeight: 700,
                     cursor: (isLoading || isBlocked) ? 'not-allowed' : 'pointer', opacity: (isLoading || isBlocked) ? 0.7 : 1,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     transition: 'background 0.15s',
                   }}
-                  onMouseEnter={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#15803d'; }}
-                  onMouseLeave={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#16a34a'; }}
+                  onMouseEnter={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#1a1a1a'; }}
+                  onMouseLeave={e => { if (!isLoading && !isBlocked) e.currentTarget.style.background = '#000000'; }}
                 >
                   Iniciar Sesión
                 </button>
@@ -426,7 +427,7 @@ export default function LoginPage() {
                   <div style={{ marginTop: 12, padding: '10px 14px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, textAlign: 'center' }}>
                     <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: '#dc2626' }}>Cuenta bloqueada</p>
                     <p style={{ margin: '4px 0 0', fontSize: 11, color: '#64748b' }}>
-                      Usa <span style={{ color: '#22C55E', fontWeight: 600, cursor: 'pointer' }} onClick={() => setIsForgotPasswordModalOpen(true)}>¿Olvidaste tu contraseña?</span> para recuperar el acceso
+                      Usa <span style={{ color: '#0D1117', fontWeight: 600, cursor: 'pointer' }} onClick={() => setIsForgotPasswordModalOpen(true)}>¿Olvidaste tu contraseña?</span> para recuperar el acceso
                     </p>
                   </div>
                 ) : failedAttempts > 0 ? (
@@ -462,7 +463,7 @@ export default function LoginPage() {
           </div>
 
           {/* Security note */}
-          <p style={{ marginTop: 12, textAlign: 'center', fontSize: 11, color: '#94a3b8' }}>
+          <p style={{ marginTop: 12, textAlign: 'center', fontSize: 11, color: '#9CA3AF' }}>
             Tus datos están protegidos con encriptación de nivel bancario
           </p>
         </div>
