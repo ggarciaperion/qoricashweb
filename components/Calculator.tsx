@@ -455,9 +455,9 @@ export default function Calculator({
             onClick={handleContinue}
             disabled={!amountInput || !amountOutput}
             className={`w-full rounded-xl font-bold transition-all ${compact ? 'mt-2 py-2.5' : 'mt-4 py-4'} ${
-              amountInput && amountOutput ? 'btn-primary-gradient text-white shadow-md' : 'cursor-not-allowed'
+              amountInput && amountOutput ? 'text-white shadow-md' : 'cursor-not-allowed'
             }`}
-            style={!(amountInput && amountOutput) ? (d ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.08)' } : { background: '#E5E7EB', color: '#9CA3AF', border: '1px solid rgba(0,0,0,0.06)' }) : {}}
+            style={!(amountInput && amountOutput) ? (d ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.08)' } : { background: '#E5E7EB', color: '#9CA3AF', border: '1px solid rgba(0,0,0,0.06)' }) : { background: '#000000' }}
           >
             INICIAR OPERACIÓN
           </button>
