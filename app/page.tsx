@@ -568,7 +568,7 @@ export default function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
-                    style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}
+                    style={{ background: '#000000' }}
                   >
                     Cotizar ahora
                     <ArrowRight className="w-4 h-4" />
