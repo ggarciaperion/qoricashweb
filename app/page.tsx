@@ -585,9 +585,9 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-primary" />Registrados ante la SBS</span>
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-primary" />En 15 minutos</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-primary" />0 comisiones</span>
+                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />Registrados ante la SBS</span>
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />En 15 minutos</span>
+                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: '#22C55E' }} />0 comisiones</span>
                   </>
                 )}
               </div>
@@ -668,6 +668,13 @@ export default function Home() {
                   </p>
                 </div>
               ) : (
+              <div style={!isEmpresaPage ? {
+                background: '#ffffff',
+                borderRadius: 20,
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                overflow: 'hidden',
+              } : {}}>
               <Calculator
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                 showContinueButton={true}
@@ -683,6 +690,7 @@ export default function Home() {
                   }
                 })}
               />
+              </div>
               )}
 
                 {/* Mercado en Vivo button — oculto temporalmente */}

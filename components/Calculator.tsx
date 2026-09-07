@@ -216,7 +216,7 @@ export default function Calculator({
 
         {/* Header */}
         <div className={`flex items-center justify-between px-1 ${hideHeader ? 'hidden' : ''} ${compact ? 'mb-1.5' : 'mb-2 md:mb-3'}`}>
-          <p className="text-xs font-semibold" style={{ color: d ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.65)' }}>Tipos de cambio en tiempo real</p>
+          <p className="text-xs font-semibold" style={{ color: d ? 'rgba(255,255,255,0.5)' : '#6B7280' }}>Tipos de cambio en tiempo real</p>
           <div className="flex items-center text-xs font-bold px-2.5 py-1 rounded-full backdrop-blur-sm"
             style={d
               ? { color: '#8fb8cc' }
@@ -231,9 +231,9 @@ export default function Calculator({
 
         {/* Tabs Compra / Venta */}
         <div className={`rounded-xl ${compact ? 'mb-2' : 'mb-3 md:mb-6'}`}
-          style={{ background: d ? 'rgba(255,255,255,0.06)' : 'transparent', boxShadow: d ? 'inset 0 1px 0 rgba(255,255,255,0.06)' : 'none' }}>
-        <div className="relative grid grid-cols-2 backdrop-blur-sm p-1.5 rounded-xl"
-          style={{ background: d ? 'transparent' : 'rgba(255,255,255,0.4)', boxShadow: d ? 'none' : 'inset 0 2px 4px rgba(0,0,0,0.06)' }}>
+          style={{ background: d ? 'rgba(255,255,255,0.06)' : 'transparent', boxShadow: d ? 'inset 0 1px 0 rgba(255,255,255,0.06)' : 'none', overflow: 'hidden' }}>
+        <div className="relative grid grid-cols-2 p-1.5 rounded-xl"
+          style={{ background: d ? 'transparent' : '#EAECF0', boxShadow: d ? 'none' : 'inset 0 1px 3px rgba(0,0,0,0.07)' }}>
 
           {/* Pill deslizante */}
           <div
@@ -381,10 +381,10 @@ export default function Calculator({
 
           {/* Input — Envías */}
           <div
-            className={`backdrop-blur-sm rounded-xl border-2 transition-all cursor-text relative z-10 ${compact ? 'p-2' : 'p-3'} ${d ? 'hover:border-[rgba(143,184,204,0.5)]' : 'hover:border-primary-400'}`}
+            className={`rounded-xl border-2 transition-all cursor-text relative z-10 ${compact ? 'p-2' : 'p-3'} ${d ? 'hover:border-[rgba(143,184,204,0.5)]' : 'hover:border-[rgba(34,197,94,0.5)]'}`}
             style={d
               ? { background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderColor: 'rgba(143,184,204,0.2)', boxShadow: '0 1px 8px rgba(0,0,0,0.1)' }
-              : { background: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.6)', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+              : { background: '#ffffff', borderColor: '#E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
             onClick={(e) => {
               const input = document.getElementById('amount-input') as HTMLInputElement;
               if (input) { input.focus(); e.preventDefault(); }
@@ -428,23 +428,23 @@ export default function Calculator({
                 transition: 'transform 0.3s ease',
               }}
             >
-              <RefreshCw className={`w-5 h-5 text-primary-500 ${isAnimating ? 'rotate-180' : ''}`} />
+              <RefreshCw className={`w-5 h-5 ${d ? 'text-primary-500' : 'text-gray-500'} ${isAnimating ? 'rotate-180' : ''}`} />
             </button>
           </div>
 
           {/* Output — Recibes */}
-          <div className={`backdrop-blur-sm rounded-xl relative z-10 ${compact ? 'p-2' : 'p-3'}`}
+          <div className={`rounded-xl relative z-10 ${compact ? 'p-2' : 'p-3'}`}
             style={d
               ? { background: 'linear-gradient(135deg, rgba(74,104,132,0.25), rgba(26,51,83,0.3))', border: '1px solid rgba(143,184,204,0.2)', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }
-              : { background: 'linear-gradient(135deg, rgba(240,253,244,0.9), rgba(220,252,231,0.7))', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
             <div className={`flex items-center justify-between ${compact ? 'mb-1' : 'mb-2'}`}>
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: d ? 'rgba(143,184,204,0.7)' : '#166534' }}>Recibes</label>
+              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: d ? 'rgba(143,184,204,0.7)' : '#6B7280' }}>Recibes</label>
               <div className="flex items-center gap-2">
                 <span style={{ fontSize: '1.2em', lineHeight: 1 }}>{outputCurrency === 'USD' ? '🇺🇸' : '🇵🇪'}</span>
                 <span className="font-bold text-xs" style={{ color: d ? 'rgba(255,255,255,0.7)' : '#1F2937' }}>{outputCurrency}</span>
               </div>
             </div>
-            <div className={`font-bold ${compact ? 'text-lg' : 'text-xl'}`} style={{ color: d ? '#8fb8cc' : '#14532d' }}>{amountOutput ? formatWithCommas(amountOutput) : '0.00'}</div>
+            <div className={`font-bold ${compact ? 'text-lg' : 'text-xl'}`} style={{ color: d ? '#8fb8cc' : '#111827' }}>{amountOutput ? formatWithCommas(amountOutput) : '0.00'}</div>
           </div>
 
         </div>
@@ -457,7 +457,7 @@ export default function Calculator({
             className={`w-full rounded-xl font-bold transition-all ${compact ? 'mt-2 py-2.5' : 'mt-4 py-4'} ${
               amountInput && amountOutput ? 'btn-primary-gradient text-white shadow-md' : 'cursor-not-allowed'
             }`}
-            style={!(amountInput && amountOutput) ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.08)' } : {}}
+            style={!(amountInput && amountOutput) ? (d ? { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.08)' } : { background: '#E5E7EB', color: '#9CA3AF', border: '1px solid rgba(0,0,0,0.06)' }) : {}}
           >
             INICIAR OPERACIÓN
           </button>
@@ -534,9 +534,9 @@ export default function Calculator({
                 placeholder="QORI2026"
                 disabled={couponStatus === 'loading' || couponApplied}
                 className={`flex-1 px-3 py-2.5 text-sm font-bold tracking-[0.18em] uppercase backdrop-blur-sm rounded-xl border-2 focus:outline-none transition-all disabled:opacity-50 ${d ? 'placeholder-white/20 text-white' : 'placeholder-gray-300 text-gray-900 bg-white/70'}`}
-                style={{ fontFamily: 'monospace', background: d ? 'rgba(255,255,255,0.06)' : undefined, borderColor: couponStatus === 'valid' ? (d ? 'rgba(74,104,132,0.6)' : 'rgba(34,197,94,0.5)') : couponStatus === 'invalid' ? 'rgba(239,68,68,0.4)' : d ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)' }}
+                style={{ fontFamily: 'monospace', background: d ? 'rgba(255,255,255,0.06)' : '#ffffff', borderColor: couponStatus === 'valid' ? (d ? 'rgba(74,104,132,0.6)' : 'rgba(34,197,94,0.5)') : couponStatus === 'invalid' ? 'rgba(239,68,68,0.4)' : d ? 'rgba(255,255,255,0.12)' : '#E5E7EB' }}
                 onFocus={(e) => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = d ? 'rgba(74,104,132,0.6)' : 'rgba(34,197,94,0.5)'; }}
-                onBlur={(e)  => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = d ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.6)'; }}
+                onBlur={(e)  => { if (couponStatus === 'idle') e.currentTarget.style.borderColor = d ? 'rgba(255,255,255,0.12)' : '#E5E7EB'; }}
               />
               {/* Botón Aplicar / Quitar */}
               <button
