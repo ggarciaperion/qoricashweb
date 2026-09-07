@@ -32,7 +32,7 @@ export default function AnimatedStat({
 
   return (
     <div ref={elementRef}>
-      <div className="text-2xl font-bold text-primary">
+      <div className="text-2xl font-bold" style={{ color: 'inherit' }}>
         {prefix}{formattedCount}{suffix}
       </div>
       <div className="text-xs text-gray-600">{label}</div>
