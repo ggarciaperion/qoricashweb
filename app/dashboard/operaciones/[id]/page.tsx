@@ -47,6 +47,7 @@ export default function OperacionDetallesPage() {
   const [showCompletedCelebration, setShowCompletedCelebration] = useState(false);
   const lastEventRef = useRef<typeof lastEvent>(null);
 
+  const isEmpresa = user?.document_type === 'RUC';
   const operationId = params.id ? parseInt(params.id as string) : null;
 
   useEffect(() => {
@@ -216,7 +217,7 @@ export default function OperacionDetallesPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-11 h-11 border-2 border-primary-500/20 border-t-primary-400 rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-white/50 text-sm">Cargando operación...</p>
+          <p className="text-sm" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>Cargando operación...</p>
         </div>
       </div>
     );
@@ -225,12 +226,12 @@ export default function OperacionDetallesPage() {
   if (error && !operation) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
           <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: 'rgba(239,68,68,0.15)' }}>
             <AlertCircle className="w-6 h-6 text-red-400" />
           </div>
-          <p className="text-white font-semibold mb-1">Error</p>
-          <p className="text-white/60 text-sm mb-6">{error}</p>
+          <p className="font-semibold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>Error</p>
+          <p className="text-sm mb-6" style={{ color: isEmpresa ? 'rgba(255,255,255,0.6)' : '#6B7280' }}>{error}</p>
           <button onClick={() => router.push('/dashboard')} className="w-full py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition text-sm">
             Volver al Dashboard
           </button>
@@ -261,9 +262,12 @@ export default function OperacionDetallesPage() {
     <div className="min-h-screen">
 
       {/* ── TOP BAR ── */}
-      <header className="sticky top-0 z-20 backdrop-blur-md" style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+      <header className="sticky top-0 z-20" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.12)' } : { background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
         <div className="max-w-xl mx-auto px-4 h-13 flex items-center justify-between py-3">
-          <button onClick={() => router.push('/dashboard/historial')} className="flex items-center gap-1.5 text-white/70 hover:text-white transition text-sm font-medium">
+          <button onClick={() => router.push('/dashboard/historial')} className="flex items-center gap-1.5 transition text-sm font-medium" style={{ color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#6B7280' }}
+            onMouseEnter={e => (e.currentTarget.style.color = isEmpresa ? '#ffffff' : '#0D1117')}
+            onMouseLeave={e => (e.currentTarget.style.color = isEmpresa ? 'rgba(255,255,255,0.7)' : '#6B7280')}
+          >
             <ArrowLeft className="w-4 h-4" /> Mis operaciones
           </button>
           <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold ${sc.bg} ${sc.border} ${sc.text}`}>
@@ -276,7 +280,7 @@ export default function OperacionDetallesPage() {
       <main className="max-w-xl mx-auto px-4 py-5 space-y-3">
 
         {/* ── HERO CARD: Trade identity ── */}
-        <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <div className="rounded-2xl overflow-hidden" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
 
           {/* Accent bar top */}
           <div className="h-0.5 w-full" style={{ background: operation.tipo === 'compra' ? 'linear-gradient(90deg, #16A34A, #22C55E)' : 'linear-gradient(90deg, #1D4ED8, #3B82F6)' }} />
@@ -290,7 +294,7 @@ export default function OperacionDetallesPage() {
                 <p className="text-[10px] font-bold uppercase tracking-widest leading-none" style={{ color: operation.tipo === 'compra' ? '#16A34A' : '#1D4ED8' }}>
                   {operation.tipo === 'compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
                 </p>
-                <p className="text-[10px] font-mono mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                <p className="text-[10px] font-mono mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.45)' : '#9CA3AF' }}>
                   {operation.codigo_operacion ?? `#${operation.id}`}
                 </p>
               </div>
@@ -299,7 +303,7 @@ export default function OperacionDetallesPage() {
                   <span className={`w-1 h-1 rounded-full ${sc.dot}`} />
                   {sc.label}
                 </div>
-                <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{formatDate(operation.fecha_creacion)}</p>
+                <p className="text-[9px]" style={{ color: isEmpresa ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}>{formatDate(operation.fecha_creacion)}</p>
               </div>
             </div>
 
@@ -307,8 +311,8 @@ export default function OperacionDetallesPage() {
             <div className="flex items-center" style={{ gap: 0 }}>
               {/* Entregas */}
               <div style={{ flex: '1 1 0', minWidth: 0 }}>
-                <p className="text-[9px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>Entregas</p>
-                <p className="text-lg font-bold tabular-nums leading-none" style={{ color: '#ffffff', letterSpacing: '-0.02em' }}>
+                <p className="text-[9px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>Entregas</p>
+                <p className="text-lg font-bold tabular-nums leading-none" style={{ color: isEmpresa ? '#ffffff' : '#0D1117', letterSpacing: '-0.02em' }}>
                   {operation.tipo === 'compra'
                     ? `$${(operation.monto_dolares ?? 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
                     : `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}
@@ -316,16 +320,16 @@ export default function OperacionDetallesPage() {
               </div>
 
               {/* TC centrado con márgenes fijos */}
-              <div className="shrink-0 mx-3 rounded-md px-2.5 py-1 text-center" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
-                <p className="text-[8px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>TC</p>
-                <p className="text-xs font-bold tabular-nums" style={{ color: 'rgba(255,255,255,0.85)' }}>
+              <div className="shrink-0 mx-3 rounded-md px-2.5 py-1 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' } : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)' }}>
+                <p className="text-[8px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(255,255,255,0.45)' : '#9CA3AF' }}>TC</p>
+                <p className="text-xs font-bold tabular-nums" style={{ color: isEmpresa ? 'rgba(255,255,255,0.85)' : '#374151' }}>
                   {(operation.tipo_cambio ?? 0).toFixed(3)}
                 </p>
               </div>
 
               {/* Recibes */}
               <div style={{ flex: '1 1 0', minWidth: 0, textAlign: 'right' }}>
-                <p className="text-[9px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>Recibes</p>
+                <p className="text-[9px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>Recibes</p>
                 <p className="text-lg font-bold tabular-nums leading-none" style={{ color: operation.tipo === 'compra' ? '#16A34A' : '#1D4ED8', letterSpacing: '-0.02em' }}>
                   {operation.tipo === 'compra'
                     ? `S/${(operation.monto_soles ?? 0).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`
@@ -339,39 +343,39 @@ export default function OperacionDetallesPage() {
 
         {/* ── TRANSFER TO QORICASH ── */}
         {estado === 'pendiente' && qcAccount && (
-          <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(245,158,11,0.35)' }}>
-            <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'rgba(245,158,11,0.15)', borderBottom: '1px solid rgba(245,158,11,0.25)' }}>
+          <div className="rounded-2xl overflow-hidden" style={isEmpresa ? { background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(245,158,11,0.35)' } : { background: '#ffffff', border: '1px solid rgba(245,158,11,0.4)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'rgba(245,158,11,0.12)', borderBottom: '1px solid rgba(245,158,11,0.2)' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
               <span className="text-amber-300 text-[10px] font-bold uppercase tracking-widest">Acción requerida · Transfiere aquí</span>
             </div>
-            <div className="divide-y divide-white/10">
+            <div style={{ borderTop: `1px solid ${isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}` }}>
               {[
                 { label: 'Banco',    value: qcAccount.banco,   mono: false },
                 { label: 'Tipo',     value: qcAccount.tipo.replace('Cuenta Corriente ', 'Cta. Cte. '), mono: false },
                 { label: 'Titular',  value: qcAccount.titular, mono: false },
                 { label: 'RUC',      value: qcAccount.ruc,     mono: true  },
               ].map(({ label, value, mono }) => (
-                <div key={label} className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-white/55 text-xs">{label}</span>
-                  <span className={`text-white text-sm font-semibold ${mono ? 'font-mono' : ''}`}>{value}</span>
+                <div key={label} className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: `1px solid ${isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}` }}>
+                  <span className="text-xs" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>{label}</span>
+                  <span className={`text-sm font-semibold ${mono ? 'font-mono' : ''}`} style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{value}</span>
                 </div>
               ))}
               {!qcAccount.useCCI && qcAccount.numero && (
-                <div className="flex items-center justify-between px-4 py-2.5">
-                  <span className="text-white/55 text-xs">N° Cuenta</span>
+                <div className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: `1px solid ${isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}` }}>
+                  <span className="text-xs" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>N° Cuenta</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-white text-sm font-mono">{qcAccount.numero}</span>
-                    <button onClick={() => copyToClipboard(qcAccount.numero, 'numero')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'numero' ? 'bg-primary-400/20 text-primary-300' : 'bg-white/10 hover:bg-white/20 text-white/70'}`}>
+                    <span className="text-sm font-mono" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{qcAccount.numero}</span>
+                    <button onClick={() => copyToClipboard(qcAccount.numero, 'numero')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'numero' ? 'bg-primary-400/20 text-primary-300' : ''}`} style={copiedField === 'numero' ? {} : { background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>
                       {copiedField === 'numero' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
                     </button>
                   </div>
                 </div>
               )}
-              <div className="flex items-center justify-between px-4 py-2.5">
-                <span className="text-white/55 text-xs">CCI</span>
+              <div className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: `1px solid ${isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)'}` }}>
+                <span className="text-xs" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>CCI</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-white text-sm font-mono">{qcAccount.cci}</span>
-                  <button onClick={() => copyToClipboard(qcAccount.cci, 'cci')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'cci' ? 'bg-primary-400/20 text-primary-300' : 'bg-white/10 hover:bg-white/20 text-white/70'}`}>
+                  <span className="text-sm font-mono" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{qcAccount.cci}</span>
+                  <button onClick={() => copyToClipboard(qcAccount.cci, 'cci')} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition ${copiedField === 'cci' ? 'bg-primary-400/20 text-primary-300' : ''}`} style={copiedField === 'cci' ? {} : { background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)', color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>
                     {copiedField === 'cci' ? <><CheckCircle2 className="w-3 h-3" />Copiado</> : <><Copy className="w-3 h-3" />Copiar</>}
                   </button>
                 </div>
@@ -388,8 +392,8 @@ export default function OperacionDetallesPage() {
 
 
         {/* ── TIMELINE ── */}
-        <div className="rounded-2xl px-4 py-4" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-          <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mb-4">Estado de la operación</p>
+        <div className="rounded-2xl px-4 py-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+          <p className="text-[10px] uppercase tracking-widest font-bold mb-4" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>Estado de la operación</p>
           <div className="space-y-0">
             {timelineSteps.map((step, i) => (
               <div key={i} className="flex items-start gap-3 relative">
@@ -401,8 +405,8 @@ export default function OperacionDetallesPage() {
                   step.cancelled ? 'bg-red-500/80 shadow-md shadow-red-900/40'
                   : step.done   ? 'bg-primary-500 shadow-md shadow-primary-200'
                   : step.active ? 'bg-blue-500 ring-2 ring-blue-300/40'
-                  : 'bg-white/10 border border-white/20'
-                }`}>
+                  : ''
+                }`} style={(!step.cancelled && !step.done && !step.active) ? { background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)', border: `1px solid ${isEmpresa ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}` } : {}}>
                   {step.cancelled
                     ? <XCircle className="w-3 h-3 text-white" />
                     : step.done
@@ -412,8 +416,8 @@ export default function OperacionDetallesPage() {
                     : <div className="w-1.5 h-1.5 rounded-full bg-white/30" />}
                 </div>
                 <div className="pb-5 flex-1">
-                  <p className={`text-sm font-semibold leading-tight ${step.cancelled ? 'text-red-400' : step.done ? 'text-white' : step.active ? 'text-blue-300' : 'text-white/30'}`}>{step.label}</p>
-                  <p className="text-[11px] text-white/45 mt-0.5">{step.sub}</p>
+                  <p className={`text-sm font-semibold leading-tight ${step.cancelled ? 'text-red-400' : step.active ? 'text-blue-500' : ''}`} style={(!step.cancelled && !step.active) ? { color: step.done ? (isEmpresa ? '#ffffff' : '#0D1117') : (isEmpresa ? 'rgba(255,255,255,0.3)' : '#C4C9D4') } : {}}>{step.label}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.45)' : '#9CA3AF' }}>{step.sub}</p>
                 </div>
               </div>
             ))}
@@ -422,17 +426,17 @@ export default function OperacionDetallesPage() {
 
         {/* ── COMPROBANTE DE LA OPERACIÓN (sube el operador) ── */}
         {operation.comprobante_url && (
-          <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-            <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+          <div className="rounded-2xl overflow-hidden" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <div className="px-4 py-2.5 flex items-center justify-between" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' } : { background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
               <div className="flex items-center gap-2">
-                <Receipt className="w-3.5 h-3.5 text-white/50" />
-                <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest">Comprobante de la operación</span>
+                <Receipt className="w-3.5 h-3.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }} />
+                <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>Comprobante de la operación</span>
               </div>
-              <span className="text-[9px] text-white/40">Emitido por QoriCash</span>
+              <span className="text-[9px]" style={{ color: isEmpresa ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}>Emitido por QoriCash</span>
             </div>
             <div className="p-3 flex gap-3 items-start">
               {/* Miniatura */}
-              <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' } : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)' }}>
                 <img
                   src={operation.comprobante_url}
                   alt="Comprobante"
@@ -447,14 +451,14 @@ export default function OperacionDetallesPage() {
               {/* Info + botón */}
               <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
                 <div>
-                  <p className="text-sm font-semibold text-white leading-tight">Constancia de pago</p>
-                  <p className="text-[11px] text-white/50 mt-0.5">Transferencia realizada al cliente</p>
+                  <p className="text-sm font-semibold leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>Constancia de pago</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>Transferencia realizada al cliente</p>
                 </div>
                 <a
                   href={operation.comprobante_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start text-white/70 hover:text-white" style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)' }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start" style={isEmpresa ? { border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' } : { border: '1px solid rgba(0,0,0,0.1)', background: '#F8FAFC', color: '#6B7280' }}
                 >
                   <Download className="w-3 h-3" /> Ver / Descargar
                 </a>
@@ -466,16 +470,16 @@ export default function OperacionDetallesPage() {
         {/* ── COMPROBANTE DEL OPERADOR ── */}
         {Array.isArray(operation.operator_proofs) && operation.operator_proofs.map((proof, idx) =>
           proof.comprobante_url ? (
-            <div key={idx} className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+            <div key={idx} className="rounded-2xl overflow-hidden" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+              <div className="px-4 py-2.5 flex items-center justify-between" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' } : { background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <div className="flex items-center gap-2">
-                  <Receipt className="w-3.5 h-3.5 text-white/50" />
-                  <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest">Comprobante de acreditación</span>
+                  <Receipt className="w-3.5 h-3.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>Comprobante de acreditación</span>
                 </div>
-                <span className="text-[9px] text-white/40">Emitido por QoriCash</span>
+                <span className="text-[9px]" style={{ color: isEmpresa ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}>Emitido por QoriCash</span>
               </div>
               <div className="p-3 flex gap-3 items-start">
-                <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' } : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)' }}>
                   <img
                     src={proof.comprobante_url}
                     alt="Comprobante operador"
@@ -490,14 +494,14 @@ export default function OperacionDetallesPage() {
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
                   <div>
-                    <p className="text-sm font-semibold text-white leading-tight">Constancia de transferencia</p>
-                    <p className="text-[11px] text-white/50 mt-0.5">QoriCash transfirió a tu cuenta</p>
+                    <p className="text-sm font-semibold leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>Constancia de transferencia</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>QoriCash transfirió a tu cuenta</p>
                   </div>
                   <a
                     href={proof.comprobante_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start text-white/70 hover:text-white" style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)' }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start" style={isEmpresa ? { border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' } : { border: '1px solid rgba(0,0,0,0.1)', background: '#F8FAFC', color: '#6B7280' }}
                   >
                     <Download className="w-3 h-3" /> Ver / Descargar
                   </a>
@@ -510,11 +514,11 @@ export default function OperacionDetallesPage() {
         {/* ── BOLETA / FACTURA ELECTRÓNICA ── */}
         {Array.isArray(operation.invoices) && operation.invoices.map((inv, idx) =>
           inv.nubefact_enlace_pdf ? (
-            <div key={idx} className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+            <div key={idx} className="rounded-2xl overflow-hidden" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+              <div className="px-4 py-2.5 flex items-center justify-between" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.12)' } : { background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <div className="flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5 text-white/50" />
-                  <span className="text-white/80 text-[10px] font-bold uppercase tracking-widest">
+                  <FileText className="w-3.5 h-3.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>
                     {inv.invoice_type === '01' ? 'Factura electrónica' : 'Boleta electrónica'}
                   </span>
                 </div>
@@ -523,21 +527,21 @@ export default function OperacionDetallesPage() {
                 </span>
               </div>
               <div className="p-3 flex gap-3 items-start">
-                <div className="w-20 h-20 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
-                  <FileText className="w-7 h-7 text-white/30" />
+                <div className="w-20 h-20 rounded-xl flex items-center justify-center flex-shrink-0" style={isEmpresa ? { background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' } : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.08)' }}>
+                  <FileText className="w-7 h-7" style={{ color: isEmpresa ? 'rgba(255,255,255,0.3)' : '#C4C9D4' }} />
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-between h-20">
                   <div>
-                    <p className="text-sm font-semibold text-white leading-tight">
+                    <p className="text-sm font-semibold leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                       {inv.invoice_number || (inv.invoice_type === '01' ? 'Factura' : 'Boleta')}
                     </p>
-                    <p className="text-[11px] text-white/50 mt-0.5">Registrada ante SUNAT</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>Registrada ante SUNAT</p>
                   </div>
                   <a
                     href={inv.nubefact_enlace_pdf}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start text-white/70 hover:text-white" style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)' }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition self-start" style={isEmpresa ? { border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' } : { border: '1px solid rgba(0,0,0,0.1)', background: '#F8FAFC', color: '#6B7280' }}
                   >
                     <Download className="w-3 h-3" /> Ver PDF
                   </a>
@@ -549,9 +553,9 @@ export default function OperacionDetallesPage() {
 
         {/* ── NOTES ── */}
         {operation.notas && (
-          <div className="rounded-2xl px-4 py-3.5" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' }}>
-            <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mb-1.5">Notas del operador</p>
-            <p className="text-white/85 text-sm leading-relaxed">{operation.notas}</p>
+          <div className="rounded-2xl px-4 py-3.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.2)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+            <p className="text-[10px] uppercase tracking-widest font-bold mb-1.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}>Notas del operador</p>
+            <p className="text-sm leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.85)' : '#374151' }}>{operation.notas}</p>
           </div>
         )}
 
@@ -564,9 +568,9 @@ export default function OperacionDetallesPage() {
 
         {/* Error inline */}
         {error && (
-          <div className="rounded-xl px-4 py-3 flex items-center gap-2" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
-            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <p className="text-red-300 text-sm">{error}</p>
+          <div className="rounded-xl px-4 py-3 flex items-center gap-2" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}>
+            <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+            <p className="text-sm" style={{ color: isEmpresa ? '#f87171' : '#dc2626' }}>{error}</p>
           </div>
         )}
 

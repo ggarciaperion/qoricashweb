@@ -1245,19 +1245,19 @@ export function NuevaOperacionContent() {
                       else router.push('/dashboard');
                     }}
                     className="absolute left-0 inline-flex items-center transition text-sm"
-                    style={{ color: '#ffffff' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.65)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#ffffff')}
+                    style={{ color: isEmpresa ? '#ffffff' : '#6B7280' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = isEmpresa ? 'rgba(255,255,255,0.65)' : '#0D1117')}
+                    onMouseLeave={e => (e.currentTarget.style.color = isEmpresa ? '#ffffff' : '#6B7280')}
                   >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     <span className="font-medium">Volver</span>
                   </button>
                 )}
                 <div className="text-center">
-                  <h1 className="text-xl font-bold mb-1" style={{ color: '#ffffff' }}>
+                  <h1 className="text-xl font-bold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                     {currentStep === 1 ? 'Nueva Operación' : currentStep === 2 ? 'Selección de cuentas' : currentStep === 3 ? 'Transfiere el dinero' : 'Operación en proceso'}
                   </h1>
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                  <p className="text-xs" style={{ color: isEmpresa ? 'rgba(255,255,255,0.65)' : '#6B7280' }}>
                     {currentStep === 1
                       ? 'Cotiza tu tipo de cambio'
                       : currentStep === 2
@@ -1325,24 +1325,24 @@ export function NuevaOperacionContent() {
 
                 {/* Panel derecho informativo */}
                 <div className="hidden lg:flex flex-col gap-3 w-[220px] flex-shrink-0 order-2">
-                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#1E293B' }}>
+                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#FFFBEB', border: '1px solid rgba(234,179,8,0.35)' }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(234,179,8,0.15)' }}>
-                        <Clock className="w-3.5 h-3.5 text-yellow-400" />
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(234,179,8,0.15)' : 'rgba(234,179,8,0.2)' }}>
+                        <Clock className="w-3.5 h-3.5" style={{ color: isEmpresa ? '#FBBF24' : '#D97706' }} />
                       </div>
-                      <p className="text-xs font-bold text-white">¡No te demores!</p>
+                      <p className="text-xs font-bold" style={{ color: isEmpresa ? '#ffffff' : '#92400E' }}>¡No te demores!</p>
                     </div>
-                    <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                      Tienes <span className="text-yellow-400 font-bold">15 minutos</span> para completar tu transferencia. Si el tiempo vence, la operación se anulará automáticamente y deberás iniciar una nueva.
+                    <p className="text-xs leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.55)' : '#78350F' }}>
+                      Tienes <span className="font-bold" style={{ color: isEmpresa ? '#FBBF24' : '#D97706' }}>15 minutos</span> para completar tu transferencia. Si el tiempo vence, la operación se anulará automáticamente y deberás iniciar una nueva.
                     </p>
                   </div>
 
-                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)' }}>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(34,197,94,0.2)' }}>
                         <CheckCircle className="w-3.5 h-3.5" style={{ color: isEmpresa ? '#8fb8cc' : '#22C55E' }} />
                       </div>
-                      <p className="text-xs font-bold text-white">Pasos a seguir</p>
+                      <p className="text-xs font-bold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>Pasos a seguir</p>
                     </div>
                     <ol className="space-y-2">
                       {[
@@ -1352,14 +1352,14 @@ export function NuevaOperacionContent() {
                       ].map((step, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] font-bold text-white" style={{ background: isEmpresa ? '#4A6884' : '#22C55E' }}>{i + 1}</span>
-                          <p className="text-[11px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{step}</p>
+                          <p className="text-[11px] leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>{step}</p>
                         </li>
                       ))}
                     </ol>
                   </div>
 
-                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.45)' }}>¿Necesitas ayuda?</p>
+                  <div className="rounded-2xl p-4" style={isEmpresa ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.12)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>¿Necesitas ayuda?</p>
                     <a
                       href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda%20con%20mi%20operación"
                       target="_blank"
@@ -1456,35 +1456,35 @@ export function NuevaOperacionContent() {
 
                           {/* Datos de la cuenta */}
                           {qoricashAccount ? (
-                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                            <div className="px-4 py-3 space-y-2.5" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: '#F8FAFC' }}>
 
                               {/* Banco */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>Banco</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>Banco</span>
                                 {qcLogo && <img src={qcLogo} alt={qoricashAccount.banco} className="w-10 h-10 object-contain rounded-lg" />}
                               </div>
 
-                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.08)' }} />
+                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.06)' }} />
 
                               {/* Titular */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>Titular</span>
-                                <span className="text-sm font-semibold text-right max-w-[200px]" style={{ color: '#ffffff' }}>{qoricashAccount.titular}</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>Titular</span>
+                                <span className="text-sm font-semibold text-right max-w-[200px]" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{qoricashAccount.titular}</span>
                               </div>
 
                               {/* RUC */}
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>RUC</span>
-                                <span className="text-sm font-semibold" style={{ color: '#ffffff' }}>{qoricashAccount.ruc}</span>
+                                <span className="text-xs font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>RUC</span>
+                                <span className="text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{qoricashAccount.ruc}</span>
                               </div>
 
-                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.08)' }} />
+                              <div className="border-t" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.06)' }} />
 
                               {/* Número de cuenta con botón copiar grande */}
                               <div>
-                                <p className="text-xs font-medium uppercase tracking-wide mb-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}>{qoricashAccount.useCCI ? 'CCI' : 'N° de Cuenta'}</p>
-                                <div className="flex items-center gap-2 p-3 rounded-xl" style={isEmpresa ? { background: 'rgba(143,184,204,0.06)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.18)' }}>
-                                  <span className="flex-1 text-base font-bold tracking-wider select-all" style={{ color: '#ffffff' }}>{accountNumber}</span>
+                                <p className="text-xs font-medium uppercase tracking-wide mb-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>{qoricashAccount.useCCI ? 'CCI' : 'N° de Cuenta'}</p>
+                                <div className="flex items-center gap-2 p-3 rounded-xl" style={isEmpresa ? { background: 'rgba(143,184,204,0.06)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#F1F5F9', border: '1px solid rgba(0,0,0,0.1)' }}>
+                                  <span className="flex-1 text-base font-bold tracking-wider select-all" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{accountNumber}</span>
                                   <button
                                     type="button"
                                     onClick={() => copyToClipboard(accountNumber, 'account')}
@@ -1500,41 +1500,41 @@ export function NuevaOperacionContent() {
                               </div>
 
                               {/* Monto exacto a transferir */}
-                              <div className="rounded-xl px-3 py-2.5" style={isEmpresa ? { background: 'rgba(74,104,132,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)' }}>
-                                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>Monto exacto a transferir</p>
-                                <p className="text-xl font-bold mt-0.5" style={{ color: isEmpresa ? '#8fb8cc' : '#4ade80' }}>{montoEnviar}</p>
+                              <div className="rounded-xl px-3 py-2.5" style={isEmpresa ? { background: 'rgba(74,104,132,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)' }}>
+                                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#16A34A' }}>Monto exacto a transferir</p>
+                                <p className="text-xl font-bold mt-0.5" style={{ color: isEmpresa ? '#8fb8cc' : '#15803D' }}>{montoEnviar}</p>
                               </div>
 
                             </div>
                           ) : (
-                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                            <div className="px-4 py-4 text-center" style={isEmpresa ? { background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' } : { background: '#F8FAFC' }}>
                               <p className="text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>No se pudo determinar la cuenta de destino. Contacta a soporte.</p>
                             </div>
                           )}
                         </div>
 
-                        {/* ── Resumen del flujo — glass ── */}
+                        {/* ── Resumen del flujo ── */}
                         <div className="rounded-2xl p-3" style={isEmpresa
                           ? { background: 'linear-gradient(135deg, rgba(74,104,132,0.22) 0%, rgba(13,27,42,0.28) 100%)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(143,184,204,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.18)' }
-                          : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                          : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                           <div className="flex items-stretch gap-2">
 
                             {/* Tarjeta Origen */}
                             <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
                               ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
-                              : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(255,255,255,0.45)' }}>Transfieres desde</p>
+                              : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : '#9CA3AF' }}>Transfieres desde</p>
                               <div className="flex items-center gap-2 mb-1.5">
                                 {srcLogo
-                                  ? <img src={srcLogo} alt={srcBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)', padding: 3 }} />
-                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                  ? <img src={srcLogo} alt={srcBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
                                 }
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: '#ffffff' }}>{srcBank || '—'}</p>
-                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>{srcAcc || '—'}</p>
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{srcBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9CA3AF' }}>{srcAcc || '—'}</p>
                                 </div>
                               </div>
-                              <p className="text-sm font-extrabold" style={{ color: '#ffffff' }}>{montoEnviar}</p>
+                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{montoEnviar}</p>
                             </div>
 
                             {/* Flecha central */}
@@ -1549,19 +1549,19 @@ export function NuevaOperacionContent() {
                             {/* Tarjeta Destino */}
                             <div className="flex-1 min-w-0 rounded-xl px-3 py-2.5" style={isEmpresa
                               ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' }
-                              : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(255,255,255,0.45)' }}>Recibirás en</p>
+                              : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)' }}>
+                              <p className="text-[8px] font-bold uppercase tracking-widest mb-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : '#9CA3AF' }}>Recibirás en</p>
                               <div className="flex items-center gap-2 mb-1.5">
                                 {dstLogo
-                                  ? <img src={dstLogo} alt={dstBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)', padding: 3 }} />
-                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
+                                  ? <img src={dstLogo} alt={dstBank} className="w-7 h-7 object-contain rounded-lg flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)', padding: 3 }} />
+                                  : <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)' }}><Building2 size={14} color={isEmpresa ? '#8fb8cc' : '#94a3b8'} /></div>
                                 }
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: '#ffffff' }}>{dstBank || '—'}</p>
-                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>{dstAcc || '—'}</p>
+                                  <p className="text-[11px] font-bold leading-tight truncate" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{dstBank || '—'}</p>
+                                  <p className="text-[10px] font-mono truncate" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9CA3AF' }}>{dstAcc || '—'}</p>
                                 </div>
                               </div>
-                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#8fb8cc' : '#4ade80' }}>{montoRecibir}</p>
+                              <p className="text-sm font-extrabold" style={{ color: isEmpresa ? '#8fb8cc' : '#16A34A' }}>{montoRecibir}</p>
                             </div>
 
                           </div>
@@ -1855,30 +1855,34 @@ export function NuevaOperacionContent() {
                   {/* KYC pendiente: reemplaza la calculadora (no renderizar ambas juntas) */}
                   {kycNeedsDocs && !kycBlocked ? (
                     <div className="w-full max-w-[400px] mx-auto">
-                      <div className="rounded-2xl overflow-hidden" style={{
+                      <div className="rounded-2xl overflow-hidden" style={isEmpresa ? {
                         background: 'rgba(255,255,255,0.10)',
                         backdropFilter: 'blur(20px)',
                         WebkitBackdropFilter: 'blur(20px)',
                         border: '1px solid rgba(255,255,255,0.18)',
                         boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+                      } : {
+                        background: '#ffffff',
+                        border: '1px solid rgba(0,0,0,0.08)',
+                        boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
                       }}>
                         {/* Header */}
-                        <div className="flex items-center gap-3 px-5 py-4" style={{ background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                        <div className="flex items-center gap-3 px-5 py-4" style={isEmpresa ? { background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.1)' } : { background: '#FFFBEB', borderBottom: '1px solid rgba(234,179,8,0.25)' }}>
                           <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.18)', border: '1.5px solid rgba(251,191,36,0.4)' }}>
                             <AlertCircle className="w-5 h-5" style={{ color: '#fbbf24' }} />
                           </div>
                           <div>
-                            <p className="text-sm font-black text-white leading-tight">Validación requerida para operar</p>
-                            <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                            <p className="text-sm font-black leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#92400E' }}>Validación requerida para operar</p>
+                            <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#78350F' }}>
                               Proceso único · aprox. 10 minutos
                             </p>
                           </div>
                         </div>
                         {/* Body */}
                         <div className="px-5 py-5">
-                          <p className="text-xs leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                          <p className="text-xs leading-relaxed mb-5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#374151' }}>
                             Para realizar operaciones en nuestra plataforma necesitas validar tu identidad.
-                            Sube tu <b style={{ color: '#ffffff' }}>{isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'}</b> y en menos de 10 minutos podrás operar.
+                            Sube tu <b style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'}</b> y en menos de 10 minutos podrás operar.
                           </p>
                           {/* Pasos */}
                           <div className="space-y-2.5 mb-5">
@@ -1886,11 +1890,11 @@ export function NuevaOperacionContent() {
                               ? [{ icon: '📄', text: 'Ficha RUC de tu empresa' }]
                               : [{ icon: '🪪', text: 'Foto del DNI — parte delantera' }, { icon: '🪪', text: 'Foto del DNI — parte trasera' }]
                             ).map((item, idx) => (
-                              <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                              <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={isEmpresa ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' } : { background: '#F9FAFB', border: '1px solid rgba(0,0,0,0.06)' }}>
                                 <span className="text-base">{item.icon}</span>
-                                <span className="text-xs text-white font-medium">{item.text}</span>
-                                <div className="ml-auto w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                                  <div className="w-2 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.3)' }} />
+                                <span className="text-xs font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{item.text}</span>
+                                <div className="ml-auto w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)' }}>
+                                  <div className="w-2 h-2 rounded-full" style={{ background: isEmpresa ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} />
                                 </div>
                               </div>
                             ))}
@@ -2004,9 +2008,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de cargo */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: '#ffffff' }}>
+                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                         1. Su cuenta de origen
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.7)' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>
                           (desde donde usted paga)
                         </span>
                       </label>
@@ -2017,7 +2021,9 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={{ color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
+                        style={isEmpresa
+                          ? { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }
+                          : { color: '#16a34a', border: '1px solid rgba(22,163,74,0.35)', background: 'rgba(22,163,74,0.06)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -2031,7 +2037,7 @@ export function NuevaOperacionContent() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
                         style={isEmpresa
                           ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '2px solid rgba(255,255,255,0.3)' }}
+                          : { minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
                       >
                         {selectedOriginAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedOriginAccount);
@@ -2046,8 +2052,8 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#ffffff' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(255,255,255,0.15)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#ffffff' : '#374151' }}>{moneda}</span>
                             </>
                           );
                         })() : (
@@ -2063,7 +2069,7 @@ export function NuevaOperacionContent() {
                       {originDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setOriginDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.25)' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
                           {getOriginAccounts().length === 0 ? (
                             <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getOriginAccounts().map((account) => {
@@ -2119,9 +2125,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de destino */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: '#ffffff' }}>
+                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                         2. Su cuenta de destino
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.7)' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>
                           (donde usted recibe)
                         </span>
                       </label>
@@ -2132,7 +2138,9 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={{ color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }}
+                        style={isEmpresa
+                          ? { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }
+                          : { color: '#16a34a', border: '1px solid rgba(22,163,74,0.35)', background: 'rgba(22,163,74,0.06)' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -2146,7 +2154,7 @@ export function NuevaOperacionContent() {
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
                         style={isEmpresa
                           ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '2px solid rgba(255,255,255,0.3)' }}
+                          : { minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
                       >
                         {selectedDestinationAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedDestinationAccount);
@@ -2161,8 +2169,8 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#ffffff' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(255,255,255,0.15)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#ffffff' : '#374151' }}>{moneda}</span>
                             </>
                           );
                         })() : (
@@ -2178,7 +2186,7 @@ export function NuevaOperacionContent() {
                       {destDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setDestDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.25)' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
                           {getDestinationAccounts().length === 0 ? (
                             <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getDestinationAccounts().map((account) => {
@@ -2652,10 +2660,10 @@ export function NuevaOperacionContent() {
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: isEmpresa ? 'rgba(4,10,20,0.7)' : 'rgba(13,27,42,0.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
           <div className="rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420, ...(isEmpresa
             ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.6) 0%, rgba(26,51,83,0.55) 100%)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(143,184,204,0.22)', boxShadow: '0 32px 64px rgba(0,0,0,0.45)' }
-            : { background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }) }}>
+            : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }) }}>
 
             {/* Header institucional */}
-            <div className="px-5 py-4 flex items-center justify-between rounded-t-2xl" style={{ background: isEmpresa ? 'rgba(74,104,132,0.4)' : '#1E293B' }}>
+            <div className="px-5 py-4 flex items-center justify-between rounded-t-2xl" style={{ background: isEmpresa ? 'rgba(74,104,132,0.4)' : '#16a34a' }}>
               <div className="flex items-center gap-2.5">
                 <img src="/logo-principal.png" alt="QoriCash" className="w-6 h-6 object-contain flex-shrink-0" />
                 <div>

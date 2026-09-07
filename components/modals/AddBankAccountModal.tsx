@@ -52,9 +52,9 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
   const { user } = useAuthStore();
   const isEmpresa = user?.document_type === 'RUC';
 
-  const e_label  = isEmpresa ? { color: '#ffffff', fontWeight: 700 } : { color: '#ffffff' };
-  const e_input  = isEmpresa ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : {};
-  const e_select = isEmpresa ? { background: 'rgba(13,27,42,0.7)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : {};
+  const e_label  = isEmpresa ? { color: '#ffffff', fontWeight: 700 } : { color: '#374151', fontWeight: 600 };
+  const e_input  = isEmpresa ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : { background: '#ffffff', border: '1px solid #E5E7EB', color: '#0D1117', borderRadius: 8 };
+  const e_select = isEmpresa ? { background: 'rgba(13,27,42,0.7)', border: '1px solid rgba(143,184,204,0.25)', color: '#ffffff', borderRadius: 8 } : { background: '#ffffff', border: '1px solid #E5E7EB', color: '#0D1117', borderRadius: 8 };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -257,14 +257,16 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-3">
         <div className="relative rounded-xl shadow-xl max-w-sm w-full max-h-[92vh] overflow-y-auto"
-          style={{
-            background: isEmpresa
-              ? 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)'
-              : 'rgba(255,255,255,0.14)',
+          style={isEmpresa ? {
+            background: 'linear-gradient(135deg, rgba(13,27,42,0.45) 0%, rgba(26,51,83,0.45) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(255,255,255,0.25)',
-            boxShadow: isEmpresa ? undefined : '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)',
+            border: '1px solid rgba(143,184,204,0.15)',
+            ...(overlayPhase !== 'idle' ? { height: 300, overflow: 'hidden' } : {}),
+          } : {
+            background: '#ffffff',
+            border: '1px solid rgba(0,0,0,0.08)',
+            boxShadow: '0 16px 48px rgba(0,0,0,0.14)',
             ...(overlayPhase !== 'idle' ? { height: 300, overflow: 'hidden' } : {}),
           }}
         >
@@ -433,7 +435,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                       className="w-4 h-4"
                       disabled={isSubmitting}
                     />
-                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>Lima</span>
+                    <span className="text-sm" style={{ color: isEmpresa ? 'rgba(255,255,255,0.9)' : '#374151' }}>Lima</span>
                   </label>
                   <label className="flex items-center cursor-pointer gap-1.5">
                     <input
@@ -443,7 +445,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                       className="w-4 h-4"
                       disabled={isSubmitting}
                     />
-                    <span className="text-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>Provincia</span>
+                    <span className="text-sm" style={{ color: isEmpresa ? 'rgba(255,255,255,0.9)' : '#374151' }}>Provincia</span>
                   </label>
                 </div>
                 {errors.origen && (
@@ -465,7 +467,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                   Banco
                 </label>
                 {!selectedOrigen ? (
-                  <p className="text-xs italic py-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Primero selecciona el origen</p>
+                  <p className="text-xs italic py-1" style={{ color: isEmpresa ? 'rgba(255,255,255,0.6)' : '#9CA3AF' }}>Primero selecciona el origen</p>
                 ) : (
                   <div className="space-y-2">
                     <div className="grid grid-cols-4 gap-2">

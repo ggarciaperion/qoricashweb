@@ -211,13 +211,15 @@ export default function Home() {
     )}
 
     <main className="min-h-screen">
-      {/* ══ FONDO FIJO — personas page (mismo patrón que video empresa) ══ */}
-      {!isEmpresaPage && (
+      {/* ══ FONDO FIJO ══ */}
+      {isEmpresaPage ? (
         <BgImage src="/ty.webp" fixed color="#0A1628" bgPosition="25% center" zIndex={-1} />
+      ) : (
+        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F5F7FA' }} />
       )}
 
       {/* ══ NAVBAR ══ */}
-      <header className="relative w-full z-50" style={{ background: 'transparent', borderBottom: 'none' }}>
+      <header className="relative w-full z-50" style={isEmpresaPage ? { background: 'transparent', borderBottom: 'none' } : { background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <div className="flex items-center gap-3 sm:gap-4">
@@ -246,7 +248,7 @@ export default function Home() {
             <div className="hidden lg:flex items-center space-x-8">
               {[
               ].map(({ href, label, isLink }) => {
-                const cls = 'relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1';
+                const cls = `relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`;
                 const inner = (
                   <>
                     {label}
@@ -276,7 +278,7 @@ export default function Home() {
                         }
                         setIsUserMenuOpen(!isUserMenuOpen);
                       }}
-                      className="relative flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
+                      className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'}`}
                     >
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-black shrink-0"
                         style={{ background: isEmpresaPage ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
@@ -297,7 +299,7 @@ export default function Home() {
                   {!isAuthenticated && (
                     <>
                       <button
-                        className="relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1"
+                        className={`relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
                         onClick={() => {
                           const href = isEmpresaPage ? '/' : '/empresa';
                           if ('startViewTransition' in document) {
@@ -310,14 +312,14 @@ export default function Home() {
                         {isEmpresaPage ? 'Personas' : 'Empresas'}
                         <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                       </button>
-                      <span className="h-4 w-px bg-white/30" aria-hidden="true" />
+                      <span className="h-4 w-px" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
                     </>
                   )}
-                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="relative text-sm font-medium text-white/80 hover:text-white transition-colors duration-200 group py-1">
+                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className={`relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
                     Iniciar Sesión
                     <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#ffffff', color: 'var(--color-primary-600)' }}>
+                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#0D1117', color: '#ffffff' }}>
                     Regístrate
                   </Link>
                 </>
@@ -328,7 +330,7 @@ export default function Home() {
               {!isAuthenticated && (
                 <>
                   <button
-                    className="text-sm font-medium text-white/70 hover:text-white transition-colors px-2"
+                    className={`text-sm font-medium transition-colors px-2 ${isEmpresaPage ? 'text-white/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
                     onClick={() => {
                       const href = isEmpresaPage ? '/' : '/empresa';
                       if ('startViewTransition' in document) {
@@ -340,7 +342,7 @@ export default function Home() {
                   >
                     {isEmpresaPage ? 'Personas' : 'Empresas'}
                   </button>
-                  <span className="h-4 w-px" style={{ background: 'rgba(255,255,255,0.3)' }} aria-hidden="true" />
+                  <span className="h-4 w-px" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
                 </>
               )}
               {isAuthenticated && user && (
@@ -349,7 +351,7 @@ export default function Home() {
                   {((user.razon_social || user.nombres) ?? '?').charAt(0).toUpperCase()}
                 </div>
               )}
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-white hover:text-white/70 transition" aria-label="Toggle mobile menu">
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`p-2 transition ${isEmpresaPage ? 'text-white hover:text-white/70' : 'text-gray-700 hover:text-gray-900'}`} aria-label="Toggle mobile menu">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -372,37 +374,36 @@ export default function Home() {
           top: '74px',
           maxHeight: isMobileMenuOpen ? '70vh' : '0px',
           transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
-          background: 'rgba(255,255,255,0.22)',
-          backdropFilter: 'blur(28px)',
-          WebkitBackdropFilter: 'blur(28px)',
-          border: '1px solid rgba(255,255,255,0.35)',
+          ...(isEmpresaPage
+            ? { background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', border: '1px solid rgba(255,255,255,0.35)' }
+            : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)' }),
           boxShadow: '0 20px 48px rgba(0,0,0,0.18)',
         }}
       >
         <div className="px-4 pt-4 pb-5 overflow-y-auto" style={{ maxHeight: '70vh' }}>
 
           {/* Separador y acciones de cuenta */}
-          <div style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)' }}>
             {isAuthenticated ? (
               <>
-                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.4)' }}>Mi Cuenta</p>
+                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>Mi Cuenta</p>
                 <div className="space-y-0.5">
-                  <Link href="/dashboard?perfil=1" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                  <Link href="/dashboard?perfil=1" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
                     <span className="font-medium flex-1 text-sm">Mi perfil</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                  <Link href="/dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
                     <span className="font-medium flex-1 text-sm">Mi Dashboard</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(34,197,94,0.12)' }}><HelpCircle className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#22c55e' }} /></div>
                     <span className="font-medium flex-1 text-sm">Ayuda</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/8" style={{ color: '#ef4444' }}>
+                  <button onClick={handleLogout} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-red-50'}`} style={{ color: '#ef4444' }}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.1)' }}><LogOut className="w-4 h-4 text-red-500" /></div>
                     <span className="font-medium text-sm">Cerrar Sesión</span>
                   </button>
@@ -410,8 +411,8 @@ export default function Home() {
               </>
             ) : (
               <div className="space-y-2 pt-4">
-                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-white/8" style={{ color: 'rgba(255,255,255,0.85)' }} onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.1)' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : 'rgba(255,255,255,0.7)' }} /></div>
+                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
                   <span className="font-medium flex-1 text-sm">Iniciar Sesión</span>
                   <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                 </Link>
@@ -505,7 +506,7 @@ export default function Home() {
 
           {/* H1 personas — entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
-            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#FFFFFF' }}>
+            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
               <span className="block text-primary" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>que siempre</span>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
@@ -525,13 +526,13 @@ export default function Home() {
             <div className="order-2 sm:order-1">
               {/* Pill label */}
               <div className="flex justify-center sm:justify-start mb-4 sm:mb-7">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={isEmpresaPage ? { borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' } : { borderColor: 'rgba(0,0,0,0.12)', color: '#6B7280' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                   Fintech de cambio de divisas · Perú
                 </span>
               </div>
 
-              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: '#FFFFFF' }}>
+              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: isEmpresaPage ? '#FFFFFF' : '#0D1117' }}>
                 {isEmpresaPage ? (
                   <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
                 ) : (
@@ -543,7 +544,7 @@ export default function Home() {
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#6B7280' }}>
                 {isEmpresaPage
                   ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
                   : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
@@ -575,7 +576,7 @@ export default function Home() {
                 )}
               </div>
 
-<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>
+<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>
                 {isEmpresaPage ? (
                   <>
                     <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Rentabilidad</span>
@@ -720,7 +721,7 @@ export default function Home() {
 
           {/* Encabezado */}
           <div className="mb-7 text-center">
-            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#ffffff', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
+            <h2 className="font-display font-black leading-[1.05]" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
               Operamos con los bancos <span className={isEmpresaPage ? '' : 'text-primary'} style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : {}}>principales del Peru</span>
             </h2>
           </div>
@@ -730,7 +731,7 @@ export default function Home() {
 
           {/* Grupo 1 — Card unificada BCP + Interbank + BanBif */}
           <div className="flex-[3]">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>
               Transferencias inmediatas a todo el Perú
             </p>
 
@@ -741,11 +742,9 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : 'rgba(255,255,255,0.18)'}`,
-                    background: hovered ? 'rgba(255,255,255,0.08)' : 'transparent',
-                    backdropFilter: 'blur(14px)',
-                    WebkitBackdropFilter: 'blur(14px)',
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.12)' : 'none',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : (isEmpresaPage ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)')}`,
+                    background: hovered ? (isEmpresaPage ? 'rgba(255,255,255,0.08)' : 'rgba(34,197,94,0.04)') : (isEmpresaPage ? 'transparent' : '#ffffff'),
+                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.12)' : (isEmpresaPage ? 'none' : '0 2px 8px rgba(0,0,0,0.04)'),
                     minHeight: '110px',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
                   }}
@@ -790,7 +789,7 @@ export default function Home() {
 
           {/* Grupo 2 — Interbancaria solo Lima */}
           <div className="flex-[1] flex flex-col">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>
               Interbancaria solo Lima
             </p>
 
@@ -802,10 +801,8 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.18)'}`,
-                    background: hovered ? 'rgba(255,255,255,0.08)' : 'transparent',
-                    backdropFilter: 'blur(14px)',
-                    WebkitBackdropFilter: 'blur(14px)',
+                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : (isEmpresaPage ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)')}`,
+                    background: hovered ? (isEmpresaPage ? 'rgba(255,255,255,0.08)' : 'rgba(34,197,94,0.04)') : (isEmpresaPage ? 'transparent' : '#ffffff'),
                     minHeight: '110px',
                     transitionDelay: isBanksSectionVisible ? '0ms' : '360ms',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0px)',
@@ -877,7 +874,7 @@ export default function Home() {
               { icon: Lock,         label: 'SSL cifrado' },
               { icon: Shield,       label: 'Datos protegidos por ley' },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.6)' : '#6B7280' }}>
                 <Icon className="w-3.5 h-3.5 text-primary" />{label}
               </span>
             ))}
@@ -894,7 +891,7 @@ export default function Home() {
             {/* LEFT — headline + 3 stats inline */}
             <div className="reveal-left flex flex-col justify-between">
               <div>
-                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#ffffff' }}>
+                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#0D1117' }}>
                   Cada sol importa.<br />
                   <span className="text-primary">No lo pierdas</span> en el banco.
                 </h2>
@@ -904,7 +901,7 @@ export default function Home() {
               </div>
 
               {/* 3 stats compactos */}
-              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
+              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(13,27,42,0.08)' }}>
                 {[
                   { value: 80, prefix: 'S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco', speedClock: false },
                   { value: 10, prefix: '',   suffix: 'min', label: 'tiempo aprox.',        sub: 'por operación', speedClock: true },
@@ -926,8 +923,8 @@ export default function Home() {
                         <span className="text-sm font-bold text-primary ml-0.5">{suffix}</span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-semibold leading-tight text-white">{label}</div>
-                    <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>{sub}</div>
+                    <div className="text-[11px] font-semibold leading-tight" style={{ color: '#0D1117' }}>{label}</div>
+                    <div className="text-[10px]" style={{ color: '#9CA3AF' }}>{sub}</div>
                   </div>
                 ))}
               </div>
@@ -938,12 +935,12 @@ export default function Home() {
             <div className="reveal-right flex flex-col h-full">
 
               {/* Tabla */}
-              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
 
                 {/* Encabezado único */}
-                <div className="flex items-center px-4 py-3" style={{ background: 'rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="flex items-center px-4 py-3" style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                   <div className="flex-1 flex items-center gap-2">
-                    <span className="text-xs font-bold text-white tracking-tight">Tipo de cambio hoy</span>
+                    <span className="text-xs font-bold tracking-tight" style={{ color: '#0D1117' }}>Tipo de cambio hoy</span>
                     <span className="flex items-center gap-1 text-[9px] font-bold" style={{ color: '#4ade80' }}>
                       <span className="relative flex w-1.5 h-1.5">
                         <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: '#4ade80', opacity: 0.6 }} />
@@ -953,8 +950,8 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex gap-1">
-                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Compra</span>
-                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Venta</span>
+                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Compra</span>
+                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Venta</span>
                   </div>
                 </div>
 
@@ -970,7 +967,7 @@ export default function Home() {
                     }}>
                       <div className="flex items-center gap-2.5 flex-1">
                         <img src="/logo-principal.png" alt="QoriCash" className="h-5 w-auto object-contain flex-shrink-0" />
-                        <span className="text-sm font-black" style={{ color: '#ffffff' }}>QoriCash</span>
+                        <span className="text-sm font-black" style={{ color: '#0D1117' }}>QoriCash</span>
                         <span className="text-[8px] font-black uppercase tracking-wider bg-primary text-white px-1.5 py-0.5 rounded-full">Mejor</span>
                       </div>
                       <div className="flex gap-1">
@@ -997,14 +994,14 @@ export default function Home() {
                       const compra = (base_c + dc).toFixed(3);
                       const venta  = (base_v + dv).toFixed(3);
                       return (
-                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
+                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none' }}>
                           <div className="flex items-center gap-2.5 flex-1">
-                            <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0 opacity-70" />
-                            <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>{name}</span>
+                            <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0" />
+                            <span className="text-sm font-medium" style={{ color: '#6B7280' }}>{name}</span>
                           </div>
                           <div className="flex gap-1">
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{compra}</span>
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: 'rgba(255,255,255,0.7)' }}>{venta}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: '#374151' }}>{compra}</span>
+                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: '#374151' }}>{venta}</span>
                           </div>
                         </div>
                       );
@@ -1014,7 +1011,7 @@ export default function Home() {
                 })()}
               </div>
 
-              <p className="text-[10px] mt-2 text-right" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <p className="text-[10px] mt-2 text-right" style={{ color: '#9CA3AF' }}>
                 *Tasas bancarias referenciales.
               </p>
             </div>
@@ -1225,10 +1222,10 @@ export default function Home() {
       <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.65)' }}>
+            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#6B7280' }}>
               Simple como siempre debió ser
             </span>
-            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#ffffff' }}>3 pasos. Menos de 15 minutos.</h2>
+            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#0D1117' }}>3 pasos. Menos de 15 minutos.</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
@@ -1292,7 +1289,7 @@ export default function Home() {
               </div>
 
               {/* Text body */}
-              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
@@ -1401,7 +1398,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
@@ -1459,7 +1456,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: 'rgba(255,255,255,0.75)' }}>
+              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
                 <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
@@ -1589,28 +1586,28 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer className="text-gray-400">
-        <div className="border-b border-white/5 py-3 px-4 sm:px-8 lg:px-10">
+      <footer style={{ color: isEmpresaPage ? '#9CA3AF' : '#6B7280' }}>
+        <div className="py-3 px-4 sm:px-8 lg:px-10" style={{ borderBottom: isEmpresaPage ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.06)' }}>
           <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={isEmpresaPage ? { background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                 <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>Empresa Registrada</div>
-                  <div className="text-[9px] sm:text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>RUC: 20615113698 · Lima, Perú</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.9)' : '#0D1117' }}>Empresa Registrada</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.5)' : '#6B7280' }}>RUC: 20615113698 · Lima, Perú</div>
                 </div>
               </div>
-              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' }}>
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={isEmpresaPage ? { background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: 'rgba(255,255,255,0.9)' }}>Registrados ante la SBS</div>
-                  <div className="text-[9px] sm:text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Res. N° 00313-2026</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.9)' : '#0D1117' }}>Registrados ante la SBS</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.5)' : '#6B7280' }}>Res. N° 00313-2026</div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[11px] text-white">
-              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3 text-white" /> SSL cifrado</span>
-              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-white" /> Datos protegidos por ley</span>
+            <div className="flex items-center gap-5 text-[11px]" style={{ color: isEmpresaPage ? '#ffffff' : '#374151' }}>
+              <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
+              <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
             </div>
           </div>
         </div>
@@ -1636,55 +1633,55 @@ export default function Home() {
                 ) : (
                   <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
                 )}
-                <span className="text-xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#ffffff' }}>QoriCash</span>
+                <span className="text-xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#0D1117' }}>QoriCash</span>
               </Link>
-              <span className="hidden sm:block w-px h-6 bg-white/10" />
-              <p className="hidden sm:block text-xs leading-relaxed" style={{ color: isEmpresaPage ? '#6b7280' : '#ffffff' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+              <span className="hidden sm:block w-px h-6" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }} />
+              <p className="hidden sm:block text-xs leading-relaxed" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>
-            <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: isEmpresaPage ? '#6b7280' : '#ffffff' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+            <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
 
             {/* Fila 2 — Links en 3 columnas */}
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
 
               {/* Servicios */}
               <div>
-                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Servicios</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Servicios</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/servicios#compra" className="hover:text-white transition-colors text-[11px] sm:text-xs">Compra USD</Link></li>
-                  <li><Link href="/servicios#venta" className="hover:text-white transition-colors text-[11px] sm:text-xs">Venta USD</Link></li>
-                  <li><Link href="/servicios#tipo-cambio" className="hover:text-white transition-colors text-[11px] sm:text-xs">Tipo de cambio</Link></li>
-                  <li><Link href="/noticias" className="hover:text-white transition-colors text-[11px] sm:text-xs">Noticias</Link></li>
-                  <li><Link href="/preguntas-frecuentes" className="hover:text-white transition-colors text-[11px] sm:text-xs">FAQ</Link></li>
+                  <li><Link href="/servicios#compra" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Compra USD</Link></li>
+                  <li><Link href="/servicios#venta" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Venta USD</Link></li>
+                  <li><Link href="/servicios#tipo-cambio" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Tipo de cambio</Link></li>
+                  <li><Link href="/noticias" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Noticias</Link></li>
+                  <li><Link href="/preguntas-frecuentes" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>FAQ</Link></li>
                 </ul>
               </div>
 
               {/* Legal */}
               <div>
-                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Legal</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Legal</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/sobre-nosotros" className="hover:text-white transition-colors text-[11px] sm:text-xs">Nosotros</Link></li>
-                  <li><Link href="/terminos-condiciones" className="hover:text-white transition-colors text-[11px] sm:text-xs">Términos</Link></li>
-                  <li><Link href="/politica-privacidad" className="hover:text-white transition-colors text-[11px] sm:text-xs">Privacidad</Link></li>
-                  <li><Link href="/politica-cookies" className="hover:text-white transition-colors text-[11px] sm:text-xs">Cookies</Link></li>
-                  <li><Link href="/libro-reclamaciones" className="hover:text-white transition-colors text-[11px] sm:text-xs">Reclamaciones</Link></li>
+                  <li><Link href="/sobre-nosotros" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Nosotros</Link></li>
+                  <li><Link href="/terminos-condiciones" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Términos</Link></li>
+                  <li><Link href="/politica-privacidad" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Privacidad</Link></li>
+                  <li><Link href="/politica-cookies" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Cookies</Link></li>
+                  <li><Link href="/libro-reclamaciones" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Reclamaciones</Link></li>
                 </ul>
               </div>
 
               {/* Contacto */}
               <div className="col-span-1 md:col-span-2">
-                <h4 className="text-white font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest">Contacto</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Contacto</h4>
                 <ul className="space-y-2.5">
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors text-[11px] sm:text-xs">info@qoricash.pe</a>
+                    <a href="mailto:info@qoricash.pe" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>info@qoricash.pe</a>
                   </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                    <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-[11px] sm:text-xs">910 624 404</a>
+                    <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>910 624 404</a>
                   </li>
                   <li className="flex items-start gap-2">
                     <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors text-[11px] sm:text-xs leading-relaxed">Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
+                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className={`transition-colors text-[11px] sm:text-xs leading-relaxed ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
                   </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -1696,12 +1693,12 @@ export default function Home() {
             </div>
 
             {/* Copyright */}
-            <div className="border-t border-white/5 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs text-gray-600">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs" style={{ borderTop: isEmpresaPage ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.06)', color: isEmpresaPage ? '#6B7280' : '#9CA3AF' }}>
               <p>© 2025 QoriCash. Todos los derechos reservados.</p>
               <div className="flex items-center gap-3">
-                <Link href="/terminos-condiciones" className="hover:text-gray-400 transition-colors">Términos</Link>
-                <Link href="/politica-privacidad" className="hover:text-gray-400 transition-colors">Privacidad</Link>
-                <Link href="/libro-reclamaciones" className="hover:text-gray-400 transition-colors">Reclamaciones</Link>
+                <Link href="/terminos-condiciones" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Términos</Link>
+                <Link href="/politica-privacidad" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Privacidad</Link>
+                <Link href="/libro-reclamaciones" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Reclamaciones</Link>
               </div>
             </div>
 

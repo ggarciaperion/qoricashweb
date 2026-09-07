@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import BgImage from '@/components/BgImage';
+
 import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -117,7 +117,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {isEmpresaUser ? (
         <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#0D1B2A' }} />
       ) : (
-        <BgImage src="/dv.webp" fixed color="#0A1628" zIndex={-1} />
+        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F5F7FA' }} />
       )}
 
       {/* Mobile overlay */}
@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         `}
         style={isEmpresaUser
           ? { background: 'linear-gradient(180deg, #0D1B2A 0%, #1a3353 100%)', borderRight: '1px solid rgba(143,184,204,0.12)' }
-          : { background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRight: '1px solid rgba(255,255,255,0.25)' }}
+          : { background: '#ffffff', borderRight: '1px solid rgba(0,0,0,0.08)', boxShadow: '2px 0 12px rgba(0,0,0,0.04)' }}
       >
         {/* Logo */}
         <div className="h-[60px] flex items-center justify-between px-5">
@@ -163,9 +163,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
           <button
             className="lg:hidden p-1.5 rounded-lg transition"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-            onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)')}
+            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
+            onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)')}
             onClick={() => setIsSidebarOpen(false)}
           >
             <X className="w-5 h-5" />
@@ -176,7 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className="flex-1 py-5 px-3 space-y-1.5 overflow-y-auto">
           <p
             className="px-3 mb-3 text-[10px] font-bold uppercase tracking-[0.14em]"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(255,255,255,0.5)' }}
+            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(0,0,0,0.35)' }}
           >
             Menú principal
           </p>
@@ -185,13 +185,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             const active = isActive(href, exact);
             const activeStyle = isEmpresaUser
               ? { background: 'rgba(143,184,204,0.12)', borderLeft: '3px solid #8fb8cc', color: '#8fb8cc' }
-              : { background: 'rgba(255,255,255,0.18)', borderLeft: '3px solid #ffffff', color: '#ffffff' };
-            const inactiveColor = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)';
-            const hoverColor   = '#ffffff';
-            const hoverBg      = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)';
+              : { background: 'rgba(13,17,23,0.06)', borderLeft: '3px solid #0D1117', color: '#0D1117' };
+            const inactiveColor = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280';
+            const hoverColor   = isEmpresaUser ? '#ffffff' : '#0D1117';
+            const hoverBg      = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)';
             const iconColor    = active
-              ? (isEmpresaUser ? '#8fb8cc' : '#ffffff')
-              : (isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.55)');
+              ? (isEmpresaUser ? '#8fb8cc' : '#0D1117')
+              : (isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF');
             return (
               <Link
                 key={label}
@@ -215,24 +215,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <>
               <p
                 className="px-3 pt-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]"
-                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(255,255,255,0.5)' }}
+                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(0,0,0,0.35)' }}
               >
                 Administración
               </p>
               <Link
                 href="/dashboard/posicion"
                 className="flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium transition-all"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)' }}
+                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.color = '#ffffff';
-                  (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)';
+                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117';
+                  (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)';
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)';
+                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280';
                   (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }}
               >
-                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.55)' }} />
+                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF' }} />
                 Posición del Día
               </Link>
             </>
@@ -240,23 +240,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom */}
-        <div className="px-4 py-4" style={{ borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.2)' }}>
+        <div className="px-4 py-4" style={{ borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)' }}>
           {/* Contacto rápido */}
           <div className="mb-2 space-y-1">
             <a href="mailto:info@qoricash.pe"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.65)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ffffff'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.65)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <Mail className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">info@qoricash.pe</span>
             </a>
             <a href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.65)' }}
+              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#16a34a'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.06)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.65)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <MessageCircle className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">WhatsApp</span>
@@ -267,13 +267,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button
             onClick={handleLogout}
             className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition"
-            style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.6)', borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.2)', paddingTop: '10px', marginTop: '4px' }}
+            style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF', borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)', paddingTop: '10px', marginTop: '4px' }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.color = '#ef4444';
               (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.35)' : 'rgba(30,41,59,0.45)';
+              (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF';
               (e.currentTarget as HTMLElement).style.background = 'transparent';
             }}
           >
@@ -286,26 +286,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* TOPBAR */}
-        <header className="sticky top-0 z-30" style={isEmpresaUser ? { background: 'rgba(10,20,36,0.97)' } : { background: 'transparent' }}>
+        <header className="sticky top-0 z-30" style={isEmpresaUser ? { background: 'rgba(10,20,36,0.97)' } : { background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="flex items-center px-5 h-[64px] gap-4">
 
             {/* Left: hamburger + horario */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.8)')}
+                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
+                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
+                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280')}
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
                 <span className="text-xs font-semibold uppercase tracking-wide">Menú</span>
               </button>
               <div className="hidden md:flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }} />
+                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }} />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : 'rgba(255,255,255,0.6)' }}>Horario de atención</p>
-                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.85)' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : '#9CA3AF' }}>Horario de atención</p>
+                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : '#374151' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
                 </div>
               </div>
             </div>
@@ -318,39 +318,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href={isEmpresaUser ? '/empresa' : '/'}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.7)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#ffffff'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(255,255,255,0.12)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.7)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.7)' : '#6B7280' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(143,184,204,0.7)' : '#6B7280'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               >
                 <Home className="w-3.5 h-3.5" />
                 Página de inicio
               </Link>
-              <div className="block w-px h-5 mx-1" style={{ background: isEmpresaUser ? 'rgba(143,184,204,0.2)' : 'rgba(255,255,255,0.2)' }} />
+              <div className="block w-px h-5 mx-1" style={{ background: isEmpresaUser ? 'rgba(143,184,204,0.2)' : 'rgba(0,0,0,0.1)' }} />
               <button
                 className="p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#ffffff')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.75)')}
+                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}
+                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
+                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#9CA3AF')}
               >
                 <Bell className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition ml-1"
-                style={{ background: isUserMenuOpen ? (isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.06)') : 'transparent' }}
-                onMouseEnter={e => (e.currentTarget.style.background = isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(30,41,59,0.06)')}
+                style={{ background: isUserMenuOpen ? (isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.04)') : 'transparent' }}
+                onMouseEnter={e => (e.currentTarget.style.background = isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.04)')}
                 onMouseLeave={e => { if (!isUserMenuOpen) (e.currentTarget.style.background = 'transparent'); }}
               >
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0"
-                  style={{ background: isEmpresaUser ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                  style={{ background: isEmpresaUser ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#0D1117' }}>
                   {displayName?.charAt(0)?.toUpperCase() ?? 'U'}
                 </div>
-                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: '#ffffff' }}>
+                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: isEmpresaUser ? '#ffffff' : '#0D1117' }}>
                   {displayName}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.5)' }}
+                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)' }}
                 />
               </button>
             </div>

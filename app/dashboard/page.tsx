@@ -502,15 +502,15 @@ export default function DashboardPage() {
 
 
           {/* TC rates strip */}
-          <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.18)' }}>
+          <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
             <div className="flex items-center gap-2 shrink-0">
               <span className="relative flex w-3 h-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#ef4444' }} />
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-30" style={{ background: '#ef4444', animationDelay: '0.4s' }} />
                 <span className="relative inline-flex w-3 h-3 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.7)' }} />
               </span>
-              <span className="text-[10px] font-black uppercase tracking-wide text-white">
-                Tipo de Cambio <span className="text-white">live</span>
+              <span className="text-[10px] font-black uppercase tracking-wide" style={{ color: '#0D1117' }}>
+                Tipo de Cambio <span style={{ color: '#22C55E' }}>live</span>
               </span>
             </div>
             {currentRates ? (
@@ -533,7 +533,7 @@ export default function DashboardPage() {
 
           {/* Welcome + stats */}
           <div>
-            <h1 className="text-lg sm:text-xl font-black mb-3 sm:mb-4" style={{ color: '#ffffff' }}>
+            <h1 className="text-lg sm:text-xl font-black mb-3 sm:mb-4" style={{ color: '#0D1117' }}>
               ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
             </h1>
             {stats && currentRates && stats.total_operations > 0 && (() => {
@@ -629,8 +629,8 @@ export default function DashboardPage() {
                     <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-110"
                       style={{ color: primary ? 'white' : 'rgba(30,41,59,0.5)' }} />
                   </div>
-                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-400 group-hover:-translate-y-1"
-                    style={{ color: 'rgba(255,255,255,0.8)' }}>{label}</span>
+                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-600 group-hover:-translate-y-1"
+                    style={{ color: 'rgba(13,17,23,0.6)' }}>{label}</span>
                 </button>
               ))}
           </div>
@@ -640,8 +640,8 @@ export default function DashboardPage() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch mt-5 sm:mt-8 w-full">
             {/* Columna izquierda: Logos */}
             <div className="flex flex-col gap-1 w-full sm:w-1/2">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Operaciones inmediatas</p>
-              <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 4px 24px rgba(0,0,0,0.12)' }}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: '#6B7280' }}>Operaciones inmediatas</p>
+              <div className="rounded-xl flex flex-col flex-1 overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                 {/* Sección principal — operaciones inmediatas */}
                 <div className="flex flex-col items-center px-4 pt-5 pb-4">
                   <div className="flex items-center justify-around w-full gap-1">
@@ -650,7 +650,7 @@ export default function DashboardPage() {
                       { src: '/Interbank.png', alt: 'Interbank', h: 'h-12' },
                       { src: '/BanBif.png',    alt: 'BanBif',    h: 'h-11' },
                     ].map(({ src, alt, h }) => (
-                      <div key={alt} className="flex items-center justify-center rounded-lg p-1.5" style={{ background: 'rgba(255,255,255,0.25)', flex: 1 }}>
+                      <div key={alt} className="flex items-center justify-center rounded-lg p-1.5" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.05)', flex: 1 }}>
                         <img src={src} alt={alt} className={`${h} w-auto object-contain`} />
                       </div>
                     ))}
@@ -663,9 +663,9 @@ export default function DashboardPage() {
 
                 {/* Divisor con etiqueta */}
                 <div className="relative flex items-center px-4 py-0.5">
-                  <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />
-                  <span className="mx-2 text-[7px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)' }}>otros bancos</span>
-                  <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(0,0,0,0.06)' }} />
+                  <span className="mx-2 text-[7px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: 'rgba(0,0,0,0.05)', color: '#6B7280' }}>otros bancos</span>
+                  <div className="flex-1" style={{ height: 1, background: 'rgba(0,0,0,0.06)' }} />
                 </div>
 
                 {/* Sección interbancaria */}
@@ -677,14 +677,14 @@ export default function DashboardPage() {
                       { src: '/Banco Pichincha.png', alt: 'Pichincha' },
                       { src: '/bancosantander.png',  alt: 'Santander' },
                     ].map(({ src, alt }) => (
-                      <img key={alt} src={src} alt={alt} className="h-9 w-auto object-contain" style={{ filter: 'brightness(0) invert(1)', opacity: 0.75 }} />
+                      <img key={alt} src={src} alt={alt} className="h-9 w-auto object-contain" style={{ opacity: 0.8 }} />
                     ))}
                   </div>
-                  <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
-                    <p className="text-[8px] font-black uppercase tracking-[0.1em]" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                  <div className="rounded-lg px-3 py-2 w-full text-center" style={{ background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <p className="text-[8px] font-black uppercase tracking-[0.1em]" style={{ color: '#374151' }}>
                       o cualquier otro banco
                     </p>
-                    <p className="text-[7px] font-semibold mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                    <p className="text-[7px] font-semibold mt-0.5" style={{ color: '#9CA3AF' }}>
                       Solo Lima · 2 a 24 hrs según horario
                     </p>
                   </div>
@@ -693,7 +693,7 @@ export default function DashboardPage() {
             </div>
             {/* Columna derecha: Noticias + Tasas */}
             <div className="flex flex-col gap-1 w-full sm:w-1/2">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: 'rgba(255,255,255,0.6)' }}>Noticias que mueven el TC</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: '#6B7280' }}>Noticias que mueven el TC</p>
               {/* Carrusel */}
               <div className="rounded-xl overflow-hidden relative" style={{ height: 90 }}>
                 {noticias.map((item, i) => (
@@ -725,8 +725,8 @@ export default function DashboardPage() {
                 </div>
               </div>
               {/* Tasas */}
-              <div className="rounded-xl px-4 flex-1 flex flex-col justify-between py-4" style={{ background: '#0D1B2A' }}>
-                <p className="text-[9px] font-bold uppercase tracking-[0.16em] mb-3" style={{ color: 'rgba(255,255,255,0.35)' }}>Referencia del mercado</p>
+              <div className="rounded-xl px-4 flex-1 flex flex-col justify-between py-4" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <p className="text-[9px] font-bold uppercase tracking-[0.16em] mb-3" style={{ color: '#9CA3AF' }}>Referencia del mercado</p>
                 <div className="flex flex-col flex-1 justify-around">
                   {[
                     { logo: '/sunat.png',        label: 'SUNAT',    compra: tasas?.sunat?.compra,       venta: tasas?.sunat?.venta        },
@@ -736,14 +736,14 @@ export default function DashboardPage() {
                     <div key={label} className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5" style={{ minWidth: 72 }}>
                         <img src={logo} alt={label} className="w-4 h-4 object-contain rounded-sm" />
-                        <span className="text-[10px] font-bold text-white">{label}</span>
+                        <span className="text-[10px] font-bold" style={{ color: '#0D1117' }}>{label}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                          Compra <span className="font-black text-[10px] text-white">{compra ? `S/ ${Number(compra).toFixed(3)}` : '—'}</span>
+                        <span className="text-[9px] font-semibold" style={{ color: '#9CA3AF' }}>
+                          Compra <span className="font-black text-[10px]" style={{ color: '#0D1117' }}>{compra ? `S/ ${Number(compra).toFixed(3)}` : '—'}</span>
                         </span>
-                        <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                          Venta <span className="font-black text-[10px] text-white">{venta ? `S/ ${Number(venta).toFixed(3)}` : '—'}</span>
+                        <span className="text-[9px] font-semibold" style={{ color: '#9CA3AF' }}>
+                          Venta <span className="font-black text-[10px]" style={{ color: '#0D1117' }}>{venta ? `S/ ${Number(venta).toFixed(3)}` : '—'}</span>
                         </span>
                       </div>
                     </div>

@@ -84,10 +84,10 @@ export default function PerfilPage() {
   // Empresa styles
   const sectionBg = isEmpresa
     ? { background: 'linear-gradient(135deg, rgba(74,104,132,0.22) 0%, rgba(13,27,42,0.28) 100%)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.18)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }
-    : { background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(30,41,59,0.08)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 2px 12px rgba(30,41,59,0.06)' };
+    : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' };
   const cardBg = isEmpresa
     ? { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(143,184,204,0.25)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }
-    : { background: 'rgba(255,255,255,0.75)', border: '1px solid rgba(30,41,59,0.1)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 10, boxShadow: '0 2px 8px rgba(30,41,59,0.06)' };
+    : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)', borderRadius: 10 };
   const labelColor = isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)';
   const valueColor = isEmpresa ? '#ffffff' : '#1E293B';
   const sectionLabelColor = isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(30,41,59,0.4)';

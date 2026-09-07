@@ -173,10 +173,10 @@ export default function HistorialPage() {
         {/* ── HEADER ── */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: '#ffffff' }}>
+            <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
               Mis operaciones
             </h1>
-            <p className="text-sm mt-0.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(255,255,255,0.6)' }}>
+            <p className="text-sm mt-0.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6B7280' }}>
               {ops.length} registro{ops.length !== 1 ? 's' : ''} en total
             </p>
           </div>
@@ -199,17 +199,17 @@ export default function HistorialPage() {
             className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
             style={isEmpresa
               ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
-              : { background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', border: '1px solid #1E293B' }}
+              : { background: 'linear-gradient(135deg, #1E3A8A 0%, #1d4ed8 100%)', boxShadow: '0 4px 20px rgba(30,58,138,0.35)' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
-              style={{ background: 'rgba(255,255,255,0.04)' }} />
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              style={{ background: 'rgba(255,255,255,0.06)' }} />
+            <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'rgba(255,255,255,0.55)' }}>
               Vol. cambiado
             </p>
             <p className="text-sm font-bold tabular-nums leading-tight text-white whitespace-nowrap">
               $ {fmt$(animVolUSD)}
             </p>
-            <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>USD total</p>
+            <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>USD total</p>
           </div>
 
           {/* Spread */}
@@ -254,7 +254,7 @@ export default function HistorialPage() {
           className="flex items-center gap-1 p-1 rounded-xl"
           style={isEmpresa
             ? { background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', border: '1px solid rgba(143,184,204,0.15)' }
-            : { background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}
+            : { background: '#F1F5F9', border: '1px solid rgba(0,0,0,0.06)' }}
         >
           {TABS.map(t => (
             <button
@@ -264,8 +264,8 @@ export default function HistorialPage() {
               style={tab === t.key
                 ? isEmpresa
                   ? { background: 'rgba(74,104,132,0.35)', color: '#ffffff', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }
-                  : { background: 'rgba(255,255,255,0.3)', color: '#ffffff', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }
-                : { color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#94A3B8' }
+                  : { background: '#ffffff', color: '#0D1117', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }
+                : { color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }
               }
             >
               {t.label}
@@ -291,10 +291,10 @@ export default function HistorialPage() {
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3"
               style={isEmpresa
                 ? { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.15)' }
-                : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}>
-              <RefreshCw className="w-4 h-4" style={{ color: isEmpresa ? '#ffffff' : 'rgba(255,255,255,0.6)' }} />
+                : { background: 'rgba(0,0,0,0.04)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <RefreshCw className="w-4 h-4" style={{ color: isEmpresa ? '#ffffff' : '#9CA3AF' }} />
             </div>
-            <p className="text-sm font-medium" style={{ color: isEmpresa ? '#ffffff' : '#94A3B8' }}>Sin operaciones aquí</p>
+            <p className="text-sm font-medium" style={{ color: isEmpresa ? '#ffffff' : '#6B7280' }}>Sin operaciones aquí</p>
           </div>
         ) : (
           <div className="overflow-x-auto rounded-2xl">
@@ -302,7 +302,7 @@ export default function HistorialPage() {
             className="min-w-[380px] rounded-2xl overflow-hidden"
             style={isEmpresa
               ? { border: '1px solid rgba(143,184,204,0.15)', background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }
-              : { border: '1px solid rgba(255,255,255,0.22)', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+              : { border: '1px solid rgba(0,0,0,0.08)', background: '#ffffff', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
           >
 
             {/* Table header */}
@@ -310,12 +310,12 @@ export default function HistorialPage() {
               className="grid items-center px-3 py-2.5"
               style={{
                 gridTemplateColumns: '88px 1fr 1fr 44px 76px',
-                background: isEmpresa ? 'rgba(13,27,42,0.5)' : 'rgba(255,255,255,0.18)',
-                borderBottom: isEmpresa ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(255,255,255,0.18)',
+                background: isEmpresa ? 'rgba(13,27,42,0.5)' : '#F8FAFC',
+                borderBottom: isEmpresa ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)',
               }}
             >
               {['Tipo', 'Dólares', 'Soles', 'T.C.', 'Estado'].map(h => (
-                <p key={h} className="text-[9px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#ffffff' }}>
+                <p key={h} className="text-[9px] font-bold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9CA3AF' }}>
                   {h}
                 </p>
               ))}
@@ -334,7 +334,7 @@ export default function HistorialPage() {
               return (
                 <div
                   key={op.id}
-                  style={{ borderBottom: idx < rows.length - 1 || isOpen ? `1px solid ${isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(255,255,255,0.12)'}` : 'none' }}
+                  style={{ borderBottom: idx < rows.length - 1 || isOpen ? `1px solid ${isEmpresa ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.06)'}` : 'none' }}
                 >
                   {/* Row */}
                   <div
@@ -343,9 +343,9 @@ export default function HistorialPage() {
                       gridTemplateColumns: '88px 1fr 1fr 44px 76px',
                       background: isEmpresa
                         ? (isOpen ? 'rgba(74,104,132,0.15)' : 'transparent')
-                        : (isOpen ? 'rgba(255,255,255,0.1)' : 'transparent'),
+                        : (isOpen ? 'rgba(0,0,0,0.03)' : 'transparent'),
                     }}
-                    onMouseEnter={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = isEmpresa ? 'rgba(74,104,132,0.1)' : 'rgba(255,255,255,0.08)'; }}
+                    onMouseEnter={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = isEmpresa ? 'rgba(74,104,132,0.1)' : 'rgba(0,0,0,0.03)'; }}
                     onMouseLeave={e => { if (!isOpen) (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
                     onClick={() => handleRowClick(op)}
                   >
@@ -365,24 +365,24 @@ export default function HistorialPage() {
                         }
                         {isCompra ? 'Compra' : 'Vende'}
                       </span>
-                      <p className="text-[10px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(255,255,255,0.75)' }}>
+                      <p className="text-[10px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>
                         {fmtDate(op.fecha_creacion)}
                       </p>
                     </div>
 
                     {/* Col 2: USD */}
-                    <p className="text-xs font-semibold tabular-nums" style={{ color: isClosed ? 'rgba(255,255,255,0.3)' : '#ffffff' }}>
+                    <p className="text-xs font-semibold tabular-nums" style={{ color: isClosed ? (isEmpresa ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)') : (isEmpresa ? '#ffffff' : '#0D1117') }}>
                       $ {fmt$(amtUSD)}
                     </p>
 
                     {/* Col 3: PEN */}
                     <p className="text-xs font-semibold tabular-nums"
-                      style={{ color: isClosed ? 'rgba(255,255,255,0.3)' : (isEmpresa ? '#8fb8cc' : '#ffffff') }}>
+                      style={{ color: isClosed ? (isEmpresa ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)') : (isEmpresa ? '#8fb8cc' : '#374151') }}>
                       S/ {fmtS(amtPEN)}
                     </p>
 
                     {/* Col 4: TC */}
-                    <p className="text-xs tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#ffffff' }}>
+                    <p className="text-xs tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>
                       {(op.tipo_cambio ?? 0).toFixed(3)}
                     </p>
 
@@ -397,7 +397,7 @@ export default function HistorialPage() {
                       <ChevronDown
                         className="w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200"
                         style={{
-                          color: isEmpresa ? '#CBD5E1' : 'rgba(255,255,255,0.7)',
+                          color: isEmpresa ? '#CBD5E1' : '#9CA3AF',
                           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                         }}
                       />
@@ -410,16 +410,16 @@ export default function HistorialPage() {
                       className="px-4 pb-4 pt-2"
                       style={isEmpresa
                         ? { background: 'rgba(13,27,42,0.3)', borderTop: '1px solid rgba(143,184,204,0.1)' }
-                        : { background: 'rgba(255,255,255,0.08)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
+                        : { background: 'rgba(0,0,0,0.02)', borderTop: '1px solid rgba(0,0,0,0.06)' }}
                     >
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-3">
                         {/* Código */}
                         <div className="rounded-xl px-2 py-2 min-w-0"
                           style={isEmpresa
                             ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
-                            : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Código</p>
-                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#ffffff' }}>
+                            : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)' }}>
+                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>Código</p>
+                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                             {op.codigo_operacion ?? `#${op.id}`}
                           </p>
                         </div>
@@ -428,9 +428,9 @@ export default function HistorialPage() {
                         <div className="rounded-xl px-2 py-2 min-w-0"
                           style={isEmpresa
                             ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
-                            : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Hora</p>
-                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#ffffff' }}>
+                            : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)' }}>
+                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>Hora</p>
+                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                             {fmtTime(op.fecha_creacion)}
                           </p>
                         </div>
@@ -439,9 +439,9 @@ export default function HistorialPage() {
                         <div className="rounded-xl px-2 py-2 min-w-0"
                           style={isEmpresa
                             ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.12)' }
-                            : { background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
-                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#CBD5E1' }}>Banco</p>
-                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#ffffff' }}>
+                            : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)' }}>
+                          <p className="text-[8px] font-semibold uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>Banco</p>
+                          <p className="text-[10px] font-semibold mt-0.5 truncate" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
                             {op.destination_bank_name || op.banco_cliente || op.source_bank_name || '—'}
                           </p>
                         </div>
@@ -462,9 +462,9 @@ export default function HistorialPage() {
                       <button
                         onClick={e => { e.stopPropagation(); router.push(`/dashboard/operaciones/${op.id}`); }}
                         className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                        style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = '#ffffff'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(255,255,255,0.5)'; }}
+                        style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = isEmpresa ? '#ffffff' : '#0D1117'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280'; }}
                       >
                         Ver detalle completo <ArrowRight className="w-3.5 h-3.5" />
                       </button>
@@ -480,7 +480,7 @@ export default function HistorialPage() {
         {/* ── PAGINATION ── */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-1">
-            <p className="text-[11px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#ffffff' }}>
+            <p className="text-[11px]" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#6B7280' }}>
               {(page - 1) * PER_PAGE + 1}–{Math.min(page * PER_PAGE, filtered.length)} de {filtered.length}
             </p>
             <div className="flex items-center gap-2">
@@ -490,11 +490,11 @@ export default function HistorialPage() {
                 className="w-7 h-7 rounded-lg flex items-center justify-center transition disabled:opacity-25"
                 style={isEmpresa
                   ? { border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.6)', background: 'rgba(255,255,255,0.05)' }
-                  : { border: '1px solid rgba(255,255,255,0.25)', color: '#ffffff' }}
+                  : { border: '1px solid rgba(0,0,0,0.12)', color: '#374151', background: '#ffffff' }}
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3L5 7l3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
-              <span className="text-[11px] font-semibold tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#ffffff' }}>
+              <span className="text-[11px] font-semibold tabular-nums" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#374151' }}>
                 {page} / {totalPages}
               </span>
               <button
@@ -503,7 +503,7 @@ export default function HistorialPage() {
                 className="w-7 h-7 rounded-lg flex items-center justify-center transition disabled:opacity-25"
                 style={isEmpresa
                   ? { border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.6)', background: 'rgba(255,255,255,0.05)' }
-                  : { border: '1px solid rgba(255,255,255,0.25)', color: '#ffffff' }}
+                  : { border: '1px solid rgba(0,0,0,0.12)', color: '#374151', background: '#ffffff' }}
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3L9 7l-3.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
