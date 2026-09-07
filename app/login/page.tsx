@@ -203,6 +203,11 @@ export default function LoginPage() {
             Volver al inicio
           </Link>
 
+          {/* Logo — fuera del card */}
+          <div style={{ textAlign: 'center', marginBottom: 12 }}>
+            <Image src="/QC.png" alt="QoriCash" width={80} height={80} style={{ objectFit: 'contain', display: 'inline-block' }} />
+          </div>
+
           {/* Card */}
           <div style={{
             background: '#ffffff',
@@ -311,8 +316,7 @@ export default function LoginPage() {
             )}
 
             {/* ── Header strip ── */}
-            <div style={{ background: 'transparent', padding: '16px 32px 14px', textAlign: 'center' }}>
-              <Image src="/QC.png" alt="QoriCash" width={80} height={80} style={{ objectFit: 'contain', margin: '0 auto 10px' }} />
+            <div style={{ padding: '16px 32px 14px', textAlign: 'center' }}>
               <h1 style={{ fontSize: 17, fontWeight: 800, color: '#0D1117', margin: 0 }}>Iniciar sesión</h1>
               <p style={{ fontSize: 11, color: '#6B7280', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
             </div>
