@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -150,8 +150,8 @@ export default function Home() {
   };
 
   return (
-    <Fragment>
-    {/* ── Modal conflicto de perfil ── */}
+    <>
+    {/* -- Modal conflicto de perfil -- */}
     {profileMismatchModal && createPortal(
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}>
         <div className="w-full max-w-sm rounded-2xl p-7 flex flex-col gap-5" style={{ background: '#0D1B2A', border: '1px solid rgba(143,184,204,0.2)' }}>
@@ -211,10 +211,10 @@ export default function Home() {
     )}
 
     <main className="min-h-screen pt-[72px]">
-      {/* ══ FONDO FIJO ══ */}
+      {/* == FONDO FIJO == */}
       <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F8FAFC' }} />
 
-      {/* ══ NAVBAR ══ */}
+      {/* == NAVBAR == */}
       <header className="fixed top-0 left-0 right-0 w-full z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
@@ -306,7 +306,7 @@ export default function Home() {
                 </>
               )}
             </div>
-            {/* Mobile — Personas/Empresas + separador + hamburger */}
+            {/* Mobile - Personas/Empresas + separador + hamburger */}
             <div className="lg:hidden flex items-center">
               {!isAuthenticated && (
                 <>
@@ -472,14 +472,14 @@ export default function Home() {
         document.body
       )}
 
-      {/* ══════════════════════════════════════
-          HERO — Geométrico minimalista
-      ══════════════════════════════════════ */}
+      {/* ======================================
+          HERO - Geométrico minimalista
+      ====================================== */}
       <section className="relative flex flex-col overflow-hidden">
 
         <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-10 pb-4 sm:pb-8 relative z-10">
 
-          {/* H1 personas — entre encabezado y grid, solo móvil */}
+          {/* H1 personas - entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
             <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
@@ -488,7 +488,7 @@ export default function Home() {
             </h1>
           )}
 
-          {/* H1 empresa — encima del card Herramientas Corporativas, solo móvil */}
+          {/* H1 empresa - encima del card Herramientas Corporativas, solo móvil */}
           {isEmpresaPage && (
             <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
@@ -497,7 +497,7 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 items-center w-full">
 
-            {/* LEFT — Texto */}
+            {/* LEFT - Texto */}
             <div className="order-2 sm:order-1">
               {/* Pill label */}
               <div className="flex justify-center sm:justify-start mb-4 sm:mb-7">
@@ -568,7 +568,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* RIGHT — Calculadora / FX Terminal */}
+            {/* RIGHT - Calculadora / FX Terminal */}
             <div className="order-1 sm:order-2 relative flex items-center justify-center">
 
               <div className="relative z-10 w-full max-w-[400px]">
@@ -603,7 +603,7 @@ export default function Home() {
                     {/* Three pillars */}
                     <div className="flex gap-6 mb-8">
                       {[
-                        { value: '15'', label: 'Liquidación' },
+                        { value: "15'", label: 'Liquidación' },
                         { value: '0%',   label: 'Comisiones' },
                         { value: '+TC',  label: 'Preferencial' },
                       ].map(({ value, label }, i) => (
@@ -650,7 +650,7 @@ export default function Home() {
               </div>
               )}
 
-                {/* Mercado en Vivo button — oculto temporalmente */}
+                {/* Mercado en Vivo button - oculto temporalmente */}
                 {/* <Link
                   href="/mercado-en-vivo"
                   className="mt-3 flex items-center justify-center gap-2.5 w-full py-3 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5"
@@ -678,9 +678,9 @@ export default function Home() {
 
       </section>
 
-      {/* ══════════════════════════════════════
-          TRUST STRIP — Bancos + SBS mejorado
-      ══════════════════════════════════════ */}
+      {/* ======================================
+          TRUST STRIP - Bancos + SBS mejorado
+      ====================================== */}
       <section ref={banksSectionRef} className="py-4 sm:py-6">
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
 
@@ -691,10 +691,10 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* Logos bancos — 2 grupos con etiqueta */}
+          {/* Logos bancos - 2 grupos con etiqueta */}
           <div className="flex flex-col sm:flex-row gap-5 sm:gap-4">
 
-          {/* Grupo 1 — Card unificada BCP + Interbank + BanBif */}
+          {/* Grupo 1 - Card unificada BCP + Interbank + BanBif */}
           <div className="flex-[3]">
             <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
               Transferencias inmediatas a todo el Perú
@@ -752,13 +752,13 @@ export default function Home() {
             })()}
           </div>{/* fin grupo 1 */}
 
-          {/* Grupo 2 — Interbancaria solo Lima */}
+          {/* Grupo 2 - Interbancaria solo Lima */}
           <div className="flex-[1] flex flex-col">
             <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
               Interbancaria solo Lima
             </p>
 
-            {/* Card agrupada: 6 bancos — CCI Interbank */}
+            {/* Card agrupada: 6 bancos - CCI Interbank */}
             {(() => {
               const hovered = hoveredBank === 'cci';
               const CCI = { soles: '003-200-003007757571-37', dolares: '003-200-003007757589-39' };
@@ -778,7 +778,7 @@ export default function Home() {
                   onMouseLeave={() => setHoveredBank(null)}
                   onClick={() => setHoveredBank(hoveredBank === 'cci' ? null : 'cci')}
                 >
-                  {/* Logos — 2 filas de 3, uniformes */}
+                  {/* Logos - 2 filas de 3, uniformes */}
                   <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
                     {/* Fila 1 */}
                     <div className="flex items-center justify-center gap-3 w-full">
@@ -788,7 +788,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                    {/* Fila 2 — GNB + Santander + card Otros Bancos */}
+                    {/* Fila 2 - GNB + Santander + card Otros Bancos */}
                     <div className="flex items-center justify-center gap-3 w-full">
                       {[{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancosantander.png', alt: 'Santander' }].map(({ src, alt }) => (
                         <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? '90px' : '72px', height: alt === 'GNB' ? '56px' : '44px' }}>
@@ -853,7 +853,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
 
-            {/* LEFT — headline + 3 stats inline */}
+            {/* LEFT - headline + 3 stats inline */}
             <div className="reveal-left flex flex-col justify-between">
               <div>
                 <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#0D1117' }}>
@@ -896,7 +896,7 @@ export default function Home() {
             </div>
             {/* end reveal-left */}
 
-            {/* RIGHT — tabla compacta */}
+            {/* RIGHT - tabla compacta */}
             <div className="reveal-right flex flex-col h-full">
 
               {/* Tabla */}
@@ -943,7 +943,7 @@ export default function Home() {
                   );
                 })()}
 
-                {/* Bancos — tasas calculadas en base al TC de QoriCash con spreads típicos de banca */}
+                {/* Bancos - tasas calculadas en base al TC de QoriCash con spreads típicos de banca */}
                 {(() => {
                   const base_c = currentRates?.tipo_compra ?? parseFloat(buyRate);
                   const base_v = currentRates?.tipo_venta  ?? parseFloat(sellRate);
@@ -992,7 +992,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
-            {/* LEFT — TC Live + Sparkline + Tabla */}
+            {/* LEFT - TC Live + Sparkline + Tabla */}
             <div>
               <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: '#6B7280' }}>
                 <span className="relative flex w-1.5 h-1.5">
@@ -1106,7 +1106,7 @@ export default function Home() {
               <p className="text-[9px] mt-2 text-right" style={{ color: '#D1D5DB' }}>*Tasas bancarias referenciales. No constituyen oferta formal.</p>
             </div>
 
-            {/* RIGHT — Ventajas corporativas */}
+            {/* RIGHT - Ventajas corporativas */}
             <div>
               <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: '#6B7280' }}>Por qué elegirnos</span>
               <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-6 sm:mb-8" style={{ color: '#0D1117' }}>
@@ -1152,9 +1152,9 @@ export default function Home() {
       </section>
       )}
 
-      {/* ══════════════════════════════════════
-          CÓMO FUNCIONA — 3 pasos
-      ══════════════════════════════════════ */}
+      {/* ======================================
+          CÓMO FUNCIONA - 3 pasos
+      ====================================== */}
       <style>{`
         @keyframes floatUp    { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-7px)} }
         @keyframes slideArrow     { 0%{transform:translateX(-10px);opacity:0} 50%{opacity:1} 100%{transform:translateX(10px);opacity:0} }
@@ -1195,7 +1195,7 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
-            {/* ── CARD 01 — Cotiza en línea ── */}
+            {/* -- CARD 01 - Cotiza en línea -- */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', animation: 'cardGlow 4s ease-in-out infinite' }}>
               {/* Illustration zone */}
               <div className="relative overflow-hidden px-7 pt-7 pb-5" style={{ background: '#1E293B', height: '210px' }}>
@@ -1207,7 +1207,7 @@ export default function Home() {
                 {/* Dos opciones: Web o Asesor */}
                 <div className="relative z-10 flex flex-col gap-3 justify-center h-full" style={{ animation: 'floatUp 4s ease-in-out infinite' }}>
 
-                  {/* Opción 1 — Web */}
+                  {/* Opción 1 - Web */}
                   <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
                     <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -1230,7 +1230,7 @@ export default function Home() {
                     <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
                   </div>
 
-                  {/* Opción 2 — Asesor WhatsApp */}
+                  {/* Opción 2 - Asesor WhatsApp */}
                   <a
                     href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20mi%20tipo%20de%20cambio%20con%20un%20asesor."
                     target="_blank"
@@ -1261,13 +1261,13 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ── CARD 02 — Transfiere ── */}
+            {/* -- CARD 02 - Transfiere -- */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.4s' }}>
               <div className="relative overflow-hidden px-7 py-5 flex flex-col justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>02</span>
                 <div className="absolute top-0 left-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%)', transform: 'translate(-30%, -30%)' }} />
 
-                {/* Transfer flow — BIDIRECCIONAL */}
+                {/* Transfer flow - BIDIRECCIONAL */}
                 <div className="relative z-10 flex items-center gap-3">
 
                   {/* Left: Tu banco */}
@@ -1370,7 +1370,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ── CARD 03 — Recibe tu dinero ── */}
+            {/* -- CARD 03 - Recibe tu dinero -- */}
             <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.8s' }}>
               <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#1E293B', height: '210px' }}>
                 <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>03</span>
@@ -1544,13 +1544,13 @@ export default function Home() {
       </section>
       )}
 
-      {/* AlertaTCBanner — solo en página personas */}
+      {/* AlertaTCBanner - solo en página personas */}
       {!isAuthenticated && !isEmpresaPage && <AlertaTCBanner />}
 
 
-      {/* ══════════════════════════════════════
+      {/* ======================================
           FOOTER
-      ══════════════════════════════════════ */}
+      ====================================== */}
       <footer style={{ color: '#6B7280' }}>
         <div className="py-3 px-4 sm:px-8 lg:px-10" style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
@@ -1579,7 +1579,7 @@ export default function Home() {
         <div className="w-full px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
           <div className="max-w-5xl mx-auto">
 
-            {/* Fila 1 — Logo + descripción */}
+            {/* Fila 1 - Logo + descripción */}
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
               <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
                 {isEmpresaPage ? (
@@ -1605,7 +1605,7 @@ export default function Home() {
             </div>
             <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
 
-            {/* Fila 2 — Links en 3 columnas */}
+            {/* Fila 2 - Links en 3 columnas */}
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
 
               {/* Servicios */}
@@ -1671,6 +1671,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
-    </Fragment>
+    </>
   );
 }
