@@ -1581,24 +1581,8 @@ export default function Home() {
 
             {/* Fila 1 - Logo + descripción */}
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
-              <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0">
-                {isEmpresaPage ? (
-                  <div className="relative inline-flex flex-shrink-0">
-                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-9 w-auto invisible" />
-                    <div className="absolute inset-0" style={{
-                      background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
-                      WebkitMaskImage: "url('/logo-principal.png')",
-                      maskImage: "url('/logo-principal.png')",
-                      WebkitMaskSize: '100% 100%',
-                      maskSize: '100% 100%',
-                      WebkitMaskRepeat: 'no-repeat',
-                      maskRepeat: 'no-repeat',
-                    }} />
-                  </div>
-                ) : (
-                  <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
-                )}
-                <span className="text-xl font-display font-bold" style={{ color: '#0D1117' }}>QoriCash</span>
+              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity shrink-0">
+                <img src="/vg.png" alt="QoriCash" className="h-8 w-auto" />
               </Link>
               <span className="hidden sm:block w-px h-6" style={{ background: 'rgba(0,0,0,0.1)' }} />
               <p className="hidden sm:block text-xs leading-relaxed" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
