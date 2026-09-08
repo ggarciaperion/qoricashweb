@@ -21,7 +21,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 interface ForgotPasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ForgotPasswordFormData) => Promise<{ success: boolean; message: string }>;
+  onSubmit: (data: ForgotPasswordFormData) => Promise<{ success: boolean; message: string; error_code?: string }>;
 }
 
 export default function ForgotPasswordModal({
@@ -32,6 +32,7 @@ export default function ForgotPasswordModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const {
     register,
@@ -48,6 +49,7 @@ export default function ForgotPasswordModal({
   const handleFormSubmit = async (data: ForgotPasswordFormData) => {
     setIsSubmitting(true);
     setError(null);
+    setErrorCode(null);
     try {
       const result = await onSubmit(data);
       if (result.success) {
@@ -55,9 +57,11 @@ export default function ForgotPasswordModal({
         setTimeout(() => { handleClose(); }, 3000);
       } else {
         setError(result.message || 'Error al recuperar contraseña');
+        setErrorCode(result.error_code || null);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Error al recuperar contraseña');
+      setErrorCode(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -66,6 +70,7 @@ export default function ForgotPasswordModal({
   const handleClose = () => {
     reset();
     setError(null);
+    setErrorCode(null);
     setSuccess(false);
     onClose();
   };
@@ -77,26 +82,17 @@ export default function ForgotPasswordModal({
       style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
       <div className="animate-modal-enter rounded-2xl w-full max-w-md overflow-hidden"
         style={{
-          background: 'linear-gradient(160deg, rgba(13,27,42,0.96) 0%, rgba(10,22,36,0.98) 100%)',
-          backdropFilter: 'blur(32px)',
-          WebkitBackdropFilter: 'blur(32px)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(34,197,94,0.06) inset',
+          background: '#ffffff',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.25)',
         }}>
 
         {/* Header */}
-        <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgba(13,27,42,0.9) 0%, rgba(20,45,75,0.85) 100%)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-          {/* glow orbs */}
-          <div className="absolute -top-6 -left-6 w-28 h-28 rounded-full pointer-events-none"
-            style={{ background: 'rgba(34,197,94,0.12)', filter: 'blur(28px)' }} />
-          <div className="absolute -bottom-8 right-8 w-24 h-24 rounded-full pointer-events-none"
-            style={{ background: 'rgba(34,197,94,0.07)', filter: 'blur(24px)' }} />
-
-          <div className="relative flex items-center gap-3">
+        <div className="flex items-center justify-between px-5 py-4"
+          style={{ background: '#000000', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(34,197,94,0.18)', border: '1px solid rgba(34,197,94,0.25)' }}>
-              <Key className="w-[18px] h-[18px] text-primary-400" />
+              style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <Key className="w-[18px] h-[18px]" style={{ color: '#ffffff' }} />
             </div>
             <div>
               <p className="text-white font-extrabold text-sm leading-tight tracking-tight">Recuperar Contraseña</p>
@@ -115,7 +111,7 @@ export default function ForgotPasswordModal({
         </div>
 
         {/* Body */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-6" style={{ background: '#F5F7FA' }}>
           {success ? (
             <div className="text-center py-6">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
@@ -132,21 +128,47 @@ export default function ForgotPasswordModal({
             </div>
           ) : (
             <>
-              {error && (
+              {error && errorCode === 'dni_not_found' && (
                 <div className="mb-5 p-3.5 rounded-xl flex items-start gap-3"
-                  style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  style={{ background: '#FFF7ED', border: '1px solid #FED7AA' }}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(239,68,68,0.14)' }}>
-                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    style={{ background: '#FFEDD5' }}>
+                    <AlertCircle className="w-4 h-4" style={{ color: '#EA580C' }} />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-red-400 mb-0.5">Error</p>
-                    <p className="text-xs text-red-300">{error}</p>
+                    <p className="text-xs font-bold mb-0.5" style={{ color: '#C2410C' }}>Número de documento no encontrado</p>
+                    <p className="text-xs" style={{ color: '#9A3412' }}>{error}</p>
+                  </div>
+                </div>
+              )}
+              {error && errorCode === 'email_mismatch' && (
+                <div className="mb-5 p-3.5 rounded-xl flex items-start gap-3"
+                  style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: '#FEE2E2' }}>
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-red-600 mb-0.5">Correo no asociado</p>
+                    <p className="text-xs text-red-500">{error}</p>
+                  </div>
+                </div>
+              )}
+              {error && !errorCode && (
+                <div className="mb-5 p-3.5 rounded-xl flex items-start gap-3"
+                  style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}>
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: '#FEE2E2' }}>
+                    <AlertCircle className="w-4 h-4 text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-red-600 mb-0.5">Error</p>
+                    <p className="text-xs text-red-500">{error}</p>
                   </div>
                 </div>
               )}
 
-              <p className="text-sm leading-relaxed mb-5" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              <p className="text-sm leading-relaxed mb-5" style={{ color: '#6B7280' }}>
                 Ingresa tus datos para recibir una contraseña temporal en tu correo electrónico.
               </p>
 
@@ -154,78 +176,76 @@ export default function ForgotPasswordModal({
                 {/* DNI */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
-                    style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    style={{ color: '#374151' }}>
                     Número de Documento
                   </label>
                   <div className="relative">
-                    <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                    <CreditCard className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: '#94A3B8' }} />
                     <input
                       type="text"
+                      inputMode="numeric"
                       {...register('dni')}
                       placeholder=""
                       maxLength={11}
+                      onKeyDown={e => { if (!/[\d\b]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)) e.preventDefault(); }}
                       className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all placeholder:font-normal"
                       style={{
-                        background: 'rgba(255,255,255,0.06)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        color: 'white',
+                        background: '#ffffff',
+                        border: '1px solid #E5E7EB',
+                        color: '#0D1117',
                         boxShadow: 'none',
                       }}
                       onFocus={e => {
-                        e.currentTarget.style.border = '1px solid rgba(34,197,94,0.55)';
-                        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)';
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.09)';
+                        e.currentTarget.style.border = '1px solid #0D1117';
+                        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.06)';
                       }}
                       onBlur={e => {
-                        e.currentTarget.style.border = '1px solid rgba(255,255,255,0.12)';
+                        e.currentTarget.style.border = '1px solid #E5E7EB';
                         e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
                       }}
                     />
                   </div>
                   {dni && (
-                    <p className="text-[11px] mt-1.5 font-medium" style={{ color: 'rgba(255,255,255,0.28)' }}>
+                    <p className="text-[11px] mt-1.5 font-medium" style={{ color: '#9CA3AF' }}>
                       {dni.length} dígitos ingresados
                     </p>
                   )}
                   {errors.dni && (
-                    <p className="text-red-400 text-xs mt-1.5 font-semibold">{errors.dni.message}</p>
+                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.dni.message}</p>
                   )}
                 </div>
 
                 {/* Email */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-widest mb-2"
-                    style={{ color: 'rgba(255,255,255,0.45)' }}>
+                    style={{ color: '#374151' }}>
                     Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: '#94A3B8' }} />
                     <input
                       type="email"
                       {...register('email')}
                       placeholder=""
                       className="w-full pl-10 pr-4 py-3 text-sm font-semibold rounded-xl focus:outline-none transition-all placeholder:font-normal"
                       style={{
-                        background: 'rgba(255,255,255,0.06)',
-                        border: '1px solid rgba(255,255,255,0.12)',
-                        color: 'white',
+                        background: '#ffffff',
+                        border: '1px solid #E5E7EB',
+                        color: '#0D1117',
                         boxShadow: 'none',
                       }}
                       onFocus={e => {
-                        e.currentTarget.style.border = '1px solid rgba(34,197,94,0.55)';
-                        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(34,197,94,0.12)';
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.09)';
+                        e.currentTarget.style.border = '1px solid #0D1117';
+                        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,0,0,0.06)';
                       }}
                       onBlur={e => {
-                        e.currentTarget.style.border = '1px solid rgba(255,255,255,0.12)';
+                        e.currentTarget.style.border = '1px solid #E5E7EB';
                         e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
                       }}
                     />
                   </div>
                   {errors.email && (
-                    <p className="text-red-400 text-xs mt-1.5 font-semibold">{errors.email.message}</p>
+                    <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.email.message}</p>
                   )}
                 </div>
               </form>
@@ -233,30 +253,26 @@ export default function ForgotPasswordModal({
           )}
         </div>
 
-        {/* Divider */}
-        {!success && (
-          <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 24px' }} />
-        )}
 
         {/* Footer */}
         {!success && (
-          <div className="flex gap-3 px-6 py-5">
+          <div className="flex gap-3 px-6 py-5" style={{ background: '#F5F7FA' }}>
             <button onClick={handleClose} disabled={isSubmitting}
               className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-50 active:scale-[0.98]"
               style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.65)',
+                background: '#ffffff',
+                border: '1px solid #E5E7EB',
+                color: '#374151',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#ffffff'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; }}>
+              onMouseEnter={e => { e.currentTarget.style.background = '#F3F4F6'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; }}>
               Cancelar
             </button>
             <button onClick={handleSubmit(handleFormSubmit)} disabled={isSubmitting}
               className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-60 active:scale-[0.98]"
               style={{
-                background: isSubmitting ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
-                boxShadow: isSubmitting ? 'none' : '0 4px 16px rgba(34,197,94,0.3)',
+                background: isSubmitting ? 'rgba(255,255,255,0.1)' : '#000000',
+                boxShadow: 'none',
                 border: 'none',
               }}>
               {isSubmitting ? (

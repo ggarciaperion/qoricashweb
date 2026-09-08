@@ -213,30 +213,30 @@ export default function LoginPage() {
             boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
           }}>
 
-            {/* ── Animation overlay — glass neutro ── */}
+            {/* ── Animation overlay — blanco y negro ── */}
             {loginPhase !== 'idle' && (
               <div style={{
                 position: 'absolute', inset: 0, zIndex: 20, borderRadius: 20,
-                background: 'linear-gradient(135deg, rgba(13,27,42,0.72) 0%, rgba(26,51,83,0.72) 100%)',
-                backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+                background: 'rgba(255,255,255,0.96)',
+                backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28,
               }}>
 
                 {/* Ring */}
                 <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(143,184,204,0.18)" strokeWidth="7" />
+                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="7" />
                     {loginPhase === 'loading' && (
                       <circle
                         cx="64" cy="64" r="52"
-                        fill="none" stroke="#8fb8cc" strokeWidth="7" strokeLinecap="round"
+                        fill="none" stroke="#000000" strokeWidth="7" strokeLinecap="round"
                         strokeDasharray="327" strokeDashoffset="327"
                         style={{ animation: 'qcProgress 2.6s cubic-bezier(0.4,0,0.6,1) forwards' }}
                         onAnimationEnd={handleAnimEnd}
                       />
                     )}
                     {loginPhase === 'success' && (
-                      <circle cx="64" cy="64" r="52" fill="none" stroke="#8fb8cc" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                      <circle cx="64" cy="64" r="52" fill="none" stroke="#000000" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                     )}
                     {loginPhase === 'error' && (
                       <circle cx="64" cy="64" r="52" fill="none" stroke="#ef4444" strokeWidth="7" strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" style={{ transition: 'stroke 0.3s ease' }} />
@@ -246,25 +246,20 @@ export default function LoginPage() {
                   {/* Center */}
                   <div style={{
                     width: 88, height: 88, borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(143,184,204,0.25)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                    background: '#f9fafb',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1,
                   }}>
                     {loginPhase === 'loading' ? (
-                      <div style={{
-                        width: 44, height: 44,
-                        background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)',
-                        WebkitMaskImage: 'url(/logo-principal.png)',
-                        WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center',
-                        maskImage: 'url(/logo-principal.png)',
-                        maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center',
+                      <img src="/vg.png" alt="QoriCash" style={{
+                        width: 52, height: 52, objectFit: 'contain',
                         animation: 'qcPulse 1.8s ease-in-out infinite',
                       }} />
                     ) : loginPhase === 'error' ? (
                       <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                          <circle cx="22" cy="22" r="22" fill="rgba(239,68,68,0.8)" />
+                          <circle cx="22" cy="22" r="22" fill="rgba(239,68,68,0.9)" />
                           <line x1="14" y1="14" x2="30" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
                           <line x1="30" y1="14" x2="14" y2="30" stroke="white" strokeWidth="3.5" strokeLinecap="round" />
                         </svg>
@@ -272,7 +267,7 @@ export default function LoginPage() {
                     ) : (
                       <div style={{ animation: 'qcScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                          <circle cx="22" cy="22" r="22" fill="#4A6884" />
+                          <circle cx="22" cy="22" r="22" fill="#000000" />
                           <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="60" strokeDashoffset="60" style={{ animation: 'qcCheck 0.5s ease-out 0.15s forwards' }} />
                         </svg>
                       </div>
@@ -286,24 +281,24 @@ export default function LoginPage() {
                     <>
                       <p style={{
                         fontSize: 14, fontWeight: 700, margin: 0,
-                        background: 'linear-gradient(90deg, #8fb8cc 0%, #ffffff 45%, #8fb8cc 90%)',
+                        background: 'linear-gradient(90deg, #9ca3af 0%, #000000 45%, #9ca3af 90%)',
                         backgroundSize: '200% auto',
                         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
                         animation: 'qcShimmer 1.8s linear infinite',
                       }}>
                         Verificando credenciales...
                       </p>
-                      <p style={{ fontSize: 11, color: 'rgba(143,184,204,0.6)', marginTop: 4 }}>Por favor espera</p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera</p>
                     </>
                   ) : loginPhase === 'error' ? (
                     <>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', margin: 0 }}>Acceso denegado</p>
-                      <p style={{ fontSize: 12, color: '#fca5a5', marginTop: 6, fontWeight: 600 }}>{loginError}</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#0D1117', margin: 0 }}>Acceso denegado</p>
+                      <p style={{ fontSize: 12, color: '#ef4444', marginTop: 6, fontWeight: 600 }}>{loginError}</p>
                     </>
                   ) : (
                     <>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#ffffff', margin: 0 }}>¡Bienvenido!</p>
-                      <p style={{ fontSize: 11, color: 'rgba(143,184,204,0.7)', marginTop: 4 }}>Redirigiendo al dashboard...</p>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#0D1117', margin: 0 }}>¡Bienvenido!</p>
+                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Redirigiendo al dashboard...</p>
                     </>
                   )}
                 </div>
@@ -311,16 +306,13 @@ export default function LoginPage() {
             )}
 
             {/* ── Header strip ── */}
-            <div style={{ position: 'relative', padding: '100px 32px 14px', textAlign: 'center' }}>
-              <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)' }}>
-                <Image src="/QC.png" alt="QoriCash" width={80} height={80} style={{ objectFit: 'contain', display: 'block', mixBlendMode: 'multiply' }} />
-              </div>
+            <div style={{ padding: '24px 32px 2px', textAlign: 'center' }}>
               <h1 style={{ fontSize: 17, fontWeight: 800, color: '#0D1117', margin: 0 }}>Iniciar sesión</h1>
               <p style={{ fontSize: 11, color: '#6B7280', margin: '3px 0 0' }}>Accede a tu cuenta QoriCash</p>
             </div>
 
             {/* ── Form body ── */}
-            <div style={{ padding: '16px 24px 20px', background: 'transparent' }}>
+            <div style={{ padding: '24px 24px 20px', background: 'transparent' }}>
 
               <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                 {/* DNI */}

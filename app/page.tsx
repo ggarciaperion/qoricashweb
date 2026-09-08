@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -150,7 +150,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <Fragment>
     {/* ── Modal conflicto de perfil ── */}
     {profileMismatchModal && createPortal(
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}>
@@ -183,7 +183,7 @@ export default function Home() {
                 router.push(isEmpresaPage ? '/login?from=/empresa' : '/login?from=/');
               }}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' }}
+              style={{ background: '#0A0A0A' }}
             >
               Cerrar sesión
             </button>
@@ -210,45 +210,26 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-[72px]">
       {/* ══ FONDO FIJO ══ */}
-      {isEmpresaPage ? (
-        <BgImage src="/ty.webp" fixed color="#0A1628" bgPosition="25% center" zIndex={-1} />
-      ) : (
-        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F5F7FA' }} />
-      )}
+      <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F8FAFC' }} />
 
       {/* ══ NAVBAR ══ */}
-      <header className="relative w-full z-50" style={isEmpresaPage ? { background: 'transparent', borderBottom: 'none' } : { background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
+      <header className="fixed top-0 left-0 right-0 w-full z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <div className="flex items-center gap-3 sm:gap-4">
               <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
-                {isEmpresaPage ? (
-                  <div className="relative inline-flex flex-shrink-0">
-                    <img src="/logo-principal.png" alt="QoriCash" aria-hidden className="h-48 sm:h-52 md:h-56 w-auto invisible" />
-                    <div className="absolute inset-0" style={{
-                      background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)',
-                      WebkitMaskImage: "url('/logo-principal.png')",
-                      maskImage: "url('/logo-principal.png')",
-                      WebkitMaskSize: '100% 100%',
-                      maskSize: '100% 100%',
-                      WebkitMaskRepeat: 'no-repeat',
-                      maskRepeat: 'no-repeat',
-                    }} />
-                  </div>
-                ) : (
-                  <img src="/logo-principal.png" alt="QoriCash" className="h-48 sm:h-52 md:h-56 w-auto" />
-                )}
+                <img src="/vg.png" alt="QoriCash" className="h-16 w-auto" />
                 {isEmpresaPage && (
-                  <span className="text-[9px] font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(143,184,204,0.55)' }}>Corporate</span>
+                  <span className="text-[9px] font-semibold tracking-[0.3em] uppercase" style={{ color: '#2563EB' }}>Corporate</span>
                 )}
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
               {[
               ].map(({ href, label, isLink }) => {
-                const cls = `relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`;
+                const cls = `relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900`;
                 const inner = (
                   <>
                     {label}
@@ -278,10 +259,10 @@ export default function Home() {
                         }
                         setIsUserMenuOpen(!isUserMenuOpen);
                       }}
-                      className={`relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-700 hover:text-gray-900'}`}
+                      className="relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 group py-1 text-gray-700 hover:text-gray-900"
                     >
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-black shrink-0"
-                        style={{ background: isEmpresaPage ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                        style={{ background: '#2563EB' }}>
                         {((user?.razon_social || user?.nombres) ?? '?').charAt(0).toUpperCase()}
                       </div>
                       <span className="max-w-[100px] truncate">
@@ -299,7 +280,7 @@ export default function Home() {
                   {!isAuthenticated && (
                     <>
                       <button
-                        className={`relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                        className="relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900"
                         onClick={() => {
                           const href = isEmpresaPage ? '/' : '/empresa';
                           if ('startViewTransition' in document) {
@@ -312,14 +293,14 @@ export default function Home() {
                         {isEmpresaPage ? 'Personas' : 'Empresas'}
                         <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                       </button>
-                      <span className="h-4 w-px" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
+                      <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
                     </>
                   )}
-                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className={`relative text-sm font-medium transition-colors duration-200 group py-1 ${isEmpresaPage ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}>
+                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900">
                     Iniciar Sesión
                     <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' } : { background: '#0D1117', color: '#ffffff' }}>
+                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={{ background: '#0A0A0A', color: '#ffffff' }}>
                     Regístrate
                   </Link>
                 </>
@@ -330,7 +311,7 @@ export default function Home() {
               {!isAuthenticated && (
                 <>
                   <button
-                    className={`text-sm font-medium transition-colors px-2 ${isEmpresaPage ? 'text-white/70 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+                    className="text-sm font-medium transition-colors px-2 text-gray-500 hover:text-gray-900"
                     onClick={() => {
                       const href = isEmpresaPage ? '/' : '/empresa';
                       if ('startViewTransition' in document) {
@@ -342,16 +323,16 @@ export default function Home() {
                   >
                     {isEmpresaPage ? 'Personas' : 'Empresas'}
                   </button>
-                  <span className="h-4 w-px" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
+                  <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
                 </>
               )}
               {isAuthenticated && user && (
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0 mr-0.5"
-                  style={{ background: isEmpresaPage ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#22C55E' }}>
+                  style={{ background: '#2563EB' }}>
                   {((user.razon_social || user.nombres) ?? '?').charAt(0).toUpperCase()}
                 </div>
               )}
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`p-2 transition ${isEmpresaPage ? 'text-white hover:text-white/70' : 'text-gray-700 hover:text-gray-900'}`} aria-label="Toggle mobile menu">
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 transition text-gray-700 hover:text-gray-900" aria-label="Toggle mobile menu">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -374,36 +355,34 @@ export default function Home() {
           top: '74px',
           maxHeight: isMobileMenuOpen ? '70vh' : '0px',
           transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease-out',
-          ...(isEmpresaPage
-            ? { background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', border: '1px solid rgba(255,255,255,0.35)' }
-            : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)' }),
+          ...{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)' },
           boxShadow: '0 20px 48px rgba(0,0,0,0.18)',
         }}
       >
         <div className="px-4 pt-4 pb-5 overflow-y-auto" style={{ maxHeight: '70vh' }}>
 
           {/* Separador y acciones de cuenta */}
-          <div style={{ borderTop: isEmpresaPage ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)' }}>
+          <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
             {isAuthenticated ? (
               <>
-                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: isEmpresaPage ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>Mi Cuenta</p>
+                <p className="text-[10px] font-bold tracking-widest uppercase px-2 mb-2 pt-3" style={{ color: '#9CA3AF' }}>Mi Cuenta</p>
                 <div className="space-y-0.5">
-                  <Link href="/dashboard?perfil=1" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><UserIcon className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
+                  <Link href="/dashboard?perfil=1" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.05)' }}><UserIcon className="w-4 h-4" style={{ color: '#6B7280' }} /></div>
                     <span className="font-medium flex-1 text-sm">Mi perfil</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <Link href="/dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><Banknote className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
+                  <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.05)' }}><Banknote className="w-4 h-4" style={{ color: '#6B7280' }} /></div>
                     <span className="font-medium flex-1 text-sm">Mi Dashboard</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(34,197,94,0.12)' }}><HelpCircle className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#22c55e' }} /></div>
+                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.08)' }}><HelpCircle className="w-4 h-4" style={{ color: '#2563EB' }} /></div>
                     <span className="font-medium flex-1 text-sm">Ayuda</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </a>
-                  <button onClick={handleLogout} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-red-50'}`} style={{ color: '#ef4444' }}>
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-red-50" style={{ color: '#ef4444' }}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.1)' }}><LogOut className="w-4 h-4 text-red-500" /></div>
                     <span className="font-medium text-sm">Cerrar Sesión</span>
                   </button>
@@ -411,17 +390,15 @@ export default function Home() {
               </>
             ) : (
               <div className="space-y-2 pt-4">
-                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className={`flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors ${isEmpresaPage ? 'hover:bg-white/8' : 'hover:bg-gray-50'}`} style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.85)' : '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isEmpresaPage ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.05)' }}><Lock className="w-4 h-4" style={{ color: isEmpresaPage ? '#8fb8cc' : '#6B7280' }} /></div>
+                <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.05)' }}><Lock className="w-4 h-4" style={{ color: '#6B7280' }} /></div>
                   <span className="font-medium flex-1 text-sm">Iniciar Sesión</span>
                   <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                 </Link>
                 <Link
                   href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'}
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all"
-                  style={isEmpresaPage
-                    ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', color: '#ffffff' }
-                    : { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff' }}
+                  style={{ background: '#0A0A0A', color: '#ffffff' }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <UserPlus className="w-4 h-4 flex-shrink-0" />
@@ -445,28 +422,26 @@ export default function Home() {
               top: dropdownPos.top,
               left: dropdownPos.left,
               transform: 'translateX(-50%)',
-              background: 'rgba(10,20,34,0.88)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(143,184,204,0.18)',
-              boxShadow: '0 20px 50px rgba(0,0,0,0.45)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.08)',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
             }}
           >
             <button
               onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard?perfil=1'); }}
               className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
-              style={{ color: 'rgba(255,255,255,0.75)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+              style={{ color: '#374151' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#F3F4F6', e.currentTarget.style.color = '#0D1117')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = '#374151')}
             >
               <UserIcon className="w-4 h-4 mr-3 opacity-60" />Mi perfil
             </button>
             <button
               onClick={() => { setIsUserMenuOpen(false); router.push('/dashboard'); }}
               className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
-              style={{ color: 'rgba(255,255,255,0.75)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+              style={{ color: '#374151' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#F3F4F6', e.currentTarget.style.color = '#0D1117')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = '#374151')}
             >
               <TrendingUp className="w-4 h-4 mr-3 opacity-60" />Mi Dashboard
             </button>
@@ -475,20 +450,20 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-4 py-3 text-sm transition-colors"
-              style={{ color: 'rgba(255,255,255,0.75)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(143,184,204,0.08)', e.currentTarget.style.color = '#ffffff')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
+              style={{ color: '#374151' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#F3F4F6', e.currentTarget.style.color = '#0D1117')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = '#374151')}
               onClick={() => setIsUserMenuOpen(false)}
             >
               <HelpCircle className="w-4 h-4 mr-3 opacity-60" />Ayuda
             </a>
-            <div className="my-1 mx-4" style={{ borderTop: '1px solid rgba(143,184,204,0.12)' }} />
+            <div className="my-1 mx-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }} />
             <button
               onClick={handleLogout}
               className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
-              style={{ color: 'rgba(239,68,68,0.75)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)', e.currentTarget.style.color = '#ef4444')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = 'rgba(239,68,68,0.75)')}
+              style={{ color: '#ef4444' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#FEF2F2', e.currentTarget.style.color = '#dc2626')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent', e.currentTarget.style.color = '#ef4444')}
             >
               <LogOut className="w-4 h-4 mr-3 opacity-60" />Cerrar Sesión
             </button>
@@ -500,9 +475,9 @@ export default function Home() {
       {/* ══════════════════════════════════════
           HERO — Geométrico minimalista
       ══════════════════════════════════════ */}
-      <section className={`relative min-h-screen flex flex-col overflow-hidden ${isEmpresaPage ? 'corp-transparent' : ''}`}>
+      <section className="relative flex flex-col overflow-hidden">
 
-        <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-16 pb-6 sm:pb-12 relative z-10">
+        <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-10 pb-4 sm:pb-8 relative z-10">
 
           {/* H1 personas — entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
@@ -515,8 +490,8 @@ export default function Home() {
 
           {/* H1 empresa — encima del card Herramientas Corporativas, solo móvil */}
           {isEmpresaPage && (
-            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#FFFFFF' }}>
-              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
+            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
+              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
             </h1>
           )}
 
@@ -526,15 +501,15 @@ export default function Home() {
             <div className="order-2 sm:order-1">
               {/* Pill label */}
               <div className="flex justify-center sm:justify-start mb-4 sm:mb-7">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={isEmpresaPage ? { borderColor: 'rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.75)' } : { borderColor: 'rgba(0,0,0,0.12)', color: '#6B7280' }}>
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: '#2563EB', color: '#2563EB', background: 'rgba(37,99,235,0.06)' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                   Fintech de cambio de divisas · Perú
                 </span>
               </div>
 
-              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: isEmpresaPage ? '#FFFFFF' : '#0D1117' }}>
+              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: '#0D1117' }}>
                 {isEmpresaPage ? (
-                  <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>cada centavo</span> cuenta</span>
+                  <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
                 ) : (
                   <>
                     <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
@@ -544,7 +519,7 @@ export default function Home() {
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.8)' : '#6B7280' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: '#6B7280' }}>
                 {isEmpresaPage
                   ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
                   : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
@@ -556,7 +531,7 @@ export default function Home() {
                   <button
                     onClick={() => guardedAction(() => window.open('https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo.', '_blank'))}
                     className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
-                    style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)' }}
+                    style={{ background: '#0A0A0A' }}
                   >
                     Cotizar ahora
                     <ArrowRight className="w-4 h-4" />
@@ -576,12 +551,12 @@ export default function Home() {
                 )}
               </div>
 
-<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>
+<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: '#6B7280' }}>
                 {isEmpresaPage ? (
                   <>
-                    <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Rentabilidad</span>
-                    <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Inmediato</span>
-                    <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />Exclusivo</span>
+                    <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Rentabilidad</span>
+                    <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Inmediato</span>
+                    <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Exclusivo</span>
                   </>
                 ) : (
                   <>
@@ -598,81 +573,69 @@ export default function Home() {
 
               <div className="relative z-10 w-full max-w-[400px]">
               {isEmpresaPage && !isAuthenticated ? (
-                /* ── Glass CTA — acceso herramientas corporativas ── */
-                <div className="relative overflow-hidden rounded-2xl p-5 sm:p-7 flex flex-col gap-4 sm:gap-5"
+                <div className="relative overflow-hidden rounded-2xl"
                   style={{
-                    background: 'rgba(143,184,204,0.1)',
-                    backdropFilter: 'blur(28px)',
-                    WebkitBackdropFilter: 'blur(28px)',
-                    border: '1px solid rgba(143,184,204,0.25)',
-                    boxShadow: '0 32px 64px rgba(0,0,0,0.2), inset 0 1px 0 rgba(143,184,204,0.15)',
+                    background: '#0A0A0A',
+                    boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 48px rgba(0,0,0,0.2)',
+                    border: '1px solid rgba(255,255,255,0.07)',
                   }}>
 
-                  {/* Reflejo superior espejo */}
-                  <div className="absolute top-0 left-0 right-0 h-px"
-                    style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.5), transparent)' }} />
-                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-32 pointer-events-none"
-                    style={{ background: 'radial-gradient(ellipse, rgba(143,184,204,0.12) 0%, transparent 70%)' }} />
+                  {/* Blue accent top bar */}
+                  <div className="absolute top-0 left-0 right-0 h-[2px]"
+                    style={{ background: '#2563EB' }} />
 
-                  {/* Icono */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg, rgba(143,184,204,0.2) 0%, rgba(30,58,80,0.4) 100%)', border: '1px solid rgba(143,184,204,0.25)' }}>
-                      <Building2 className="w-5 h-5" style={{ color: '#8fb8cc' }} />
-                    </div>
-                    <div>
-                      <p className="text-white font-extrabold text-sm leading-tight">Herramientas Corporativas</p>
-                      <p className="text-[11px] font-medium mt-0.5" style={{ color: 'rgba(143,184,204,0.6)' }}>Acceso exclusivo para empresas</p>
-                    </div>
-                  </div>
+                  <div className="px-8 py-8">
 
-                  {/* Divisor */}
-                  <div className="h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.2), transparent)' }} />
+                    {/* Eyebrow */}
+                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] mb-6" style={{ color: '#2563EB' }}>
+                      Corporativo
+                    </p>
 
-                  {/* Features */}
-                  <div className="flex flex-col gap-2.5">
-                    {[
-                      { icon: TrendingUp,  text: 'TC preferencial para volúmenes corporativos' },
-                      { icon: Zap,         text: 'Cotización en tiempo real con ejecutivo dedicado' },
-                      { icon: HandCoins,   text: 'Maximiza el rendimiento de cada operación cambiaria' },
-                    ].map(({ icon: Icon, text }) => (
-                      <div key={text} className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                          style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.18)' }}>
-                          <Icon className="w-3.5 h-3.5" style={{ color: '#8fb8cc' }} />
+                    {/* Headline */}
+                    <h3 className="font-black leading-[1.1] mb-3" style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.75rem)', color: '#ffffff' }}>
+                      El tipo de cambio<br />que su empresa merece.
+                    </h3>
+
+                    <p className="text-sm leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                      TC preferencial, liquidación en 15 min y ejecutivo dedicado para operaciones desde $5,000.
+                    </p>
+
+                    {/* Three pillars */}
+                    <div className="flex gap-6 mb-8">
+                      {[
+                        { value: '15'', label: 'Liquidación' },
+                        { value: '0%',   label: 'Comisiones' },
+                        { value: '+TC',  label: 'Preferencial' },
+                      ].map(({ value, label }, i) => (
+                        <div key={label} className="flex flex-col">
+                          <span className="text-2xl font-black text-white leading-none">{value}</span>
+                          <span className="text-[10px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</span>
                         </div>
-                        <p className="text-xs leading-snug" style={{ color: 'rgba(255,255,255,0.65)' }}>{text}</p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
 
-                  {/* CTAs */}
-                  <div className="flex flex-col gap-2.5 pt-1">
+                    {/* CTA */}
                     <Link href="/crear-cuenta?tipo=empresa"
-                      className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-                      style={{ background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', boxShadow: '0 6px 20px rgba(8,18,30,0.4)' }}>
-                      <UserPlus className="w-4 h-4" />
-                      Crear cuenta empresarial
+                      className="flex items-center justify-between w-full px-5 py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:brightness-110 group"
+                      style={{ background: '#2563EB' }}>
+                      <span>Abrir cuenta corporativa</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
-                    <Link href="/login?from=/empresa"
-                      className="flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-                      style={{ background: 'rgba(143,184,204,0.08)', border: '1px solid rgba(143,184,204,0.22)', color: 'rgba(143,184,204,0.9)' }}>
-                      <Lock className="w-4 h-4" />
-                      Iniciar sesión
-                    </Link>
-                  </div>
 
-                  {/* Footer note */}
-                  <p className="text-center text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                    Registro gratuito · Sin permanencia · Atención personalizada
-                  </p>
+                    <Link href="/login?from=/empresa"
+                      className="flex items-center justify-center w-full mt-3 py-2 text-xs font-medium transition-colors hover:opacity-80"
+                      style={{ color: 'rgba(255,255,255,0.3)' }}>
+                      Ya tengo cuenta
+                    </Link>
+
+                  </div>
                 </div>
               ) : (
               <div>
               <Calculator
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
                 showContinueButton={true}
-                dark={isEmpresaPage}
+                dark={false}
                 onOperationReady={(operationType, amountUSD, exchangeRate) => guardedAction(() => {
                   const params = amountUSD && parseFloat(amountUSD) > 0
                     ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
@@ -718,13 +681,13 @@ export default function Home() {
       {/* ══════════════════════════════════════
           TRUST STRIP — Bancos + SBS mejorado
       ══════════════════════════════════════ */}
-      <section ref={banksSectionRef} className={`py-4 sm:py-6 ${isEmpresaPage ? 'corp-transparent' : ''}`}>
+      <section ref={banksSectionRef} className="py-4 sm:py-6">
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
 
           {/* Encabezado */}
           <div className="mb-7 text-center">
-            <h2 className="font-display font-black leading-[1.05]" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
-              Operamos con los bancos <span style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#2563EB' }}>principales del Peru</span>
+            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
+              Operamos con los bancos <span style={{ color: '#2563EB' }}>principales del Peru</span>
             </h2>
           </div>
 
@@ -733,7 +696,7 @@ export default function Home() {
 
           {/* Grupo 1 — Card unificada BCP + Interbank + BanBif */}
           <div className="flex-[3]">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
               Transferencias inmediatas a todo el Perú
             </p>
 
@@ -744,9 +707,9 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.45)' : (isEmpresaPage ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)')}`,
-                    background: hovered ? (isEmpresaPage ? 'rgba(255,255,255,0.08)' : 'rgba(34,197,94,0.04)') : (isEmpresaPage ? 'transparent' : '#ffffff'),
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.12)' : (isEmpresaPage ? 'none' : '0 2px 8px rgba(0,0,0,0.04)'),
+                    border: `1px solid ${hovered ? 'rgba(37,99,235,0.45)' : 'rgba(0,0,0,0.08)'}`,
+                    background: hovered ? 'rgba(37,99,235,0.04)' : '#ffffff',
+                    boxShadow: hovered ? '0 16px 40px rgba(37,99,235,0.15), 0 4px 16px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
                     minHeight: '110px',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
                   }}
@@ -791,7 +754,7 @@ export default function Home() {
 
           {/* Grupo 2 — Interbancaria solo Lima */}
           <div className="flex-[1] flex flex-col">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.55)' : '#9CA3AF' }}>
+            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
               Interbancaria solo Lima
             </p>
 
@@ -803,8 +766,8 @@ export default function Home() {
                 <div
                   className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
                   style={{
-                    border: `1px solid ${hovered ? 'rgba(34,197,94,0.5)' : (isEmpresaPage ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)')}`,
-                    background: hovered ? (isEmpresaPage ? 'rgba(255,255,255,0.08)' : 'rgba(34,197,94,0.04)') : (isEmpresaPage ? 'transparent' : '#ffffff'),
+                    border: `1px solid ${hovered ? 'rgba(37,99,235,0.5)' : 'rgba(0,0,0,0.08)'}`,
+                    background: hovered ? 'rgba(37,99,235,0.04)' : '#ffffff',
                     minHeight: '110px',
                     transitionDelay: isBanksSectionVisible ? '0ms' : '360ms',
                     transform: hovered ? 'translateY(-4px)' : 'translateY(0px)',
@@ -835,10 +798,10 @@ export default function Home() {
                       {/* Card Otros Bancos */}
                       <div className="flex flex-col items-center justify-center rounded-lg" style={{
                         width: '72px', height: '44px',
-                        border: isEmpresaPage ? '1px solid rgba(143,184,204,0.35)' : '1px solid rgba(34,197,94,0.35)',
-                        background: isEmpresaPage ? 'rgba(143,184,204,0.07)' : 'rgba(34,197,94,0.07)',
+                        border: '1px solid rgba(37,99,235,0.35)',
+                        background: 'rgba(37,99,235,0.07)',
                       }}>
-                        <span className="text-[7px] font-black uppercase tracking-[0.12em] leading-tight text-center" style={{ color: isEmpresaPage ? '#8fb8cc' : '#22C55E' }}>Otros<br/>Bancos</span>
+                        <span className="text-[7px] font-black uppercase tracking-[0.12em] leading-tight text-center" style={{ color: '#2563EB' }}>Otros<br/>Bancos</span>
                       </div>
                     </div>
                   </div>
@@ -876,8 +839,8 @@ export default function Home() {
               { icon: Lock,         label: 'SSL cifrado' },
               { icon: Shield,       label: 'Datos protegidos por ley' },
             ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.6)' : '#6B7280' }}>
-                <Icon className="w-3.5 h-3.5" style={{ color: isEmpresaPage ? '#8fb8cc' : '#000000' }} />{label}
+              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: '#6B7280' }}>
+                <Icon className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />{label}
               </span>
             ))}
           </div>
@@ -1024,14 +987,14 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="corp-dark py-6 sm:py-14 md:py-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #060E1A 0%, #0A1828 100%)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
+      <section style={{ position: 'relative', overflow: 'hidden', background: '#ffffff', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
             {/* LEFT — TC Live + Sparkline + Tabla */}
             <div>
-              <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: 'rgba(143,184,204,0.6)' }}>
+              <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: '#6B7280' }}>
                 <span className="relative flex w-1.5 h-1.5">
                   <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: '#4ade80', opacity: 0.6 }} />
                   <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ background: '#4ade80' }} />
@@ -1046,17 +1009,17 @@ export default function Home() {
                 return (
                   <div className="flex flex-wrap items-end gap-4 sm:gap-8 mb-6 sm:mb-8">
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Compra BCR</div>
-                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#ffffff' }}>{bcrpCompra}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#9CA3AF' }}>Compra BCR</div>
+                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#0D1117' }}>{bcrpCompra}</div>
                     </div>
-                    <div className="self-stretch w-px mb-1" style={{ background: 'rgba(143,184,204,0.1)' }} />
+                    <div className="self-stretch w-px mb-1" style={{ background: 'rgba(0,0,0,0.1)' }} />
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'rgba(143,184,204,0.4)' }}>Venta BCR</div>
-                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#22c55e' }}>{bcrpVenta}</div>
+                      <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#9CA3AF' }}>Venta BCR</div>
+                      <div className="text-4xl sm:text-5xl font-black tabular-nums leading-none" style={{ color: '#2563EB' }}>{bcrpVenta}</div>
                     </div>
                     {lastBcrp && (
                       <div className="self-end pb-1">
-                        <span className="text-[9px]" style={{ color: 'rgba(143,184,204,0.3)' }}>{lastBcrp.fecha}</span>
+                        <span className="text-[9px]" style={{ color: '#9CA3AF' }}>{lastBcrp.fecha}</span>
                       </div>
                     )}
                   </div>
@@ -1064,7 +1027,7 @@ export default function Home() {
               })()}
 
               {/* Sparkline */}
-              <div className="rounded-xl overflow-hidden mb-4" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)' }}>
+              <div className="rounded-xl overflow-hidden mb-4" style={{ background: '#F8FAFC', border: '1px solid #e5e7eb' }}>
                 {(() => {
                   const pts = bcrpData.length >= 2
                     ? bcrpData.map(d => d.venta)
@@ -1086,24 +1049,24 @@ export default function Home() {
                   return (
                     <>
                       <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.45)' }}>Tipo de Cambio Referencial BCR · {pts.length} días</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Tipo de Cambio Referencial BCR · {pts.length} días</span>
                         <span className="text-[10px] font-bold" style={{ color: pctColor }}>{pctStr}</span>
                       </div>
                       <div className="px-4 pb-3">
                         <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 70, overflow: 'visible' }} preserveAspectRatio="none">
                           <defs>
                             <linearGradient id="corpSparkGrad" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#22c55e" stopOpacity="0.2" />
-                              <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+                              <stop offset="0%" stopColor="#2563EB" stopOpacity="0.15" />
+                              <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
                             </linearGradient>
                           </defs>
                           <path d={areaD} fill="url(#corpSparkGrad)" />
-                          <path d={pathD} fill="none" stroke="#22c55e" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 3px rgba(34,197,94,0.4))' }} />
-                          <circle cx={cx(pts.length - 1)} cy={cy(pts[pts.length - 1])} r="3" fill="#22c55e" style={{ filter: 'drop-shadow(0 0 5px rgba(34,197,94,0.7))' }} />
+                          <path d={pathD} fill="none" stroke="#2563EB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 3px rgba(37,99,235,0.4))' }} />
+                          <circle cx={cx(pts.length - 1)} cy={cy(pts[pts.length - 1])} r="3" fill="#2563EB" style={{ filter: 'drop-shadow(0 0 5px rgba(37,99,235,0.7))' }} />
                         </svg>
                         <div className="flex justify-between mt-1">
                           {labels.map((d, i) => (
-                            <span key={i} className="text-[8px]" style={{ color: i === labels.length - 1 ? 'rgba(143,184,204,0.7)' : 'rgba(143,184,204,0.25)', fontWeight: i === labels.length - 1 ? 700 : 400 }}>{d}</span>
+                            <span key={i} className="text-[8px]" style={{ color: i === labels.length - 1 ? '#6B7280' : '#D1D5DB', fontWeight: i === labels.length - 1 ? 700 : 400 }}>{d}</span>
                           ))}
                         </div>
                       </div>
@@ -1113,12 +1076,12 @@ export default function Home() {
               </div>
 
               {/* Comparativa bancaria */}
-              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(143,184,204,0.1)' }}>
-                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(143,184,204,0.06)', borderBottom: '1px solid rgba(143,184,204,0.08)' }}>
-                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(143,184,204,0.5)' }}>Comparativa bancaria</span>
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #e5e7eb' }}>
+                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: '#F9FAFB', borderBottom: '1px solid #e5e7eb' }}>
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>Comparativa bancaria</span>
                   <div className="flex gap-3 sm:gap-6">
-                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Compra</span>
-                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: 'rgba(143,184,204,0.35)' }}>Venta</span>
+                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: '#9CA3AF' }}>Compra</span>
+                    <span className="w-10 sm:w-12 text-right text-[9px] font-bold uppercase" style={{ color: '#9CA3AF' }}>Venta</span>
                   </div>
                 </div>
                 {(() => {
@@ -1130,24 +1093,24 @@ export default function Home() {
                     { name: 'Interbank', c: base_c - 0.058, v: base_v + 0.068, highlight: false },
                     { name: 'BBVA',      c: base_c - 0.080, v: base_v + 0.090, highlight: false },
                   ].map(({ name, c, v, highlight }, i, arr) => (
-                    <div key={name} className="flex items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(143,184,204,0.06)' : 'none', background: highlight ? 'rgba(34,197,94,0.05)' : 'transparent', borderLeft: highlight ? '2px solid rgba(34,197,94,0.5)' : '2px solid transparent' }}>
-                      <div className="flex-1 text-sm font-bold min-w-0 truncate" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.5)' }}>{name}</div>
+                    <div key={name} className="flex items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid #F3F4F6' : 'none', background: highlight ? 'rgba(37,99,235,0.04)' : 'transparent', borderLeft: highlight ? '2px solid #2563EB' : '2px solid transparent' }}>
+                      <div className="flex-1 text-sm font-bold min-w-0 truncate" style={{ color: highlight ? '#2563EB' : '#6B7280' }}>{name}</div>
                       <div className="flex gap-3 sm:gap-6 flex-shrink-0">
-                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{c.toFixed(3)}</span>
-                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#22c55e' : 'rgba(255,255,255,0.4)' }}>{v.toFixed(3)}</span>
+                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#2563EB' : '#374151' }}>{c.toFixed(3)}</span>
+                        <span className="text-sm tabular-nums font-medium w-10 sm:w-12 text-right" style={{ color: highlight ? '#2563EB' : '#374151' }}>{v.toFixed(3)}</span>
                       </div>
                     </div>
                   ));
                 })()}
               </div>
-              <p className="text-[9px] mt-2 text-right" style={{ color: 'rgba(143,184,204,0.25)' }}>*Tasas bancarias referenciales. No constituyen oferta formal.</p>
+              <p className="text-[9px] mt-2 text-right" style={{ color: '#D1D5DB' }}>*Tasas bancarias referenciales. No constituyen oferta formal.</p>
             </div>
 
             {/* RIGHT — Ventajas corporativas */}
             <div>
-              <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: 'rgba(143,184,204,0.6)' }}>Por qué elegirnos</span>
-              <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-6 sm:mb-8" style={{ color: '#ffffff' }}>
-                El tipo de cambio <br /><span style={{ color: '#22c55e' }}>que su empresa</span> merece.
+              <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-5" style={{ color: '#6B7280' }}>Por qué elegirnos</span>
+              <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl leading-[1.15] mb-6 sm:mb-8" style={{ color: '#0D1117' }}>
+                El tipo de cambio <br /><span style={{ color: '#2563EB' }}>que su empresa</span> merece.
               </h2>
 
               <div className="flex flex-col gap-3 mb-8">
@@ -1157,28 +1120,28 @@ export default function Home() {
                   { icon: '💼', title: 'Cotización personalizada para operaciones desde $5,000 a más', sub: 'Atención especializada para empresas de cualquier tamaño' },
                   { icon: '0%', title: 'Sin comisiones ni cargos ocultos', sub: 'Solo el tipo de cambio, nada más' },
                 ].map(({ icon, title, sub }) => (
-                  <div key={title} className="flex items-start gap-4 px-4 py-3 rounded-xl" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)' }}>
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-sm" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.18)', color: '#22c55e' }}>{icon}</div>
+                  <div key={title} className="flex items-start gap-4 px-4 py-3 rounded-xl" style={{ background: '#F8FAFC', border: '1px solid #e5e7eb' }}>
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 font-black text-sm" style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)', color: '#2563EB' }}>{icon}</div>
                     <div>
-                      <div className="text-sm font-bold text-white">{title}</div>
-                      <div className="text-[11px] mt-0.5" style={{ color: 'rgba(143,184,204,0.5)' }}>{sub}</div>
+                      <div className="text-sm font-bold text-gray-900">{title}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: '#6B7280' }}>{sub}</div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-xl px-5 py-4 mb-6" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.08) 0%, rgba(34,197,94,0.03) 100%)', border: '1px solid rgba(34,197,94,0.18)' }}>
-                <div className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(34,197,94,0.65)' }}>Ahorro estimado por $10,000</div>
+              <div className="rounded-xl px-5 py-4 mb-6" style={{ background: 'rgba(37,99,235,0.04)', border: '1px solid rgba(37,99,235,0.15)' }}>
+                <div className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: '#2563EB' }}>Ahorro estimado por $10,000</div>
                 <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-black" style={{ color: '#22c55e' }}>S/ 800</span>
-                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>vs banco tradicional</span>
+                  <span className="text-4xl font-black" style={{ color: '#2563EB' }}>S/ 800</span>
+                  <span className="text-sm font-medium" style={{ color: '#6B7280' }}>vs banco tradicional</span>
                 </div>
               </div>
 
               <Link
                 href="/login"
                 className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-7 py-3.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
-                style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 6px 20px rgba(34,197,94,0.3)' }}
+                style={{ background: '#0A0A0A', color: '#ffffff', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
               >
                 Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
               </Link>
@@ -1471,7 +1434,7 @@ export default function Home() {
             <Link
               href={isAuthenticated ? '/dashboard' : '/login'}
               className="inline-flex items-center gap-2.5 text-white font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5"
-              style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 8px 24px rgba(34,197,94,0.35)' }}
+              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}
             >
               Empezar ahora <ArrowRight className="w-4 h-4" />
             </Link>
@@ -1481,7 +1444,7 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section className="corp-dark pt-6 pb-12 sm:pt-8 sm:pb-20" style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg, #0A1828 0%, #060E1A 100%)' }}>
+      <section style={{ position: 'relative', overflow: 'hidden', background: '#F8FAFC', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
@@ -1588,26 +1551,26 @@ export default function Home() {
       {/* ══════════════════════════════════════
           FOOTER
       ══════════════════════════════════════ */}
-      <footer style={{ color: isEmpresaPage ? '#9CA3AF' : '#6B7280' }}>
-        <div className="py-3 px-4 sm:px-8 lg:px-10" style={{ borderBottom: isEmpresaPage ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.06)' }}>
+      <footer style={{ color: '#6B7280' }}>
+        <div className="py-3 px-4 sm:px-8 lg:px-10" style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={isEmpresaPage ? { background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                 <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.9)' : '#0D1117' }}>Empresa Registrada</div>
-                  <div className="text-[9px] sm:text-[10px]" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.5)' : '#6B7280' }}>RUC: 20615113698 · Lima, Perú</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: '#0D1117' }}>Empresa Registrada</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: '#6B7280' }}>RUC: 20615113698 · Lima, Perú</div>
                 </div>
               </div>
-              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={isEmpresaPage ? { background: 'transparent', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', border: '1px solid rgba(255,255,255,0.18)' } : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+              <div className="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 flex items-center gap-2 sm:gap-3" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.9)' : '#0D1117' }}>Registrados ante la SBS</div>
-                  <div className="text-[9px] sm:text-[10px]" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.5)' : '#6B7280' }}>Res. N° 00313-2026</div>
+                  <div className="font-bold text-[10px] sm:text-[11px] leading-tight" style={{ color: '#0D1117' }}>Registrados ante la SBS</div>
+                  <div className="text-[9px] sm:text-[10px]" style={{ color: '#6B7280' }}>Res. N° 00313-2026</div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[11px]" style={{ color: isEmpresaPage ? '#ffffff' : '#374151' }}>
+            <div className="flex items-center gap-5 text-[11px]" style={{ color: '#374151' }}>
               <span className="flex items-center gap-1.5"><Lock className="w-3 h-3" /> SSL cifrado</span>
               <span className="flex items-center gap-1.5"><Shield className="w-3 h-3" /> Datos protegidos por ley</span>
             </div>
@@ -1635,55 +1598,55 @@ export default function Home() {
                 ) : (
                   <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
                 )}
-                <span className="text-xl font-display font-bold" style={isEmpresaPage ? { background: 'linear-gradient(135deg, #8fb8cc 0%, #4A6884 55%, #1e3a50 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#0D1117' }}>QoriCash</span>
+                <span className="text-xl font-display font-bold" style={{ color: '#0D1117' }}>QoriCash</span>
               </Link>
-              <span className="hidden sm:block w-px h-6" style={{ background: isEmpresaPage ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }} />
-              <p className="hidden sm:block text-xs leading-relaxed" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+              <span className="hidden sm:block w-px h-6" style={{ background: 'rgba(0,0,0,0.1)' }} />
+              <p className="hidden sm:block text-xs leading-relaxed" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
             </div>
-            <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: isEmpresaPage ? 'rgba(255,255,255,0.7)' : '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
+            <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
 
             {/* Fila 2 — Links en 3 columnas */}
             <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
 
               {/* Servicios */}
               <div>
-                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Servicios</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Servicios</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/servicios#compra" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Compra USD</Link></li>
-                  <li><Link href="/servicios#venta" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Venta USD</Link></li>
-                  <li><Link href="/servicios#tipo-cambio" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Tipo de cambio</Link></li>
-                  <li><Link href="/noticias" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Noticias</Link></li>
-                  <li><Link href="/preguntas-frecuentes" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>FAQ</Link></li>
+                  <li><Link href="/servicios#compra" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Compra USD</Link></li>
+                  <li><Link href="/servicios#venta" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Venta USD</Link></li>
+                  <li><Link href="/servicios#tipo-cambio" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Tipo de cambio</Link></li>
+                  <li><Link href="/noticias" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Noticias</Link></li>
+                  <li><Link href="/preguntas-frecuentes" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">FAQ</Link></li>
                 </ul>
               </div>
 
               {/* Legal */}
               <div>
-                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Legal</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Legal</h4>
                 <ul className="space-y-2">
-                  <li><Link href="/sobre-nosotros" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Nosotros</Link></li>
-                  <li><Link href="/terminos-condiciones" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Términos</Link></li>
-                  <li><Link href="/politica-privacidad" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Privacidad</Link></li>
-                  <li><Link href="/politica-cookies" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Cookies</Link></li>
-                  <li><Link href="/libro-reclamaciones" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Reclamaciones</Link></li>
+                  <li><Link href="/sobre-nosotros" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Nosotros</Link></li>
+                  <li><Link href="/terminos-condiciones" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Términos</Link></li>
+                  <li><Link href="/politica-privacidad" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Privacidad</Link></li>
+                  <li><Link href="/politica-cookies" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Cookies</Link></li>
+                  <li><Link href="/libro-reclamaciones" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Reclamaciones</Link></li>
                 </ul>
               </div>
 
               {/* Contacto */}
               <div className="col-span-1 md:col-span-2">
-                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: isEmpresaPage ? '#ffffff' : '#0D1117' }}>Contacto</h4>
+                <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Contacto</h4>
                 <ul className="space-y-2.5">
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    <a href="mailto:info@qoricash.pe" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>info@qoricash.pe</a>
+                    <a href="mailto:info@qoricash.pe" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">info@qoricash.pe</a>
                   </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                    <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className={`transition-colors text-[11px] sm:text-xs ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>910 624 404</a>
+                    <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">910 624 404</a>
                   </li>
                   <li className="flex items-start gap-2">
                     <svg className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className={`transition-colors text-[11px] sm:text-xs leading-relaxed ${isEmpresaPage ? 'hover:text-white' : 'hover:text-gray-900'}`}>Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
+                    <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="transition-colors text-[11px] sm:text-xs leading-relaxed hover:text-gray-900">Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
                   </li>
                   <li className="flex items-center gap-2">
                     <svg className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -1695,12 +1658,12 @@ export default function Home() {
             </div>
 
             {/* Copyright */}
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs" style={{ borderTop: isEmpresaPage ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.06)', color: isEmpresaPage ? '#6B7280' : '#9CA3AF' }}>
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs" style={{ borderTop: '1px solid rgba(0,0,0,0.06)', color: '#9CA3AF' }}>
               <p>© 2025 QoriCash. Todos los derechos reservados.</p>
               <div className="flex items-center gap-3">
-                <Link href="/terminos-condiciones" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Términos</Link>
-                <Link href="/politica-privacidad" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Privacidad</Link>
-                <Link href="/libro-reclamaciones" className={`transition-colors ${isEmpresaPage ? 'hover:text-gray-400' : 'hover:text-gray-600'}`}>Reclamaciones</Link>
+                <Link href="/terminos-condiciones" className="transition-colors hover:text-gray-600">Términos</Link>
+                <Link href="/politica-privacidad" className="transition-colors hover:text-gray-600">Privacidad</Link>
+                <Link href="/libro-reclamaciones" className="transition-colors hover:text-gray-600">Reclamaciones</Link>
               </div>
             </div>
 
@@ -1708,6 +1671,6 @@ export default function Home() {
         </div>
       </footer>
     </main>
-    </>
+    </Fragment>
   );
 }

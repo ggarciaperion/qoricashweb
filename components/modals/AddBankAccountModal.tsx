@@ -395,13 +395,13 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
           )}
 
           {/* Header */}
-          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={isEmpresa ? { background: 'rgba(13,27,42,0.5)', borderColor: 'rgba(143,184,204,0.15)' } : { background: '#16a34a', borderColor: 'rgba(22,163,74,0.3)' }}>
+          <div className="sticky top-0 border-b px-4 py-3 flex items-center justify-between rounded-t-xl" style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}>
             <h2 className="text-base font-bold text-white">Agregar Cuenta Bancaria</h2>
             <button
               onClick={handleClose}
               disabled={isSubmitting}
               className="transition disabled:opacity-50"
-              style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9ca3af' }}
+              style={{ color: 'rgba(255,255,255,0.5)' }}
             >
               <X className="w-5 h-5" />
             </button>
@@ -635,7 +635,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
               </div>
 
               {/* Ownership Confirmation */}
-              <div className="rounded-lg p-3" style={isEmpresa ? { background: 'rgba(74,104,132,0.15)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#fefce8', border: '1px solid #fde68a' }}>
+              <div className="rounded-lg p-3" style={{ background: '#ffffff', border: '1px solid #2563EB' }}>
                 <label className="flex items-start cursor-pointer gap-2.5">
                   <input
                     {...register('ownership_confirmed')}
@@ -643,7 +643,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                     className="w-4 h-4 rounded mt-0.5 flex-shrink-0"
                     disabled={isSubmitting}
                   />
-                  <span className="text-xs font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#713f12' }}>
+                  <span className="text-xs font-semibold" style={{ color: '#2563EB' }}>
                     Confirmo que esta cuenta es de mi titularidad
                   </span>
                 </label>
@@ -669,9 +669,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                   type="submit"
                   disabled={isSubmitting || success || !isValid}
                   className="flex-1 py-2 px-3 rounded-lg text-sm font-bold text-white transition disabled:cursor-not-allowed"
-                  style={isEmpresa
-                    ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)', opacity: (!isValid || isSubmitting || success) ? 0.45 : 1 }
-                    : { background: isValid && !isSubmitting && !success ? '#16a34a' : 'rgba(100,116,139,0.45)', opacity: 1 }}
+                  style={{ background: isValid && !isSubmitting && !success ? '#0A0A0A' : 'rgba(100,116,139,0.45)', opacity: 1 }}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center gap-1.5">

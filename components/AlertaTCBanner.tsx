@@ -75,8 +75,8 @@ export default function AlertaTCBanner() {
     <section className="relative overflow-hidden">
 
       {/* Glow sutil institucional */}
-      <div className="absolute top-0 right-1/3 w-[400px] h-[400px] bg-primary-500/6 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-primary-500/8 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-1/3 w-[400px] h-[400px] bg-blue-500/6 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-blue-500/8 rounded-full blur-[100px] pointer-events-none" />
 
 
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-5 sm:py-8 rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
@@ -112,10 +112,10 @@ export default function AlertaTCBanner() {
                 { icon: Smartphone,  text: 'Solo necesitas tu email' },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                    <Icon className="w-3.5 h-3.5 text-primary-400" />
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.2)' }}>
+                    <Icon className="w-3.5 h-3.5 text-blue-400" />
                   </div>
-                  <span className="text-sm text-gray-300 font-medium">{text}</span>
+                  <span className="text-sm text-gray-900 font-medium">{text}</span>
                 </div>
               ))}
             </div>
@@ -150,39 +150,39 @@ export default function AlertaTCBanner() {
           {/* ── Demo card — solo visible en desktop ── */}
           <div className="hidden lg:flex justify-end">
             <div className="relative w-full max-w-[320px]">
-              <div className="absolute -inset-3 rounded-3xl blur-2xl" style={{ background: 'rgba(34,197,94,0.08)' }} />
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+
+              <div className="relative rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
 
                 {/* Header */}
-                <div className="px-5 py-4 flex items-center justify-between" style={{ background: 'rgba(13,27,42,0.8)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="px-5 py-4 flex items-center justify-between" style={{ background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                      <Bell className="w-4 h-4 text-primary-400" />
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(37,99,235,0.15)' }}>
+                      <Bell className="w-4 h-4 text-blue-400" />
                     </div>
                     <div>
                       <p className="text-white text-xs font-bold">Alertas TC · QoriCash</p>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
-                        <span className="text-primary-400 text-[10px] font-semibold">Monitoreando en vivo</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                        <span className="text-blue-400 text-[10px] font-semibold">Monitoreando en vivo</span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-primary-400 px-2 py-1 rounded-full" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)' }}>ACTIVA</span>
+                  <span className="text-[10px] font-bold text-blue-400 px-2 py-1 rounded-full" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.2)' }}>ACTIVA</span>
                 </div>
 
                 {/* TC actual */}
-                <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="px-5 py-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
                   <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2">Tipo de cambio actual</p>
                   <div className="flex items-end gap-6">
                     <div>
                       <p className="text-[10px] text-gray-500 mb-0.5">Compra</p>
-                      <p className="text-2xl font-black text-white">3.395</p>
+                      <p className="text-2xl font-black text-gray-900">3.395</p>
                     </div>
                     <div>
                       <p className="text-[10px] text-gray-500 mb-0.5">Venta</p>
-                      <p className="text-2xl font-black text-white">3.415</p>
+                      <p className="text-2xl font-black text-gray-900">3.415</p>
                     </div>
-                    <div className="ml-auto flex items-center gap-1 text-primary-400">
+                    <div className="ml-auto flex items-center gap-1 text-blue-400">
                       <TrendingUp className="w-4 h-4" />
                       <span className="text-xs font-bold">+0.005</span>
                     </div>
@@ -195,21 +195,21 @@ export default function AlertaTCBanner() {
                   <div
                     className={`rounded-xl p-3.5 mb-3 transition-all duration-500 ${notifVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
                     style={{
-                      background: ej.tipo === 'sobre' ? 'rgba(34,197,94,0.08)' : 'rgba(59,130,246,0.08)',
-                      border: ej.tipo === 'sobre' ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(59,130,246,0.2)',
+                      background: ej.tipo === 'sobre' ? 'rgba(37,99,235,0.08)' : 'rgba(59,130,246,0.08)',
+                      border: ej.tipo === 'sobre' ? '1px solid rgba(37,99,235,0.2)' : '1px solid rgba(59,130,246,0.2)',
                     }}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       {ej.tipo === 'sobre'
-                        ? <TrendingUp className="w-3.5 h-3.5 text-primary-400 flex-shrink-0" />
+                        ? <TrendingUp className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
                         : <TrendingDown className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />}
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-primary-400' : 'text-blue-400'}`}>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-blue-400' : 'text-blue-400'}`}>
                         {ej.tipo === 'sobre' ? 'Alerta al alza' : 'Alerta a la baja'}
                       </span>
                     </div>
-                    <p className="text-white text-xs font-semibold">
+                    <p className="text-gray-800 text-xs font-semibold">
                       Avísame cuando TC {ej.moneda} {ej.accion}{' '}
-                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-primary-300' : 'text-blue-300'}`}>
+                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-blue-300' : 'text-blue-300'}`}>
                         S/ {ej.valor}
                       </span>
                     </p>
@@ -220,24 +220,24 @@ export default function AlertaTCBanner() {
                       <button
                         key={i}
                         onClick={() => setActive(i)}
-                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-primary-400' : 'w-1.5 h-1.5 bg-white/15 hover:bg-white/30'}`}
+                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-blue-500' : 'w-1.5 h-1.5 bg-gray-300 hover:bg-gray-400'}`}
                       />
                     ))}
                   </div>
 
-                  <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                      <Mail className="w-3.5 h-3.5 text-primary-400" />
+                  <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: '#f8faff', border: '1px solid #e0eaff' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.15)' }}>
+                      <Mail className="w-3.5 h-3.5 text-blue-400" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-white text-[11px] font-bold">info@qoricash.pe</p>
-                      <p className="text-gray-400 text-[10px] truncate">
+                      <p className="text-gray-900 text-[11px] font-bold">info@qoricash.pe</p>
+                      <p className="text-gray-500 text-[10px] truncate">
                         ⚡ TC {ej.moneda} llegó a S/ {ej.valor}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <span className="text-[9px] text-gray-600">ahora</span>
-                      <span className="w-2 h-2 rounded-full bg-primary-400" />
+                      <span className="text-[9px] text-gray-400">ahora</span>
+                      <span className="w-2 h-2 rounded-full bg-blue-500" />
                     </div>
                   </div>
                 </div>
@@ -277,15 +277,15 @@ export default function AlertaTCBanner() {
           >
             {/* Top highlight line */}
             <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(143,184,204,0.35), transparent)' }} />
-            <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)' }} />
+            <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)' }} />
             <div className="relative flex items-center gap-3">
               <div
                 className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)' }}
+                style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)' }}
               >
-                <Bell className="w-[18px] h-[18px] text-primary-400" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-400">
-                  <span className="absolute inset-0 rounded-full bg-primary-400 animate-ping opacity-75" />
+                <Bell className="w-[18px] h-[18px] text-blue-400" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-blue-500">
+                  <span className="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-75" />
                 </span>
               </div>
               <div>
@@ -309,22 +309,22 @@ export default function AlertaTCBanner() {
               /* ── Éxito ── */
               <div className="flex flex-col items-center gap-4 py-6 text-center">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-xl animate-pulse" />
-                  <div className="relative w-16 h-16 rounded-full flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.4)' }}>
-                    <CheckCircle className="w-8 h-8 text-primary-400" />
+                  <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full flex items-center justify-center" style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.4)' }}>
+                    <CheckCircle className="w-8 h-8 text-blue-400" />
                   </div>
                 </div>
                 <div>
                   <p className="text-white font-black text-xl mb-1">¡Alerta activa!</p>
                   <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                    Te escribiremos a <strong className="text-primary-400">{form.email}</strong> en el momento exacto.
+                    Te escribiremos a <strong className="text-blue-400">{form.email}</strong> en el momento exacto.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 mt-1">
                   <Link
                     href="/crear-cuenta"
-                    className="group inline-flex items-center justify-center gap-2 text-primary-300 text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
-                    style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.28)' }}
+                    className="group inline-flex items-center justify-center gap-2 text-blue-300 text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-200"
+                    style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.28)' }}
                   >
                     Gestionar todas mis alertas
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -359,13 +359,13 @@ export default function AlertaTCBanner() {
                           onClick={() => setForm((f) => ({ ...f, moneda: val }))}
                           className="flex flex-col items-center gap-1 py-3 px-2 rounded-xl transition-all duration-200 text-center"
                           style={form.moneda === val
-                            ? { background: 'rgba(34,197,94,0.15)', border: '2px solid rgba(34,197,94,0.5)', color: '#ffffff' }
+                            ? { background: 'rgba(37,99,235,0.15)', border: '2px solid rgba(37,99,235,0.5)', color: '#ffffff' }
                             : { background: 'rgba(255,255,255,0.03)', border: '2px solid rgba(143,184,204,0.15)', color: 'rgba(255,255,255,0.45)' }
                           }
                         >
                           <span className="text-lg leading-none">{icon}</span>
                           <span className="text-xs font-bold leading-tight">{label}</span>
-                          <span className="text-[10px] font-medium" style={{ color: form.moneda === val ? 'rgba(34,197,94,0.9)' : 'rgba(255,255,255,0.25)' }}>{sub}</span>
+                          <span className="text-[10px] font-medium" style={{ color: form.moneda === val ? 'rgba(37,99,235,0.9)' : 'rgba(255,255,255,0.25)' }}>{sub}</span>
                         </button>
                       ))}
                     </div>
@@ -374,7 +374,7 @@ export default function AlertaTCBanner() {
                   {/* Toggle condición */}
                   <div className="grid grid-cols-2 gap-2">
                     {([
-                      { val: 'sobre', label: 'Por encima de', icon: TrendingUp,  activeStyle: { background: 'rgba(34,197,94,0.2)', border: '1.5px solid rgba(34,197,94,0.6)', color: '#ffffff', boxShadow: '0 4px 12px rgba(34,197,94,0.2)' } },
+                      { val: 'sobre', label: 'Por encima de', icon: TrendingUp,  activeStyle: { background: 'rgba(37,99,235,0.2)', border: '1.5px solid rgba(37,99,235,0.6)', color: '#ffffff', boxShadow: '0 4px 12px rgba(37,99,235,0.2)' } },
                       { val: 'bajo',  label: 'Por debajo de', icon: TrendingDown, activeStyle: { background: 'rgba(239,68,68,0.2)', border: '1.5px solid rgba(239,68,68,0.6)', color: '#ffffff', boxShadow: '0 4px 12px rgba(239,68,68,0.2)' } },
                     ] as const).map(({ val, label, icon: Icon, activeStyle }) => (
                       <button
@@ -399,7 +399,7 @@ export default function AlertaTCBanner() {
                     <div
                       className="relative flex items-center rounded-2xl transition-all duration-200"
                       style={form.tipo === 'sobre'
-                        ? { border: '2px solid rgba(34,197,94,0.4)', background: 'rgba(34,197,94,0.06)' }
+                        ? { border: '2px solid rgba(37,99,235,0.4)', background: 'rgba(37,99,235,0.06)' }
                         : { border: '2px solid rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.06)' }
                       }
                     >
@@ -429,7 +429,7 @@ export default function AlertaTCBanner() {
                     <div
                       className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all"
                       style={form.tipo === 'sobre'
-                        ? { background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: 'rgba(134,239,172,0.9)' }
+                        ? { background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.2)', color: 'rgba(134,239,172,0.9)' }
                         : { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: 'rgba(252,165,165,0.9)' }
                       }
                     >
@@ -454,7 +454,7 @@ export default function AlertaTCBanner() {
                     onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
                     className="w-full rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition-all"
                     style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }}
-                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
+                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(37,99,235,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
                     onBlur={e => { e.currentTarget.style.border = '1px solid rgba(143,184,204,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
                     required
                   />
@@ -465,7 +465,7 @@ export default function AlertaTCBanner() {
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                     className="w-full rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none transition-all"
                     style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }}
-                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(34,197,94,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
+                    onFocus={e => { e.currentTarget.style.border = '1px solid rgba(37,99,235,0.5)'; e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
                     onBlur={e => { e.currentTarget.style.border = '1px solid rgba(143,184,204,0.2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
                     required
                   />
@@ -484,8 +484,8 @@ export default function AlertaTCBanner() {
                   disabled={submitting}
                   className="relative w-full overflow-hidden flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-extrabold text-white transition-all duration-300 disabled:opacity-50 group"
                   style={{
-                    background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
-                    boxShadow: submitting ? 'none' : '0 4px 24px rgba(34,197,94,0.35)',
+                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                    boxShadow: submitting ? 'none' : '0 4px 24px rgba(37,99,235,0.35)',
                   }}
                 >
                   <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
@@ -505,7 +505,7 @@ export default function AlertaTCBanner() {
 
                 <p className="text-center text-[11px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
                   ¿Ya tienes cuenta?{' '}
-                  <Link href="/login" className="text-primary-400 hover:text-primary-300 transition-colors font-semibold" onClick={closeModal}>
+                  <Link href="/login" className="text-blue-400 hover:text-blue-300 transition-colors font-semibold" onClick={closeModal}>
                     Inicia sesión
                   </Link>
                   {' '}para gestionar todas tus alertas

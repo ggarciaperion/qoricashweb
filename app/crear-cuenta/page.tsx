@@ -581,20 +581,18 @@ export default function CrearCuentaPage() {
 
 
   return (
-    <div className="h-screen flex flex-col" style={{ position: 'relative', backgroundColor: '#0A1628' }}>
-      <BgImage src="/pg.webp" color="#0A1628" zIndex={0} />
+    <div className="h-screen flex flex-col" style={{ position: 'relative', backgroundColor: '#F5F7FA' }}>
       {/* Header */}
-      <header className="sticky top-0 z-50" style={{ background: 'transparent', boxShadow: 'none' }}>
+      <header className="sticky top-0 z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <div className="w-full max-w-[960px] mx-auto px-4 sm:px-10 py-3.5">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-              <img src="/logo-principal.png" alt="QoriCash" className="h-9 w-auto" />
-              <span className="text-xl font-display font-black tracking-tight text-white">Qoricash</span>
+              <img src="/vg.png" alt="QoriCash" className="h-10 w-auto" />
             </Link>
-            <Link href="/login" className="text-sm transition" style={{ color: 'rgba(255,255,255,0.6)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}>
-              ¿Ya tienes cuenta? <span className="font-semibold text-primary-400">Inicia sesión</span>
+            <Link href="/login" className="text-sm transition" style={{ color: '#6B7280' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}>
+              ¿Ya tienes cuenta? <span className="font-semibold" style={{ color: '#2563EB' }}>Inicia sesión</span>
             </Link>
           </div>
         </div>
@@ -606,26 +604,322 @@ export default function CrearCuentaPage() {
 
 
 
-          {/* Imagen hero — solo desktop */}
-          <div className={`hidden lg:flex flex-[1.3] items-center justify-start${tipoPersona === 'juridica' ? ' self-stretch' : ''}`}>
-            <div
-              className={`relative w-full${tipoPersona === 'juridica' ? ' h-full flex items-center' : ''}`}
-              style={{ transform: 'translateX(-60px)' }}
-            >
-              <img
-                src={tipoPersona === 'juridica' ? '/qq.webp' : '/registro-hero.webp'}
-                alt="QoriCash"
-                className="w-full object-contain"
-                style={{ position: 'relative', zIndex: 1 }}
-              />
+          {/* Ilustración animada — solo desktop */}
+          <div className="hidden lg:flex flex-[1.3] items-center justify-center">
+            <style>{`
+              @keyframes ri-spin    { to { transform: rotate(360deg); } }
+              @keyframes ri-spin-r  { to { transform: rotate(-360deg); } }
+              @keyframes ri-float   { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-9px); } }
+              @keyframes ri-float-r { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(9px); } }
+              @keyframes ri-float-s { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
+              @keyframes ri-scan    { 0%,100% { transform: translateY(-56px); opacity: 0; } 12% { opacity: 0.65; } 88% { opacity: 0.65; } to { transform: translateY(56px); opacity: 0; } }
+              @keyframes ri-scan-h  { 0%,100% { transform: translateX(-70px); opacity: 0; } 12% { opacity: 0.55; } 88% { opacity: 0.55; } to { transform: translateX(70px); opacity: 0; } }
+              @keyframes ri-blink   { 0%,100% { opacity: 1; } 50% { opacity: 0.28; } }
+              @keyframes ri-fadein  { from { opacity: 0; transform: scale(0.82) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+              @keyframes ri-dot     { 0%,100% { transform: scale(1); opacity: 0.45; } 50% { transform: scale(2); opacity: 1; } }
+              @keyframes ri-shimmer { 0%,100% { opacity: 0.35; } 50% { opacity: 0.75; } }
+              @keyframes ri-ring-in { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+              @keyframes ri-badge   { from { opacity: 0; transform: scale(0.7) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+              @keyframes ri-check   { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+              @keyframes ri-arc     { 0% { stroke-dashoffset: 500; } 100% { stroke-dashoffset: 0; } }
+              @keyframes ri-bar     { from { width: 0; } to { width: 100%; } }
+              @keyframes ri-count   { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+            `}</style>
+
+            {tipoPersona === 'natural' ? (
+            <div style={{ position: 'relative', width: 400, height: 460, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+
+              {/* SVG decorativo de fondo */}
+              <svg width="400" height="460" viewBox="0 0 400 460" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                {Array.from({ length: 7 }, (_, r) =>
+                  Array.from({ length: 7 }, (_, c) => (
+                    <circle key={`d${r}${c}`} cx={30 + c * 58} cy={30 + r * 62} r={1.4} fill="#CBD5E1" opacity={0.5} />
+                  ))
+                )}
+                <g style={{ transformOrigin: '200px 230px', animation: 'ri-spin 28s linear infinite' }}>
+                  <circle cx="200" cy="230" r="168" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 9" />
+                  <circle cx="200" cy="62" r="6" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <circle cx="368" cy="230" r="6" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <circle cx="200" cy="398" r="6" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <circle cx="32"  cy="230" r="6" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                </g>
+                <g style={{ transformOrigin: '200px 230px', animation: 'ri-spin-r 18s linear infinite', animationDelay: '-3s' }}>
+                  <circle cx="200" cy="230" r="116" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
+                  <circle cx="200" cy="114" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="316" cy="230" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="200" cy="346" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="84"  cy="230" r="5" fill="#2563EB" opacity="0.25" />
+                </g>
+                <path d="M 60 230 A 140 140 0 0 1 340 230" stroke="#E2E8F0" strokeWidth="1" fill="none"
+                  strokeDasharray="500" strokeDashoffset="500"
+                  style={{ animation: 'ri-arc 2s cubic-bezier(0.4,0,0.2,1) 0.3s forwards' }} />
+              </svg>
+
+              {/* Card central con persona */}
+              <div style={{
+                position: 'relative', zIndex: 2,
+                width: 188, height: 212,
+                background: '#fff',
+                borderRadius: 28,
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.11), 0 4px 16px rgba(0,0,0,0.06)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: 14, overflow: 'hidden',
+                animation: 'ri-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
+              }}>
+                <div style={{
+                  position: 'absolute', left: 18, right: 18, height: 1.5,
+                  background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
+                  borderRadius: 2,
+                  animation: 'ri-scan 3.2s ease-in-out 1s infinite',
+                  zIndex: 4,
+                }} />
+                <svg width="78" height="78" viewBox="0 0 78 78" fill="none">
+                  <circle cx="39" cy="26" r="15" stroke="#0D1117" strokeWidth="2" fill="none" />
+                  <circle cx="39" cy="26" r="6" fill="#0D1117" opacity="0.07" />
+                  <path d="M 12 72 Q 14 54 39 54 Q 64 54 66 72" stroke="#0D1117" strokeWidth="2" fill="none" strokeLinecap="round" />
+                  <path d="M 20 64 Q 28 57 39 56 Q 50 57 58 64" stroke="#0D1117" strokeWidth="1" fill="none" strokeLinecap="round" opacity="0.25" />
+                </svg>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, alignItems: 'center', width: '76%' }}>
+                  <div style={{ height: 3, borderRadius: 4, background: '#E2E8F0', width: '92%', animation: 'ri-shimmer 2.2s ease-in-out infinite' }} />
+                  <div style={{ height: 3, borderRadius: 4, background: '#E2E8F0', width: '60%', animation: 'ri-shimmer 2.2s ease-in-out 0.4s infinite' }} />
+                </div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: '#F0FDF4', border: '1px solid #BBF7D0',
+                  borderRadius: 20, padding: '4px 11px',
+                }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', animation: 'ri-blink 1.8s ease-in-out infinite' }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, color: '#15803D', letterSpacing: 0.2 }}>Verificando...</span>
+                </div>
+              </div>
+
+              {/* Badge: Encriptado */}
+              <div style={{
+                position: 'absolute', top: '12%', right: '4%', zIndex: 5,
+                background: '#fff', borderRadius: 16, padding: '9px 13px',
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 8px 28px rgba(0,0,0,0.09)',
+                display: 'flex', alignItems: 'center', gap: 9,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.6s both, ri-float 4.5s ease-in-out 1.3s infinite',
+              }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>256-bit SSL</div>
+                  <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>Encriptado</div>
+                </div>
+              </div>
+
+              {/* Badge: SBS */}
+              <div style={{
+                position: 'absolute', bottom: '17%', left: '0%', zIndex: 5,
+                background: '#fff', borderRadius: 16, padding: '9px 13px',
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 8px 28px rgba(0,0,0,0.09)',
+                display: 'flex', alignItems: 'center', gap: 9,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.9s both, ri-float-r 5.5s ease-in-out 1.6s infinite',
+              }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>Regulado SBS</div>
+                  <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>Res. N° 00313-2026</div>
+                </div>
+              </div>
+
+              {/* Badge: Registro */}
+              <div style={{
+                position: 'absolute', top: '52%', right: '1%', zIndex: 5,
+                background: '#0D1117', borderRadius: 16, padding: '9px 13px',
+                boxShadow: '0 8px 28px rgba(13,17,23,0.3)',
+                display: 'flex', alignItems: 'center', gap: 8,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 1.1s both, ri-float-s 6s ease-in-out 2s infinite',
+              }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: 0.1 }}>Registro</span>
+              </div>
+
+              {/* Partículas flotantes */}
+              <div style={{ position: 'absolute', top: '14%', left: '16%', width: 7, height: 7, borderRadius: '50%', background: '#2563EB', animation: 'ri-dot 3.2s ease-in-out infinite' }} />
+              <div style={{ position: 'absolute', top: '72%', right: '16%', width: 5, height: 5, borderRadius: '50%', background: '#22c55e', animation: 'ri-dot 4.1s ease-in-out 0.8s infinite' }} />
+              <div style={{ position: 'absolute', top: '38%', left: '7%',  width: 5, height: 5, borderRadius: '50%', background: '#f59e0b', animation: 'ri-dot 5s ease-in-out 1.3s infinite' }} />
+              <div style={{ position: 'absolute', bottom: '9%', left: '32%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'ri-dot 3.7s ease-in-out 0.4s infinite' }} />
+              <div style={{ position: 'absolute', top: '25%', right: '14%', width: 4, height: 4, borderRadius: '50%', background: '#a78bfa', animation: 'ri-dot 4.6s ease-in-out 2s infinite' }} />
             </div>
+            ) : (
+            <div style={{ position: 'relative', width: 400, height: 460, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+
+              {/* SVG decorativo de fondo — mismo estilo que natural */}
+              <svg width="400" height="460" viewBox="0 0 400 460" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                {Array.from({ length: 7 }, (_, r) =>
+                  Array.from({ length: 7 }, (_, c) => (
+                    <circle key={`e${r}${c}`} cx={30 + c * 58} cy={30 + r * 62} r={1.4} fill="#CBD5E1" opacity={0.5} />
+                  ))
+                )}
+                {/* Anillo exterior — giratorio con nodos cuadrados */}
+                <g style={{ transformOrigin: '200px 230px', animation: 'ri-spin 32s linear infinite' }}>
+                  <circle cx="200" cy="230" r="168" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 9" />
+                  <rect x="196" y="58" width="8" height="8" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <rect x="364" y="226" width="8" height="8" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <rect x="196" y="394" width="8" height="8" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  <rect x="28"  y="226" width="8" height="8" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                </g>
+                {/* Anillo medio — contra-giro */}
+                <g style={{ transformOrigin: '200px 230px', animation: 'ri-spin-r 20s linear infinite', animationDelay: '-4s' }}>
+                  <circle cx="200" cy="230" r="116" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
+                  <circle cx="200" cy="114" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="316" cy="230" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="200" cy="346" r="5" fill="#2563EB" opacity="0.25" />
+                  <circle cx="84"  cy="230" r="5" fill="#2563EB" opacity="0.25" />
+                </g>
+                {/* Arco decorativo superior */}
+                <path d="M 60 230 A 140 140 0 0 1 340 230" stroke="#E2E8F0" strokeWidth="1" fill="none"
+                  strokeDasharray="500" strokeDashoffset="500"
+                  style={{ animation: 'ri-arc 2s cubic-bezier(0.4,0,0.2,1) 0.3s forwards' }} />
+              </svg>
+
+              {/* Card central — blanco, mismo estilo que natural */}
+              <div style={{
+                position: 'relative', zIndex: 2,
+                width: 188, height: 218,
+                background: '#fff',
+                borderRadius: 28,
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.11), 0 4px 16px rgba(0,0,0,0.06)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: 13, overflow: 'hidden',
+                animation: 'ri-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
+              }}>
+                {/* Línea de escaneo — azul igual que natural */}
+                <div style={{
+                  position: 'absolute', left: 18, right: 18, height: 1.5,
+                  background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
+                  borderRadius: 2,
+                  animation: 'ri-scan 3.5s ease-in-out 1s infinite',
+                  zIndex: 4,
+                }} />
+
+                {/* Icono edificio — trazo oscuro */}
+                <svg width="78" height="78" viewBox="0 0 78 78" fill="none">
+                  {/* Edificio principal */}
+                  <rect x="14" y="26" width="50" height="44" rx="2" stroke="#0D1117" strokeWidth="2" fill="none" />
+                  {/* Torre superior */}
+                  <rect x="26" y="14" width="26" height="16" rx="2" stroke="#0D1117" strokeWidth="2" fill="none" opacity="0.85" />
+                  {/* Antena */}
+                  <line x1="39" y1="7" x2="39" y2="14" stroke="#0D1117" strokeWidth="1.8" strokeLinecap="round" opacity="0.4" />
+                  {/* Ventanas fila 1 */}
+                  <rect x="19" y="34" width="8" height="8" rx="1" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1" />
+                  <rect x="32" y="34" width="8" height="8" rx="1" fill="#2563EB" opacity="0.18" stroke="#2563EB" strokeWidth="1" style={{ animation: 'ri-blink 2.8s ease-in-out infinite' }} />
+                  <rect x="45" y="34" width="8" height="8" rx="1" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1" />
+                  <rect x="58" y="34" width="8" height="8" rx="1" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1" />
+                  {/* Ventanas fila 2 */}
+                  <rect x="19" y="47" width="8" height="8" rx="1" fill="#2563EB" opacity="0.18" stroke="#2563EB" strokeWidth="1" style={{ animation: 'ri-blink 3.6s ease-in-out 0.7s infinite' }} />
+                  <rect x="32" y="47" width="8" height="8" rx="1" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1" />
+                  <rect x="45" y="47" width="8" height="8" rx="1" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1" />
+                  <rect x="58" y="47" width="8" height="8" rx="1" fill="#2563EB" opacity="0.18" stroke="#2563EB" strokeWidth="1" style={{ animation: 'ri-blink 2.2s ease-in-out 1.4s infinite' }} />
+                  {/* Puerta */}
+                  <rect x="33" y="58" width="12" height="12" rx="1" stroke="#0D1117" strokeWidth="1.5" fill="none" opacity="0.35" />
+                </svg>
+
+                {/* Líneas de nombre/datos */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, alignItems: 'center', width: '76%' }}>
+                  <div style={{ height: 3, borderRadius: 4, background: '#E2E8F0', width: '92%', animation: 'ri-shimmer 2.2s ease-in-out infinite' }} />
+                  <div style={{ height: 3, borderRadius: 4, background: '#E2E8F0', width: '65%', animation: 'ri-shimmer 2.2s ease-in-out 0.4s infinite' }} />
+                </div>
+
+                {/* Badge estado */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: '#F0FDF4', border: '1px solid #BBF7D0',
+                  borderRadius: 20, padding: '4px 11px',
+                }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', animation: 'ri-blink 1.8s ease-in-out infinite' }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, color: '#15803D', letterSpacing: 0.2 }}>Consultando RUC...</span>
+                </div>
+              </div>
+
+              {/* Badge: Ficha RUC */}
+              <div style={{
+                position: 'absolute', top: '12%', right: '4%', zIndex: 5,
+                background: '#fff', borderRadius: 16, padding: '9px 13px',
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 8px 28px rgba(0,0,0,0.09)',
+                display: 'flex', alignItems: 'center', gap: 9,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.6s both, ri-float 4.5s ease-in-out 1.3s infinite',
+              }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>Ficha RUC</div>
+                  <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>SUNAT Online</div>
+                </div>
+              </div>
+
+              {/* Badge: Empresa Activa */}
+              <div style={{
+                position: 'absolute', bottom: '17%', left: '0%', zIndex: 5,
+                background: '#fff', borderRadius: 16, padding: '9px 13px',
+                border: '1px solid rgba(0,0,0,0.07)',
+                boxShadow: '0 8px 28px rgba(0,0,0,0.09)',
+                display: 'flex', alignItems: 'center', gap: 9,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.9s both, ri-float-r 5.5s ease-in-out 1.6s infinite',
+              }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: '#F0FDF4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>Empresa Activa</div>
+                  <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>Estado SUNAT</div>
+                </div>
+              </div>
+
+              {/* Badge: Persona Jurídica — oscuro */}
+              <div style={{
+                position: 'absolute', top: '52%', right: '1%', zIndex: 5,
+                background: '#0D1117', borderRadius: 16, padding: '9px 13px',
+                boxShadow: '0 8px 28px rgba(13,17,23,0.3)',
+                display: 'flex', alignItems: 'center', gap: 8,
+                animation: 'ri-badge 0.7s cubic-bezier(0.22,1,0.36,1) 1.1s both, ri-float-s 6s ease-in-out 2s infinite',
+              }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: 0.1 }}>Persona Jurídica</span>
+              </div>
+
+              {/* Partículas flotantes */}
+              <div style={{ position: 'absolute', top: '14%', left: '16%', width: 7, height: 7, borderRadius: '50%', background: '#2563EB', animation: 'ri-dot 3.2s ease-in-out infinite' }} />
+              <div style={{ position: 'absolute', top: '72%', right: '16%', width: 5, height: 5, borderRadius: '50%', background: '#22c55e', animation: 'ri-dot 4.1s ease-in-out 0.8s infinite' }} />
+              <div style={{ position: 'absolute', top: '38%', left: '7%',  width: 5, height: 5, borderRadius: '50%', background: '#2563EB', animation: 'ri-dot 5s ease-in-out 1.3s infinite' }} />
+              <div style={{ position: 'absolute', bottom: '9%', left: '32%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'ri-dot 3.7s ease-in-out 0.4s infinite' }} />
+              <div style={{ position: 'absolute', top: '25%', right: '14%', width: 4, height: 4, borderRadius: '50%', background: '#a78bfa', animation: 'ri-dot 4.6s ease-in-out 2s infinite' }} />
+            </div>
+            )}
           </div>
 
           {/* Línea divisoria difuminada — fija al centro */}
           <div className="hidden lg:block" style={{ position: 'absolute', left: '50%', top: '5%', height: '90%', width: '1px', background: 'linear-gradient(to bottom, transparent 0%, rgba(30,41,59,0.15) 20%, rgba(30,41,59,0.15) 80%, transparent 100%)', pointerEvents: 'none' }} />
 
           {/* Formulario — centrado al mismo nivel que la imagen */}
-          <div className="flex-1 flex flex-col items-center lg:items-start justify-start self-stretch px-0 lg:pl-10 pt-6 pb-10">
+          <div className="flex-1 flex flex-col items-center lg:items-start justify-start self-stretch px-0 lg:pl-10 pt-2 pb-10">
           <div className="w-full max-w-[340px] mx-auto lg:mx-0">
 
           {/* ── PANTALLA DE ÉXITO ── */}
@@ -662,21 +956,21 @@ export default function CrearCuentaPage() {
                 >
                   {/* Anillo interior — palpita */}
                   <div className="absolute inset-0 rounded-full" style={{
-                    border: '1.5px solid rgba(34,197,94,0.38)',
+                    border: '1.5px solid rgba(0,0,0,0.15)',
                     animation: 'ringInner 2.4s ease-in-out 0.75s infinite',
                   }} />
                   {/* Anillo exterior — palpita desfasado */}
                   <div className="absolute rounded-full" style={{
                     inset: '-10px',
-                    border: '1px solid rgba(34,197,94,0.18)',
+                    border: '1px solid rgba(0,0,0,0.08)',
                     animation: 'ringOuter 2.4s ease-in-out 1.05s infinite',
                   }} />
                   {/* Círculo central con check */}
                   <div className="relative z-10 w-16 h-16 rounded-full flex items-center justify-center" style={{
-                    background: 'rgba(34,197,94,0.10)',
-                    border: '1.5px solid rgba(34,197,94,0.35)',
+                    background: 'rgba(0,0,0,0.04)',
+                    border: '1.5px solid rgba(0,0,0,0.12)',
                   }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   </div>
@@ -684,24 +978,24 @@ export default function CrearCuentaPage() {
 
                 {/* Título */}
                 <div className="mb-4" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.22s both' }}>
-                  <h1 className="text-xl font-black mb-1" style={{ color: '#ffffff' }}>
-                    ¡Bienvenido a <span style={{ color: '#22C55E' }}>QoriCash</span>!
+                  <h1 className="text-xl font-black mb-1" style={{ color: '#0D1117' }}>
+                    ¡Bienvenido a <span style={{ color: '#2563EB' }}>QoriCash</span>!
                   </h1>
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>Tu cuenta ha sido creada exitosamente</p>
+                  <p className="text-xs" style={{ color: '#6B7280' }}>Tu cuenta ha sido creada exitosamente</p>
                 </div>
 
                 {/* Pill + Card QoriCoins */}
                 <div className="w-full" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.38s both' }}>
                   <div className="flex justify-center mb-2">
                     <span className="px-4 py-1 rounded-full text-xs font-black tracking-wide"
-                      style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)', color: '#22C55E' }}>
+                      style={{ background: '#F3F4F6', border: '1px solid #D1D5DB', color: '#0D1117' }}>
                       Ganaste
                     </span>
                   </div>
                   <div className="rounded-2xl px-5 py-4 text-center bg-white"
                     style={{ border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 6px 28px rgba(30,41,59,0.07)' }}>
                     <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto mx-auto mb-3" />
-                    <p className="font-black leading-none mb-0.5" style={{ fontSize: '3rem', color: '#D4AF37' }}>40</p>
+                    <p className="font-black leading-none mb-0.5" style={{ fontSize: '3rem', color: '#D4AF37' }}>20</p>
                     <p className="text-[10px] font-black tracking-[0.3em] mb-3" style={{ color: '#D4AF37' }}>QORICOINS</p>
                     <div className="mb-3" style={{ height: '1px', background: 'rgba(30,41,59,0.08)' }} />
                     <p className="text-[9px] font-semibold tracking-widest" style={{ color: 'rgba(30,41,59,0.4)' }}>
@@ -716,8 +1010,7 @@ export default function CrearCuentaPage() {
                   onClick={() => router.push('/dashboard/nueva-operacion')}
                   className="mt-4 w-full py-3 rounded-2xl text-sm font-black text-white tracking-widest transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                   style={{
-                    background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)',
-                    boxShadow: '0 6px 24px rgba(34,197,94,0.25)',
+                    background: '#000000',
                     animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.52s both',
                   }}
                 >
@@ -725,7 +1018,7 @@ export default function CrearCuentaPage() {
                 </button>
 
                 <p className="mt-3 text-[10px] tracking-widest" style={{
-                  color: 'rgba(255,255,255,0.4)',
+                  color: '#9CA3AF',
                   animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.62s both',
                 }}>
                   QORICASH · FOREX EXCHANGE
@@ -782,17 +1075,17 @@ export default function CrearCuentaPage() {
                     <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 24px' }}>
                       {/* Arco spinner */}
                       <svg width="88" height="88" style={{ position: 'absolute', inset: 0, animation: 'arcSpin 1.1s linear infinite' }}>
-                        <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(34,197,94,0.12)" strokeWidth="2.5"/>
-                        <circle cx="44" cy="44" r="38" fill="none" stroke="#22C55E" strokeWidth="2.5"
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(0,0,0,0.10)" strokeWidth="2.5"/>
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="#000000" strokeWidth="2.5"
                           strokeDasharray="90 149" strokeLinecap="round"/>
                       </svg>
                       {/* Icono servidor centrado */}
                       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(34,197,94,0.75)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.6)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="2" y="2" width="20" height="8" rx="2"/>
                           <rect x="2" y="14" width="20" height="8" rx="2"/>
-                          <circle cx="6" cy="6"  r="1" fill="rgba(34,197,94,0.75)" stroke="none"/>
-                          <circle cx="6" cy="18" r="1" fill="rgba(34,197,94,0.75)" stroke="none"/>
+                          <circle cx="6" cy="6"  r="1" fill="rgba(0,0,0,0.6)" stroke="none"/>
+                          <circle cx="6" cy="18" r="1" fill="rgba(0,0,0,0.6)" stroke="none"/>
                           <line x1="10" y1="6"  x2="18" y2="6"/>
                           <line x1="10" y1="18" x2="18" y2="18"/>
                         </svg>
@@ -803,20 +1096,20 @@ export default function CrearCuentaPage() {
                           position: 'absolute',
                           width: '5px', height: '5px',
                           borderRadius: '50%',
-                          background: '#22C55E',
+                          background: '#000000',
                           bottom: '4px',
                           left: `${16 + i * 16}px`,
                           animation: `particleFloat 1.35s ease-in-out ${i * 0.3}s infinite`,
                         }}/>
                       ))}
                     </div>
-                    <p className="text-sm font-semibold mb-3" style={{ color: '#ffffff' }}>Creando tu cuenta…</p>
+                    <p className="text-sm font-semibold mb-3" style={{ color: '#0D1117' }}>Creando tu cuenta…</p>
                     {/* 3 dots parpadeantes */}
                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                       {[0, 1, 2].map(i => (
                         <div key={i} style={{
                           width: '6px', height: '6px', borderRadius: '50%',
-                          background: '#22C55E',
+                          background: '#000000',
                           animation: `dotBlink 1.2s ease-in-out ${i * 0.2}s infinite`,
                         }}/>
                       ))}
@@ -831,23 +1124,23 @@ export default function CrearCuentaPage() {
                       <svg width="88" height="88" viewBox="0 0 88 88">
                         {/* Fondo del círculo — aparece al completarse el trazo */}
                         <circle cx="44" cy="44" r="38"
-                          style={{ fill: 'rgba(34,197,94,0.10)', animation: 'confirmBg 0.3s 0.68s ease both', opacity: 0 }}/>
+                          style={{ fill: 'rgba(0,0,0,0.05)', animation: 'confirmBg 0.3s 0.68s ease both', opacity: 0 }}/>
                         {/* Círculo que se traza */}
-                        <circle cx="44" cy="44" r="38" fill="none" stroke="#22C55E" strokeWidth="2.5"
+                        <circle cx="44" cy="44" r="38" fill="none" stroke="#000000" strokeWidth="2.5"
                           strokeDasharray="238.8" strokeDashoffset="238.8" strokeLinecap="round"
                           transform="rotate(-90 44 44)"
                           style={{ animation: 'circleTrace 0.65s cubic-bezier(0.4,0,0.2,1) 0.08s forwards' }}/>
                         {/* Checkmark que se dibuja */}
-                        <polyline points="24,44 37,57 64,30" fill="none" stroke="#22C55E" strokeWidth="3.2"
+                        <polyline points="24,44 37,57 64,30" fill="none" stroke="#000000" strokeWidth="3.2"
                           strokeLinecap="round" strokeLinejoin="round"
                           strokeDasharray="58" strokeDashoffset="58"
                           style={{ animation: 'checkTrace 0.42s cubic-bezier(0.4,0,0.2,1) 0.7s forwards' }}/>
                       </svg>
                     </div>
-                    <p className="text-base font-black mb-1" style={{ color: '#ffffff', animation: 'confirmText 0.4s 0.85s ease both', opacity: 0 }}>
+                    <p className="text-base font-black mb-1" style={{ color: '#0D1117', animation: 'confirmText 0.4s 0.85s ease both', opacity: 0 }}>
                       ¡Cuenta creada!
                     </p>
-                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)', animation: 'confirmText 0.4s 1.0s ease both', opacity: 0 }}>
+                    <p className="text-xs" style={{ color: '#6B7280', animation: 'confirmText 0.4s 1.0s ease both', opacity: 0 }}>
                       Preparando tu bienvenida…
                     </p>
                   </div>
@@ -862,7 +1155,7 @@ export default function CrearCuentaPage() {
           {/* Flecha retroceso (visible solo en pasos > 0) */}
           <div className="mb-3" style={{ minHeight: '32px' }}>
             {paso > 0 && (
-              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: 'rgba(255,255,255,0.7)' }}>
+              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: '#6B7280' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                 Volver
               </button>
@@ -873,49 +1166,48 @@ export default function CrearCuentaPage() {
           <div className="text-center mb-5">
             <h1 className="text-2xl font-display font-black mb-1">
               {paso === 0 ? (
-                <><span style={{ color: '#ffffff' }}>Crear </span><span style={{ color: '#22C55E' }}>Cuenta</span></>
-
+                <><span style={{ color: '#0D1117' }}>Crear </span><span style={{ color: '#2563EB' }}>Cuenta</span></>
               ) : (
                 <>
-                  <span style={{ color: '#ffffff' }}>Crear cuenta </span>
-                  <span style={{ color: '#22C55E' }}>{tipoPersona === 'natural' ? 'Persona Natural' : 'Empresa'}</span>
+                  <span style={{ color: '#0D1117' }}>Crear cuenta </span>
+                  <span style={{ color: '#2563EB' }}>{tipoPersona === 'natural' ? 'Persona Natural' : 'Empresa'}</span>
                 </>
               )}
             </h1>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Únete a QoriCash en 3 simples pasos</p>
+            <p className="text-sm" style={{ color: '#6B7280' }}>Únete a QoriCash en 3 simples pasos</p>
           </div>
 
           {/* PASO 0 — Selección tipo de cliente */}
           {paso === 0 && (
             <div className="max-w-sm mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-300">
-              <h2 className="text-base font-bold text-center mb-4" style={{ color: 'rgba(255,255,255,0.85)' }}>Elige el tipo de cliente</h2>
+              <h2 className="text-base font-bold text-center mb-4" style={{ color: '#374151' }}>Elige el tipo de cliente</h2>
               <div className="grid grid-cols-2 gap-3">
                 {/* Persona Natural */}
                 <button
                   type="button"
                   onClick={() => { setTipoPersona('natural'); setFormData(prev => ({ ...prev, tipoDocumento: 'DNI' })); setPaso(1); }}
-                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
-                  style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(8px)' }}
+                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  style={{ background: '#ffffff', borderColor: '#E5E7EB' }}
                 >
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.2)' }}>
-                    <User className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: '#F3F4F6' }}>
+                    <User className="w-6 h-6" style={{ color: '#000000' }} />
                   </div>
-                  <p className="font-black text-sm mb-1.5" style={{ color: '#ffffff' }}>Persona Natural</p>
-                  <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>DNI · Carnet de Extranjería</p>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#0D1117' }}>Persona Natural</p>
+                  <p className="text-xs text-center" style={{ color: '#6B7280' }}>DNI · Carnet de Extranjería</p>
                 </button>
 
                 {/* Empresa */}
                 <button
                   type="button"
                   onClick={() => { setTipoPersona('juridica'); setFormData(prev => ({ ...prev, tipoDocumento: 'RUC' })); setPaso(1); }}
-                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:border-primary hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
-                  style={{ background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(8px)' }}
+                  className="group flex flex-col items-center p-5 rounded-2xl border-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                  style={{ background: '#ffffff', borderColor: '#E5E7EB' }}
                 >
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: 'rgba(34,197,94,0.2)' }}>
-                    <Building2 className="w-6 h-6 text-primary" />
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2.5" style={{ background: '#F3F4F6' }}>
+                    <Building2 className="w-6 h-6" style={{ color: '#000000' }} />
                   </div>
-                  <p className="font-black text-sm mb-1.5" style={{ color: '#ffffff' }}>Empresa</p>
-                  <p className="text-xs text-center" style={{ color: 'rgba(255,255,255,0.6)' }}>Ficha RUC</p>
+                  <p className="font-black text-sm mb-1.5" style={{ color: '#0D1117' }}>Empresa</p>
+                  <p className="text-xs text-center" style={{ color: '#6B7280' }}>Ficha RUC</p>
                 </button>
               </div>
             </div>
@@ -930,28 +1222,25 @@ export default function CrearCuentaPage() {
           ].map(({ num, label }) => (
             <div key={num} className="flex items-center">
               <div className="flex flex-col items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
-                  paso > num
-                    ? 'bg-primary text-white'
-                    : paso === num
-                      ? 'bg-primary text-white shadow-md shadow-primary/30'
-                      : 'bg-white/20 text-white/60'
-                }`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300`}
+                style={{
+                  background: paso > num ? '#000000' : paso === num ? '#000000' : '#E5E7EB',
+                  color: paso >= num ? '#ffffff' : '#9CA3AF',
+                }}>
                   {paso > num ? <CheckCircle2 className="w-4 h-4" /> : num}
                 </div>
-                <span className={`text-xs mt-1 font-semibold transition-colors ${paso >= num ? 'text-primary-400' : 'text-white/50'}`}>{label}</span>
+                <span className="text-xs mt-1 font-semibold transition-colors" style={{ color: paso >= num ? '#0D1117' : '#9CA3AF' }}>{label}</span>
               </div>
               {num < 3 && (
-                <div className={`w-12 sm:w-16 h-0.5 mx-2 mb-4 rounded-full transition-all duration-500 ${
-                  paso > num ? 'bg-primary' : 'bg-white/20'
-                }`} />
+                <div className="w-12 sm:w-16 h-0.5 mx-2 mb-4 rounded-full transition-all duration-500"
+                  style={{ background: paso > num ? '#000000' : '#E5E7EB' }} />
               )}
             </div>
           ))}
         </div>}
 
         {/* Card del formulario */}
-        {paso > 0 && <div className="rounded-2xl px-6 py-5" style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+        {paso > 0 && <div className="rounded-2xl px-6 py-5" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
 
           {/* Animación creando cuenta (reemplaza contenido del card) */}
           {loading && (
@@ -959,15 +1248,15 @@ export default function CrearCuentaPage() {
               <div className="relative w-16 h-16">
                 <svg className="w-16 h-16 animate-spin" viewBox="0 0 80 80" fill="none">
                   <circle cx="40" cy="40" r="34" stroke="#e2e8f0" strokeWidth="6" />
-                  <circle cx="40" cy="40" r="34" stroke="#22C55E" strokeWidth="6" strokeLinecap="round" strokeDasharray="80 140" />
+                  <circle cx="40" cy="40" r="34" stroke="#000000" strokeWidth="6" strokeLinecap="round" strokeDasharray="80 140" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
                 </div>
               </div>
               <div className="text-center">
-                <p className="text-sm font-bold" style={{ color: '#ffffff' }}>Creando tu cuenta</p>
-                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Esto solo tomará un momento...</p>
+                <p className="text-sm font-bold" style={{ color: '#0D1117' }}>Creando tu cuenta</p>
+                <p className="text-xs mt-1" style={{ color: '#6B7280' }}>Esto solo tomará un momento...</p>
               </div>
             </div>
           )}
@@ -1019,10 +1308,10 @@ export default function CrearCuentaPage() {
                 const isNatural = tipoPersona === 'natural';
                 const docLen = isNatural ? (formData.tipoDocumento === 'DNI' ? 8 : 9) : 11;
                 const valid = formData.dni.length === docLen && formData.email.includes('@') && pwdValid && formData.acceptTerms && captchaChecked;
-                const fieldsetCls = { border: '1px solid rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0' };
+                const fieldsetCls = { border: '1px solid #D1D5DB', borderRadius: '8px', padding: '0' };
                 const legendCls = "ml-3 px-1";
-                const legendStyle = { color: 'rgba(255,255,255,0.6)', fontSize: '10px' };
-                const inputInnerCls = "w-full px-3 pb-2 bg-transparent text-sm text-white focus:outline-none placeholder-white/40";
+                const legendStyle = { color: '#6B7280', fontSize: '10px' };
+                const inputInnerCls = "w-full px-3 pb-2 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400";
                 return (
                   <div className="space-y-2.5">
                     {/* Documento */}
@@ -1033,7 +1322,7 @@ export default function CrearCuentaPage() {
                           <select
                             value={formData.tipoDocumento}
                             onChange={(e) => handleChange('tipoDocumento', e.target.value as TipoDocumento)}
-                            className="w-full px-2 pb-2 bg-transparent text-sm text-white appearance-none cursor-pointer focus:outline-none"
+                            className="w-full px-2 pb-2 bg-transparent text-sm text-gray-900 appearance-none cursor-pointer focus:outline-none"
                             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center', paddingRight: '24px' }}
                           >
                             <option value="DNI">DNI</option>
@@ -1097,11 +1386,11 @@ export default function CrearCuentaPage() {
                         {pwdReqs.map((req, i) => (
                           <div key={i} className="flex items-center gap-1.5">
                             {req.met ? (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                             ) : (
                               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             )}
-                            <span className="text-xs" style={{ color: req.met ? '#22C55E' : '#EF4444' }}>{req.label}</span>
+                            <span className="text-xs" style={{ color: req.met ? '#0D1117' : '#EF4444' }}>{req.label}</span>
                           </div>
                         ))}
                       </div>
@@ -1110,20 +1399,20 @@ export default function CrearCuentaPage() {
                     {/* Términos */}
                     <label className="flex items-start gap-2.5 cursor-pointer pt-0.5">
                       <input type="checkbox" checked={formData.acceptTerms} onChange={(e) => handleChange('acceptTerms', e.target.checked)} className="mt-0.5 h-3.5 w-3.5 text-primary border-slate-300 rounded" />
-                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                        Acepto los <a href="/terminos-condiciones" target="_blank" className="text-primary hover:underline">Términos y Condiciones</a> y la <a href="/politica-privacidad" target="_blank" className="text-primary hover:underline">Política de Privacidad</a>
+                      <span className="text-xs" style={{ color: '#374151' }}>
+                        Acepto los <a href="/terminos-condiciones" target="_blank" style={{ color: '#2563EB' }} className="hover:underline">Términos y Condiciones</a> y la <a href="/politica-privacidad" target="_blank" style={{ color: '#2563EB' }} className="hover:underline">Política de Privacidad</a>
                       </span>
                     </label>
 
                     {/* Captcha */}
-                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                    <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg" style={{ border: '1px solid #D1D5DB', background: '#F9FAFB' }}>
                       <div onClick={() => { if (!captchaChecked) { setCaptchaLoading(true); setTimeout(() => { setCaptchaLoading(false); setCaptchaChecked(true); }, 1200); }}} className="flex-shrink-0 w-5 h-5 cursor-pointer flex items-center justify-center">
-                        {captchaLoading ? <Loader2 className="w-5 h-5 animate-spin text-primary" /> : captchaChecked ? <CheckCircle2 className="w-5 h-5 text-primary" /> : <div className="w-5 h-5 border border-slate-300 rounded hover:border-primary transition" />}
+                        {captchaLoading ? <Loader2 className="w-5 h-5 animate-spin" style={{ color: '#000000' }} /> : captchaChecked ? <CheckCircle2 className="w-5 h-5" style={{ color: '#000000' }} /> : <div className="w-5 h-5 border border-gray-300 rounded hover:border-gray-600 transition" />}
                       </div>
-                      <span className="text-xs flex-1" style={{ color: 'rgba(255,255,255,0.7)' }}>No soy un robot</span>
+                      <span className="text-xs flex-1" style={{ color: '#374151' }}>No soy un robot</span>
                       <div className="flex flex-col items-center gap-0.5 opacity-50">
                         <img src="/logo-principal.png" alt="" className="h-5 w-auto" />
-                        <span className="text-[8px]" style={{ color: 'rgba(255,255,255,0.4)' }}>reCAPTCHA</span>
+                        <span className="text-[8px]" style={{ color: '#9CA3AF' }}>reCAPTCHA</span>
                       </div>
                     </div>
 
@@ -1173,7 +1462,7 @@ export default function CrearCuentaPage() {
                       }}
                       disabled={checkingDoc || lookupLoading || transicionando}
                       className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
-                      style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.18)', cursor: valid ? 'pointer' : 'default' }}
+                      style={{ background: valid ? '#000000' : '#E5E7EB', color: valid ? '#ffffff' : '#9CA3AF', cursor: valid ? 'pointer' : 'default' }}
                     >
                       {checkingDoc || lookupLoading || transicionando
                         ? <><Loader2 className="w-4 h-4 animate-spin" />Verificando...</>
@@ -1192,10 +1481,10 @@ export default function CrearCuentaPage() {
             <div className="space-y-3 animate-in fade-in slide-in-from-right duration-300">
 
             {(() => {
-              const fsCls = { border: '1px solid rgba(255,255,255,0.25)', borderRadius: '8px', padding: '0' };
+              const fsCls = { border: '1px solid #D1D5DB', borderRadius: '8px', padding: '0' };
               const legCls = "ml-2 px-1";
-              const legSt = { color: 'rgba(255,255,255,0.6)', fontSize: '10px' };
-              const inpCls = "w-full px-3 pb-2 bg-transparent text-sm text-white focus:outline-none placeholder-white/40";
+              const legSt = { color: '#6B7280', fontSize: '10px' };
+              const inpCls = "w-full px-3 pb-2 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400";
               const arrSt = SELECT_ARROW_STYLE;
               const telefonoValido = formData.telefonoCodigo === '+51'
                 ? formData.telefono.length === 9 && formData.telefono.startsWith('9')
@@ -1211,15 +1500,15 @@ export default function CrearCuentaPage() {
                 return (
                   <div className="space-y-2.5">
                     {/* Documento — solo lectura */}
-                    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #D1D5DB', background: '#F9FAFB' }}>
                       <div className="px-4 py-3 flex gap-8">
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>Documento</p>
-                          <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>CE</p>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: '#6B7280' }}>Documento</p>
+                          <p className="text-sm font-semibold" style={{ color: '#0D1117' }}>CE</p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>Número</p>
-                          <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>{formData.dni}</p>
+                          <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: '#6B7280' }}>Número</p>
+                          <p className="text-sm font-semibold" style={{ color: '#0D1117' }}>{formData.dni}</p>
                         </div>
                       </div>
                     </div>
@@ -1246,7 +1535,7 @@ export default function CrearCuentaPage() {
                     <div className="flex gap-2">
                       <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
                         <legend className={legCls} style={legSt}>Código</legend>
-                        <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                        <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
                           {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
                         </select>
                       </fieldset>
@@ -1268,42 +1557,45 @@ export default function CrearCuentaPage() {
                     {/* Nacionalidad */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Nacionalidad</legend>
-                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#ffffff' : '#CBD5E1' }}>
+                      <select value={formData.nacionalidad} onChange={e => handleChange('nacionalidad', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.nacionalidad ? '#0D1117' : '#9CA3AF' }}>
                         <option value="" disabled>Seleccionar</option>
                         {NACIONALIDADES.map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
                     </fieldset>
 
-                    {/* Ocupación */}
+                    {/* Profesión / Ocupación */}
                     <fieldset style={fsCls}>
-                      <legend className={legCls} style={legSt}>Ocupación</legend>
-                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.ocupacion ? '#ffffff' : '#CBD5E1' }}>
-                        <option value="" disabled>Seleccionar</option>
-                        {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
-                      </select>
+                      <legend className={legCls} style={legSt}>Profesión / Ocupación</legend>
+                      <input
+                        type="text"
+                        value={formData.ocupacion}
+                        onChange={e => handleChange('ocupacion', e.target.value)}
+                        placeholder="Ej: Ingeniero, Comerciante, Abogado..."
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400"
+                      />
                     </fieldset>
 
                     {/* Fecha de nacimiento */}
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5 ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Fecha de nacimiento</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-1.5 ml-1" style={{ color: '#6B7280' }}>Fecha de nacimiento</p>
                       <div className="flex gap-2">
                         <fieldset style={{ ...fsCls, flex: 1 }}>
                           <legend className={legCls} style={legSt}>Día</legend>
-                          <select value={formData.diaNac} onChange={e => handleChange('diaNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.diaNac ? '#ffffff' : '#CBD5E1' }}>
+                          <select value={formData.diaNac} onChange={e => handleChange('diaNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.diaNac ? '#0D1117' : '#9CA3AF' }}>
                             <option value="">DD</option>
                             {DIAS.map(d => <option key={d} value={d}>{d}</option>)}
                           </select>
                         </fieldset>
                         <fieldset style={{ ...fsCls, flex: 2 }}>
                           <legend className={legCls} style={legSt}>Mes</legend>
-                          <select value={formData.mesNac} onChange={e => handleChange('mesNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.mesNac ? '#ffffff' : '#CBD5E1' }}>
+                          <select value={formData.mesNac} onChange={e => handleChange('mesNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.mesNac ? '#0D1117' : '#9CA3AF' }}>
                             <option value="">MM</option>
                             {MESES.map((m, i) => <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>)}
                           </select>
                         </fieldset>
                         <fieldset style={{ ...fsCls, flex: 1.5 }}>
                           <legend className={legCls} style={legSt}>Año</legend>
-                          <select value={formData.anioNac} onChange={e => handleChange('anioNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.anioNac ? '#ffffff' : '#CBD5E1' }}>
+                          <select value={formData.anioNac} onChange={e => handleChange('anioNac', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.anioNac ? '#0D1117' : '#9CA3AF' }}>
                             <option value="">AAAA</option>
                             {ANIOS.map(y => <option key={y} value={String(y)}>{y}</option>)}
                           </select>
@@ -1312,7 +1604,7 @@ export default function CrearCuentaPage() {
                     </div>
 
                     {/* Datos de ubicación */}
-                    <p className="text-[10px] font-semibold uppercase tracking-wide pt-1 ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>Datos de ubicación</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-wide pt-1 ml-1" style={{ color: '#6B7280' }}>Datos de ubicación</p>
 
                     {/* País de residencia */}
                     <fieldset style={fsCls}>
@@ -1323,7 +1615,7 @@ export default function CrearCuentaPage() {
                     {/* Departamento */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Departamento</legend>
-                      <select value={formData.departamento} onChange={e => handleChange('departamento', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.departamento ? '#ffffff' : '#CBD5E1' }}>
+                      <select value={formData.departamento} onChange={e => handleChange('departamento', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.departamento ? '#0D1117' : '#9CA3AF' }}>
                         <option value="">Seleccionar</option>
                         {departamentos.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
@@ -1332,7 +1624,7 @@ export default function CrearCuentaPage() {
                     {/* Provincia */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Provincia</legend>
-                      <select value={formData.provincia} onChange={e => handleChange('provincia', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.provincia ? '#ffffff' : '#CBD5E1' }} disabled={!formData.departamento}>
+                      <select value={formData.provincia} onChange={e => handleChange('provincia', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.provincia ? '#0D1117' : '#9CA3AF' }} disabled={!formData.departamento}>
                         <option value="">Seleccionar</option>
                         {provincias.map(p => <option key={p} value={p}>{p}</option>)}
                       </select>
@@ -1341,7 +1633,7 @@ export default function CrearCuentaPage() {
                     {/* Distrito */}
                     <fieldset style={fsCls}>
                       <legend className={legCls} style={legSt}>Distrito</legend>
-                      <select value={formData.distrito} onChange={e => handleChange('distrito', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.distrito ? '#ffffff' : '#CBD5E1' }} disabled={!formData.provincia}>
+                      <select value={formData.distrito} onChange={e => handleChange('distrito', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer" style={{ ...arrSt, color: formData.distrito ? '#0D1117' : '#9CA3AF' }} disabled={!formData.provincia}>
                         <option value="">Seleccionar</option>
                         {distritos.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
@@ -1356,7 +1648,7 @@ export default function CrearCuentaPage() {
                     {/* Botón continuar */}
                     <button type="button" onClick={siguientePaso} disabled={!valid || transicionando}
                       className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
-                      style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.12)', cursor: valid ? 'pointer' : 'not-allowed' }}>
+                      style={{ background: valid ? '#000000' : '#E5E7EB', color: valid ? '#ffffff' : '#9CA3AF', cursor: valid ? 'pointer' : 'not-allowed' }}>
                       {transicionando ? <><Loader2 className="w-4 h-4 animate-spin" />Cargando...</> : 'Continuar'}
                     </button>
                   </div>
@@ -1378,32 +1670,32 @@ export default function CrearCuentaPage() {
               return (
                 <div className="space-y-2.5">
                   {/* Card DNI + Nombres */}
-                  <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.2)' }}>
+                  <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #D1D5DB', background: '#F9FAFB' }}>
                     <div className="px-4 py-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>{formData.tipoDocumento}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: '#6B7280' }}>{formData.tipoDocumento}</p>
                       {editingDni ? (
                         <div className="flex gap-2 mt-1">
                           <input type="text" value={dniEditValue} onChange={e => setDniEditValue(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                            className="flex-1 px-2 py-1 rounded-lg text-sm text-white focus:outline-none" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }}
+                            className="flex-1 px-2 py-1 rounded-lg text-sm text-gray-900 focus:outline-none" style={{ border: '1px solid #D1D5DB', background: '#ffffff' }}
                             placeholder="Ingresa tu número de documento" autoFocus />
                           <button type="button" onClick={async () => { setFormData(prev => ({ ...prev, dni: dniEditValue })); await handleLookup(dniEditValue); setEditingDni(false); }}
-                            className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition">
+                            className="px-3 py-1 rounded-lg text-sm font-semibold transition" style={{ background: '#000000', color: '#ffffff' }}>
                             {lookupLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                           </button>
                         </div>
                       ) : (
-                        <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>{formData.dni}</p>
+                        <p className="text-sm font-semibold" style={{ color: '#0D1117' }}>{formData.dni}</p>
                       )}
                     </div>
                     {!editingDni && (
                       <div className="px-4 py-3">
-                        <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                        <p className="text-[10px] font-semibold uppercase tracking-wide mb-0.5" style={{ color: '#6B7280' }}>
                           {tipoPersona === 'juridica' ? 'Razón Social' : 'Nombres y Apellidos'}
                         </p>
-                        <p className="text-sm font-semibold" style={{ color: '#ffffff' }}>
+                        <p className="text-sm font-semibold" style={{ color: '#0D1117' }}>
                           {tipoPersona === 'juridica'
-                            ? (formData.razonSocial || <span style={{ color: 'rgba(255,255,255,0.4)' }}>No encontrado</span>)
-                            : (`${formData.apellidoPaterno} ${formData.apellidoMaterno} ${formData.nombres}`.trim() || <span style={{ color: 'rgba(255,255,255,0.4)' }}>No encontrado</span>)
+                            ? (formData.razonSocial || <span style={{ color: '#9CA3AF' }}>No encontrado</span>)
+                            : (`${formData.apellidoPaterno} ${formData.apellidoMaterno} ${formData.nombres}`.trim() || <span style={{ color: '#9CA3AF' }}>No encontrado</span>)
                           }
                         </p>
                       </div>
@@ -1411,38 +1703,38 @@ export default function CrearCuentaPage() {
                     {/* Campos manuales si el lookup DNI falló */}
                     {dniLookupFailed && (
                       <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
-                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>No pudimos obtener tus datos automáticamente. Ingrésalos manualmente:</p>
+                        <p className="text-[10px]" style={{ color: '#6B7280' }}>No pudimos obtener tus datos automáticamente. Ingrésalos manualmente:</p>
                         <input type="text" value={formData.nombres}
                           onChange={e => handleChange('nombres', e.target.value)}
                           placeholder="Nombres"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-gray-900 focus:outline-none placeholder-gray-400" style={{ border: '1px solid #D1D5DB', background: '#ffffff' }} />
                         <input type="text" value={formData.apellidoPaterno}
                           onChange={e => handleChange('apellidoPaterno', e.target.value)}
                           placeholder="Apellido paterno"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-gray-900 focus:outline-none placeholder-gray-400" style={{ border: '1px solid #D1D5DB', background: '#ffffff' }} />
                         <input type="text" value={formData.apellidoMaterno}
                           onChange={e => handleChange('apellidoMaterno', e.target.value)}
                           placeholder="Apellido materno"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-gray-900 focus:outline-none placeholder-gray-400" style={{ border: '1px solid #D1D5DB', background: '#ffffff' }} />
                       </div>
                     )}
                     {/* Campo manual Razón Social si el lookup RUC falló */}
                     {rucLookupFailed && (
                       <div className="px-4 pb-3 space-y-2 animate-in fade-in duration-300">
-                        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.6)' }}>No pudimos obtener la razón social. Ingrésala manualmente:</p>
+                        <p className="text-[10px]" style={{ color: '#6B7280' }}>No pudimos obtener la razón social. Ingrésala manualmente:</p>
                         <input type="text" value={formData.razonSocial}
                           onChange={e => handleChange('razonSocial', e.target.value)}
                           placeholder="Razón Social"
                           autoComplete="off"
-                          className="w-full px-2 py-1.5 rounded-lg text-sm text-white focus:outline-none placeholder-white/40" style={{ border: '1px solid rgba(255,255,255,0.25)', background: 'transparent' }} />
+                          className="w-full px-2 py-1.5 rounded-lg text-sm text-gray-900 focus:outline-none placeholder-gray-400" style={{ border: '1px solid #D1D5DB', background: '#ffffff' }} />
                       </div>
                     )}
                   </div>
                   {!editingDni && (
-                    <button type="button" onClick={() => { setEditingDni(true); setDniEditValue(formData.dni); }} className="text-xs underline" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <button type="button" onClick={() => { setEditingDni(true); setDniEditValue(formData.dni); }} className="text-xs underline" style={{ color: '#6B7280' }}>
                       ¿No son tus datos?
                     </button>
                   )}
@@ -1454,7 +1746,7 @@ export default function CrearCuentaPage() {
                       <input type="text" value={formData.personaContacto}
                         onChange={e => handleChange('personaContacto', e.target.value)}
                         autoComplete="off"
-                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-white focus:outline-none placeholder-slate-300"
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400"
                         placeholder="Nombre completo" />
                     </fieldset>
                   )}
@@ -1463,7 +1755,7 @@ export default function CrearCuentaPage() {
                   <div className="flex gap-2 pt-1">
                     <fieldset style={{ ...fsCls, minWidth: '80px', width: '80px', flexShrink: 0 }}>
                       <legend className={legCls} style={legSt}>Código</legend>
-                      <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-white appearance-none focus:outline-none cursor-pointer" style={arrSt}>
+                      <select value={formData.telefonoCodigo} onChange={e => handleChange('telefonoCodigo', e.target.value)} className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 appearance-none focus:outline-none cursor-pointer" style={arrSt}>
                         {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.iso}</option>)}
                       </select>
                     </fieldset>
@@ -1477,7 +1769,7 @@ export default function CrearCuentaPage() {
                         else handleChange('telefono', raw);
                       }} autoComplete="off"
                         inputMode="tel"
-                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-white focus:outline-none placeholder-slate-300"
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400"
                         placeholder='' maxLength={formData.telefonoCodigo === '+51' ? 9 : undefined} />
                     </fieldset>
                   </div>
@@ -1491,33 +1783,34 @@ export default function CrearCuentaPage() {
                       <legend className={legCls} style={legSt}>Relación con la empresa</legend>
                       <select value={formData.relacionEmpresa} onChange={e => handleChange('relacionEmpresa', e.target.value)}
                         className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
-                        style={{ ...arrSt, color: formData.relacionEmpresa ? '#ffffff' : '#CBD5E1' }}>
+                        style={{ ...arrSt, color: formData.relacionEmpresa ? '#0D1117' : '#9CA3AF' }}>
                         <option value="" disabled>Seleccionar</option>
                         {RELACIONES_EMPRESA.map(r => <option key={r} value={r}>{r}</option>)}
                       </select>
                     </fieldset>
                   ) : (
                     <fieldset style={fsCls}>
-                      <legend className={legCls} style={legSt}>Ocupación</legend>
-                      <select value={formData.ocupacion} onChange={e => handleChange('ocupacion', e.target.value)}
-                        className="w-full px-2 pb-1.5 bg-transparent text-sm appearance-none focus:outline-none cursor-pointer"
-                        style={{ ...arrSt, color: formData.ocupacion ? '#ffffff' : '#CBD5E1' }}>
-                        <option value="" disabled>Seleccionar</option>
-                        {OCUPACIONES.map(o => <option key={o} value={o}>{o}</option>)}
-                      </select>
+                      <legend className={legCls} style={legSt}>Profesión / Ocupación</legend>
+                      <input
+                        type="text"
+                        value={formData.ocupacion}
+                        onChange={e => handleChange('ocupacion', e.target.value)}
+                        placeholder="Ej: Ingeniero, Comerciante, Abogado..."
+                        className="w-full px-2 pb-1.5 bg-transparent text-sm text-gray-900 focus:outline-none placeholder-gray-400"
+                      />
                     </fieldset>
                   )}
 
                   {/* Botón continuar */}
                   <button type="button" onClick={siguientePaso} disabled={!valid || transicionando}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-200 mt-1 flex items-center justify-center gap-2"
-                    style={{ background: valid ? '#22C55E' : 'rgba(30,41,59,0.12)', cursor: valid ? 'pointer' : 'not-allowed' }}>
+                    style={{ background: valid ? '#000000' : '#E5E7EB', color: valid ? '#ffffff' : '#9CA3AF', cursor: valid ? 'pointer' : 'not-allowed' }}>
                     {transicionando ? <><Loader2 className="w-4 h-4 animate-spin" />Cargando...</> : 'Continuar'}
                   </button>
 
                   {/* Soporte */}
                   <p className="text-center pt-1">
-                    <a href="https://wa.me/51999999999?text=Hola%2C%20necesito%20ayuda%20con%20mi%20registro%20en%20QoriCash" target="_blank" rel="noopener noreferrer" className="text-xs underline transition" style={{ color: '#22C55E' }}>
+                    <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20registro%20en%20QoriCash" target="_blank" rel="noopener noreferrer" className="text-xs underline transition" style={{ color: '#2563EB' }}>
                       Contactar con soporte
                     </a>
                   </p>
@@ -1534,23 +1827,23 @@ export default function CrearCuentaPage() {
 
               {/* Encabezado */}
               <div className="text-center pb-1">
-                <h2 className="text-base font-black mb-1" style={{ color: '#ffffff' }}>Verificamos que eres tú</h2>
-                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Ingresa el código que te enviaremos a tu correo</p>
+                <h2 className="text-base font-black mb-1" style={{ color: '#0D1117' }}>Verificamos que eres tú</h2>
+                <p className="text-xs" style={{ color: '#6B7280' }}>Ingresa el código que te enviaremos a tu correo</p>
               </div>
 
               {/* Card correo */}
-              <fieldset style={{ border: '1px solid rgba(255,255,255,0.25)', borderRadius: '12px', padding: '0' }}>
-                <legend className="px-1" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '10px', marginLeft: '56px' }}>Correo</legend>
+              <fieldset style={{ border: '1px solid #D1D5DB', borderRadius: '12px', padding: '0' }}>
+                <legend className="px-1" style={{ color: '#6B7280', fontSize: '10px', marginLeft: '56px' }}>Correo</legend>
                 <div className="px-3 pb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+                  <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: '#F3F4F6' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
                   </div>
-                  <p className="text-sm font-semibold flex-1" style={{ color: '#ffffff', wordBreak: 'break-all' }}>{formData.email}</p>
+                  <p className="text-sm font-semibold flex-1" style={{ color: '#0D1117', wordBreak: 'break-all' }}>{formData.email}</p>
                 </div>
                 {codigoEnviado && (
                   <div className="flex items-center justify-center gap-1.5 pb-3 animate-in fade-in duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span className="text-xs font-semibold" style={{ color: '#22C55E' }}>Código enviado</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span className="text-xs font-semibold" style={{ color: '#0D1117' }}>Código enviado</span>
                   </div>
                 )}
               </fieldset>
@@ -1587,7 +1880,7 @@ export default function CrearCuentaPage() {
                   }}
                   disabled={codigoEnviando}
                   className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold text-white transition"
-                  style={{ background: '#22C55E' }}
+                  style={{ background: '#000000' }}
                 >
                   {codigoEnviando ? (
                     <><Loader2 className="w-4 h-4 animate-spin" />Enviando...</>
@@ -1598,10 +1891,8 @@ export default function CrearCuentaPage() {
               {/* Animación "código enviado" — 2 segundos */}
               {showSentAnim && (
                 <div className="relative overflow-hidden rounded-2xl" style={{
-                  background: 'rgba(10,20,36,0.85)',
-                  border: '1px solid rgba(34,197,94,0.35)',
-                  backdropFilter: 'blur(12px)',
-                  WebkitBackdropFilter: 'blur(12px)',
+                  background: '#F0FDF4',
+                  border: '1px solid #BBF7D0',
                 }}>
                   <style>{`
                     @keyframes planeUp {
@@ -1634,21 +1925,21 @@ export default function CrearCuentaPage() {
                     <div className="relative w-16 h-16 flex items-center justify-center">
                       {/* Ring pulse */}
                       <div className="absolute inset-0 rounded-full" style={{
-                        border: '2px solid rgba(34,197,94,0.5)',
+                        border: '2px solid rgba(0,0,0,0.15)',
                         animation: 'pulseRing 1s ease-out 0.3s forwards',
                       }} />
                       {/* Círculo verde */}
                       <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{
-                        background: 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.15))',
-                        border: '1.5px solid rgba(34,197,94,0.4)',
+                        background: '#F3F4F6',
+                        border: '1.5px solid #D1D5DB',
                       }}>
                         {/* Avión que sale */}
                         <svg
                           width="26" height="26" viewBox="0 0 24 24" fill="none"
                           style={{ animation: 'planeUp 0.9s cubic-bezier(0.4,0,0.2,1) 0.1s forwards', transformOrigin: 'center' }}
                         >
-                          <path d="M22 2L11 13" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(34,197,94,0.15)"/>
+                          <path d="M22 2L11 13" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(0,0,0,0.08)"/>
                         </svg>
                         {/* Check que aparece */}
                         <svg
@@ -1662,17 +1953,17 @@ export default function CrearCuentaPage() {
 
                     {/* Textos */}
                     <div className="text-center" style={{ animation: 'sentTextIn 0.4s ease 0.2s both' }}>
-                      <p className="text-sm font-black" style={{ color: '#ffffff' }}>¡Código enviado!</p>
-                      <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                        Revisa tu correo <span style={{ color: 'rgba(34,197,94,0.9)', fontWeight: 600 }}>{formData.email}</span>
+                      <p className="text-sm font-black" style={{ color: '#0D1117' }}>¡Código enviado!</p>
+                      <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>
+                        Revisa tu correo <span style={{ color: '#000000', fontWeight: 600 }}>{formData.email}</span>
                       </p>
                     </div>
 
                     {/* Barra de progreso */}
-                    <div className="w-full rounded-full overflow-hidden" style={{ height: '2px', background: 'rgba(255,255,255,0.08)' }}>
+                    <div className="w-full rounded-full overflow-hidden" style={{ height: '2px', background: '#D1FAE5' }}>
                       <div style={{
                         height: '100%',
-                        background: 'linear-gradient(90deg, #22C55E, #10b981)',
+                        background: '#000000',
                         borderRadius: '9999px',
                         animation: 'trailFade 2s linear forwards',
                         transformOrigin: 'left center',
@@ -1686,9 +1977,9 @@ export default function CrearCuentaPage() {
               {codigoEnviado && (
                 <div className="text-center animate-in fade-in duration-300">
                   {countdown > 0 ? (
-                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                    <p className="text-xs" style={{ color: '#6B7280' }}>
                       Puedes reenviar el código en{' '}
-                      <span className="font-semibold tabular-nums" style={{ color: '#ffffff' }}>
+                      <span className="font-semibold tabular-nums" style={{ color: '#0D1117' }}>
                         {Math.floor(countdown / 60) > 0
                           ? `${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')} min`
                           : `${countdown}s`}
@@ -1722,7 +2013,7 @@ export default function CrearCuentaPage() {
                       }}
                       disabled={codigoEnviando}
                       className="text-xs font-semibold underline transition hover:opacity-70 flex items-center gap-1 mx-auto"
-                      style={{ color: '#22C55E' }}
+                      style={{ color: '#2563EB' }}
                     >
                       {codigoEnviando ? <><Loader2 className="w-3 h-3 animate-spin" />Enviando...</> : '¿No recibiste el código? Reenviar'}
                     </button>
@@ -1793,24 +2084,24 @@ export default function CrearCuentaPage() {
                     {Array.from({ length: 6 }).map((_, i) => {
                       const isActive = i === codigoValue.length && codigoValido === null && !codigoValidando;
                       const lineColor = codigoValido === true
-                        ? '#22C55E'
+                        ? '#000000'
                         : codigoValido === false
                           ? '#EF4444'
                           : codigoValidando
                             ? '#CBD5E1'
                             : i < codigoValue.length
-                              ? '#22C55E'
+                              ? '#000000'
                               : isActive
-                                ? '#ffffff'
-                                : 'rgba(255,255,255,0.25)';
-                      const charColor = codigoValido === true ? '#22C55E' : codigoValido === false ? '#EF4444' : '#ffffff';
+                                ? '#0D1117'
+                                : '#D1D5DB';
+                      const charColor = codigoValido === true ? '#000000' : codigoValido === false ? '#EF4444' : '#0D1117';
                       return (
                         <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: '34px', position: 'relative', zIndex: 1 }}>
                           <span className="text-lg font-bold h-7 flex items-end justify-center transition-colors duration-300" style={{ color: charColor, minWidth: '34px', textAlign: 'center', position: 'relative' }}>
                             {codigoValue[i]
                               ? codigoValue[i]
                               : isActive
-                                ? <span className="otp-caret" style={{ display: 'inline-block', width: '2px', height: '20px', background: '#ffffff', borderRadius: '1px', marginBottom: '2px' }} />
+                                ? <span className="otp-caret" style={{ display: 'inline-block', width: '2px', height: '20px', background: '#0D1117', borderRadius: '1px', marginBottom: '2px' }} />
                                 : ''}
                           </span>
                           <div className="w-full transition-colors duration-300" style={{ height: '2px', borderRadius: '2px', background: lineColor }} />
@@ -1822,13 +2113,13 @@ export default function CrearCuentaPage() {
                   {codigoValidando && (
                     <div className="flex justify-center items-center gap-2 mt-3 animate-in fade-in duration-200">
                       <Loader2 className="w-4 h-4 animate-spin" style={{ color: '#94a3b8' }} />
-                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Verificando código...</span>
+                      <span className="text-xs" style={{ color: '#6B7280' }}>Verificando código...</span>
                     </div>
                   )}
                   {codigoValido === true && (
                     <div className="flex justify-center items-center gap-1.5 mt-3 animate-in fade-in zoom-in-95 duration-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span className="text-xs font-semibold" style={{ color: '#22C55E' }}>Código verificado correctamente</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span className="text-xs font-semibold" style={{ color: '#0D1117' }}>Código verificado correctamente</span>
                     </div>
                   )}
                   {codigoValido === false && (
@@ -1841,16 +2132,18 @@ export default function CrearCuentaPage() {
               )}
 
               {/* Cambiar correo */}
-              <p className="text-center">
-                <button
-                  type="button"
-                  onClick={() => { setNewEmailValue(formData.email); setShowChangeEmailModal(true); }}
-                  className="text-xs underline transition hover:opacity-70"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}
-                >
-                  ¿Necesitas cambiar de correo?
-                </button>
-              </p>
+              {codigoValido !== true && (
+                <p className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => { setNewEmailValue(formData.email); setShowChangeEmailModal(true); }}
+                    className="text-xs underline transition hover:opacity-70"
+                    style={{ color: '#6B7280' }}
+                  >
+                    ¿Necesitas cambiar de correo?
+                  </button>
+                </p>
+              )}
 
               {/* Botón Crear Cuenta */}
               {codigoEnviado && (
@@ -1860,7 +2153,8 @@ export default function CrearCuentaPage() {
                   disabled={loading || codigoValido !== true}
                   className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 animate-in fade-in duration-300"
                   style={{
-                    background: codigoValido === true ? '#22C55E' : 'rgba(255,255,255,0.15)',
+                    background: codigoValido === true ? '#000000' : '#E5E7EB',
+                    color: codigoValido === true ? '#ffffff' : '#9CA3AF',
                     cursor: codigoValido === true ? 'pointer' : 'not-allowed',
                   }}
                 >
@@ -1915,7 +2209,7 @@ export default function CrearCuentaPage() {
                   }
                 }}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold text-white transition"
-                style={{ background: newEmailValue.includes('@') ? '#22C55E' : 'rgba(30,41,59,0.18)', cursor: newEmailValue.includes('@') ? 'pointer' : 'not-allowed' }}
+                style={{ background: newEmailValue.includes('@') ? '#000000' : '#E5E7EB', color: newEmailValue.includes('@') ? '#ffffff' : '#9CA3AF', cursor: newEmailValue.includes('@') ? 'pointer' : 'not-allowed' }}
               >
                 Guardar
               </button>

@@ -1747,26 +1747,45 @@ export function NuevaOperacionContent() {
 
                   {/* Toast: KYC bloquea operación */}
                   {showKycBlockedToast && (
-                    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4" style={{ animation: 'fadeInDown 0.3s ease' }}>
-                      <div className="flex items-start gap-3 rounded-2xl px-4 py-3 shadow-xl" style={{ background: '#0f172a', border: '1px solid rgba(251,191,36,0.3)' }}>
-                        <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'rgba(251,191,36,0.15)' }}>
-                          <AlertCircle className="w-4 h-4" style={{ color: '#fbbf24' }} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-white leading-tight mb-0.5">
+                    <div
+                      className="fixed inset-0 z-50 flex items-center justify-center px-4"
+                      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+                      onClick={() => setShowKycBlockedToast(false)}
+                    >
+                      <div
+                        className="w-full max-w-sm rounded-2xl overflow-hidden"
+                        style={{ background: '#ffffff', boxShadow: '0 24px 64px rgba(0,0,0,0.3)', animation: 'fadeInDown 0.25s ease' }}
+                        onClick={e => e.stopPropagation()}
+                      >
+                        {/* Header azul */}
+                        <div className="flex items-center gap-3 px-5 py-4" style={{ background: '#2563EB' }}>
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                            <AlertCircle className="w-4 h-4 text-white" />
+                          </div>
+                          <p className="text-sm font-black text-white leading-tight">
                             {kycBlocked ? 'Cuenta con restricción KYC' : docsSubmittedThisSession || (user?.status === 'Inactivo' && user?.has_complete_documents) ? 'Documentos en revisión' : 'Validación de identidad requerida'}
                           </p>
-                          <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                          <button onClick={() => setShowKycBlockedToast(false)} className="ml-auto p-1 rounded-lg transition hover:bg-white/10">
+                            <X className="w-4 h-4 text-white/70" />
+                          </button>
+                        </div>
+                        {/* Body */}
+                        <div className="px-5 py-5">
+                          <p className="text-sm text-gray-600 leading-relaxed">
                             {kycBlocked
                               ? 'Has alcanzado el límite operativo sin documentación. Sube tus documentos para continuar.'
                               : docsSubmittedThisSession || (user?.status === 'Inactivo' && user?.has_complete_documents)
                                 ? 'Tus documentos están siendo verificados. Podrás operar en cuanto sean aprobados.'
                                 : 'Para operar en nuestra plataforma necesitas validar tu identidad primero.'}
                           </p>
+                          <button
+                            onClick={() => setShowKycBlockedToast(false)}
+                            className="mt-4 w-full py-2.5 rounded-xl text-sm font-bold text-white transition"
+                            style={{ background: '#2563EB' }}
+                          >
+                            Entendido
+                          </button>
                         </div>
-                        <button onClick={() => setShowKycBlockedToast(false)} className="flex-shrink-0 p-1 rounded-lg hover:bg-white/10 transition mt-0.5">
-                          <X className="w-4 h-4 text-white/60" />
-                        </button>
                       </div>
                     </div>
                   )}
@@ -1841,18 +1860,6 @@ export function NuevaOperacionContent() {
 
                   {/* Calculadora oficial */}
                   <div className="relative flex justify-center mt-12">
-                  {/* KYC side banner — fuera del calc, flotando a la derecha */}
-                  {user?.status === 'Inactivo' && !user?.has_complete_documents && !docsSubmittedThisSession && !verifyStillPending && (
-                    <button
-                      type="button"
-                      onClick={() => { setIsKYCModalOpen(true); setError(null); }}
-                      className="absolute rounded-xl py-2 px-3 text-center transition-all hover:brightness-110 active:scale-[0.97]"
-                      style={{ top: '32px', left: 'calc(50% + 212px)', width: '190px', background: '#dc2626' }}
-                    >
-                      <p className="text-xs font-black text-white leading-snug tracking-wide">VALIDA TU IDENTIDAD<br/>PARA OPERAR</p>
-                    </button>
-                  )}
-                  {/* KYC pendiente: reemplaza la calculadora (no renderizar ambas juntas) */}
                   {kycNeedsDocs && !kycBlocked ? (
                     <div className="w-full max-w-[400px] mx-auto">
                       <div className="rounded-2xl overflow-hidden" style={isEmpresa ? {

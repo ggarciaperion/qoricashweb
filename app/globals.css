@@ -82,7 +82,7 @@ body {
 /* Cuando empresa-page está montada, el body es oscuro para evitar
    destellos blancos durante la navegación antes de que cargue el video */
 body:has(.empresa-page) {
-  background: #060E1A;
+  background: #F8FAFC;
 }
 
 @layer utilities {

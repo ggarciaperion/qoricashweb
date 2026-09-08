@@ -183,9 +183,9 @@ export default function HistorialPage() {
           <button
             onClick={() => router.push(isEmpresa ? '/dashboard/empresa/nueva-operacion' : '/dashboard/nueva-operacion')}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
-            style={{ background: '#22C55E', boxShadow: '0 2px 8px rgba(34,197,94,0.3)' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#16A34A'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#22C55E'; }}
+            style={{ background: '#0A0A0A', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#1f1f1f'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#0A0A0A'; }}
           >
             <Plus className="w-4 h-4" />
             Nueva
@@ -197,9 +197,7 @@ export default function HistorialPage() {
           {/* Vol. cambiado */}
           <div
             className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
-            style={isEmpresa
-              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
-              : { background: 'linear-gradient(135deg, #1E3A8A 0%, #1d4ed8 100%)', boxShadow: '0 4px 20px rgba(30,58,138,0.35)' }}
+            style={{ background: '#0A0A0A', boxShadow: '0 4px 20px rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.07)' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.06)' }} />
@@ -215,9 +213,7 @@ export default function HistorialPage() {
           {/* Spread */}
           <div
             className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
-            style={isEmpresa
-              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
-              : { background: 'linear-gradient(135deg, #0E7490 0%, #0891B2 100%)', border: '1px solid #0E7490' }}
+            style={{ background: '#0A0A0A', boxShadow: '0 4px 20px rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.07)' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.07)' }} />
@@ -233,9 +229,7 @@ export default function HistorialPage() {
           {/* Rentabilidad acumulada */}
           <div
             className="rounded-2xl px-3 sm:px-4 py-3 sm:py-3.5 relative overflow-hidden"
-            style={isEmpresa
-              ? { background: 'linear-gradient(135deg, #4A6884 0%, #8fb8cc 100%)', boxShadow: '0 4px 20px rgba(74,104,132,0.35)' }
-              : { background: 'linear-gradient(135deg, #15803D 0%, #22C55E 100%)', border: '1px solid #15803D' }}
+            style={{ background: '#2563EB', boxShadow: '0 4px 20px rgba(37,99,235,0.35)', border: '1px solid rgba(255,255,255,0.12)' }}
           >
             <div className="absolute -top-3 -right-3 w-16 h-16 rounded-full pointer-events-none"
               style={{ background: 'rgba(255,255,255,0.07)' }} />

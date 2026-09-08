@@ -320,8 +320,8 @@ export default function DashboardPage() {
           </button>
 
           {/* Profile header */}
-          <div className="rounded-xl flex items-center gap-3 px-4 py-3" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }}>
+          <div className="rounded-xl flex items-center gap-3 px-4 py-3" style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.10)' }}>
               {user.document_type === 'RUC'
                 ? <Building2 className="w-4 h-4 text-white/80" />
                 : <UserCircle className="w-4 h-4 text-white/80" />}
@@ -330,11 +330,11 @@ export default function DashboardPage() {
               <p className="text-sm font-black text-white leading-tight truncate">
                 {user.document_type === 'RUC' ? user.razon_social : user.apellidos ? `${user.nombres} ${user.apellidos}` : user.nombres}
               </p>
-              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{user.document_type} · {user.dni}</p>
+              <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{user.document_type} · {user.dni}</p>
             </div>
-            <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
-              <span className="text-[10px] font-semibold text-primary-300">{user.estado || 'Activo'}</span>
+            <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0" style={{ background: '#2563EB' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              <span className="text-[10px] font-semibold text-white">{user.estado || 'Activo'}</span>
             </div>
           </div>
 
@@ -376,7 +376,7 @@ export default function DashboardPage() {
               {!isEditing && (
                 <button onClick={() => setIsEditing(true)}
                   className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
-                  style={{ color: '#ffffff', background: '#22C55E', border: '1px solid #16A34A' }}>
+                  style={{ color: '#ffffff', background: '#2563EB' }}>
                   Editar
                 </button>
               )}
@@ -386,7 +386,7 @@ export default function DashboardPage() {
                 <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>Teléfono</p>
                 {isEditing ? (
                   <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#22C55E' }} />
+                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#2563EB' }} />
                 ) : (
                   <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{user.phone || user.telefono || '-'}</p>
                 )}
@@ -395,7 +395,7 @@ export default function DashboardPage() {
                 <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>Correo</p>
                 {isEditing ? (
                   <input type="email" value={profileForm.email} onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
-                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#22C55E' }} />
+                    className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: '#1E293B', borderColor: '#2563EB' }} />
                 ) : (
                   <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{user.email || '-'}</p>
                 )}
@@ -405,7 +405,7 @@ export default function DashboardPage() {
               <div className="flex gap-1.5 mt-2">
                 <button onClick={handleProfileSave} disabled={isSaving}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                  style={{ background: '#2563EB' }}>
                   <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
                 </button>
                 <button onClick={() => { setIsEditing(false); setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' }); }}
@@ -439,7 +439,7 @@ export default function DashboardPage() {
               {!isEditingAddress && (
                 <button onClick={() => setIsEditingAddress(true)}
                   className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
-                  style={{ color: '#ffffff', background: '#22C55E', border: '1px solid #16A34A' }}>
+                  style={{ color: '#ffffff', background: '#2563EB' }}>
                   Editar
                 </button>
               )}
@@ -451,7 +451,7 @@ export default function DashboardPage() {
                 { label: 'Provincia',    key: 'provincia',    wide: false },
                 { label: 'Departamento', key: 'departamento', wide: false },
               ] as { label: string; key: keyof typeof addressForm; wide: boolean }[]).map(({ label, key, wide }) => (
-                <div key={label} className={`rounded-lg px-2.5 py-1.5${wide ? ' col-span-2' : ''}`} style={{ background: '#F8FAFC', border: `1px solid ${isEditingAddress ? '#bbf7d0' : 'rgba(13,27,42,0.07)'}` }}>
+                <div key={label} className={`rounded-lg px-2.5 py-1.5${wide ? ' col-span-2' : ''}`} style={{ background: '#F8FAFC', border: `1px solid ${isEditingAddress ? '#93C5FD' : 'rgba(13,27,42,0.07)'}` }}>
                   <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
                   {isEditingAddress ? (
                     <input
@@ -460,7 +460,7 @@ export default function DashboardPage() {
                       onChange={e => setAddressForm({ ...addressForm, [key]: e.target.value })}
                       placeholder={`Ingresa ${label.toLowerCase()}`}
                       className="w-full text-xs font-semibold bg-transparent outline-none border-b"
-                      style={{ color: '#1E293B', borderColor: '#22C55E' }}
+                      style={{ color: '#1E293B', borderColor: '#2563EB' }}
                     />
                   ) : (
                     <p className="text-xs font-semibold truncate" style={{ color: (user as any)[key] ? '#1E293B' : 'rgba(30,41,59,0.3)' }}>
@@ -474,7 +474,7 @@ export default function DashboardPage() {
               <div className="flex gap-1.5 mt-2">
                 <button onClick={handleAddressSave} disabled={isSaving}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                  style={{ background: '#2563EB' }}>
                   <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
                 </button>
                 <button onClick={() => {
@@ -501,40 +501,51 @@ export default function DashboardPage() {
       {!showProfile && <main className="p-3 sm:p-5 space-y-4 sm:space-y-5 max-w-2xl mx-auto w-full">
 
 
-          {/* TC rates strip */}
-          <div className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="relative flex w-3 h-3">
+          {/* TC rates card */}
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.35)' }}>
+            {/* Subtítulo */}
+            <div className="flex items-center gap-2 px-4 pt-3 pb-2">
+              <span className="relative flex w-2 h-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#ef4444' }} />
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-30" style={{ background: '#ef4444', animationDelay: '0.4s' }} />
-                <span className="relative inline-flex w-3 h-3 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.7)' }} />
+                <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }} />
               </span>
-              <span className="text-[10px] font-black uppercase tracking-wide" style={{ color: '#0D1117' }}>
-                Tipo de Cambio <span style={{ color: '#22C55E' }}>live</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Tipo de Cambio <span style={{ color: '#ffffff' }}>live</span>
               </span>
             </div>
+            {/* Compra / Venta */}
             {currentRates ? (
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl" style={{ background: '#0369a1' }}>
-                  <TrendingDown className="w-3 h-3 text-white/70" />
-                  <span className="hidden sm:inline text-[9px] font-bold uppercase tracking-wide text-white/70">Compramos</span>
-                  <span className="text-xs font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)' }}>{currentRates.tipo_compra.toFixed(3)}</span>
+              <div className="flex items-stretch" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+                {/* Compra */}
+                <div className="flex-1 flex flex-col items-center justify-center py-5 gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Qoricash Compra</span>
+                  <span className="text-4xl font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                    {currentRates.tipo_compra.toFixed(4)}
+                  </span>
+                  <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.22)' }}>S/ por USD</span>
                 </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl" style={{ background: '#15803d' }}>
-                  <TrendingUp className="w-3 h-3 text-white/70" />
-                  <span className="hidden sm:inline text-[9px] font-bold uppercase tracking-wide text-white/70">Vendemos</span>
-                  <span className="text-xs font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)' }}>{currentRates.tipo_venta.toFixed(3)}</span>
+                {/* Divisor */}
+                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', margin: '16px 0' }} />
+                {/* Venta */}
+                <div className="flex-1 flex flex-col items-center justify-center py-5 gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Qoricash Vende</span>
+                  <span className="text-4xl font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                    {currentRates.tipo_venta.toFixed(4)}
+                  </span>
+                  <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.22)' }}>S/ por USD</span>
                 </div>
               </div>
             ) : (
-              <span className="text-xs" style={{ color: 'rgba(30,41,59,0.35)' }}>Cargando...</span>
+              <div className="flex items-center justify-center py-8">
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>Cargando...</span>
+              </div>
             )}
           </div>
 
           {/* Welcome + stats */}
           <div>
             <h1 className="text-lg sm:text-xl font-black mb-3 sm:mb-4" style={{ color: '#0D1117' }}>
-              ¡Bienvenido, <span style={{ color: '#22C55E' }}>{firstName}</span>!
+              ¡Bienvenido, <span style={{ color: '#0D1117' }}>{firstName}</span>!
             </h1>
             {stats && currentRates && stats.total_operations > 0 && (() => {
               const spreadVal = currentRates.tipo_venta && currentRates.tipo_compra
@@ -611,25 +622,25 @@ export default function DashboardPage() {
                   <div
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center transition-all duration-200 group-hover:-translate-y-1"
                     style={primary
-                      ? { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 14px rgba(34,197,94,0.30)' }
+                      ? { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.35)' }
                       : { background: 'white', border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 2px 8px rgba(30,41,59,0.06)' }}
                     onMouseEnter={e => {
                       const el = e.currentTarget as HTMLElement;
-                      el.style.boxShadow = primary
-                        ? '0 8px 20px rgba(34,197,94,0.45)'
-                        : '0 6px 16px rgba(30,41,59,0.14)';
+                      el.style.background = '#2563EB';
+                      el.style.boxShadow = '0 8px 20px rgba(37,99,235,0.45)';
+                      el.style.border = 'none';
                     }}
                     onMouseLeave={e => {
                       const el = e.currentTarget as HTMLElement;
-                      el.style.boxShadow = primary
-                        ? '0 4px 14px rgba(34,197,94,0.30)'
-                        : '0 2px 8px rgba(30,41,59,0.06)';
+                      el.style.background = primary ? '#2563EB' : 'white';
+                      el.style.boxShadow = primary ? '0 4px 14px rgba(37,99,235,0.35)' : '0 2px 8px rgba(30,41,59,0.06)';
+                      el.style.border = primary ? 'none' : '1px solid rgba(30,41,59,0.08)';
                     }}
                   >
-                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-110"
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-200 group-hover:scale-110 group-hover:text-white"
                       style={{ color: primary ? 'white' : 'rgba(30,41,59,0.5)' }} />
                   </div>
-                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-green-600 group-hover:-translate-y-1"
+                  <span className="text-center text-xs font-semibold leading-tight whitespace-pre-line transition-all duration-200 group-hover:text-blue-600 group-hover:-translate-y-1"
                     style={{ color: 'rgba(13,17,23,0.6)' }}>{label}</span>
                 </button>
               ))}

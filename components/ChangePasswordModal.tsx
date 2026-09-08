@@ -164,10 +164,10 @@ export default function ChangePasswordModal({
             {/* ── HEADER ──────────────────────────────────── */}
             <div
               className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}
+              style={{ background: '#0A0A0A' }}
             >
               <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full pointer-events-none"
-                style={{ background: 'rgba(34,197,94,0.10)', filter: 'blur(20px)' }} />
+                style={{ background: 'rgba(255,255,255,0.04)', filter: 'blur(20px)' }} />
               <div className="relative flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center"
                   style={{ background: 'rgba(255,255,255,0.10)' }}>
@@ -308,7 +308,7 @@ export default function ChangePasswordModal({
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full py-2.5 rounded-xl text-xs font-black text-white transition disabled:opacity-50 active:scale-[0.98]"
-                  style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 14px rgba(34,197,94,0.25)' }}
+                  style={{ background: '#0A0A0A', boxShadow: '0 4px 14px rgba(0,0,0,0.35)' }}
                 >
                   {isSubmitting ? 'Guardando...' : 'Cambiar Contraseña'}
                 </button>

@@ -162,6 +162,7 @@ export interface ForgotPasswordRequest {
 export interface ForgotPasswordResponse {
   success: boolean;
   message: string;
+  error_code?: 'dni_not_found' | 'email_mismatch';
 }
 
 // Change password types

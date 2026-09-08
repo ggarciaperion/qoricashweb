@@ -189,7 +189,7 @@ export default function CuentasBancariasPage() {
           <button
             onClick={() => setAddModalOpen(true)}
             className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white transition-opacity"
-            style={{ background: isEmpresa ? '#22C55E' : '#16a34a', border: 'none', cursor: 'pointer' }}
+            style={{ background: '#2563EB', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
