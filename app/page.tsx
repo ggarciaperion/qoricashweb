@@ -1649,7 +1649,7 @@ export default function Home() {
             <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#6B7280' }}>
               Simple como siempre debió ser
             </span>
-            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#0D1117' }}>3 pasos. Menos de 15 minutos.</h2>
+            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#0D1117' }}>Opera en 3 simples pasos</h2>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
