@@ -632,9 +632,9 @@ export default function Home() {
       ====================================== */}
       <section className="relative flex flex-col overflow-hidden">
 
-        {/* ── Decoraciones de fondo — solo página persona ── */}
+        {/* ── Decoraciones de fondo — solo página persona, solo desktop ── */}
         {!isEmpresaPage && (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+          <div className="hero-bg-deco absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
 
             {/* Símbolo $ grande — esquina superior derecha */}
             <div style={{
@@ -1049,7 +1049,7 @@ export default function Home() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                         <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
-                        <span style={{ fontSize: '3.4rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.05em', lineHeight: 1 }}>
+                        <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
                           {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
                         </span>
                       </div>
@@ -1071,7 +1071,7 @@ export default function Home() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                         <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
-                        <span style={{ fontSize: '3.4rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.05em', lineHeight: 1 }}>
+                        <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
                           {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
                         </span>
                       </div>
@@ -2169,7 +2169,7 @@ export default function Home() {
             <p className="sm:hidden text-xs leading-relaxed mb-5" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
 
             {/* Fila 2 - Links en 3 columnas */}
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
 
               {/* Servicios */}
               <div>
@@ -2196,7 +2196,7 @@ export default function Home() {
               </div>
 
               {/* Contacto */}
-              <div className="col-span-1 md:col-span-2">
+              <div className="col-span-2 sm:col-span-1 md:col-span-2">
                 <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Contacto</h4>
                 <ul className="space-y-2.5">
                   <li className="flex items-center gap-2">

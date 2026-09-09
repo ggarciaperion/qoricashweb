@@ -245,11 +245,11 @@ export default function LoginPage() {
         <style>{SHARED_STYLES}</style>
         <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: BG, position: 'relative', overflow: 'hidden' }}>
 
-          {/* Dot grid */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(37,99,235,0.055) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
-          {/* Glow */}
-          <div style={{ position: 'absolute', top: -200, right: -150, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: -150, left: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          {/* Dot grid — decorativo, solo desktop */}
+          <div className="ln-bg-deco" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(37,99,235,0.055) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
+          {/* Glow — decorativo, solo desktop */}
+          <div className="ln-bg-deco" style={{ position: 'absolute', top: -200, right: -150, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
+          <div className="ln-bg-deco" style={{ position: 'absolute', bottom: -150, left: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
           <Link href={fromPage} style={{ position: 'absolute', top: 24, left: 24, display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748B', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>
             <ArrowLeft size={14} />
@@ -262,7 +262,7 @@ export default function LoginPage() {
             <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0F172A', margin: '0 0 8px' }}>Iniciar sesión</h1>
             <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 36px' }}>¿Cómo quieres acceder a tu cuenta?</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div className="ln-type-grid" style={{ display: 'grid' }}>
 
               {/* Persona Natural */}
               <button className="ln-type-card natural" onClick={() => setClientType('natural')}>

@@ -327,8 +327,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#0D1117'; (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#6B7280'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               >
-                <Home className="w-3.5 h-3.5" />
-                Página de inicio
+                <Home className="w-3.5 h-3.5 shrink-0" />
+                <span className="topbar-home-text">Página de inicio</span>
               </Link>
               <div className="block w-px h-5 mx-1" style={{ background: 'rgba(0,0,0,0.1)' }} />
               <button
