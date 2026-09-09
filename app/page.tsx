@@ -12,7 +12,7 @@ import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import {
   ArrowRight, ArrowLeft, Shield, Clock, TrendingUp, TrendingDown, Minus,
-  Users, CheckCircle2, Lock, UserPlus, Banknote,
+  Users, CheckCircle2, Lock, UserPlus, Banknote, DollarSign,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
   HelpCircle, Gift, Calculator as CalculatorIcon,
   Building2, Zap, HandCoins,
@@ -34,12 +34,13 @@ export default function Home() {
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const userBtnRef = useRef<HTMLButtonElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutPhase, setLogoutPhase] = useState<'idle' | 'loading' | 'done'>('idle');
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [noticiasCorp, setNoticiasCorp] = useState<Array<{id:string;titulo:string;descripcion:string;categoria:string;imagen?:string;fecha:string}>>([]);
   const [newsCorpIdx, setNewsCorpIdx] = useState(0);
   const [bcrpData, setBcrpData] = useState<Array<{fecha:string;compra:number;venta:number}>>([]);
@@ -69,14 +70,17 @@ export default function Home() {
     setTimeout(() => setCopiedKey(null), 1800);
   };
 
-  const { currentRates } = useExchangeStore();
+  const { currentRates, fetchRates, startRateSubscription } = useExchangeStore();
 
-  // Auto-redirigir al dashboard si el usuario ya está autenticado
+  // Cargar y suscribir tipos de cambio en tiempo real al montar la página
   useEffect(() => {
-    if (!isAuthenticated || !user) return;
-    const isRUC = user.document_type === 'RUC';
-    router.replace(isRUC ? '/dashboard/empresa' : '/dashboard');
-  }, [isAuthenticated, user]);
+    fetchRates();
+    const unsub = startRateSubscription();
+    return () => unsub();
+  }, []);
+
+  // Auto-redirigir solo si el usuario llega directamente (sin historial de navegación previo dentro del app)
+  // No redirigir cuando viene desde el dashboard usando "Página de inicio"
 
   const prevRatesRef = useRef<{ compra: number; venta: number } | null>(null);
   useEffect(() => {
@@ -140,11 +144,17 @@ export default function Home() {
     return () => clearInterval(t);
   }, [isEmpresaPage, noticiasCorp.length]);
 
+  const displayName = user?.document_type === 'RUC'
+    ? (user?.razon_social || user?.nombres)
+    : (user?.nombres?.trim().split(/\s+/)[0] ?? '');
+
   const handleLogout = async () => {
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
-    setLoggingOut(true);
-    await new Promise((r) => setTimeout(r, 1100));
+    setLogoutPhase('loading');
+    await new Promise(r => setTimeout(r, 2200));
+    setLogoutPhase('done');
+    await new Promise(r => setTimeout(r, 2000));
     await logout();
     window.location.href = '/';
   };
@@ -193,18 +203,163 @@ export default function Home() {
       document.body
     )}
 
-    {loggingOut && createPortal(
-      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white animate-fade-in">
-        <div className="flex flex-col items-center gap-5">
-          <img src="/logo-principal.png" alt="QoriCash" className="h-16 w-auto animate-logo-exit" />
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-secondary font-bold text-sm tracking-wide animate-slide-up-fade">Cerrando sesión...</p>
-            <div className="flex gap-1.5 animate-slide-up-fade">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce [animation-delay:0ms]" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-bounce [animation-delay:150ms]" />
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-600 animate-bounce [animation-delay:300ms]" />
+    {showLogoutModal && createPortal(
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)' }}
+        onClick={() => setShowLogoutModal(false)}>
+        <div className="w-full max-w-xs rounded-2xl overflow-hidden" style={{ background: '#ffffff', boxShadow: '0 24px 64px rgba(0,0,0,0.28)', animation: 'loFadeUp 0.22s ease-out both' }}
+          onClick={e => e.stopPropagation()}>
+          <style>{`@keyframes loFadeUp { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:translateY(0);} }`}</style>
+          <div className="flex flex-col items-center px-6 pt-7 pb-5 text-center" style={{ borderBottom: '1px solid #f1f5f9' }}>
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{ background: '#f8fafc', border: '1px solid rgba(0,0,0,0.07)' }}>
+              <LogOut className="w-5 h-5" style={{ color: '#0D1117' }} />
+            </div>
+            <p className="text-base font-black text-gray-900 leading-tight">¿Cerrar sesión?</p>
+            <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
+              Tu sesión se cerrará de forma segura.<br />Podrás volver a ingresar cuando quieras.
+            </p>
+          </div>
+          <div className="flex gap-2.5 px-5 py-4">
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition"
+              style={{ background: '#f1f5f9', color: '#374151' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#e2e8f0')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#f1f5f9')}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={() => { setShowLogoutModal(false); handleLogout(); }}
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white transition flex items-center justify-center gap-1.5"
+              style={{ background: '#0A0A0A' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#1f1f1f')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#0A0A0A')}
+            >
+              <LogOut className="w-3.5 h-3.5" /> Confirmar
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    )}
+
+    {logoutPhase !== 'idle' && typeof document !== 'undefined' && createPortal(
+      <div style={{
+        position: 'fixed', inset: 0, zIndex: 999999,
+        background: '#F8FAFC',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
+      }}>
+        <style>{`
+          @keyframes loRingDraw  { from { stroke-dashoffset: 415; } to { stroke-dashoffset: 0; } }
+          @keyframes loPulse     { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(0.92); opacity:0.75; } }
+          @keyframes loFadeUp2   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+          @keyframes loScaleIn   { 0% { transform:scale(0); opacity:0; } 65% { transform:scale(1.18); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+          @keyframes loCheckDraw { from { stroke-dashoffset:60; } to { stroke-dashoffset:0; } }
+          @keyframes loDot       { 0%,80%,100% { transform:scale(0); opacity:0; } 40% { transform:scale(1); opacity:1; } }
+          @keyframes loOrbit     { from { transform:rotate(0deg) translateX(66px); } to { transform:rotate(360deg) translateX(66px); } }
+          @keyframes loBarFill   { from { width:0%; } to { width:100%; } }
+          @keyframes loSlideIn   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        `}</style>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, animation: 'loSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both', position: 'relative' }}>
+
+          {/* Ring + logo */}
+          <div style={{ position: 'relative', width: 164, height: 164, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
+            <svg width="164" height="164" viewBox="0 0 164 164" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+              <circle cx="82" cy="82" r="66" fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth="5" />
+              {logoutPhase === 'loading' && (
+                <circle cx="82" cy="82" r="66" fill="none" stroke="#0A0A0A"
+                  strokeWidth="5" strokeLinecap="round"
+                  strokeDasharray="415" strokeDashoffset="415"
+                  style={{ animation: 'loRingDraw 2.1s cubic-bezier(0.4,0,0.2,1) forwards' }} />
+              )}
+              {logoutPhase === 'done' && (
+                <circle cx="82" cy="82" r="66" fill="none" stroke="#0A0A0A"
+                  strokeWidth="5" strokeLinecap="round"
+                  strokeDasharray="415" strokeDashoffset="0" />
+              )}
+            </svg>
+
+            {logoutPhase === 'loading' && (
+              <div style={{ position: 'absolute', top: '50%', left: '50%', marginTop: -4, marginLeft: -4 }}>
+                <div style={{
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: '#0A0A0A',
+                  animation: 'loOrbit 2.1s linear infinite',
+                }} />
+              </div>
+            )}
+
+            <div style={{
+              width: 108, height: 108, borderRadius: '50%',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.1)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative', zIndex: 1,
+            }}>
+              {logoutPhase === 'loading' ? (
+                <img src="/vg.png" alt="Qoricash" style={{ width: 58, height: 58, objectFit: 'contain', animation: 'loPulse 1.8s ease-in-out infinite' }} />
+              ) : (
+                <div style={{ animation: 'loScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                  <svg width="50" height="50" viewBox="0 0 44 44" fill="none">
+                    <circle cx="22" cy="22" r="22" fill="#0A0A0A" />
+                    <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
+                      strokeLinecap="round" strokeLinejoin="round"
+                      strokeDasharray="60" strokeDashoffset="60"
+                      style={{ animation: 'loCheckDraw 0.5s ease-out 0.2s forwards' }} />
+                  </svg>
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Text block */}
+          <div style={{ textAlign: 'center' }}>
+            {logoutPhase === 'loading' ? (
+              <>
+                <p style={{ fontSize: 18, fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#0D1117' }}>
+                  Cerrando sesión...
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 7, marginTop: 12 }}>
+                  {[0, 0.22, 0.44].map((delay, i) => (
+                    <span key={i} style={{
+                      display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#0A0A0A',
+                      animation: `loDot 1.3s ease-in-out ${delay}s infinite`,
+                    }} />
+                  ))}
+                </div>
+                <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 12, fontWeight: 500 }}>
+                  Guardando tu información de forma segura
+                </p>
+              </>
+            ) : (
+              <div style={{ animation: 'loFadeUp2 0.45s ease-out both' }}>
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: '#6B7280', textTransform: 'uppercase', margin: '0 0 8px' }}>
+                  Hasta pronto
+                </p>
+                <p style={{ fontSize: 22, fontWeight: 900, color: '#0D1117', margin: 0, letterSpacing: '-0.025em' }}>
+                  {displayName}
+                </p>
+                <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 8 }}>
+                  Tu sesión fue cerrada con éxito
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom progress bar */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: 'rgba(0,0,0,0.06)' }}>
+          <div style={{
+            height: '100%',
+            background: '#0A0A0A',
+            width: logoutPhase === 'done' ? '100%' : undefined,
+            animation: logoutPhase === 'loading' ? 'loBarFill 2.1s cubic-bezier(0.4,0,0.6,1) forwards' : 'none',
+            transition: logoutPhase === 'done' ? 'width 0.4s ease' : 'none',
+          }} />
         </div>
       </div>,
       document.body
@@ -219,10 +374,10 @@ export default function Home() {
         <nav className="w-full">
           <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
             <div className="flex items-center gap-3 sm:gap-4">
-              <Link href="/" className="flex items-center gap-1 sm:gap-2 hover:opacity-80 transition-opacity">
-                <img src="/vg.png" alt="QoriCash" className="h-16 w-auto" />
+              <Link href="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
+                <img src="/vg.png" alt="Qoricash" className="h-16 w-auto" />
                 {isEmpresaPage && (
-                  <span className="text-[9px] font-semibold tracking-[0.3em] uppercase" style={{ color: '#2563EB' }}>Corporate</span>
+                  <span className="self-center text-[11px] font-bold uppercase" style={{ color: '#9CA3AF', letterSpacing: '0.45em' }}>Corporate</span>
                 )}
               </Link>
             </div>
@@ -377,12 +532,12 @@ export default function Home() {
                     <span className="font-medium flex-1 text-sm">Mi Dashboard</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </Link>
-                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20Qoricash." target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-3 py-2.5 rounded-xl group transition-colors hover:bg-gray-50" style={{ color: '#374151' }} onClick={() => setIsMobileMenuOpen(false)}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.08)' }}><HelpCircle className="w-4 h-4" style={{ color: '#2563EB' }} /></div>
                     <span className="font-medium flex-1 text-sm">Ayuda</span>
                     <ArrowRight className="w-3.5 h-3.5 opacity-30 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all" />
                   </a>
-                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-red-50" style={{ color: '#ef4444' }}>
+                  <button onClick={() => { setIsMobileMenuOpen(false); setShowLogoutModal(true); }} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-red-50" style={{ color: '#ef4444' }}>
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(239,68,68,0.1)' }}><LogOut className="w-4 h-4 text-red-500" /></div>
                     <span className="font-medium text-sm">Cerrar Sesión</span>
                   </button>
@@ -446,7 +601,7 @@ export default function Home() {
               <TrendingUp className="w-4 h-4 mr-3 opacity-60" />Mi Dashboard
             </button>
             <a
-              href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+              href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20Qoricash."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-4 py-3 text-sm transition-colors"
@@ -459,7 +614,7 @@ export default function Home() {
             </a>
             <div className="my-1 mx-4" style={{ borderTop: '1px solid rgba(0,0,0,0.08)' }} />
             <button
-              onClick={handleLogout}
+              onClick={() => { setIsUserMenuOpen(false); setShowLogoutModal(true); }}
               className="flex items-center w-full px-4 py-3 text-left text-sm transition-colors"
               style={{ color: '#ef4444' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#FEF2F2', e.currentTarget.style.color = '#dc2626')}
@@ -477,11 +632,220 @@ export default function Home() {
       ====================================== */}
       <section className="relative flex flex-col overflow-hidden">
 
+        {/* ── Decoraciones de fondo — solo página persona ── */}
+        {!isEmpresaPage && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+
+            {/* Símbolo $ grande — esquina superior derecha */}
+            <div style={{
+              position: 'absolute', top: '-20px', right: '-30px',
+              fontSize: 340, fontWeight: 900, lineHeight: 1,
+              color: 'rgba(37,99,235,0.035)',
+              fontFamily: 'var(--font-poppins)',
+              letterSpacing: '-0.05em',
+              userSelect: 'none',
+              animation: 'bgFloat1 9s ease-in-out infinite',
+            }}>$</div>
+
+            {/* Anillo orbital grande — centro-derecha */}
+            <div style={{
+              position: 'absolute', top: '50%', right: '8%',
+              width: 320, height: 320,
+              marginTop: -160,
+              animation: 'bgOrbitCW 28s linear infinite',
+            }}>
+              <svg width="320" height="320" viewBox="0 0 320 320" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                <circle cx="160" cy="160" r="155" stroke="rgba(37,99,235,0.06)" strokeWidth="1.5" strokeDasharray="8 10" />
+              </svg>
+              {/* Punto orbital */}
+              <div style={{
+                position: 'absolute', top: 5, left: '50%', marginLeft: -5,
+                width: 10, height: 10, borderRadius: '50%',
+                background: 'rgba(37,99,235,0.18)',
+                boxShadow: '0 0 8px rgba(37,99,235,0.3)',
+              }} />
+            </div>
+
+            {/* Anillo orbital pequeño — contrarotación */}
+            <div style={{
+              position: 'absolute', top: '55%', right: '12%',
+              width: 180, height: 180,
+              marginTop: -90,
+              animation: 'bgOrbitCCW 18s linear infinite',
+            }}>
+              <svg width="180" height="180" viewBox="0 0 180 180" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                <circle cx="90" cy="90" r="86" stroke="rgba(34,197,94,0.08)" strokeWidth="1" strokeDasharray="5 8" />
+              </svg>
+              <div style={{
+                position: 'absolute', bottom: 4, left: '50%', marginLeft: -4,
+                width: 8, height: 8, borderRadius: '50%',
+                background: 'rgba(34,197,94,0.25)',
+              }} />
+            </div>
+
+            {/* Gráfico de velas profesional — esquina inferior derecha */}
+            <div style={{
+              position: 'absolute', bottom: 20, right: '3%',
+              animation: 'bgFloat3 9s ease-in-out infinite',
+            }}>
+              <svg width="280" height="160" viewBox="0 0 260 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  {/* Gradiente área MA */}
+                  <linearGradient id="hmaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2563EB" stopOpacity="0.09" />
+                    <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
+                  </linearGradient>
+                  {/* Fade lateral izquierdo */}
+                  <linearGradient id="hfadeX" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%"   stopColor="white" stopOpacity="0" />
+                    <stop offset="28%"  stopColor="white" stopOpacity="1" />
+                    <stop offset="100%" stopColor="white" stopOpacity="1" />
+                  </linearGradient>
+                  <mask id="hfadeMask">
+                    <rect width="260" height="150" fill="url(#hfadeX)" />
+                  </mask>
+                </defs>
+
+                <g mask="url(#hfadeMask)">
+                  {/* Grid horizontal */}
+                  {[32, 64, 96, 128].map(y => (
+                    <line key={y} x1="0" y1={y} x2="260" y2={y}
+                      stroke="rgba(37,99,235,0.055)" strokeWidth="1" />
+                  ))}
+
+                  {/* Velas: [x, wickTop, open_y, close_y, wickBottom, bullish] */}
+                  {([
+                    [14,  140, 130, 120, 144, true ],
+                    [40,  117, 122, 128, 131, false],
+                    [66,  103, 130, 107, 135, true ],
+                    [92,  97,  113, 102, 118, false],
+                    [118, 79,  104, 83,  110, true ],
+                    [144, 61,  86,  65,  92,  true ],
+                    [170, 49,  68,  54,  74,  false],
+                    [196, 35,  56,  39,  62,  true ],
+                    [222, 18,  40,  22,  46,  true ], // última
+                  ] as [number,number,number,number,number,boolean][]).map(([x, wt, oy, cy, wb, bull], i) => {
+                    const bTop = Math.min(oy, cy);
+                    const bH   = Math.max(Math.abs(oy - cy), 2);
+                    const isLast = i === 8;
+                    const bullStroke = 'rgba(34,197,94,0.5)';
+                    const bearStroke = 'rgba(239,68,68,0.45)';
+                    const bullFill   = 'rgba(34,197,94,0.16)';
+                    const bearFill   = 'rgba(239,68,68,0.12)';
+                    return (
+                      <g key={x} style={isLast ? { animation: 'bgCandleBreath 2.2s ease-in-out infinite' } : undefined}>
+                        {/* Mecha */}
+                        <line x1={x+7} y1={wt} x2={x+7} y2={wb}
+                          stroke={bull ? 'rgba(34,197,94,0.38)' : 'rgba(239,68,68,0.32)'}
+                          strokeWidth="1.5" strokeLinecap="round" />
+                        {/* Cuerpo */}
+                        <rect x={x} y={bTop} width={14} height={bH}
+                          rx="1.5"
+                          fill={bull ? bullFill : bearFill}
+                          stroke={bull ? bullStroke : bearStroke}
+                          strokeWidth="1"
+                          style={isLast ? { animation: 'bgCandleGlow 2.2s ease-in-out infinite' } : undefined}
+                        />
+                      </g>
+                    );
+                  })}
+
+                  {/* Área bajo la MA */}
+                  <path
+                    d="M66,119 L92,113 L118,98 L144,84 L170,68 L196,53 L222,39 L222,150 L66,150 Z"
+                    fill="url(#hmaGrad)"
+                  />
+
+                  {/* Línea MA — se dibuja al cargar */}
+                  <polyline
+                    points="66,119 92,113 118,98 144,84 170,68 196,53 222,39"
+                    stroke="rgba(37,99,235,0.38)" strokeWidth="1.6"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    strokeDasharray="220" strokeDashoffset="220"
+                    style={{ animation: 'bgMADraw 1.8s cubic-bezier(0.4,0,0.2,1) 0.4s forwards' }}
+                  />
+
+                  {/* Línea de último precio — dashed */}
+                  <line x1="10" y1="22" x2="232" y2="22"
+                    stroke="rgba(34,197,94,0.28)" strokeWidth="1"
+                    strokeDasharray="4 5" />
+
+                  {/* Punto vivo: outer ping */}
+                  <circle cx="236" cy="22" r="3.5"
+                    fill="rgba(34,197,94,0.35)">
+                    <animate attributeName="r" values="3.5;9;3.5" dur="2s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                  {/* Punto vivo: inner sólido */}
+                  <circle cx="236" cy="22" r="3" fill="rgba(34,197,94,0.85)" />
+
+                  {/* Label precio */}
+                  <rect x="241" y="16" width="17" height="12" rx="3"
+                    fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.3)" strokeWidth="0.8" />
+                  <text x="249.5" y="25" textAnchor="middle"
+                    fontSize="6.5" fontWeight="700" fill="rgba(34,197,94,0.75)"
+                    fontFamily="monospace">↑</text>
+                </g>
+              </svg>
+            </div>
+
+            {/* Ícono de dólar flotante pequeño — izquierda media */}
+            <div style={{
+              position: 'absolute', top: '38%', left: '2%',
+              animation: 'bgFloat2 11s ease-in-out infinite',
+              opacity: 0.07,
+            }}>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+            </div>
+
+            {/* Pill tipo de cambio — decorativo, arriba izquierda */}
+            <div style={{
+              position: 'absolute', top: '12%', left: '3%',
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '5px 12px', borderRadius: 100,
+              background: 'rgba(37,99,235,0.04)',
+              border: '1px solid rgba(37,99,235,0.08)',
+              animation: 'bgFloat3 13s ease-in-out infinite',
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(34,197,94,0.4)' }} />
+              <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(37,99,235,0.3)', letterSpacing: '0.1em', fontFamily: 'var(--font-poppins)' }}>USD / PEN</span>
+            </div>
+
+            {/* Línea de tendencia — fondo inferior */}
+            <svg
+              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '70%', opacity: 0.07 }}
+              viewBox="0 0 700 80" preserveAspectRatio="none" fill="none"
+            >
+              <defs>
+                <linearGradient id="trendGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
+                  <stop offset="40%" stopColor="#2563EB" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#22C55E" stopOpacity="1" />
+                </linearGradient>
+              </defs>
+              <polyline
+                points="0,70 80,60 160,55 200,45 280,50 350,30 420,35 500,20 580,25 640,10 700,15"
+                stroke="url(#trendGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              />
+            </svg>
+
+            {/* Puntos de cuadrícula tenue */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(37,99,235,0.05) 1px, transparent 0)',
+              backgroundSize: '32px 32px',
+            }} />
+          </div>
+        )}
+
         <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-10 pb-4 sm:pb-8 relative z-10">
 
           {/* H1 personas - entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
-            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
+            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full hero-anim hero-delay-0" style={{ color: '#0D1117' }}>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', color: '#2563EB' }}>que siempre</span>
               <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
@@ -500,14 +864,14 @@ export default function Home() {
             {/* LEFT - Texto */}
             <div className="order-2 sm:order-1">
               {/* Pill label */}
-              <div className="flex justify-center sm:justify-start mb-4 sm:mb-7">
+              <div className="flex justify-center sm:justify-start mb-4 sm:mb-7 hero-anim hero-delay-0">
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: '#2563EB', color: '#2563EB', background: 'rgba(37,99,235,0.06)' }}>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
                   Fintech de cambio de divisas · Perú
                 </span>
               </div>
 
-              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6" style={{ color: '#0D1117' }}>
+              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6 hero-anim hero-delay-1" style={{ color: '#0D1117' }}>
                 {isEmpresaPage ? (
                   <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
                 ) : (
@@ -519,18 +883,18 @@ export default function Home() {
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left" style={{ color: '#6B7280' }}>
+              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left hero-anim hero-delay-2" style={{ color: '#6B7280' }}>
                 {isEmpresaPage
                   ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
                   : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
               </p>
 
-              <div className="flex flex-wrap gap-3 mb-6 sm:mb-10">
+              <div className="flex flex-wrap gap-3 mb-6 sm:mb-10 hero-anim hero-delay-3">
                 {isEmpresaPage ? (
                   isAuthenticated && (
                   <button
                     onClick={() => guardedAction(() => window.open('https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo.', '_blank'))}
-                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
+                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm text-white w-full sm:w-auto btn-press active:scale-[0.97]"
                     style={{ background: '#0A0A0A' }}
                   >
                     Cotizar ahora
@@ -542,7 +906,7 @@ export default function Home() {
                     href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20el%20tipo%20de%20cambio."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full transition-all text-sm text-white hover:-translate-y-0.5 w-full sm:w-auto"
+                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm text-white w-full sm:w-auto btn-press active:scale-[0.97]"
                     style={{ background: '#000000' }}
                   >
                     Cotizar ahora
@@ -551,7 +915,7 @@ export default function Home() {
                 )}
               </div>
 
-<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium" style={{ color: '#6B7280' }}>
+<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium hero-anim hero-delay-4" style={{ color: '#6B7280' }}>
                 {isEmpresaPage ? (
                   <>
                     <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Rentabilidad</span>
@@ -569,7 +933,7 @@ export default function Home() {
             </div>
 
             {/* RIGHT - Calculadora / FX Terminal */}
-            <div className="order-1 sm:order-2 relative flex items-center justify-center">
+            <div className="order-1 sm:order-2 relative flex items-center justify-center hero-anim hero-delay-1">
 
               <div className="relative z-10 w-full max-w-[400px]">
               {isEmpresaPage && !isAuthenticated ? (
@@ -615,12 +979,15 @@ export default function Home() {
                     </div>
 
                     {/* CTA */}
-                    <Link href="/crear-cuenta?tipo=empresa"
+                    <button
+                      onClick={() => guardedAction(() => {
+                        router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa');
+                      })}
                       className="flex items-center justify-between w-full px-5 py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:brightness-110 group"
-                      style={{ background: '#2563EB' }}>
-                      <span>Abrir cuenta corporativa</span>
+                      style={{ background: '#2563EB', border: 'none', cursor: 'pointer' }}>
+                      <span>Cotiza en línea</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    </button>
 
                     <Link href="/login?from=/empresa"
                       className="flex items-center justify-center w-full mt-3 py-2 text-xs font-medium transition-colors hover:opacity-80"
@@ -630,7 +997,7 @@ export default function Home() {
 
                   </div>
                 </div>
-              ) : (
+              ) : isEmpresaPage ? (
               <div>
               <Calculator
                 initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
@@ -640,13 +1007,113 @@ export default function Home() {
                   const params = amountUSD && parseFloat(amountUSD) > 0
                     ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
                     : '';
-                  if (isEmpresaPage) {
-                    router.push(isAuthenticated ? `/dashboard/empresa/nueva-operacion${params}` : '/login?from=/empresa');
-                  } else {
-                    router.push(isAuthenticated ? `/dashboard/nueva-operacion${params}` : '/login');
-                  }
+                  router.push(isAuthenticated ? `/dashboard/empresa/nueva-operacion${params}` : '/login?from=/empresa');
                 })}
               />
+              </div>
+              ) : (
+              /* ── Persona: unified rate panel ── */
+              <div className="flex flex-col gap-3 w-full">
+
+                {/* Panel unificado */}
+                <div style={{
+                  background: 'linear-gradient(160deg, #070C18 0%, #0A1020 50%, #080E1A 100%)',
+                  borderRadius: 22,
+                  overflow: 'hidden',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  boxShadow: '0 24px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
+                  animation: 'tcSlide 0.4s cubic-bezier(0.16,1,0.3,1) both',
+                }}>
+
+                  {/* Header */}
+                  <div style={{ padding: '13px 20px 11px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inset-0 rounded-full opacity-70" style={{ background: '#22C55E' }} />
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#22C55E' }} />
+                      </span>
+                      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>En vivo</span>
+                    </div>
+                    <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.12em' }}>USD · PEN</span>
+                  </div>
+
+                  {/* Compramos */}
+                  <div style={{ padding: '22px 22px 20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#4ADE80', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(74,222,128,0.7)', animation: 'tcGlowGreen 2.5s ease-in-out infinite' }} />
+                          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#4ADE80' }}>Compramos</span>
+                        </div>
+                        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú vendes dólares</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                        <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
+                        <span style={{ fontSize: '3.4rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.05em', lineHeight: 1 }}>
+                          {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Divisor */}
+                  <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.07) 75%, transparent)', margin: '0 22px' }} />
+
+                  {/* Vendemos */}
+                  <div style={{ padding: '20px 22px 22px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#60A5FA', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(96,165,250,0.7)', animation: 'tcGlowBlue 2.5s ease-in-out 0.8s infinite' }} />
+                          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA' }}>Vendemos</span>
+                        </div>
+                        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú compras dólares</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                        <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
+                        <span style={{ fontSize: '3.4rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.05em', lineHeight: 1 }}>
+                          {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer dentro del panel */}
+                  <div style={{ padding: '9px 22px 13px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <Shield size={9} style={{ color: 'rgba(255,255,255,0.45)' }} />
+                      <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.45)' }}>Regulado SBS</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={() => guardedAction(() => {
+                    router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login');
+                  })}
+                  className="w-full font-bold text-sm text-white flex items-center justify-center gap-2.5 group active:scale-[0.98]"
+                  style={{
+                    padding: '15px 20px',
+                    background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+                    borderRadius: 14,
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    animation: 'tcSlide 0.55s cubic-bezier(0.16,1,0.3,1) both',
+                  }}
+                >
+                  Iniciar operación
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </button>
+
+                {!isAuthenticated && (
+                  <Link href="/crear-cuenta"
+                    className="text-center text-[11px] font-medium transition-opacity hover:opacity-70"
+                    style={{ color: '#9CA3AF' }}>
+                    Regístrate
+                  </Link>
+                )}
               </div>
               )}
 
@@ -685,7 +1152,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
 
           {/* Encabezado */}
-          <div className="mb-7 text-center">
+          <div className="mb-7 text-center reveal">
             <h2 className="font-display font-black leading-[1.05]" style={{ color: '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
               Operamos con los bancos <span style={{ color: '#2563EB' }}>principales del Peru</span>
             </h2>
@@ -832,7 +1299,7 @@ export default function Home() {
           </div>{/* fin flex container */}
 
           {/* Footer strip */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 pt-5">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 pt-5 reveal">
             {[
               { icon: CheckCircle2, label: 'Sin comisiones ocultas' },
               { icon: Clock,        label: 'En menos de 15 minutos' },
@@ -868,7 +1335,7 @@ export default function Home() {
               {/* 3 stats compactos */}
               <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(13,27,42,0.08)' }}>
                 {[
-                  { value: 80, prefix: 'S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco', speedClock: false },
+                  { value: 80, prefix: '~S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco (aprox.)', speedClock: false },
                   { value: 10, prefix: '',   suffix: 'min', label: 'tiempo aprox.',        sub: 'por operación', speedClock: true },
                   { value: 0,  prefix: 'S/', suffix: '',    label: 'comisiones',           sub: 'siempre', speedClock: false },
                 ].map(({ value, prefix, suffix, label, sub, speedClock }, i) => (
@@ -920,7 +1387,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* QoriCash */}
+                {/* Qoricash */}
                 {(() => {
                   const qc_compra = currentRates?.tipo_compra?.toFixed(3) || buyRate;
                   const qc_venta  = currentRates?.tipo_venta?.toFixed(3)  || sellRate;
@@ -931,8 +1398,7 @@ export default function Home() {
                       borderLeft: '2px solid #000000',
                     }}>
                       <div className="flex items-center gap-2.5 flex-1">
-                        <img src="/logo-principal.png" alt="QoriCash" className="h-5 w-auto object-contain flex-shrink-0" />
-                        <span className="text-sm font-black" style={{ color: '#0D1117' }}>QoriCash</span>
+                        <img src="/vg.png" alt="Qoricash" className="h-8 w-auto object-contain flex-shrink-0" />
                         <span className="text-[8px] font-black uppercase tracking-wider text-white px-1.5 py-0.5 rounded-full" style={{ background: '#2563EB' }}>Mejor</span>
                       </div>
                       <div className="flex gap-1">
@@ -943,7 +1409,7 @@ export default function Home() {
                   );
                 })()}
 
-                {/* Bancos - tasas calculadas en base al TC de QoriCash con spreads típicos de banca */}
+                {/* Bancos - tasas calculadas en base al TC de Qoricash con spreads típicos de banca */}
                 {(() => {
                   const base_c = currentRates?.tipo_compra ?? parseFloat(buyRate);
                   const base_v = currentRates?.tipo_venta  ?? parseFloat(sellRate);
@@ -959,7 +1425,7 @@ export default function Home() {
                       const compra = (base_c + dc).toFixed(3);
                       const venta  = (base_v + dv).toFixed(3);
                       return (
-                        <div key={name} className="flex flex-1 items-center px-4 py-2.5" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none' }}>
+                        <div key={name} className="flex flex-1 items-center px-4 py-2.5 transition-colors hover:bg-gray-50/80" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none' }}>
                           <div className="flex items-center gap-2.5 flex-1">
                             <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0" />
                             <span className="text-sm font-medium" style={{ color: '#6B7280' }}>{name}</span>
@@ -1088,7 +1554,7 @@ export default function Home() {
                   const base_c = currentRates?.tipo_compra ?? 3.75;
                   const base_v = currentRates?.tipo_venta ?? 3.77;
                   return [
-                    { name: 'QoriCash', c: base_c, v: base_v, highlight: true },
+                    { name: 'Qoricash', c: base_c, v: base_v, highlight: true },
                     { name: 'BCP',       c: base_c - 0.065, v: base_v + 0.075, highlight: false },
                     { name: 'Interbank', c: base_c - 0.058, v: base_v + 0.068, highlight: false },
                     { name: 'BBVA',      c: base_c - 0.080, v: base_v + 0.090, highlight: false },
@@ -1143,7 +1609,7 @@ export default function Home() {
                 className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-7 py-3.5 rounded-full text-sm transition-all hover:-translate-y-0.5"
                 style={{ background: '#0A0A0A', color: '#ffffff', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
               >
-                Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
+                Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
@@ -1156,37 +1622,30 @@ export default function Home() {
           CÓMO FUNCIONA - 3 pasos
       ====================================== */}
       <style>{`
-        @keyframes floatUp    { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-7px)} }
-        @keyframes slideArrow     { 0%{transform:translateX(-10px);opacity:0} 50%{opacity:1} 100%{transform:translateX(10px);opacity:0} }
-        @keyframes slideArrowLeft { 0%{transform:translateX(10px);opacity:0}  50%{opacity:1} 100%{transform:translateX(-10px);opacity:0} }
-        @keyframes dimPulse   { 0%,100%{opacity:.45} 50%{opacity:1} }
-        @keyframes sparkle    { 0%,100%{transform:scale(0) rotate(0deg);opacity:0} 50%{transform:scale(1) rotate(180deg);opacity:1} }
-        @keyframes flowDot    { 0%{left:0%;opacity:0} 15%{opacity:1} 85%{opacity:1} 100%{left:100%;opacity:0} }
-        @keyframes cardGlow   { 0%,100%{box-shadow:0 2px 12px rgba(13,27,42,.06)} 50%{box-shadow:0 8px 32px rgba(34,197,94,.12)} }
-        @keyframes calcA   { 0%,28%{opacity:1} 34%,100%{opacity:0} }
-        @keyframes calcB   { 0%,30%{opacity:0} 36%,62%{opacity:1} 68%,100%{opacity:0} }
-        @keyframes calcC   { 0%,64%{opacity:0} 70%,94%{opacity:1} 100%{opacity:0} }
-        @keyframes btnTap  { 0%,100%{background:rgba(255,255,255,0.07)} 50%{background:rgba(34,197,94,0.25)} }
-        @keyframes moneyFly     { 0%{transform:translateX(-28px);opacity:0} 18%{opacity:1;transform:translateX(0)} 82%{opacity:1;transform:translateX(0)} 100%{transform:translateX(28px);opacity:0} }
-        @keyframes moneyFlyLeft { 0%{transform:translateX(55px);opacity:0} 12%{opacity:1} 88%{opacity:1} 100%{transform:translateX(-55px);opacity:0} }
-        @keyframes timerA  { 0%,22%{opacity:1} 28%,100%{opacity:0} }
-        @keyframes timerB  { 0%,24%{opacity:0} 30%,55%{opacity:1} 61%,100%{opacity:0} }
-        @keyframes timerC  { 0%,57%{opacity:0} 63%,88%{opacity:1} 94%,100%{opacity:0} }
-        @keyframes timerD  { 0%,90%{opacity:0} 96%,100%{opacity:1} }
-        @keyframes speedLine    { 0%{transform:scaleX(0) translateX(-50%);opacity:0} 50%{transform:scaleX(1) translateX(0);opacity:1} 100%{transform:scaleX(0) translateX(50%);opacity:0} }
-        @keyframes checkRing    { 0%{stroke-dashoffset:113;opacity:1} 55%{stroke-dashoffset:0;opacity:1} 65%{stroke-dashoffset:0;opacity:0} 100%{stroke-dashoffset:113;opacity:0} }
-        @keyframes checkDone    { 0%,58%{opacity:0;transform:scale(0.6)} 68%,88%{opacity:1;transform:scale(1)} 96%,100%{opacity:0;transform:scale(0.6)} }
-        @keyframes procText     { 0%,52%{opacity:1} 62%,100%{opacity:0} }
-        @keyframes doneText     { 0%,60%{opacity:0} 70%,86%{opacity:1} 94%,100%{opacity:0} }
-        @keyframes blobMorph1 { 0%,100%{border-radius:60% 40% 55% 45%/50% 60% 40% 50%;transform:translate(0,0) scale(1)} 33%{border-radius:40% 60% 45% 55%/60% 40% 60% 40%;transform:translate(18px,-12px) scale(1.06)} 66%{border-radius:55% 45% 60% 40%/45% 55% 45% 55%;transform:translate(-10px,16px) scale(0.96)} }
-        @keyframes blobMorph2 { 0%,100%{border-radius:45% 55% 40% 60%/60% 45% 55% 40%;transform:translate(0,0) scale(1)} 40%{border-radius:60% 40% 55% 45%/40% 60% 40% 60%;transform:translate(-20px,10px) scale(1.08)} 75%{border-radius:35% 65% 50% 50%/55% 45% 60% 40%;transform:translate(12px,-18px) scale(0.94)} }
-        @keyframes blobMorph3 { 0%,100%{border-radius:50% 50% 45% 55%/55% 45% 55% 45%;transform:translate(0,0) scale(1)} 50%{border-radius:65% 35% 55% 45%/40% 65% 35% 60%;transform:translate(15px,20px) scale(1.05)} }
+        @keyframes sp-spin    { to { transform: rotate(360deg); } }
+        @keyframes sp-spin-r  { to { transform: rotate(-360deg); } }
+        @keyframes sp-float   { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+        @keyframes sp-float-r { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+        @keyframes sp-float-s { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+        @keyframes sp-scan    { 0%,100%{transform:translateY(-44px);opacity:0;} 15%{opacity:0.6;} 85%{opacity:0.6;} to{transform:translateY(44px);opacity:0;} }
+        @keyframes sp-blink   { 0%,100%{opacity:1;} 50%{opacity:0;} }
+        @keyframes sp-fadein  { from{opacity:0;transform:scale(0.85) translateY(10px);} to{opacity:1;transform:scale(1) translateY(0);} }
+        @keyframes sp-dot     { 0%,100%{transform:scale(1);opacity:0.45;} 50%{transform:scale(2.2);opacity:1;} }
+        @keyframes sp-shimmer { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+        @keyframes sp-badge   { from{opacity:0;transform:scale(0.7) translateY(8px);} to{opacity:1;transform:scale(1) translateY(0);} }
+        @keyframes sp-cursor  { 0%,100%{opacity:1;} 50%{opacity:0;} }
+        @keyframes sp-flow    { 0%{left:0%;opacity:0;} 15%{opacity:1;} 85%{opacity:1;} 100%{left:calc(100% - 10px);opacity:0;} }
+        @keyframes sp-ring-p  { 0%{stroke-dashoffset:377;opacity:1;} 65%{stroke-dashoffset:0;opacity:1;} 78%{stroke-dashoffset:0;opacity:0;} 100%{stroke-dashoffset:377;opacity:0;} }
+        @keyframes sp-check   { 0%,62%{stroke-dashoffset:40;opacity:0;} 67%{opacity:1;} 90%{stroke-dashoffset:0;opacity:1;} 98%,100%{opacity:0;} }
+        @keyframes sp-proc    { 0%,55%{opacity:1;} 65%,100%{opacity:0;} }
+        @keyframes sp-done    { 0%,62%{opacity:0;} 72%,88%{opacity:1;} 96%,100%{opacity:0;} }
+        @keyframes sp-arc     { 0%{stroke-dashoffset:500;} 100%{stroke-dashoffset:0;} }
       `}</style>
 
       {!isEmpresaPage && (
       <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 reveal">
             <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#6B7280' }}>
               Simple como siempre debió ser
             </span>
@@ -1196,61 +1655,100 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
             {/* -- CARD 01 - Cotiza en línea -- */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', animation: 'cardGlow 4s ease-in-out infinite' }}>
+            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-1" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
               {/* Illustration zone */}
-              <div className="relative overflow-hidden px-7 pt-7 pb-5" style={{ background: '#1E293B', height: '210px' }}>
-                {/* Ghost number */}
-                <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>01</span>
-                {/* Top-right glow */}
-                <div className="absolute top-0 right-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.18), transparent 70%)', transform: 'translate(30%, -30%)' }} />
+              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Dot grid */}
+                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
+                    <circle key={`s1-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
+                  )))}
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 30s linear infinite' }}>
+                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
+                    <circle cx="160" cy="17"  r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="248" cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="160" cy="193" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="72"  cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  </g>
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 20s linear infinite', animationDelay: '-3s' }}>
+                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
+                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                  </g>
+                </svg>
 
-                {/* Dos opciones: Web o Asesor */}
-                <div className="relative z-10 flex flex-col gap-3 justify-center h-full" style={{ animation: 'floatUp 4s ease-in-out infinite' }}>
-
-                  {/* Opción 1 - Web */}
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <rect x="2" y="4" width="20" height="14" rx="2" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5"/>
-                        <path d="M8 18l1.5 2h5L16 18" stroke="rgba(255,255,255,0.3)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M9 9h6M9 12h4" stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" strokeLinecap="round"/>
-                        <circle cx="6.5" cy="7.5" r="1" fill="rgba(255,255,255,0.3)"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-white">Cotiza en la web</div>
-                      <div className="text-[9px]" style={{ color: 'rgba(255,255,255,0.35)' }}>Ingresa tu monto al instante</div>
+                {/* Central card */}
+                <div style={{
+                  position: 'relative', zIndex: 2,
+                  width: 154, height: 148,
+                  background: '#fff', borderRadius: 22,
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: 9, overflow: 'hidden', padding: '0 14px',
+                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
+                }}>
+                  {/* Scan line */}
+                  <div style={{
+                    position: 'absolute', left: 10, right: 10, height: 1.5,
+                    background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
+                    borderRadius: 2, animation: 'sp-scan 3s ease-in-out 1s infinite', zIndex: 4,
+                  }} />
+                  {/* ENVÍAS */}
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <div style={{ fontSize: 7.5, fontWeight: 700, color: '#94a3b8', letterSpacing: 0.5 }}>ENVÍAS</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#F8FAFC', borderRadius: 8, padding: '5px 8px', border: '1px solid #E2E8F0' }}>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: '#2563EB' }}>$</span>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0D1117' }}>1,000</span>
+                      <span style={{ display: 'inline-block', width: 1.5, height: 12, background: '#0D1117', marginLeft: 1, animation: 'sp-cursor 1s ease-in-out infinite' }} />
+                      <span style={{ marginLeft: 'auto', fontSize: 8.5, fontWeight: 700, color: '#94a3b8' }}>USD</span>
                     </div>
                   </div>
-
-                  {/* Divisor */}
-                  <div className="flex items-center gap-2 px-1">
-                    <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
-                    <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.2)' }}>o</span>
-                    <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
+                  {/* Arrow */}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 5v14M19 12l-7 7-7-7" />
+                  </svg>
+                  {/* RECIBES */}
+                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <div style={{ fontSize: 7.5, fontWeight: 700, color: '#94a3b8', letterSpacing: 0.5 }}>RECIBES</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#EFF6FF', borderRadius: 8, padding: '5px 8px', border: '1px solid #BFDBFE' }}>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: '#0D1117' }}>S/</span>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0D1117', animation: 'sp-shimmer 2.5s ease-in-out infinite' }}>3,760.00</span>
+                      <span style={{ marginLeft: 'auto', fontSize: 8.5, fontWeight: 700, color: '#94a3b8' }}>PEN</span>
+                    </div>
                   </div>
-
-                  {/* Opción 2 - Asesor WhatsApp */}
-                  <a
-                    href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20mi%20tipo%20de%20cambio%20con%20un%20asesor."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all hover:scale-[1.02]"
-                    style={{ background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.3)' }}
-                  >
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#25D366' }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.128.558 4.122 1.532 5.849L.073 23.36a.75.75 0 0 0 .92.92l5.521-1.453A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.735 9.735 0 0 1-5.031-1.401l-.36-.214-3.733.983.997-3.634-.235-.374A9.713 9.713 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold" style={{ color: '#25D366' }}>Contacta con un Trader</div>
-                      <div className="text-[9px]" style={{ color: 'rgba(37,211,102,0.6)' }}>Respuesta inmediata por WhatsApp</div>
-                    </div>
-                  </a>
-
                 </div>
+
+                {/* Badge: TC */}
+                <div style={{
+                  position: 'absolute', top: '7%', right: '4%', zIndex: 5,
+                  background: '#fff', borderRadius: 14, padding: '6px 11px',
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
+                }}>
+                  <div style={{ fontSize: 8, fontWeight: 600, color: '#94a3b8' }}>Tipo de Cambio</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0D1117' }}>3.760</div>
+                </div>
+
+                {/* Badge: Al instante */}
+                <div style={{
+                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
+                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
+                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
+                }}>
+                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#2563EB', animation: 'sp-blink 1.5s ease-in-out infinite' }} />
+                  <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff' }}>Al instante</span>
+                </div>
+
+                {/* Floating dots */}
+                <div style={{ position: 'absolute', top: '15%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
+                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
+                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
               </div>
 
               {/* Text body */}
@@ -1262,163 +1760,244 @@ export default function Home() {
             </div>
 
             {/* -- CARD 02 - Transfiere -- */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.4s' }}>
-              <div className="relative overflow-hidden px-7 py-5 flex flex-col justify-center" style={{ background: '#1E293B', height: '210px' }}>
-                <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>02</span>
-                <div className="absolute top-0 left-0 w-28 h-28 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%)', transform: 'translate(-30%, -30%)' }} />
+            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-2" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
+              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Dot grid */}
+                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
+                    <circle key={`s2-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
+                  )))}
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 35s linear infinite', animationDelay: '-6s' }}>
+                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
+                    <rect x="157" y="13" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <rect x="245" y="102" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <rect x="157" y="191" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <rect x="69"  y="102" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  </g>
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 22s linear infinite' }}>
+                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
+                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                  </g>
+                </svg>
 
-                {/* Transfer flow - BIDIRECCIONAL */}
-                <div className="relative z-10 flex items-center gap-3">
-
-                  {/* Left: Tu banco */}
-                  <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        {/* Frontón / triángulo techo */}
-                        <path d="M14 3L26 10H2L14 3Z" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" strokeLinejoin="round"/>
-                        {/* Fachada */}
-                        <rect x="2" y="10" width="24" height="2" fill="rgba(255,255,255,0.25)"/>
-                        {/* Columnas */}
-                        <rect x="4"  y="12" width="2.5" height="10" rx="1" fill="rgba(255,255,255,0.3)"/>
-                        <rect x="9"  y="12" width="2.5" height="10" rx="1" fill="rgba(255,255,255,0.3)"/>
-                        <rect x="14" y="12" width="2.5" height="10" rx="1" fill="rgba(255,255,255,0.3)"/>
-                        <rect x="19" y="12" width="2.5" height="10" rx="1" fill="rgba(255,255,255,0.3)"/>
-                        {/* Base */}
-                        <rect x="1" y="22" width="26" height="2.5" rx="1" fill="rgba(255,255,255,0.2)"/>
-                      </svg>
+                {/* Central card */}
+                <div style={{
+                  position: 'relative', zIndex: 2,
+                  width: 178, height: 130,
+                  background: '#fff', borderRadius: 22,
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: 10, overflow: 'hidden', padding: '0 16px',
+                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
+                }}>
+                  {/* Scan line */}
+                  <div style={{
+                    position: 'absolute', left: 10, right: 10, height: 1.5,
+                    background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
+                    borderRadius: 2, animation: 'sp-scan 3.2s ease-in-out 1s infinite', zIndex: 4,
+                  }} />
+                  {/* Transfer row */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', justifyContent: 'center' }}>
+                    {/* Bank icon */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                      <div style={{ width: 38, height: 38, borderRadius: 11, background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+                          <path d="M14 3L25 9.5H3L14 3Z" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1.2" strokeLinejoin="round"/>
+                          <rect x="3" y="9.5" width="22" height="2" fill="#0D1117" opacity="0.18"/>
+                          <rect x="5"   y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
+                          <rect x="9.5" y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
+                          <rect x="14"  y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
+                          <rect x="18.5" y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
+                          <rect x="2" y="20.5" width="24" height="2" rx="0.8" fill="#0D1117" opacity="0.14"/>
+                        </svg>
+                      </div>
+                      <span style={{ fontSize: 7.5, fontWeight: 600, color: '#94a3b8' }}>Tu banco</span>
                     </div>
-                    <span className="text-[9px] font-semibold" style={{ color: 'rgba(255,255,255,0.4)' }}>Tu banco</span>
+                    {/* Animated flow dots */}
+                    <div style={{ flex: 1, position: 'relative', height: 14, overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, #E2E8F0, #2563EB33, #E2E8F0)', marginTop: -0.5 }} />
+                      {[0, 0.5, 1.0].map(d => (
+                        <div key={d} style={{ position: 'absolute', top: '50%', marginTop: -5, width: 10, height: 10, animation: `sp-flow 1.5s ease-in-out ${d}s infinite` }}>
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path d="M1 5h8M6 2l3 3-3 3" stroke="#2563EB" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Qoricash icon */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                      <div style={{ width: 38, height: 38, borderRadius: 11, background: '#EFF6FF', border: '1px solid #BFDBFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+                          <circle cx="14" cy="14" r="10" stroke="#2563EB" strokeWidth="1.4" opacity="0.35"/>
+                          <circle cx="14" cy="14" r="6.5" stroke="#2563EB" strokeWidth="1.1" opacity="0.2"/>
+                          <circle cx="14" cy="13.5" r="4" stroke="#2563EB" strokeWidth="1.9" opacity="0.9"/>
+                          <path d="M16.5 16.5l2.5 2.5" stroke="#2563EB" strokeWidth="1.9" strokeLinecap="round" opacity="0.9"/>
+                        </svg>
+                      </div>
+                      <span style={{ fontSize: 7.5, fontWeight: 700, color: '#2563EB' }}>Qoricash</span>
+                    </div>
                   </div>
-
-                  {/* Middle: dos carriles de flechas + moneda central */}
-                  <div className="flex-1 flex flex-col gap-2.5 relative">
-
-                    {/* Moneda $ moviéndose der → izq (QoriCash → Tu banco) */}
-                    <div className="absolute top-1/2 -translate-y-1/2 z-10" style={{ animation: 'moneyFlyLeft 2s ease-in-out infinite', left: '50%', marginLeft: '-12px' }}>
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center font-black text-[11px] text-white" style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)', boxShadow: '0 0 10px rgba(34,197,94,0.5)', border: '1px solid rgba(34,197,94,0.6)' }}>$</div>
-                    </div>
-
-                    {/* Carril →  (tu banco envía a QoriCash) */}
-                    <div className="flex flex-col gap-0.5">
-                      <div className="relative w-full h-4 overflow-hidden">
-                        <div className="absolute top-1/2 -translate-y-px h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.2), rgba(255,255,255,0.05))' }} />
-                        {[0, 0.55, 1.1].map((d) => (
-                          <div key={d} className="absolute top-1/2 -translate-y-1/2 left-0" style={{ animation: `slideArrow 1.6s ease-in-out ${d}s infinite` }}>
-                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                              <path d="M1 5.5h9M6.5 2.5l3 3-3 3" stroke="rgba(255,255,255,0.55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-[8px] font-bold" style={{ color: 'rgba(255,255,255,0.2)' }}>USD / S/</span>
-                        <span className="text-[7px]" style={{ color: 'rgba(255,255,255,0.15)' }}>envías</span>
-                      </div>
-                    </div>
-
-                    {/* Carril ← (QoriCash devuelve a tu banco) */}
-                    <div className="flex flex-col gap-0.5">
-                      <div className="relative w-full h-4 overflow-hidden">
-                        <div className="absolute top-1/2 -translate-y-px h-px w-full" style={{ background: 'linear-gradient(90deg, rgba(34,197,94,0.1), rgba(34,197,94,0.45), rgba(34,197,94,0.1))' }} />
-                        {[0, 0.55, 1.1].map((d) => (
-                          <div key={d} className="absolute top-1/2 -translate-y-1/2 right-0" style={{ animation: `slideArrowLeft 1.6s ease-in-out ${d}s infinite` }}>
-                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-                              <path d="M10 5.5H1M4.5 2.5l-3 3 3 3" stroke="#22c55e" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-[7px]" style={{ color: 'rgba(34,197,94,0.4)' }}>recibes</span>
-                        <span className="text-[8px] font-bold" style={{ color: 'rgba(34,197,94,0.55)' }}>S/ / USD</span>
-                      </div>
-                    </div>
-
+                  {/* Bank chips */}
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    {['BCP', 'Interbank', 'BanBif'].map(b => (
+                      <span key={b} style={{ fontSize: 7, fontWeight: 700, color: '#64748b', background: '#F1F5F9', borderRadius: 6, padding: '2px 5px', border: '1px solid #E2E8F0' }}>{b}</span>
+                    ))}
                   </div>
-
-                  {/* Right: QoriCash */}
-                  <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.35)' }}>
-                      <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-                        {/* Moneda exterior */}
-                        <circle cx="14" cy="14" r="11" stroke="#22c55e" strokeWidth="1.3" opacity="0.4"/>
-                        <circle cx="14" cy="14" r="8.5" stroke="#22c55e" strokeWidth="1" opacity="0.25"/>
-                        {/* Letra Q estilizada */}
-                        <circle cx="14" cy="13.5" r="5" stroke="#22c55e" strokeWidth="1.8" opacity="0.85"/>
-                        <path d="M17 17l3 3" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" opacity="0.85"/>
-                        {/* Brillo */}
-                        <path d="M10 11.5 Q11.5 9.5 14 9.5" stroke="#22c55e" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
-                      </svg>
-                    </div>
-                    <span className="text-[9px] font-bold" style={{ color: '#22c55e' }}>QoriCash</span>
-                  </div>
-
                 </div>
 
-                {/* Badge de bancos + confirmación */}
-                <div className="relative z-10 mt-3 flex items-center justify-center gap-2 flex-wrap">
-                  {['BCP','Interbank','BanBif','CCI+'].map((b) => (
-                    <span key={b} className="rounded-md px-2 py-0.5 text-[8px] font-bold" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.3)' }}>{b}</span>
-                  ))}
+                {/* Badge: Encriptado */}
+                <div style={{
+                  position: 'absolute', top: '7%', right: '3%', zIndex: 5,
+                  background: '#fff', borderRadius: 14, padding: '7px 10px',
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
+                }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 7, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>256-bit SSL</div>
+                    <div style={{ fontSize: 8, color: '#94a3b8', marginTop: 1 }}>Encriptado</div>
+                  </div>
                 </div>
+
+                {/* Badge: CCI */}
+                <div style={{
+                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
+                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
+                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
+                }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>+ cualquier banco vía CCI</span>
+                </div>
+
+                {/* Floating dots */}
+                <div style={{ position: 'absolute', top: '14%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
+                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
+                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
               </div>
 
               <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
                 <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a QoriCash</h3>
+                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a Qoricash</h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
               </div>
             </div>
 
             {/* -- CARD 03 - Recibe tu dinero -- */}
-            <div className="group rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 flex flex-col" style={{ border: '1px solid rgba(13,27,42,0.1)', boxShadow: '0 2px 12px rgba(13,27,42,0.06)', animationDelay: '0.8s' }}>
-              <div className="relative overflow-hidden px-7 pt-7 pb-5 flex flex-col items-center justify-center" style={{ background: '#1E293B', height: '210px' }}>
-                <span className="absolute -right-3 -bottom-4 font-black select-none leading-none pointer-events-none" style={{ fontSize: '8rem', color: 'rgba(255,255,255,0.04)' }}>03</span>
-                {/* Central green glow */}
-                <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 60%, rgba(34,197,94,0.12), transparent 65%)' }} />
+            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-3" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
+              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Dot grid */}
+                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
+                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
+                    <circle key={`s3-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
+                  )))}
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 28s linear infinite', animationDelay: '-10s' }}>
+                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
+                    <circle cx="160" cy="17"  r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="248" cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="160" cy="193" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                    <circle cx="72"  cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
+                  </g>
+                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 18s linear infinite', animationDelay: '-2s' }}>
+                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
+                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
+                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
+                  </g>
+                </svg>
 
-                {/* Check cargando → check completo */}
-                <div className="relative z-10 flex flex-col items-center gap-4">
-
-                  {/* Círculo de progreso SVG */}
-                  <div className="relative w-24 h-24 flex items-center justify-center">
-                    <svg className="absolute inset-0 w-full h-full" style={{ transform: 'rotate(-90deg)' }} viewBox="0 0 52 52">
-                      {/* Track gris */}
-                      <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2.5"/>
-                      {/* Progreso verde */}
-                      <circle cx="26" cy="26" r="22" fill="none" stroke="#22c55e" strokeWidth="2.5"
-                        strokeLinecap="round" strokeDasharray="138"
-                        style={{ animation: 'checkRing 3.5s ease-in-out infinite', filter: 'drop-shadow(0 0 4px rgba(34,197,94,0.6))' }}/>
+                {/* Central card */}
+                <div style={{
+                  position: 'relative', zIndex: 2,
+                  width: 148, height: 148,
+                  background: '#fff', borderRadius: 22,
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: 8, overflow: 'hidden',
+                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
+                }}>
+                  {/* Progress ring */}
+                  <div style={{ position: 'relative', width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', transform: 'rotate(-90deg)' }} viewBox="0 0 72 72">
+                      <circle cx="36" cy="36" r="30" fill="none" stroke="#F1F5F9" strokeWidth="3"/>
+                      <circle cx="36" cy="36" r="30" fill="none" stroke="#2563EB" strokeWidth="3"
+                        strokeLinecap="round" strokeDasharray="188"
+                        style={{ animation: 'sp-ring-p 4s ease-in-out infinite', filter: 'drop-shadow(0 0 4px rgba(37,99,235,0.35))' }}/>
                     </svg>
-
-                    {/* Porcentaje mientras carga */}
-                    <div className="absolute flex flex-col items-center" style={{ animation: 'procText 3.5s ease-in-out infinite' }}>
-                      <span className="text-[10px] font-semibold" style={{ color: 'rgba(255,255,255,0.3)' }}>Procesando</span>
-                      <span className="text-lg font-black font-mono text-white">···</span>
+                    {/* Procesando text */}
+                    <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'sp-proc 4s ease-in-out infinite' }}>
+                      <span style={{ fontSize: 9, fontWeight: 600, color: '#94a3b8' }}>Procesando</span>
+                      <span style={{ fontSize: 16, fontWeight: 900, color: '#0D1117', fontFamily: 'monospace', letterSpacing: 2 }}>···</span>
                     </div>
-
-                    {/* Check cuando completa */}
-                    <div className="absolute flex flex-col items-center" style={{ animation: 'checkDone 3.5s ease-in-out infinite', opacity: 0 }}>
-                      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                        <circle cx="18" cy="18" r="16" fill="rgba(34,197,94,0.15)"/>
-                        <path d="M10 18l6 6 10-10" stroke="#22c55e" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    {/* Check done */}
+                    <div style={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'sp-done 4s ease-in-out infinite', opacity: 0 }}>
+                      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                        <circle cx="17" cy="17" r="15" fill="#EFF6FF"/>
+                        <path d="M9 17l6 6 10-10" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
+                          strokeDasharray="40" style={{ animation: 'sp-check 4s ease-in-out infinite' }}/>
                       </svg>
                     </div>
                   </div>
-
-                  {/* Texto estado */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative h-5">
-                      <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-semibold" style={{ color: 'rgba(255,255,255,0.4)', animation: 'procText 3.5s ease-in-out infinite' }}>Verificando transferencia...</span>
-                      <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] font-bold" style={{ color: '#22c55e', animation: 'doneText 3.5s ease-in-out infinite', opacity: 0 }}>¡Transferencia enviada!</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                      <Clock className="w-3 h-3 text-green-400" />
-                      <span className="text-[10px] font-bold text-green-400">menos de 15 min</span>
-                    </div>
+                  {/* Amount */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                    <span style={{ fontSize: 15, fontWeight: 900, color: '#0D1117', animation: 'sp-shimmer 2.5s ease-in-out 0.5s infinite' }}>S/ 3,760.00</span>
+                    <span style={{ fontSize: 8, fontWeight: 600, color: '#94a3b8' }}>en tu cuenta bancaria</span>
                   </div>
-
                 </div>
+
+                {/* Badge: < 15 min */}
+                <div style={{
+                  position: 'absolute', top: '7%', right: '3%', zIndex: 5,
+                  background: '#fff', borderRadius: 14, padding: '7px 10px',
+                  border: '1px solid rgba(0,0,0,0.07)',
+                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
+                }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 7, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>&lt; 15 min</div>
+                    <div style={{ fontSize: 8, color: '#94a3b8', marginTop: 1 }}>Tiempo promedio</div>
+                  </div>
+                </div>
+
+                {/* Badge: Sin comisiones */}
+                <div style={{
+                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
+                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
+                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
+                }}>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff' }}>Sin comisiones</span>
+                </div>
+
+                {/* Floating dots */}
+                <div style={{ position: 'absolute', top: '14%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
+                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
+                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
               </div>
 
               <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
@@ -1430,10 +2009,10 @@ export default function Home() {
 
           </div>
 
-          <div className="text-center">
+          <div className="text-center reveal">
             <Link
               href={isAuthenticated ? '/dashboard' : '/login'}
-              className="inline-flex items-center gap-2.5 text-white font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2.5 text-white font-bold px-9 py-4 rounded-full text-sm btn-press active:scale-[0.97]"
               style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}
             >
               Empezar ahora <ArrowRight className="w-4 h-4" />
@@ -1537,7 +2116,7 @@ export default function Home() {
               className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5 active:scale-[0.98]"
               style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 8px 24px rgba(34,197,94,0.32)' }}
             >
-              Abrir cuenta corporativa <ArrowRight className="w-4 h-4" />
+              Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -1582,7 +2161,7 @@ export default function Home() {
             {/* Fila 1 - Logo + descripción */}
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity shrink-0">
-                <img src="/vg.png" alt="QoriCash" className="h-8 w-auto" />
+                <img src="/vg.png" alt="Qoricash" className="h-8 w-auto" />
               </Link>
               <span className="hidden sm:block w-px h-6" style={{ background: 'rgba(0,0,0,0.1)' }} />
               <p className="hidden sm:block text-xs leading-relaxed" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
@@ -1643,7 +2222,7 @@ export default function Home() {
 
             {/* Copyright */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs" style={{ borderTop: '1px solid rgba(0,0,0,0.06)', color: '#9CA3AF' }}>
-              <p>© 2025 QoriCash. Todos los derechos reservados.</p>
+              <p>© 2025 Qoricash. Todos los derechos reservados.</p>
               <div className="flex items-center gap-3">
                 <Link href="/terminos-condiciones" className="transition-colors hover:text-gray-600">Términos</Link>
                 <Link href="/politica-privacidad" className="transition-colors hover:text-gray-600">Privacidad</Link>

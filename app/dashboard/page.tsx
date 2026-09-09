@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
@@ -501,45 +502,59 @@ export default function DashboardPage() {
       {!showProfile && <main className="p-3 sm:p-5 space-y-4 sm:space-y-5 max-w-2xl mx-auto w-full">
 
 
-          {/* TC rates card */}
-          <div className="rounded-2xl overflow-hidden" style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.35)' }}>
-            {/* Subtítulo */}
-            <div className="flex items-center gap-2 px-4 pt-3 pb-2">
-              <span className="relative flex w-2 h-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#ef4444' }} />
-                <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }} />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Tipo de Cambio <span style={{ color: '#ffffff' }}>live</span>
-              </span>
+          {/* TC rates — dos cards separadas */}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="relative flex w-2 h-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ background: '#ef4444' }} />
+              <span className="relative inline-flex w-2 h-2 rounded-full" style={{ background: '#ef4444', boxShadow: '0 0 6px rgba(239,68,68,0.7)' }} />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>
+              Tipo de Cambio <span style={{ color: '#0D1117' }}>live</span>
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Card Compra */}
+            <div className="rounded-2xl overflow-hidden" style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.35)' }}>
+              <div className="px-4 pt-4 pb-1">
+                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(34,197,94,0.18)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)' }}>
+                  Compra
+                </span>
+              </div>
+              <div className="px-4 pb-4 pt-2 flex flex-col gap-0.5">
+                {currentRates ? (
+                  <>
+                    <span className="text-3xl font-black tabular-nums text-white leading-none" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em' }}>
+                      {currentRates.tipo_compra.toFixed(4)}
+                    </span>
+                    <span className="text-[9px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>S/ por USD</span>
+                  </>
+                ) : (
+                  <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>—</span>
+                )}
+              </div>
+              <div style={{ height: '2px', background: 'linear-gradient(90deg, #16a34a, #4ade80)' }} />
             </div>
-            {/* Compra / Venta */}
-            {currentRates ? (
-              <div className="flex items-stretch" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-                {/* Compra */}
-                <div className="flex-1 flex flex-col items-center justify-center py-5 gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Qoricash Compra</span>
-                  <span className="text-4xl font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em', lineHeight: 1 }}>
-                    {currentRates.tipo_compra.toFixed(4)}
-                  </span>
-                  <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.22)' }}>S/ por USD</span>
-                </div>
-                {/* Divisor */}
-                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', margin: '16px 0' }} />
-                {/* Venta */}
-                <div className="flex-1 flex flex-col items-center justify-center py-5 gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>Qoricash Vende</span>
-                  <span className="text-4xl font-black tabular-nums text-white" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em', lineHeight: 1 }}>
-                    {currentRates.tipo_venta.toFixed(4)}
-                  </span>
-                  <span className="text-[9px] font-medium" style={{ color: 'rgba(255,255,255,0.22)' }}>S/ por USD</span>
-                </div>
+            {/* Card Venta */}
+            <div className="rounded-2xl overflow-hidden" style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.35)' }}>
+              <div className="px-4 pt-4 pb-1">
+                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.25)', color: '#60a5fa', border: '1px solid rgba(37,99,235,0.4)' }}>
+                  Venta
+                </span>
               </div>
-            ) : (
-              <div className="flex items-center justify-center py-8">
-                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>Cargando...</span>
+              <div className="px-4 pb-4 pt-2 flex flex-col gap-0.5">
+                {currentRates ? (
+                  <>
+                    <span className="text-3xl font-black tabular-nums text-white leading-none" style={{ fontFamily: 'var(--font-poppins)', letterSpacing: '-0.03em' }}>
+                      {currentRates.tipo_venta.toFixed(4)}
+                    </span>
+                    <span className="text-[9px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.28)' }}>S/ por USD</span>
+                  </>
+                ) : (
+                  <span className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>—</span>
+                )}
               </div>
-            )}
+              <div style={{ height: '2px', background: 'linear-gradient(90deg, #2563EB, #60a5fa)' }} />
+            </div>
           </div>
 
           {/* Welcome + stats */}
@@ -552,27 +567,25 @@ export default function DashboardPage() {
                 ? (currentRates.tipo_venta - currentRates.tipo_compra) * 1000
                 : 0;
               const cards = [
-                { label: 'Operaciones', target: stats.total_operations, icon: Layers,     bg: '#064E3B', shadow: 'rgba(6,78,59,0.35)',    fmt: (n: number) => Math.round(n).toString()                   },
-                { label: 'Vol. Dólares', target: stats.total_dolares,   icon: DollarSign, bg: '#1E3A8A', shadow: 'rgba(30,58,138,0.35)',  fmt: (n: number) => `$${fmt$(n)}`                              },
-                { label: 'Vol. Soles',   target: stats.total_soles,     icon: Activity,   bg: '#3B0764', shadow: 'rgba(59,7,100,0.35)',   fmt: (n: number) => `S/${fmtS(n)}`                             },
-                { label: 'Spread',       target: spreadVal,             icon: TrendingUp, bg: '#431407', shadow: 'rgba(67,20,7,0.35)',    fmt: (n: number) => spreadVal ? `${n.toFixed(1)} pips` : '—'   },
+                { label: 'Operaciones', target: stats.total_operations, icon: Layers,     iconColor: '#059669', fmt: (n: number) => Math.round(n).toString()                   },
+                { label: 'Vol. Dólares', target: stats.total_dolares,   icon: DollarSign, iconColor: '#2563EB', fmt: (n: number) => `$${fmt$(n)}`                              },
+                { label: 'Vol. Soles',   target: stats.total_soles,     icon: Activity,   iconColor: '#7C3AED', fmt: (n: number) => `S/${fmtS(n)}`                             },
+                { label: 'Spread',       target: spreadVal,             icon: TrendingUp, iconColor: '#EA580C', fmt: (n: number) => spreadVal ? `${n.toFixed(1)} pips` : '—'   },
               ];
               return (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {cards.map(({ label, target, icon: Icon, bg, shadow, fmt }) => (
+                  {cards.map(({ label, target, icon: Icon, iconColor, fmt }) => (
                     <div
                       key={label}
                       className="relative rounded-xl px-3 py-2.5 flex flex-col gap-1.5 transition-all hover:-translate-y-0.5 cursor-default overflow-hidden"
-                      style={{ background: bg, boxShadow: `0 4px 14px ${shadow}` }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${shadow}`; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 14px ${shadow}`; }}
+                      style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.09)', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
                     >
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.12)' }}>
-                        <Icon className="w-3.5 h-3.5 text-white" />
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: `${iconColor}14` }}>
+                        <Icon className="w-3.5 h-3.5" style={{ color: iconColor }} />
                       </div>
                       <div>
-                        <p className="text-[9px] font-bold uppercase tracking-[0.1em] leading-none mb-0.5" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</p>
-                        <p className="text-sm font-black tabular-nums truncate leading-tight text-white" style={{ fontFamily: 'var(--font-poppins)' }}>
+                        <p className="text-[9px] font-bold uppercase tracking-[0.1em] leading-none mb-0.5" style={{ color: '#9CA3AF' }}>{label}</p>
+                        <p className="text-sm font-black tabular-nums truncate leading-tight" style={{ fontFamily: 'var(--font-poppins)', color: '#111827' }}>
                           <AnimatedNumber target={target} format={fmt} />
                         </p>
                       </div>
@@ -609,7 +622,7 @@ export default function DashboardPage() {
                 {
                   icon: HelpCircle,
                   label: 'Recibir\nayuda',
-                  action: () => window.open('https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash.', '_blank'),
+                  action: () => window.open('https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20Qoricash.', '_blank'),
                   primary: false,
                 },
               ].map(({ icon: Icon, label, action, primary }) => (
@@ -708,7 +721,7 @@ export default function DashboardPage() {
               {/* Carrusel */}
               <div className="rounded-xl overflow-hidden relative" style={{ height: 90 }}>
                 {noticias.map((item, i) => (
-                  <a key={item.id} href={`/noticias/${item.id}`}
+                  <Link key={item.id} href={`/noticias/${item.id}`}
                     className="absolute inset-0 transition-opacity duration-700"
                     style={{ opacity: i === noticiaIdx ? 1 : 0, pointerEvents: i === noticiaIdx ? 'auto' : 'none' }}>
                     {item.imagen && <Image src={item.imagen} alt={item.titulo} fill sizes="50vw" className="object-cover" />}
@@ -721,7 +734,7 @@ export default function DashboardPage() {
                         {item.titulo}
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 ))}
                 <div className="absolute bottom-1.5 left-0 right-0 flex justify-center items-center gap-1">
                   {[-1, 0, 1].map(offset => {
@@ -742,7 +755,7 @@ export default function DashboardPage() {
                   {[
                     { logo: '/sunat.png',        label: 'SUNAT',    compra: tasas?.sunat?.compra,       venta: tasas?.sunat?.venta        },
                     { logo: '/sbs.png',           label: 'SBS',      compra: tasas?.sbs?.compra,         venta: tasas?.sbs?.venta          },
-                    { logo: '/logo-principal.png', label: 'QoriCash', compra: currentRates?.tipo_compra, venta: currentRates?.tipo_venta   },
+                    { logo: '/logo-principal.png', label: 'Qoricash', compra: currentRates?.tipo_compra, venta: currentRates?.tipo_venta   },
                   ].map(({ logo, label, compra, venta }) => (
                     <div key={label} className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5" style={{ minWidth: 72 }}>
@@ -828,7 +841,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <p className="text-white font-extrabold text-sm leading-tight">
-                    {selectedOperation.tipo === 'compra' ? 'QoriCash Compra' : 'QoriCash Vende'}
+                    {selectedOperation.tipo === 'compra' ? 'Qoricash Compra' : 'Qoricash Vende'}
                   </p>
                   <p className="text-[10px] font-mono font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     {selectedOperation.codigo_operacion || selectedOperation.operation_id || `#${selectedOperation.id}`}

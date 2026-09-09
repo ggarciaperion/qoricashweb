@@ -29,6 +29,7 @@ import {
   Mail,
   MessageCircle,
   Shield,
+  XCircle,
 } from 'lucide-react';
 
 const NAV_ITEMS_PERSONA = [
@@ -59,6 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [kycApprovedModal, setKycApprovedModal] = useState(false);
   const [logoutPhase, setLogoutPhase] = useState<'idle' | 'loading' | 'done'>('idle');
   const [logoutConfirm, setLogoutConfirm] = useState(false);
+  const [cancelledOp, setCancelledOp] = useState<{ operation_id: string; amount_usd: number; amount_pen: number } | null>(null);
 
   const handleAccountDeleted = useCallback(() => {
     forceLogoutDeleted();
@@ -69,6 +71,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     onDocumentsApproved: () => {
       refreshUser();
       setKycApprovedModal(true);
+    },
+    onOperationUpdated: (data: any) => {
+      if (data?.status_key === 'cancelado' || data?.status === 'Cancelada') {
+        setCancelledOp({
+          operation_id: data.operation_id ?? data.id,
+          amount_usd:   data.amount_usd ?? 0,
+          amount_pen:   data.amount_pen ?? 0,
+        });
+      }
     },
   });
 
@@ -133,11 +144,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen flex" style={{ position: 'relative' }}>
       {/* Background fijo que cubre toda la pantalla incluyendo safe areas del móvil */}
-      {isEmpresaUser ? (
-        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#0D1B2A' }} />
-      ) : (
-        <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F5F7FA' }} />
-      )}
+      <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F5F7FA' }} />
 
       {/* Mobile overlay */}
       {isSidebarOpen && (
@@ -156,20 +163,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
-        style={isEmpresaUser
-          ? { background: 'linear-gradient(180deg, #0D1B2A 0%, #1a3353 100%)', borderRight: '1px solid rgba(143,184,204,0.12)' }
-          : { background: '#ffffff', borderRight: '1px solid rgba(0,0,0,0.08)', boxShadow: '2px 0 12px rgba(0,0,0,0.04)' }}
+        style={{ background: '#ffffff', borderRight: '1px solid rgba(0,0,0,0.08)', boxShadow: '2px 0 12px rgba(0,0,0,0.04)' }}
       >
         {/* Logo */}
         <div className="h-[60px] flex items-center justify-between px-5">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition">
-            <img src="/vg.png" alt="QoriCash" className="h-10 w-auto" />
+            <img src="/vg.png" alt="Qoricash" className="h-10 w-auto" />
           </Link>
           <button
             className="lg:hidden p-1.5 rounded-lg transition"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
-            onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)')}
+            style={{ color: 'rgba(0,0,0,0.35)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(0,0,0,0.35)')}
             onClick={() => setIsSidebarOpen(false)}
           >
             <X className="w-5 h-5" />
@@ -180,22 +185,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className="flex-1 py-5 px-3 space-y-1.5 overflow-y-auto">
           <p
             className="px-3 mb-3 text-[10px] font-bold uppercase tracking-[0.14em]"
-            style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(0,0,0,0.35)' }}
+            style={{ color: 'rgba(0,0,0,0.35)' }}
           >
             Menú principal
           </p>
 
           {NAV_ITEMS.map(({ icon: Icon, label, href, exact }) => {
             const active = isActive(href, exact);
-            const activeStyle = isEmpresaUser
-              ? { background: 'rgba(143,184,204,0.12)', borderLeft: '3px solid #8fb8cc', color: '#8fb8cc' }
-              : { background: 'rgba(13,17,23,0.06)', borderLeft: '3px solid #0D1117', color: '#0D1117' };
-            const inactiveColor = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280';
-            const hoverColor   = isEmpresaUser ? '#ffffff' : '#0D1117';
-            const hoverBg      = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)';
-            const iconColor    = active
-              ? (isEmpresaUser ? '#8fb8cc' : '#0D1117')
-              : (isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF');
+            const activeStyle = { background: 'rgba(13,17,23,0.06)', borderLeft: '3px solid #0D1117', color: '#0D1117' };
+            const inactiveColor = '#6B7280';
+            const hoverColor   = '#0D1117';
+            const hoverBg      = 'rgba(0,0,0,0.04)';
+            const iconColor    = active ? '#0D1117' : '#9CA3AF';
             return (
               <Link
                 key={label}
@@ -219,24 +220,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <>
               <p
                 className="px-3 pt-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]"
-                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.4)' : 'rgba(0,0,0,0.35)' }}
+                style={{ color: 'rgba(0,0,0,0.35)' }}
               >
                 Administración
               </p>
               <Link
                 href="/dashboard/posicion"
                 className="flex items-center gap-3 px-3 py-3.5 rounded-xl text-[15px] font-medium transition-all"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
+                style={{ color: '#6B7280' }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117';
-                  (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)';
+                  (e.currentTarget as HTMLElement).style.color = '#0D1117';
+                  (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)';
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280';
+                  (e.currentTarget as HTMLElement).style.color = '#6B7280';
                   (e.currentTarget as HTMLElement).style.background = 'transparent';
                 }}
               >
-                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF' }} />
+                <BarChart2 className="w-[17px] h-[17px] shrink-0" style={{ color: '#9CA3AF' }} />
                 Posición del Día
               </Link>
             </>
@@ -244,23 +245,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* Bottom */}
-        <div className="px-4 py-4" style={{ borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)' }}>
+        <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
           {/* Contacto rápido */}
           <div className="mb-2 space-y-1">
             <a href="mailto:info@qoricash.pe"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              style={{ color: '#9CA3AF' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#0D1117'; (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <Mail className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">info@qoricash.pe</span>
             </a>
             <a href="https://wa.me/51910624404?text=Hola,%20necesito%20ayuda" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm transition"
-              style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF' }}
+              style={{ color: '#9CA3AF' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#16a34a'; (e.currentTarget as HTMLElement).style.background = 'rgba(34,197,94,0.06)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.4)' : '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
             >
               <MessageCircle className="w-4 h-4 shrink-0" />
               <span className="text-xs font-medium">WhatsApp</span>
@@ -271,13 +272,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button
             onClick={() => setLogoutConfirm(true)}
             className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition"
-            style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF', borderTop: isEmpresaUser ? '1px solid rgba(143,184,204,0.12)' : '1px solid rgba(0,0,0,0.06)', paddingTop: '10px', marginTop: '4px' }}
+            style={{ color: '#9CA3AF', borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: '10px', marginTop: '4px' }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.color = '#ef4444';
               (e.currentTarget as HTMLElement).style.background = 'rgba(239,68,68,0.06)';
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(255,255,255,0.35)' : '#9CA3AF';
+              (e.currentTarget as HTMLElement).style.color = '#9CA3AF';
               (e.currentTarget as HTMLElement).style.background = 'transparent';
             }}
           >
@@ -290,26 +291,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* TOPBAR */}
-        <header className="sticky top-0 z-30" style={isEmpresaUser ? { background: 'rgba(10,20,36,0.97)' } : { background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+        <header className="sticky top-0 z-30" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="flex items-center px-5 h-[64px] gap-4">
 
             {/* Left: hamburger + horario */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#6B7280')}
+                style={{ color: '#6B7280' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}
                 onClick={() => setIsSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
                 <span className="text-xs font-semibold uppercase tracking-wide">Menú</span>
               </button>
               <div className="hidden md:flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }} />
+                <Clock className="w-3.5 h-3.5 shrink-0" style={{ color: '#9CA3AF' }} />
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.85)' : '#9CA3AF' }}>Horario de atención</p>
-                  <p className="text-[11px] font-medium leading-none" style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.85)' : '#374151' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] leading-none mb-0.5" style={{ color: '#9CA3AF' }}>Horario de atención</p>
+                  <p className="text-[11px] font-medium leading-none" style={{ color: '#374151' }}>Lun–Vie 9–6 pm · Sáb 9–2 pm</p>
                 </div>
               </div>
             </div>
@@ -320,41 +321,41 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Right: inicio + bell + user */}
             <div className="flex items-center gap-1 shrink-0">
               <Link
-                href={isEmpresaUser ? '/empresa' : '/'}
+                href={isEmpresaUser ? '/dashboard/empresa' : '/'}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-                style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.7)' : '#6B7280' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? '#ffffff' : '#0D1117'; (e.currentTarget as HTMLElement).style.background = isEmpresaUser ? 'rgba(143,184,204,0.08)' : 'rgba(0,0,0,0.04)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = isEmpresaUser ? 'rgba(143,184,204,0.7)' : '#6B7280'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                style={{ color: '#6B7280' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#0D1117'; (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#6B7280'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               >
                 <Home className="w-3.5 h-3.5" />
                 Página de inicio
               </Link>
-              <div className="block w-px h-5 mx-1" style={{ background: isEmpresaUser ? 'rgba(143,184,204,0.2)' : 'rgba(0,0,0,0.1)' }} />
+              <div className="block w-px h-5 mx-1" style={{ background: 'rgba(0,0,0,0.1)' }} />
               <button
                 className="p-2 rounded-xl transition"
-                style={{ color: isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#9CA3AF' }}
-                onMouseEnter={e => (e.currentTarget.style.color = isEmpresaUser ? '#ffffff' : '#0D1117')}
-                onMouseLeave={e => (e.currentTarget.style.color = isEmpresaUser ? 'rgba(255,255,255,0.5)' : '#9CA3AF')}
+                style={{ color: '#9CA3AF' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}
               >
                 <Bell className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition ml-1"
-                style={{ background: isUserMenuOpen ? (isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.04)') : 'transparent' }}
-                onMouseEnter={e => (e.currentTarget.style.background = isEmpresaUser ? 'rgba(143,184,204,0.1)' : 'rgba(0,0,0,0.04)')}
+                style={{ background: isUserMenuOpen ? 'rgba(0,0,0,0.04)' : 'transparent' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,0,0,0.04)')}
                 onMouseLeave={e => { if (!isUserMenuOpen) (e.currentTarget.style.background = 'transparent'); }}
               >
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0"
-                  style={{ background: isEmpresaUser ? 'linear-gradient(135deg, #4A6884, #8fb8cc)' : '#0D1117' }}>
+                  style={{ background: '#0D1117' }}>
                   {displayName?.charAt(0)?.toUpperCase() ?? 'U'}
                 </div>
-                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: isEmpresaUser ? '#ffffff' : '#0D1117' }}>
+                <span className="text-sm font-semibold hidden sm:block max-w-[110px] truncate" style={{ color: '#0D1117' }}>
                   {displayName}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-                  style={{ color: isEmpresaUser ? 'rgba(143,184,204,0.5)' : 'rgba(0,0,0,0.35)' }}
+                  style={{ color: 'rgba(0,0,0,0.35)' }}
                 />
               </button>
             </div>
@@ -376,8 +377,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               }}
             >
               {[
-                { icon: User,      label: 'Mi perfil',    action: () => router.push('/dashboard?perfil=1') },
-                { icon: BarChart2, label: 'Mi Dashboard', action: () => router.push('/dashboard?home=1') },
+                { icon: User,      label: 'Mi perfil',    action: () => router.push('/dashboard/perfil') },
+                { icon: BarChart2, label: 'Mi Dashboard', action: () => router.push(isEmpresaUser ? '/dashboard/empresa' : '/dashboard') },
               ].map(({ icon: Icon, label, action }) => (
                 <button
                   key={label}
@@ -402,7 +403,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
               )}
               <a
-                href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20QoriCash."
+                href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20de%20Qoricash."
                 target="_blank" rel="noopener noreferrer"
                 onClick={() => setIsUserMenuOpen(false)}
                 className="flex items-center px-4 py-2.5 text-sm gap-3 transition"
@@ -527,7 +528,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onMouseEnter={e => (e.currentTarget.style.background = '#1f1f1f')}
                 onMouseLeave={e => (e.currentTarget.style.background = '#0A0A0A')}
               >
-                <LogOut className="w-3.5 h-3.5" /> Sí, cerrar sesión
+                <LogOut className="w-3.5 h-3.5" /> Confirmar
               </button>
             </div>
           </div>
@@ -539,82 +540,76 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {logoutPhase !== 'idle' && typeof document !== 'undefined' && createPortal(
         <div style={{
           position: 'fixed', inset: 0, zIndex: 999999,
-          background: '#ffffff',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0,
+          background: '#F8FAFC',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden',
         }}>
           <style>{`
-            @keyframes loRingDraw  { from { stroke-dashoffset: 352; } to { stroke-dashoffset: 0; } }
-            @keyframes loRingTrail { 0%,100% { stroke-dashoffset:352; } 50% { stroke-dashoffset:88; } }
-            @keyframes loPulse     { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(0.91); opacity:0.7; } }
-            @keyframes loFadeUp2   { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-            @keyframes loShimmer   { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
-            @keyframes loScaleIn   { 0% { transform:scale(0); opacity:0; } 65% { transform:scale(1.12); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+            @keyframes loRingDraw  { from { stroke-dashoffset: 415; } to { stroke-dashoffset: 0; } }
+            @keyframes loPulse     { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(0.92); opacity:0.75; } }
+            @keyframes loFadeUp2   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+            @keyframes loScaleIn   { 0% { transform:scale(0); opacity:0; } 65% { transform:scale(1.18); opacity:1; } 100% { transform:scale(1); opacity:1; } }
             @keyframes loCheckDraw { from { stroke-dashoffset:60; } to { stroke-dashoffset:0; } }
             @keyframes loDot       { 0%,80%,100% { transform:scale(0); opacity:0; } 40% { transform:scale(1); opacity:1; } }
-            @keyframes loOrbit     { from { transform:rotate(0deg) translateX(68px); } to { transform:rotate(360deg) translateX(68px); } }
+            @keyframes loOrbit     { from { transform:rotate(0deg) translateX(66px); } to { transform:rotate(360deg) translateX(66px); } }
             @keyframes loBarFill   { from { width:0%; } to { width:100%; } }
-            @keyframes loSlideIn   { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+            @keyframes loSlideIn   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
           `}</style>
 
-          {/* Top accent line */}
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#f1f5f9' }}>
-            <div style={{
-              height: '100%', background: 'linear-gradient(90deg, #000, #555)',
-              animation: 'loBarFill 1.8s cubic-bezier(0.4,0,0.6,1) forwards',
-            }} />
-          </div>
-
           {/* Main content */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 36, animation: 'loSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, animation: 'loSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) both', position: 'relative' }}>
 
             {/* Ring + logo */}
-            <div style={{ position: 'relative', width: 148, height: 148, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: 164, height: 164, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 
-              {/* Orbiting dot */}
-              {logoutPhase === 'loading' && (
-                <div style={{
-                  position: 'absolute', top: '50%', left: '50%',
-                  width: 8, height: 8, borderRadius: '50%', background: '#000', marginTop: -4, marginLeft: -4,
-                  animation: 'loOrbit 1.4s linear infinite',
-                }} />
-              )}
-
-              <svg width="148" height="148" viewBox="0 0 148 148" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+              {/* Main SVG ring */}
+              <svg width="164" height="164" viewBox="0 0 164 164" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
                 {/* Track */}
-                <circle cx="74" cy="74" r="60" fill="none" stroke="#f1f5f9" strokeWidth="5" />
-                {/* Dashed ghost ring */}
-                <circle cx="74" cy="74" r="60" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="5" strokeDasharray="8 8" />
+                <circle cx="82" cy="82" r="66" fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth="5" />
                 {/* Progress ring */}
                 {logoutPhase === 'loading' && (
-                  <circle cx="74" cy="74" r="60" fill="none" stroke="#000000" strokeWidth="5"
-                    strokeLinecap="round" strokeDasharray="377" strokeDashoffset="377"
-                    style={{ animation: 'loRingDraw 1.8s cubic-bezier(0.4,0,0.2,1) forwards' }} />
+                  <circle cx="82" cy="82" r="66" fill="none" stroke="#0A0A0A"
+                    strokeWidth="5" strokeLinecap="round"
+                    strokeDasharray="415" strokeDashoffset="415"
+                    style={{ animation: 'loRingDraw 2.1s cubic-bezier(0.4,0,0.2,1) forwards' }} />
                 )}
                 {logoutPhase === 'done' && (
-                  <circle cx="74" cy="74" r="60" fill="none" stroke="#000000" strokeWidth="5"
-                    strokeLinecap="round" strokeDasharray="377" strokeDashoffset="0" />
+                  <circle cx="82" cy="82" r="66" fill="none" stroke="#0A0A0A"
+                    strokeWidth="5" strokeLinecap="round"
+                    strokeDasharray="415" strokeDashoffset="0" />
                 )}
               </svg>
 
-              {/* Center */}
+              {/* Orbiting dot */}
+              {logoutPhase === 'loading' && (
+                <div style={{ position: 'absolute', top: '50%', left: '50%', marginTop: -4, marginLeft: -4 }}>
+                  <div style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: '#0A0A0A',
+                    animation: 'loOrbit 2.1s linear infinite',
+                  }} />
+                </div>
+              )}
+
+              {/* Center circle */}
               <div style={{
-                width: 100, height: 100, borderRadius: '50%',
-                background: '#ffffff', border: '1.5px solid rgba(0,0,0,0.08)',
-                boxShadow: '0 0 0 6px #f8fafc, 0 8px 32px rgba(0,0,0,0.1)',
+                width: 108, height: 108, borderRadius: '50%',
+                background: '#ffffff',
+                border: '1px solid rgba(0,0,0,0.1)',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative', zIndex: 1,
-                transition: 'box-shadow 0.4s ease',
               }}>
                 {logoutPhase === 'loading' ? (
-                  <img src="/vg.png" alt="QoriCash" style={{ width: 58, height: 58, objectFit: 'contain', animation: 'loPulse 1.6s ease-in-out infinite' }} />
+                  <img src="/vg.png" alt="Qoricash" style={{ width: 58, height: 58, objectFit: 'contain', animation: 'loPulse 1.8s ease-in-out infinite' }} />
                 ) : (
                   <div style={{ animation: 'loScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-                    <svg width="46" height="46" viewBox="0 0 44 44" fill="none">
+                    <svg width="50" height="50" viewBox="0 0 44 44" fill="none">
                       <circle cx="22" cy="22" r="22" fill="#0A0A0A" />
                       <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                         strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="60" strokeDashoffset="60"
-                        style={{ animation: 'loCheckDraw 0.45s ease-out 0.15s forwards' }} />
+                        style={{ animation: 'loCheckDraw 0.5s ease-out 0.2s forwards' }} />
                     </svg>
                   </div>
                 )}
@@ -625,51 +620,129 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div style={{ textAlign: 'center' }}>
               {logoutPhase === 'loading' ? (
                 <>
-                  <p style={{
-                    fontSize: 16, fontWeight: 800, margin: 0, letterSpacing: '-0.01em',
-                    background: 'linear-gradient(90deg, #d1d5db 0%, #111827 40%, #d1d5db 80%)',
-                    backgroundSize: '200% auto',
-                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                    animation: 'loShimmer 1.8s linear infinite',
-                  }}>
+                  <p style={{ fontSize: 18, fontWeight: 800, margin: 0, letterSpacing: '-0.02em', color: '#0D1117' }}>
                     Cerrando sesión...
                   </p>
-                  {/* Dot loader */}
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 10 }}>
-                    {[0, 0.2, 0.4].map((delay, i) => (
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 7, marginTop: 12 }}>
+                    {[0, 0.22, 0.44].map((delay, i) => (
                       <span key={i} style={{
-                        display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#9ca3af',
-                        animation: `loDot 1.2s ease-in-out ${delay}s infinite`,
+                        display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#0A0A0A',
+                        animation: `loDot 1.3s ease-in-out ${delay}s infinite`,
                       }} />
                     ))}
                   </div>
-                  <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 10, fontWeight: 500 }}>
+                  <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 12, fontWeight: 500 }}>
                     Guardando tu información de forma segura
                   </p>
                 </>
               ) : (
-                <div style={{ animation: 'loFadeUp2 0.4s ease-out both' }}>
-                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', color: '#9ca3af', textTransform: 'uppercase', margin: '0 0 6px' }}>
+                <div style={{ animation: 'loFadeUp2 0.45s ease-out both' }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: '#6B7280', textTransform: 'uppercase', margin: '0 0 8px' }}>
                     Hasta pronto
                   </p>
-                  <p style={{ fontSize: 20, fontWeight: 900, color: '#0A0A0A', margin: 0, letterSpacing: '-0.02em' }}>
+                  <p style={{ fontSize: 22, fontWeight: 900, color: '#0D1117', margin: 0, letterSpacing: '-0.025em' }}>
                     {displayName}
                   </p>
-                  <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 6 }}>Tu sesión fue cerrada con éxito</p>
+                  <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 8 }}>
+                    Tu sesión fue cerrada con éxito
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Bottom progress bar */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: '#f1f5f9' }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, background: 'rgba(0,0,0,0.06)' }}>
             <div style={{
               height: '100%',
-              background: 'linear-gradient(90deg, #000, #555)',
+              background: '#0A0A0A',
               width: logoutPhase === 'done' ? '100%' : undefined,
-              animation: logoutPhase === 'loading' ? 'loBarFill 1.8s cubic-bezier(0.4,0,0.6,1) forwards' : 'none',
-              transition: logoutPhase === 'done' ? 'width 0.3s ease' : 'none',
+              animation: logoutPhase === 'loading' ? 'loBarFill 2.1s cubic-bezier(0.4,0,0.6,1) forwards' : 'none',
+              transition: logoutPhase === 'done' ? 'width 0.4s ease' : 'none',
             }} />
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Modal: operación anulada en tiempo real */}
+      {cancelledOp && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center px-4"
+          style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(8px)' }}
+        >
+          <style>{`
+            @keyframes cancelSlideUp { from { opacity:0; transform:translateY(20px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+            @keyframes cancelShake   { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-3px)} 80%{transform:translateX(3px)} }
+          `}</style>
+          <div
+            className="w-full max-w-sm rounded-2xl overflow-hidden"
+            style={{
+              background: '#ffffff',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.45)',
+              animation: 'cancelSlideUp 0.35s cubic-bezier(0.22,1,0.36,1) both',
+            }}
+          >
+            {/* Header rojo */}
+            <div className="px-6 pt-7 pb-5 flex flex-col items-center text-center" style={{ background: 'linear-gradient(160deg, #DC2626 0%, #B91C1C 100%)' }}>
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+                style={{ background: 'rgba(255,255,255,0.15)', animation: 'cancelShake 0.5s ease-out 0.3s both' }}
+              >
+                <XCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-black text-white leading-tight">Operación anulada</h3>
+              <p className="text-sm text-white/75 mt-1">Tu operación fue cancelada por el equipo</p>
+            </div>
+
+            {/* Body */}
+            <div className="px-6 py-5">
+              {/* Detalle de la operación */}
+              <div className="rounded-xl p-4 mb-4" style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.07)' }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Detalle</p>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">N° Operación</span>
+                    <span className="text-xs font-bold text-gray-800 tabular-nums">#{cancelledOp.operation_id}</span>
+                  </div>
+                  {cancelledOp.amount_usd > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Monto USD</span>
+                      <span className="text-xs font-bold text-gray-800 tabular-nums">${cancelledOp.amount_usd.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  )}
+                  {cancelledOp.amount_pen > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Monto PEN</span>
+                      <span className="text-xs font-bold text-gray-800 tabular-nums">S/ {cancelledOp.amount_pen.toLocaleString('es-PE', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-500 text-center leading-relaxed mb-4">
+                Si tienes dudas sobre esta anulación, comunícate con nuestro equipo por WhatsApp.
+              </p>
+
+              <div className="space-y-2.5">
+                <a
+                  href={`https://wa.me/51910624404?text=Hola%2C%20mi%20operaci%C3%B3n%20%23${cancelledOp.operation_id}%20fue%20anulada%20y%20necesito%20informaci%C3%B3n.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-full py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98]"
+                  style={{ background: '#16A34A' }}
+                >
+                  Consultar por WhatsApp
+                </a>
+                <button
+                  onClick={() => setCancelledOp(null)}
+                  className="w-full py-3 rounded-xl text-sm font-semibold transition-all active:scale-[0.98]"
+                  style={{ background: '#F1F5F9', color: '#374151' }}
+                >
+                  Entendido
+                </button>
+              </div>
+            </div>
           </div>
         </div>,
         document.body
