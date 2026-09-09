@@ -33,19 +33,19 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.qoricash.pe'),
-  title: "QoriCash | Casa de Cambio Online - Compra y Vende Dólares al Mejor Precio",
-  description: "Cambia dólares de forma segura y rápida con QoriCash. Los mejores tipos de cambio del mercado. Transferencias inmediatas a tu cuenta bancaria.",
+  title: "Qoricash | Casa de Cambio Online - Compra y Vende Dólares al Mejor Precio",
+  description: "Cambia dólares de forma segura y rápida con Qoricash. Los mejores tipos de cambio del mercado. Transferencias inmediatas a tu cuenta bancaria.",
   keywords: "casa de cambio, cambio de dólares, tipo de cambio, compra venta dólares, peru",
-  authors: [{ name: "QoriCash" }],
+  authors: [{ name: "Qoricash" }],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "QoriCash",
+    title: "Qoricash",
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
+      { url: "/icon.png", sizes: "any", type: "image/png" },
       { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     shortcut: "/icons/icon-192x192.png",
   },
   openGraph: {
-    title: "QoriCash - Casa de Cambio Online",
+    title: "Qoricash - Casa de Cambio Online",
     description: "Los mejores tipos de cambio del mercado peruano",
     type: "website",
     images: [{ url: "/logo-principal.png" }],
