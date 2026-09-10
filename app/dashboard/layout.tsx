@@ -61,6 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [logoutPhase, setLogoutPhase] = useState<'idle' | 'loading' | 'done'>('idle');
   const [logoutConfirm, setLogoutConfirm] = useState(false);
   const [cancelledOp, setCancelledOp] = useState<{ operation_id: string; amount_usd: number; amount_pen: number } | null>(null);
+  const [sessionKicked, setSessionKicked] = useState(false);
 
   const handleAccountDeleted = useCallback(() => {
     forceLogoutDeleted();
@@ -71,6 +72,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     onDocumentsApproved: () => {
       refreshUser();
       setKycApprovedModal(true);
+    },
+    onSessionInvalidated: () => {
+      setSessionKicked(true);
     },
     onOperationUpdated: (data: any) => {
       if (data?.status_key === 'cancelado' || data?.status === 'Cancelada') {
@@ -660,6 +664,44 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               animation: logoutPhase === 'loading' ? 'loBarFill 2.1s cubic-bezier(0.4,0,0.6,1) forwards' : 'none',
               transition: logoutPhase === 'done' ? 'width 0.4s ease' : 'none',
             }} />
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Modal: sesión invalidada por otro dispositivo */}
+      {sessionKicked && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center px-4"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)' }}>
+          <div className="w-full max-w-sm rounded-2xl overflow-hidden"
+            style={{ background: '#ffffff', boxShadow: '0 32px 80px rgba(0,0,0,0.4)', animation: 'loFadeUp 0.3s ease-out both' }}>
+            {/* Header */}
+            <div className="px-6 pt-7 pb-5 flex flex-col items-center text-center"
+              style={{ background: 'linear-gradient(160deg, #DC2626 0%, #B91C1C 100%)' }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
+                style={{ background: 'rgba(255,255,255,0.18)' }}>
+                <XCircle className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-lg font-black text-white leading-tight">Sesión cerrada</h3>
+              <p className="text-sm text-white/75 mt-1">Tu sesión fue iniciada en otro dispositivo</p>
+            </div>
+            {/* Body */}
+            <div className="px-6 py-5 text-center">
+              <p className="text-sm text-gray-500 leading-relaxed mb-5">
+                Por seguridad, solo se permite una sesión activa a la vez. Si no fuiste tú, cambia tu contraseña inmediatamente.
+              </p>
+              <button
+                onClick={async () => {
+                  setSessionKicked(false);
+                  await logout();
+                  router.push('/login');
+                }}
+                className="w-full py-3 rounded-xl text-sm font-black text-white transition-all active:scale-[0.98]"
+                style={{ background: '#2563EB' }}
+              >
+                Entendido, ir al login
+              </button>
+            </div>
           </div>
         </div>,
         document.body

@@ -22,6 +22,7 @@ interface UseSocketOptions {
   onOperationExpired?: (data: SocketMessage) => void;
   onOperationUpdated?: (data: any) => void;
   onClientDeleted?: () => void;
+  onSessionInvalidated?: (data: { new_session_id: string }) => void;
 }
 
 export const useSocket = (options: UseSocketOptions = {}) => {
@@ -79,6 +80,16 @@ export const useSocket = (options: UseSocketOptions = {}) => {
       ) {
         options.onClientDeleted?.();
       }
+    });
+
+    // Sesión invalidada: nuevo login en otro dispositivo/web
+    socket.on('session_invalidated', (data: { new_session_id: string }) => {
+      const mySessionId = typeof window !== 'undefined'
+        ? localStorage.getItem('qoricash_session_id')
+        : null;
+      // Solo actuar si somos la sesión antigua (session_id no coincide con el nuevo)
+      if (mySessionId && mySessionId === data.new_session_id) return;
+      options.onSessionInvalidated?.(data);
     });
 
     // Actualización de operación para el CLIENTE WEB (nuevo evento)

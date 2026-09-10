@@ -45,6 +45,11 @@ export const useAuthStore = create<AuthState>()(
         // Store in localStorage
         authApi.storeAuth(user);
 
+        // Guardar session_id para control de sesión única
+        if (response.session_id && typeof window !== 'undefined') {
+          localStorage.setItem('qoricash_session_id', response.session_id);
+        }
+
         // Update state
         set({
           user,
@@ -126,6 +131,9 @@ export const useAuthStore = create<AuthState>()(
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('qoricash_session_id');
+      }
       set({
         user: null,
         isAuthenticated: false,
