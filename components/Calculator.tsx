@@ -103,7 +103,7 @@ export default function Calculator({
   const currentRate = operationType === 'Compra' ? effectiveRates.compra : effectiveRates.venta;
 
   // ── Badge lateral ─────────────────────────────────────────────────────────
-  // Diferencial fijo respecto al TC de QoriCash.
+  // Diferencial fijo respecto al TC de Qoricash.
   // Los bancos compran el dólar más barato y lo venden más caro.
   const BANK_SPREAD = 0.08; // 8 pips de diferencia vs banco promedio
 
@@ -266,12 +266,12 @@ export default function Calculator({
                       color: operationType === 'Compra' ? 'rgba(255,255,255,0.5)' : 'rgba(55,65,81,0.35)',
                       transition: 'color 0.22s ease',
                     }}>
-                    S/ {baseRates.compra.toFixed(3)}
+                    S/ {baseRates.compra.toFixed(4)}
                   </span>
                 )}
                 <span className="text-base font-bold tabular-nums leading-tight"
                   style={{ color: operationType === 'Compra' ? '#fff' : d ? 'rgba(255,255,255,0.65)' : '#374151', transition: 'color 0.22s ease' }}>
-                  S/ {effectiveRates.compra.toFixed(3)}
+                  S/ {effectiveRates.compra.toFixed(4)}
                 </span>
               </div>
             ) : (
@@ -298,12 +298,12 @@ export default function Calculator({
                       color: operationType === 'Venta' ? 'rgba(255,255,255,0.5)' : 'rgba(55,65,81,0.35)',
                       transition: 'color 0.22s ease',
                     }}>
-                    S/ {baseRates.venta.toFixed(3)}
+                    S/ {baseRates.venta.toFixed(4)}
                   </span>
                 )}
                 <span className="text-base font-bold tabular-nums leading-tight"
                   style={{ color: operationType === 'Venta' ? '#fff' : d ? 'rgba(255,255,255,0.65)' : '#374151', transition: 'color 0.22s ease' }}>
-                  S/ {effectiveRates.venta.toFixed(3)}
+                  S/ {effectiveRates.venta.toFixed(4)}
                 </span>
               </div>
             ) : (

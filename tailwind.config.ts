@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Colores principales QoriCash - Verde Corporativo
+        // Colores principales Qoricash - Verde Corporativo
         primary: {
           DEFAULT: '#22C55E',
           50: '#f0fdf4',

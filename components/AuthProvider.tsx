@@ -6,32 +6,50 @@ import { useAuth } from '@/lib/store/useAuth';
 import { useInactivityTimeout } from '@/lib/hooks/useInactivityTimeout';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Si ya está hidratado sincrónicamente (común con localStorage), no bloqueamos el render
+  const [isHydrated, setIsHydrated] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return useAuthStore.persist?.hasHydrated?.() ?? true;
+    } catch {
+      return true;
+    }
+  });
   const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
-    // Esperar a que Zustand hidrate el estado desde sessionStorage
-    const unsubscribe = useAuthStore.persist.onFinishHydration(() => {
-      setIsHydrated(true);
-    });
+    // Timeout de seguridad: máximo 300ms de espera, evita pantalla en blanco
+    const timeout = setTimeout(() => setIsHydrated(true), 300);
 
-    // Si ya está hidratado, setear inmediatamente
-    if (useAuthStore.persist.hasHydrated()) {
+    try {
+      if (useAuthStore.persist?.hasHydrated?.()) {
+        clearTimeout(timeout);
+        setIsHydrated(true);
+        return () => clearTimeout(timeout);
+      }
+      const unsubscribe = useAuthStore.persist?.onFinishHydration?.(() => {
+        clearTimeout(timeout);
+        setIsHydrated(true);
+      });
+      return () => {
+        clearTimeout(timeout);
+        unsubscribe?.();
+      };
+    } catch {
+      clearTimeout(timeout);
       setIsHydrated(true);
     }
-
-    return unsubscribe;
   }, []);
 
   // Timeout de inactividad de 15 minutos para usuarios autenticados
   useInactivityTimeout({
-    timeout: 15 * 60 * 1000, // 15 minutos en milisegundos
+    timeout: 15 * 60 * 1000,
     onTimeout: logout,
     enabled: isAuthenticated,
   });
 
   if (!isHydrated) {
-    return null; // No mostrar nada mientras hidrata
+    return null;
   }
 
   return <>{children}</>;

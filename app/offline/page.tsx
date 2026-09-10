@@ -40,7 +40,7 @@ export default function OfflinePage() {
       {/* Logo */}
       <img
         src="/logo-principal.png"
-        alt="QoriCash"
+        alt="Qoricash"
         style={{ width: 120, marginBottom: 40, opacity: 0.9 }}
       />
 

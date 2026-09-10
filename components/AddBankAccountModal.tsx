@@ -294,7 +294,7 @@ export default function AddBankAccountModal({
                   className="mt-1 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
                 <span className="ml-3 text-sm text-gray-700">
-                  Confirmo que esta cuenta bancaria es de mi titularidad y acepto la responsabilidad de su uso en las operaciones de QoriCash.
+                  Confirmo que esta cuenta bancaria es de mi titularidad y acepto la responsabilidad de su uso en las operaciones de Qoricash.
                 </span>
               </label>
               {errors.ownership_confirmed && (

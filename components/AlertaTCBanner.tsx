@@ -150,94 +150,163 @@ export default function AlertaTCBanner() {
           {/* ── Demo card — solo visible en desktop ── */}
           <div className="hidden lg:flex justify-end">
             <div className="relative w-full max-w-[320px]">
+              <style>{`
+                @keyframes al-pulse-ring { 0%{transform:scale(1);opacity:0.7;} 100%{transform:scale(2.8);opacity:0;} }
+                @keyframes al-pulse-dot  { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+                @keyframes al-shimmer    { 0%,100%{opacity:0.7;} 50%{opacity:1;} }
+                @keyframes al-glow-badge { 0%,100%{box-shadow:0 0 0 rgba(37,99,235,0);} 50%{box-shadow:0 0 14px rgba(37,99,235,0.22);} }
+                @keyframes al-bar        { 0%,100%{transform:scaleY(0.3);} 50%{transform:scaleY(1);} }
+                @keyframes al-scan-bar   { 0%{transform:translateX(-100%);opacity:0;} 12%{opacity:0.45;} 88%{opacity:0.45;} 100%{transform:translateX(16rem);opacity:0;} }
+                @keyframes al-float      { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
+                @keyframes al-notif-in   { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
+                @keyframes al-card-glow  { 0%,100%{box-shadow:0 24px 60px rgba(0,0,0,0.1),0 4px 16px rgba(0,0,0,0.05);} 50%{box-shadow:0 28px 70px rgba(37,99,235,0.1),0 4px 16px rgba(0,0,0,0.06);} }
+              `}</style>
 
-              <div className="relative rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid #e5e7eb' }}>
+              <div className="relative rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(13,17,23,0.09)', animation: 'al-card-glow 5s ease-in-out infinite' }}>
 
-                {/* Header */}
-                <div className="px-5 py-4 flex items-center justify-between" style={{ background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(37,99,235,0.15)' }}>
-                      <Bell className="w-4 h-4 text-blue-400" />
+                {/* ── Header ── */}
+                <div style={{ background: '#0D1117', borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    {/* Signal / waveform icon */}
+                    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                      </svg>
                     </div>
                     <div>
-                      <p className="text-white text-xs font-bold">Alertas TC · QoriCash</p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                        <span className="text-blue-400 text-[10px] font-semibold">Monitoreando en vivo</span>
+                      <p style={{ color: '#fff', fontSize: 12, fontWeight: 700, lineHeight: 1.2 }}>Alertas TC · Qoricash</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 3 }}>
+                        <div style={{ position: 'relative', width: 8, height: 8, flexShrink: 0 }}>
+                          <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: '#2563EB', animation: 'al-pulse-ring 2s ease-out infinite' }} />
+                          <div style={{ position: 'relative', width: 8, height: 8, borderRadius: '50%', background: '#2563EB', animation: 'al-pulse-dot 2s ease-in-out infinite' }} />
+                        </div>
+                        <span style={{ color: '#2563EB', fontSize: 10, fontWeight: 600 }}>Monitoreando en vivo</span>
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-blue-400 px-2 py-1 rounded-full" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.2)' }}>ACTIVA</span>
-                </div>
-
-                {/* TC actual */}
-                <div className="px-5 py-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
-                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2">Tipo de cambio actual</p>
-                  <div className="flex items-end gap-6">
-                    <div>
-                      <p className="text-[10px] text-gray-500 mb-0.5">Compra</p>
-                      <p className="text-2xl font-black text-gray-900">3.395</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-500 mb-0.5">Venta</p>
-                      <p className="text-2xl font-black text-gray-900">3.415</p>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1 text-blue-400">
-                      <TrendingUp className="w-4 h-4" />
-                      <span className="text-xs font-bold">+0.005</span>
-                    </div>
+                  {/* ACTIVA badge */}
+                  <div style={{ background: 'rgba(37,99,235,0.14)', border: '1px solid rgba(37,99,235,0.32)', borderRadius: 20, padding: '4px 10px', animation: 'al-glow-badge 3.5s ease-in-out infinite' }}>
+                    <span style={{ color: '#2563EB', fontSize: 9, fontWeight: 800, letterSpacing: 0.6 }}>ACTIVA</span>
                   </div>
                 </div>
 
-                {/* Alerta animada */}
-                <div className="px-5 py-4">
-                  <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mb-2.5">Tu alerta</p>
+                {/* ── TC actual ── */}
+                <div style={{ padding: '14px 18px', borderBottom: '1px solid #F1F5F9', position: 'relative', overflow: 'hidden' }}>
+                  {/* Scan bar */}
+                  <div style={{ position: 'absolute', top: 0, bottom: 0, width: 2, background: 'linear-gradient(180deg, transparent, rgba(37,99,235,0.35), transparent)', borderRadius: 2, animation: 'al-scan-bar 4.5s ease-in-out 1s infinite' }} />
+
+                  <p style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10 }}>Tipo de cambio actual</p>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 0 }}>
+                    {/* Compra */}
+                    <div>
+                      <p style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 500, marginBottom: 2 }}>Compra</p>
+                      <p style={{ fontSize: 27, fontWeight: 900, color: '#0D1117', lineHeight: 1, fontVariantNumeric: 'tabular-nums', animation: 'al-shimmer 3.5s ease-in-out infinite' }}>3.395</p>
+                    </div>
+
+                    {/* Mini bar chart */}
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 30, paddingBottom: 3 }}>
+                      {[0.38, 0.62, 0.48, 0.85, 0.55, 1, 0.72].map((h, i) => (
+                        <div key={i} style={{
+                          width: 4, borderRadius: 2,
+                          background: `rgba(37,99,235,${0.18 + h * 0.55})`,
+                          height: `${Math.round(h * 100)}%`,
+                          transformOrigin: 'bottom',
+                          animation: `al-bar ${1.4 + i * 0.22}s ease-in-out ${i * 0.12}s infinite`,
+                        }} />
+                      ))}
+                    </div>
+
+                    {/* Venta */}
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 500, marginBottom: 2 }}>Venta</p>
+                      <p style={{ fontSize: 27, fontWeight: 900, color: '#0D1117', lineHeight: 1, fontVariantNumeric: 'tabular-nums', animation: 'al-shimmer 3.5s ease-in-out 0.6s infinite' }}>3.415</p>
+                    </div>
+                  </div>
+
+                  {/* Trend indicator */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 5, marginTop: 8 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 7, background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                        <polyline points="17 6 23 6 23 12"/>
+                      </svg>
+                    </div>
+                    <span style={{ fontSize: 11.5, fontWeight: 700, color: '#2563EB' }}>+0.005</span>
+                  </div>
+                </div>
+
+                {/* ── Tu alerta ── */}
+                <div style={{ padding: '14px 18px' }}>
+                  <p style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 10 }}>Tu alerta</p>
+
+                  {/* Animated alert card */}
                   <div
-                    className={`rounded-xl p-3.5 mb-3 transition-all duration-500 ${notifVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                    key={active}
                     style={{
-                      background: ej.tipo === 'sobre' ? 'rgba(37,99,235,0.08)' : 'rgba(59,130,246,0.08)',
-                      border: ej.tipo === 'sobre' ? '1px solid rgba(37,99,235,0.2)' : '1px solid rgba(59,130,246,0.2)',
+                      borderRadius: 12, padding: '10px 12px', marginBottom: 10,
+                      background: 'rgba(37,99,235,0.05)',
+                      border: '1px solid rgba(37,99,235,0.16)',
+                      opacity: notifVisible ? 1 : 0,
+                      transform: notifVisible ? 'translateY(0)' : 'translateY(5px)',
+                      transition: 'opacity 0.35s ease, transform 0.35s ease',
                     }}
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      {ej.tipo === 'sobre'
-                        ? <TrendingUp className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
-                        : <TrendingDown className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />}
-                      <span className={`text-[10px] font-bold uppercase tracking-wider ${ej.tipo === 'sobre' ? 'text-blue-400' : 'text-blue-400'}`}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                      <div style={{ width: 18, height: 18, borderRadius: 6, background: 'rgba(37,99,235,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        {ej.tipo === 'sobre'
+                          ? <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                          : <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        }
+                      </div>
+                      <span style={{ fontSize: 9.5, fontWeight: 800, color: '#2563EB', letterSpacing: 0.4, textTransform: 'uppercase' }}>
                         {ej.tipo === 'sobre' ? 'Alerta al alza' : 'Alerta a la baja'}
                       </span>
                     </div>
-                    <p className="text-gray-800 text-xs font-semibold">
-                      Avísame cuando TC {ej.moneda} {ej.accion}{' '}
-                      <span className={`font-black ${ej.tipo === 'sobre' ? 'text-blue-300' : 'text-blue-300'}`}>
-                        S/ {ej.valor}
-                      </span>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: '#1e293b', lineHeight: 1.4 }}>
+                      Avísame cuando TC {ej.moneda}{' '}
+                      <span style={{ fontWeight: 900, color: '#2563EB' }}>{ej.accion} S/ {ej.valor}</span>
                     </p>
                   </div>
 
-                  <div className="flex justify-center gap-1.5 mb-3">
+                  {/* Dots */}
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: 5, marginBottom: 10 }}>
                     {EJEMPLOS.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setActive(i)}
-                        className={`rounded-full transition-all duration-300 ${i === active ? 'w-5 h-1.5 bg-blue-500' : 'w-1.5 h-1.5 bg-gray-300 hover:bg-gray-400'}`}
+                        style={{
+                          borderRadius: 4, border: 'none', cursor: 'pointer', padding: 0,
+                          width: i === active ? 18 : 5, height: 5,
+                          background: i === active ? '#2563EB' : '#E2E8F0',
+                          transition: 'all 0.3s ease',
+                        }}
                       />
                     ))}
                   </div>
 
-                  <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: '#f8faff', border: '1px solid #e0eaff' }}>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.15)' }}>
-                      <Mail className="w-3.5 h-3.5 text-blue-400" />
+                  {/* Email notification row */}
+                  <div style={{ borderRadius: 12, padding: '9px 12px', background: '#F8FAFC', border: '1px solid #E9EFF6', display: 'flex', alignItems: 'center', gap: 10, animation: 'al-float 4.5s ease-in-out infinite' }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 9, background: '#0D1117', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-gray-900 text-[11px] font-bold">info@qoricash.pe</p>
-                      <p className="text-gray-500 text-[10px] truncate">
-                        ⚡ TC {ej.moneda} llegó a S/ {ej.valor}
-                      </p>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: '#0D1117', marginBottom: 2 }}>info@qoricash.pe</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="#2563EB">
+                          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        <p style={{ fontSize: 9.5, color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          TC {ej.moneda} llegó a S/ {ej.valor}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <span className="text-[9px] text-gray-400">ahora</span>
-                      <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3, flexShrink: 0 }}>
+                      <span style={{ fontSize: 9, color: '#94a3b8' }}>ahora</span>
+                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563EB', animation: 'al-pulse-dot 1.8s ease-in-out infinite' }} />
                     </div>
                   </div>
                 </div>

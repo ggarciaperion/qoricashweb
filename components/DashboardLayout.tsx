@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex flex-col items-center gap-5">
           <img
             src="/logo-principal.png"
-            alt="QoriCash"
+            alt="Qoricash"
             className="h-16 w-auto animate-logo-exit"
           />
           <div className="flex flex-col items-center gap-2">
@@ -83,9 +83,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Logo */}
             <div className="flex items-center">
               <Link href="/dashboard" className="flex items-center space-x-2 group">
-                <img src="/logo-principal.png" alt="QoriCash" className="h-12 w-auto" />
+                <img src="/logo-principal.png" alt="Qoricash" className="h-12 w-auto" />
                 <span className="text-xl font-bold text-gray-900 group-hover:text-secondary transition">
-                  QoriCash
+                  Qoricash
                 </span>
               </Link>
             </div>

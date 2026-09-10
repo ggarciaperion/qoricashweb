@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import SiteNav from '@/components/SiteNav';
+import SiteFooter from '@/components/SiteFooter';
 
 const faqs = [
   {
@@ -10,12 +12,12 @@ const faqs = [
     a: 'La mayoría de operaciones se completan en menos de 15 minutos. El tiempo depende de la confirmación de tu transferencia bancaria, que normalmente es inmediata entre los bancos principales del Perú.',
   },
   {
-    q: '¿Es seguro cambiar dólares con QoriCash?',
-    a: 'Sí. QoriCash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.',
+    q: '¿Es seguro cambiar dólares con Qoricash?',
+    a: 'Sí. Qoricash opera con registro ante la SBS y cuenta con protocolos de verificación de identidad (KYC). Tus datos están protegidos y cada operación queda registrada con trazabilidad completa.',
   },
   {
     q: '¿Cuáles son las comisiones?',
-    a: 'Ninguna. QoriCash no cobra comisiones ocultas ni cargos adicionales. El tipo de cambio que ves es exactamente lo que recibes.',
+    a: 'Ninguna. Qoricash no cobra comisiones ocultas ni cargos adicionales. El tipo de cambio que ves es exactamente lo que recibes.',
   },
   {
     q: '¿Cuál es el monto mínimo para operar?',
@@ -31,13 +33,10 @@ export default function PreguntasFrecuentesPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <main className="min-h-screen" style={{ background: '#f8fafc' }}>
-      <div className="max-w-3xl mx-auto px-6 sm:px-8 py-16 sm:py-24">
+    <main className="min-h-screen pt-[80px]" style={{ background: '#F8FAFC' }}>
+      <SiteNav />
+      <div className="max-w-3xl mx-auto px-6 sm:px-8 py-12 sm:py-16">
 
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-10">
-          <ArrowLeft className="w-4 h-4" />
-          Volver al inicio
-        </Link>
 
         <div className="text-center mb-12">
           <h1 className="font-display font-black text-3xl md:text-4xl mb-2" style={{ color: '#1E293B' }}>Preguntas frecuentes</h1>
@@ -63,7 +62,7 @@ export default function PreguntasFrecuentesPage() {
                   }}
                 >{i + 1}</span>
                 <span className="flex-1 font-bold text-sm sm:text-base text-slate-800">{item.q}</span>
-                <ChevronDown className={`flex-shrink-0 w-4 h-4 text-green-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : 'opacity-50'}`} />
+                <ChevronDown className={`flex-shrink-0 w-4 h-4 text-blue-500 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : 'opacity-50'}`} />
               </button>
               {openFaq === i && (
                 <div className="px-6 pb-5 pl-6 sm:pl-[60px]">
@@ -72,7 +71,7 @@ export default function PreguntasFrecuentesPage() {
                   ) : (
                     <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>
                       Puedes cambiar desde S/ 100 o $30 dólares. Para operaciones grandes contáctanos por{' '}
-                      <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">
+                      <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-semibold hover:underline">
                         WhatsApp 910 624 404
                       </a>{' '}
                       para coordinar condiciones especiales.
@@ -84,6 +83,7 @@ export default function PreguntasFrecuentesPage() {
           ))}
         </div>
       </div>
+      <SiteFooter />
     </main>
   );
 }

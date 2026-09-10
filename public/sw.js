@@ -1,5 +1,5 @@
 /**
- * QoriCash Web Service Worker v2.0
+ * Qoricash Web Service Worker v2.0
  * www.qoricash.pe — Marketing + Client Portal
  */
 

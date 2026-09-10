@@ -8,7 +8,7 @@ export default function WhatsAppButton() {
   if (pathname !== '/') return null;
 
   const phoneNumber = '51910624404'; // Código de país + número
-  const message = 'Hola, quiero hacer una consulta sobre los servicios de QoriCash.';
+  const message = 'Hola, quiero hacer una consulta sobre los servicios de Qoricash.';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (

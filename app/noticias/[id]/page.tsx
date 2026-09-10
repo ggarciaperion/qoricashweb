@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, TrendingUp, ExternalLink, BookOpen } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import SiteNav from '@/components/SiteNav';
+import SiteFooter from '@/components/SiteFooter';
 
 export const revalidate = 60;
 
@@ -22,9 +24,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const noticias = await getNoticias();
   const noticia = noticias.find((n) => n.id === id);
-  if (!noticia) return { title: 'Noticia | QoriCash' };
+  if (!noticia) return { title: 'Noticia | Qoricash' };
   return {
-    title: `${noticia.titulo} | QoriCash`,
+    title: `${noticia.titulo} | Qoricash`,
     description: noticia.descripcion,
   };
 }
@@ -44,15 +46,13 @@ export default async function NoticiaDetallePage({
   const otras = noticias.filter((n) => n.id !== id).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50 pt-[80px]">
+      <SiteNav />
 
-      {/* ── HEADER — solo navegación y meta ── */}
-      <div className="bg-secondary px-6 sm:px-8 lg:px-12 pt-16 pb-5">
+      {/* ── HEADER ── */}
+      <div className="bg-white border-b border-gray-100 px-6 sm:px-8 lg:px-12 py-6">
         <div className="max-w-5xl mx-auto">
-          <Link
-            href="/noticias"
-            className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-primary-400 transition-colors mb-4"
-          >
+          <Link href="/noticias" className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-blue-600 transition-colors mb-4">
             <ArrowLeft className="w-3.5 h-3.5" />
             Volver a noticias
           </Link>
@@ -69,83 +69,67 @@ export default async function NoticiaDetallePage({
         </div>
       </div>
 
-      {/* ── CONTENIDO ── */}
-      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
-
-        {/* Titular fuera del header */}
-        <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-snug mb-8">
-          {noticia.titulo}
-        </h1>
-
+      {/* ── MAIN CONTENT ── */}
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 py-8 lg:py-12">
         <div className="grid lg:grid-cols-3 gap-8">
 
-          {/* Artículo principal */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Article */}
+          <article className="lg:col-span-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-snug mb-4">
+              {noticia.titulo}
+            </h1>
 
-            {/* Imagen cuadrada dentro del artículo */}
             {noticia.imagen && (
-              <div className="relative w-48 h-48 rounded-xl overflow-hidden shadow-md float-right ml-5 mb-3 flex-shrink-0">
+              <div className="relative w-full rounded-2xl overflow-hidden mb-6" style={{ paddingBottom: '52%' }}>
                 <Image
                   src={noticia.imagen}
                   alt={noticia.titulo}
                   fill
-                  sizes="192px"
+                  sizes="(max-width: 1024px) 100vw, 66vw"
                   className="object-cover"
+                  priority
                 />
               </div>
             )}
 
-            {/* Descripción destacada */}
-            <div className="bg-white border-l-4 border-primary-400 rounded-r-xl px-5 py-4 shadow-sm">
-              <p className="text-gray-700 text-sm leading-relaxed font-medium">
+            <div className="prose prose-slate max-w-none">
+              <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-4">
                 {noticia.descripcion}
               </p>
+              {noticia.contenido && (
+                <div className="text-sm sm:text-base leading-relaxed text-gray-600 space-y-4 mt-6"
+                  dangerouslySetInnerHTML={{ __html: noticia.contenido }}
+                />
+              )}
             </div>
 
-            {/* Contenido */}
-            <div className="bg-white border border-gray-200 rounded-xl px-6 py-5 shadow-sm">
-              <p className="text-gray-700 text-sm leading-7 whitespace-pre-line">
-                {noticia.contenido}
-              </p>
-            </div>
-
-            {/* Análisis QoriCash */}
-            {noticia.analisis && (
-              <div className="bg-gradient-to-br from-primary-50 to-primary-50 border border-primary-200 rounded-xl px-6 py-5 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-lg bg-primary-500 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-primary-700 uppercase tracking-widest">Análisis QoriCash</p>
-                    <p className="text-[10px] text-primary-500">Impacto en el mercado forex</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 text-sm leading-7 whitespace-pre-line">
-                  {noticia.analisis}
+            {/* Tag: cómo impacta en tu cambio */}
+            <div className="mt-8 p-4 rounded-xl flex items-start gap-3" style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
+              <TrendingUp className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#2563EB' }} />
+              <div>
+                <p className="text-xs font-bold text-blue-700 mb-0.5">¿Cómo afecta esto al tipo de cambio?</p>
+                <p className="text-xs text-blue-600 leading-relaxed">
+                  Las condiciones del mercado cambian constantemente. Usa nuestra calculadora para obtener el tipo de cambio actualizado antes de realizar tu operación.
                 </p>
-                <div className="mt-4 pt-3 border-t border-primary-200 flex items-center gap-2">
-                  <BookOpen className="w-3.5 h-3.5 text-primary-500" />
-                  <span className="text-[11px] text-primary-600 font-medium">Elaborado por el equipo de análisis QoriCash</span>
-                </div>
               </div>
-            )}
-            <div className="clear-both" />
-          </div>
+            </div>
+          </article>
 
           {/* Sidebar */}
-          <div className="space-y-5">
+          <aside className="flex flex-col gap-5">
 
-            {/* CTA cambio */}
-            <div className="bg-secondary rounded-xl p-5 text-center">
-              <p className="text-gray-400 text-xs uppercase tracking-widest mb-2">¿Listo para operar?</p>
-              <p className="text-white font-display font-bold text-base mb-1">
-                El mercado no espera
+            {/* CTA */}
+            <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5" /> Cambia hoy
               </p>
-              <p className="text-gray-500 text-xs mb-4">Cambia dólares al mejor tipo de cambio del mercado</p>
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                Obtén el mejor tipo de cambio del mercado, 100% digital y en menos de 15 minutos.
+              </p>
               <Link
-                href="/"
-                className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-bold px-5 py-2.5 rounded-full text-sm transition-all duration-200 shadow-md hover:shadow-primary-500/25 w-full justify-center"
+                href="/login"
+                className="inline-flex items-center gap-2 text-white font-bold px-5 py-2.5 rounded-full text-sm transition-all hover:brightness-110 shadow-md w-full justify-center"
+                style={{ background: '#2563EB' }}
               >
                 Cambiar ahora
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -169,7 +153,7 @@ export default async function NoticiaDetallePage({
                         </div>
                       )}
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-gray-800 group-hover:text-primary-600 transition-colors line-clamp-2 leading-snug">
+                        <p className="text-xs font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
                           {n.titulo}
                         </p>
                         <p className="text-[10px] text-gray-400 mt-1">
@@ -181,10 +165,12 @@ export default async function NoticiaDetallePage({
                 </div>
               </div>
             )}
-          </div>
+
+          </aside>
         </div>
       </div>
-    </div>
+
+      <SiteFooter />
+    </main>
   );
 }
-

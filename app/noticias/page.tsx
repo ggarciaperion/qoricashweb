@@ -1,12 +1,14 @@
 import { getNoticias, CATEGORIAS, type Noticia } from '@/lib/noticias';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TrendingUp, Calendar, BookOpen, ArrowLeft, ExternalLink } from 'lucide-react';
+import { TrendingUp, Calendar, BookOpen, ExternalLink } from 'lucide-react';
+import SiteNav from '@/components/SiteNav';
+import SiteFooter from '@/components/SiteFooter';
 
 export const revalidate = 60;
 
 export const metadata = {
-  title: 'Análisis de Mercado | QoriCash',
+  title: 'Análisis de Mercado | Qoricash',
   description:
     'Noticias y análisis del mercado forex y economía peruana con impacto en el tipo de cambio.',
 };
@@ -60,16 +62,16 @@ function NoticiaCard({ noticia, featured = false }: { noticia: Noticia; featured
               {formatFecha(noticia.fecha)}
             </span>
           </div>
-          <h2 className="text-sm font-display font-bold text-gray-900 leading-snug mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+          <h2 className="text-sm font-display font-bold text-gray-900 leading-snug mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
             {noticia.titulo}
           </h2>
           <p className="text-gray-500 text-xs leading-relaxed line-clamp-3 flex-1">
             {noticia.descripcion}
           </p>
           <div className="flex items-center justify-end mt-3 pt-2 border-t border-gray-100">
-            <span className="inline-flex items-center gap-1 text-[10px] text-primary-600 font-semibold">
+            <span className="inline-flex items-center gap-1 text-[10px] text-blue-600 font-semibold">
               <BookOpen className="w-3 h-3" />
-              Análisis QoriCash
+              Análisis Qoricash
             </span>
           </div>
         </div>
@@ -97,7 +99,7 @@ function NoticiaCard({ noticia, featured = false }: { noticia: Noticia; featured
           </span>
           <span className="text-[10px] text-gray-400 flex-shrink-0">{formatFecha(noticia.fecha)}</span>
         </div>
-        <h3 className="text-sm font-display font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-primary-600 transition-colors line-clamp-2">
+        <h3 className="text-sm font-display font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-blue-600 transition-colors line-clamp-2">
           {noticia.titulo}
         </h3>
         <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1">
@@ -126,55 +128,31 @@ export default async function NoticiasPage({
   const resto = noticias.filter((n) => !n.destacada || categoriaActiva !== 'Todas');
 
   return (
-    <div className="min-h-screen bg-slate-50">
-
-      {/* ── HERO oscuro — identidad QoriCash ── */}
-      <section className="relative bg-secondary pt-16 pb-6 px-6 sm:px-8 lg:px-12 overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-        <div className="absolute top-0 right-1/4 w-72 h-72 bg-primary-500/8 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-primary-400 transition-colors"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Inicio
-              </Link>
-              <span className="text-gray-700 text-xs">·</span>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-primary-400 uppercase">
+    <main className="min-h-screen bg-slate-50 pt-[80px]">
+      <SiteNav />
+      {/* ── HERO ── */}
+      <section className="bg-white border-b border-gray-100 px-6 sm:px-8 lg:px-12 py-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3" style={{ background: 'rgba(37,99,235,0.08)', color: '#2563EB', border: '1px solid rgba(37,99,235,0.15)' }}>
                 <TrendingUp className="w-3.5 h-3.5" />
                 Análisis de Mercado
               </span>
+              <h1 className="text-2xl md:text-3xl font-display font-bold text-gray-900 leading-tight">
+                Noticias que{' '}
+                <span style={{ color: '#2563EB' }}>mueven el dólar</span>
+              </h1>
+              <p className="mt-1 text-gray-500 text-sm">
+                Análisis diario de eventos económicos y su impacto en el tipo de cambio PEN/USD.
+              </p>
             </div>
-
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse" />
-              <span className="text-gray-500 text-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+              <span className="text-gray-400 text-xs">
                 {new Date().toLocaleDateString('es-PE', { timeZone: 'America/Lima', weekday: 'long', day: 'numeric', month: 'long' })}
               </span>
             </div>
-          </div>
-
-          <div className="mt-4">
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-white leading-tight">
-              Noticias que{' '}
-              <span className="bg-gradient-to-r from-primary-400 to-primary-400 bg-clip-text text-transparent">
-                mueven el dólar
-              </span>
-            </h1>
-            <p className="mt-1 text-gray-400 text-sm">
-              Análisis diario de eventos económicos y su impacto en el tipo de cambio PEN/USD.
-            </p>
           </div>
         </div>
       </section>
@@ -208,8 +186,8 @@ export default async function NoticiasPage({
                 href={cat === 'Todas' ? '/noticias' : `/noticias?categoria=${cat}`}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
                   isActive
-                    ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-primary-300 hover:text-primary-600'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600'
                 }`}
               >
                 {cat}
@@ -231,29 +209,7 @@ export default async function NoticiasPage({
           </div>
         )}
       </div>
-
-      {/* ── FOOTER CTA ── */}
-      <section className="border-t border-gray-200 px-6 sm:px-8 lg:px-12 py-14 mt-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-gray-400 text-xs mb-2 uppercase tracking-widest font-semibold">
-            Cambia en el momento exacto
-          </p>
-          <h2 className="text-2xl font-display font-bold text-gray-900 mb-3">
-            El mercado no espera.{' '}
-            <span className="text-primary-600">Tú tampoco deberías.</span>
-          </h2>
-          <p className="text-gray-500 text-sm mb-6">
-            Usa los mejores tipos de cambio del mercado peruano con QoriCash.
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-bold px-7 py-3 rounded-full transition-all duration-200 shadow-md hover:shadow-primary-500/30 text-sm"
-          >
-            Cambiar dólares ahora
-            <ExternalLink className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-    </div>
+      <SiteFooter />
+    </main>
   );
 }

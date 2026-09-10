@@ -61,7 +61,7 @@ export default function Sostenibilidad() {
       <nav className="sticky top-0 z-50" style={{ background: '#0D1B2A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="max-w-5xl mx-auto px-6 flex justify-between items-center" style={{ height: 64 }}>
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <img src="/logo-principal.png" alt="Qoricash" style={{ height: 40 }} /><span className="font-bold text-lg" style={{ color: '#fff' }}>Qoricash</span>
+            <img src="/vg.png" alt="Qoricash" style={{ height: 40 }} />
           </Link>
           <Link href="/" className="text-xs font-medium" style={{ color: '#64748B' }}>← Inicio</Link>
         </div>

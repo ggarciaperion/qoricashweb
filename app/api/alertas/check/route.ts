@@ -45,7 +45,7 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): 
                   <table cellpadding="0" cellspacing="0">
                     <tr>
                       <td style="vertical-align:middle;padding-right:10px;">
-                        <img src="https://app.qoricash.pe/static/images/logo-email.png" height="42" alt="QoriCash" style="display:block;border:0;"/>
+                        <img src="https://app.qoricash.pe/static/images/logo-email.png" height="42" alt="Qoricash" style="display:block;border:0;"/>
                       </td>
                       <td style="vertical-align:middle;">
                         <span style="font-size:20px;font-weight:800;color:#ffffff;letter-spacing:2px;text-transform:uppercase;">QORICASH</span>
@@ -101,7 +101,7 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): 
             </table>
 
             <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;">
-              Hola <strong>${alerta.nombre}</strong>, la alerta que creaste en QoriCash acaba de activarse.
+              Hola <strong>${alerta.nombre}</strong>, la alerta que creaste en Qoricash acaba de activarse.
               Es un buen momento para revisar si quieres realizar un cambio de dólares.
             </p>
 
@@ -138,7 +138,7 @@ async function sendAlertEmail(alerta: AlertaTC, compra: number, venta: number): 
   const resend = new Resend(apiKey);
 
   await resend.emails.send({
-    from: 'QoriCash <info@qoricash.pe>',
+    from: 'Qoricash <info@qoricash.pe>',
     to: alerta.email,
     subject: `⚡ Alerta TC: el dólar (${label}) está ${condicion} S/ ${alerta.valor.toFixed(3)}`,
     html,

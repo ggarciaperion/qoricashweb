@@ -471,7 +471,7 @@ export default function PosicionPage() {
     if (!posicion) return;
     const fechaFmt = new Date(fecha + 'T12:00:00-05:00').toLocaleDateString('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: '2-digit', year: 'numeric' });
     const lines = [
-      `📊 *Posición QoriCash — ${fechaFmt}*`,
+      `📊 *Posición Qoricash — ${fechaFmt}*`,
       ``,
       `💰 Utilidad bruta: S/ ${posicion.utilidad_pen.toFixed(2)}`,
       `📈 Compras USD: $${posicion.total_compras_usd.toFixed(2)} (TC prom: ${posicion.tc_promedio_compras.toFixed(4)})`,

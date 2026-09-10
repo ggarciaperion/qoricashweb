@@ -236,7 +236,7 @@ function CandlestickChart({
         <path d={linePts} fill="none" stroke={lastColor} strokeWidth="0.9" opacity="0.35"
           strokeLinejoin="round" strokeLinecap="round" />
 
-        {/* QoriCash Compra — wavy path */}
+        {/* Qoricash Compra — wavy path */}
         {compraHist.length > 1 && (() => {
           const pts = compraHist.slice(-vis.length);
           const aligned = vis.map((_, i) => {
@@ -248,7 +248,7 @@ function CandlestickChart({
           return <path d={d} fill="none" stroke="#60A5FA" strokeWidth="1.5" opacity="0.85" strokeLinejoin="round" />;
         })()}
 
-        {/* QoriCash Venta — wavy path */}
+        {/* Qoricash Venta — wavy path */}
         {ventaHist.length > 1 && (() => {
           const pts = ventaHist.slice(-vis.length);
           const aligned = vis.map((_, i) => {
@@ -764,7 +764,7 @@ export default function MercadoEnVivo() {
             <div className="mb-5">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-3 text-[10px] font-bold tracking-widest uppercase"
                 style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#22C55E' }}>
-                <BarChart2 className="w-3 h-3" /> Mercado en Vivo · QoriCash
+                <BarChart2 className="w-3 h-3" /> Mercado en Vivo · Qoricash
               </div>
               <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-1">
                 Mercado en Vivo
@@ -780,13 +780,13 @@ export default function MercadoEnVivo() {
               <div className="rounded-xl p-4" style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.15)' }}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400/70 mb-1">Precio Compra</p>
                 <p className="text-2xl font-black text-blue-300 tabular-nums">{fmt4(compra)}</p>
-                <p className="text-[10px] text-blue-400/50 mt-0.5">QoriCash paga</p>
+                <p className="text-[10px] text-blue-400/50 mt-0.5">Qoricash paga</p>
               </div>
               {/* Venta */}
               <div className="rounded-xl p-4" style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.15)' }}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-primary-400/70 mb-1">Precio Venta</p>
                 <p className="text-2xl font-black text-primary-300 tabular-nums">{fmt4(venta)}</p>
-                <p className="text-[10px] text-primary-400/50 mt-0.5">QoriCash cobra</p>
+                <p className="text-[10px] text-primary-400/50 mt-0.5">Qoricash cobra</p>
               </div>
               {/* Spread */}
               <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -840,11 +840,11 @@ export default function MercadoEnVivo() {
               <div className="flex items-center gap-4 text-xs">
                 <span className="flex items-center gap-1.5 text-blue-400">
                   <span className="w-4 h-0.5 bg-blue-400 inline-block rounded" style={{ borderTop: '1.5px dashed' }} />
-                  QoriCash Compra
+                  Qoricash Compra
                 </span>
                 <span className="flex items-center gap-1.5 text-primary-400">
                   <span className="w-4 h-0.5 bg-primary-400 inline-block rounded" style={{ borderTop: '1.5px dashed' }} />
-                  QoriCash Venta
+                  Qoricash Venta
                 </span>
                 <div className="flex items-center gap-1.5 text-white/30">
                   <RefreshCw className="w-3 h-3 animate-spin" style={{ animationDuration: '3s' }} />
@@ -933,7 +933,7 @@ export default function MercadoEnVivo() {
           <div className="rounded-2xl p-6 text-center"
             style={{ background: 'linear-gradient(135deg, rgba(13,27,42,0.9) 0%, rgba(13,24,41,0.9) 100%)', border: '1px solid rgba(34,197,94,0.15)' }}>
             <p className="text-white font-black text-lg mb-1">¿Listo para operar con el mejor tipo de cambio?</p>
-            <p className="text-white/40 text-sm mb-4">Usa la calculadora de QoriCash y realiza tu operación en minutos.</p>
+            <p className="text-white/40 text-sm mb-4">Usa la calculadora de Qoricash y realiza tu operación en minutos.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white"

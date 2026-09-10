@@ -94,11 +94,11 @@ export default function InstallPrompt() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
         <img
           src="/icons/icon-72x72.png"
-          alt="QoriCash"
+          alt="Qoricash"
           style={{ width: 44, height: 44, borderRadius: 10 }}
         />
         <div>
-          <div style={{ fontWeight: 700, fontSize: 15 }}>Instalar QoriCash</div>
+          <div style={{ fontWeight: 700, fontSize: 15 }}>Instalar Qoricash</div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
             Acceso rápido desde tu pantalla de inicio
           </div>

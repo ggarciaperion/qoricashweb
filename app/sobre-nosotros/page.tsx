@@ -1,20 +1,15 @@
 import Link from 'next/link';
+import SiteFooter from '@/components/SiteFooter';
+import SiteNav from '@/components/SiteNav';
 import { Shield, Zap, Users, Award, CheckCircle, MapPin, Building2, Phone, Mail, ArrowRight } from 'lucide-react';
 
 export default function SobreNosotros() {
   return (
-    <main className="min-h-screen" style={{ background: '#F1F5F9' }}>
+    <main className="min-h-screen pt-[80px]" style={{ background: '#F8FAFC' }}>
 
       {/* ── Navbar ─────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50" style={{ background: '#0D1B2A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="max-w-5xl mx-auto px-6 flex justify-between items-center" style={{ height: 64 }}>
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <img src="/logo-principal.png" alt="QoriCash" style={{ height: 40 }} />
-            <span className="font-display font-bold text-lg" style={{ color: '#fff' }}>QoriCash</span>
-          </Link>
-          <Link href="/" className="text-xs font-medium" style={{ color: '#64748B' }}>← Inicio</Link>
-        </div>
-      </nav>
+      
+      <SiteNav />
 
       {/* ── Hero ───────────────────────────────────────────────── */}
       <section style={{ position: 'relative', overflow: 'hidden' }}>
@@ -29,7 +24,7 @@ export default function SobreNosotros() {
             <div className="reveal animate-fade-up" style={{ maxWidth: 640 }}>
               <span
                 className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1 rounded-full"
-                style={{ background: 'rgba(34,197,94,0.12)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}
+                style={{ background: 'rgba(37,99,235,0.08)', color: '#2563EB', border: '1px solid rgba(37,99,235,0.15)' }}
               >
                 Sobre Nosotros
               </span>
@@ -38,10 +33,10 @@ export default function SobreNosotros() {
                 style={{ color: '#fff', fontSize: 36, letterSpacing: '-0.025em', lineHeight: 1.15 }}
               >
                 Tu casa de cambio digital<br />
-                <span style={{ color: '#22C55E' }}>de confianza</span>
+                <span style={{ color: '#2563EB' }}>de confianza</span>
               </h1>
               <p className="text-sm" style={{ color: '#94A3B8', lineHeight: 1.75, maxWidth: 500 }}>
-                En QoriCash transformamos la manera de cambiar divisas en el Perú,
+                En Qoricash transformamos la manera de cambiar divisas en el Perú,
                 ofreciendo una experiencia 100% digital, segura y al mejor tipo de cambio del mercado.
               </p>
             </div>
@@ -50,18 +45,18 @@ export default function SobreNosotros() {
       </section>
 
       {/* ── Misión & Visión ────────────────────────────────────── */}
-      <section style={{ padding: '48px 24px', background: '#fff' }}>
+      <section style={{ padding: '48px 24px', background: '#ffffff' }}>
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-5 reveal animate-fade-up">
 
             {/* Misión */}
-            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 16, padding: '24px', borderLeft: '3px solid #22C55E' }}>
+            <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 16, padding: '24px', borderLeft: '3px solid #2563EB' }}>
               <div className="flex items-center gap-3 mb-4">
-                <div style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Award style={{ width: 16, height: 16, color: '#22C55E' }} />
+                <div style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Award style={{ width: 16, height: 16, color: '#2563EB' }} />
                 </div>
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#22C55E' }}>Nuestra</p>
+                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>Nuestra</p>
                   <p className="font-black text-base" style={{ color: '#0D1B2A', letterSpacing: '-0.01em' }}>Misión</p>
                 </div>
               </div>
@@ -102,13 +97,13 @@ export default function SobreNosotros() {
           <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', height: 130 }}>
             <img
               src="https://images.pexels.com/photos/3184357/pexels-photo-3184357.jpeg?auto=compress&cs=tinysrgb&w=1200"
-              alt="Equipo QoriCash"
+              alt="Equipo Qoricash"
               style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }}
             />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(13,27,42,0.94) 0%, rgba(13,27,42,0.65) 55%, rgba(13,27,42,0.1) 100%)' }} />
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%', padding: '0 28px' }}>
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#22C55E' }}>Nuestro equipo</p>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#2563EB' }}>Nuestro equipo</p>
                 <p className="font-black text-lg" style={{ color: '#fff', letterSpacing: '-0.02em' }}>Personas reales, servicio de excelencia</p>
                 <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>Especialistas en mercado cambiario a tu disposición</p>
               </div>
@@ -118,7 +113,7 @@ export default function SobreNosotros() {
       </div>
 
       {/* ── Valores ────────────────────────────────────────────── */}
-      <section style={{ padding: '48px 24px', background: '#fff' }}>
+      <section style={{ padding: '48px 24px', background: '#ffffff' }}>
         <div className="max-w-5xl mx-auto">
           <div className="mb-6 reveal animate-fade-up">
             <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#64748B' }}>Lo que nos define</p>
@@ -148,12 +143,12 @@ export default function SobreNosotros() {
 
       <div style={{ height: 1, background: '#E2E8F0', maxWidth: 900, margin: '0 auto' }} />
 
-      {/* ── Por qué QoriCash ───────────────────────────────────── */}
+      {/* ── Por qué Qoricash ───────────────────────────────────── */}
       <section style={{ padding: '48px 24px', background: '#F8FAFC' }}>
         <div className="max-w-5xl mx-auto">
           <div className="mb-6 reveal animate-fade-up">
             <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#64748B' }}>Nuestras ventajas</p>
-            <h2 className="font-black text-2xl" style={{ color: '#0D1B2A', letterSpacing: '-0.02em' }}>¿Por qué elegir QoriCash?</h2>
+            <h2 className="font-black text-2xl" style={{ color: '#0D1B2A', letterSpacing: '-0.02em' }}>¿Por qué elegir Qoricash?</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 reveal animate-fade-up stagger-1">
             {[
@@ -168,7 +163,7 @@ export default function SobreNosotros() {
                 key={label}
                 style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 14, padding: '18px 20px' }}
               >
-                <div className="font-black text-sm tabular-nums mb-1" style={{ color: '#22C55E', letterSpacing: '-0.01em' }}>{stat}</div>
+                <div className="font-black text-sm tabular-nums mb-1" style={{ color: '#2563EB', letterSpacing: '-0.01em' }}>{stat}</div>
                 <div className="font-bold text-xs mb-2" style={{ color: '#0D1B2A' }}>{label}</div>
                 <div className="text-xs leading-relaxed" style={{ color: '#94A3B8' }}>{desc}</div>
               </div>
@@ -199,7 +194,7 @@ export default function SobreNosotros() {
       </div>
 
       {/* ── Información Corporativa ────────────────────────────── */}
-      <section style={{ padding: '48px 24px', background: '#fff' }}>
+      <section style={{ padding: '48px 24px', background: '#ffffff' }}>
         <div className="max-w-5xl mx-auto">
           <div className="mb-6 reveal animate-fade-up">
             <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#64748B' }}>Datos legales</p>
@@ -220,7 +215,7 @@ export default function SobreNosotros() {
                   style={{ padding: '16px 20px', borderBottom: i < arr.length - 1 ? '1px solid #E2E8F0' : 'none' }}
                 >
                   <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon style={{ width: 14, height: 14, color: '#22C55E' }} />
+                    <Icon style={{ width: 14, height: 14, color: '#2563EB' }} />
                   </div>
                   <div>
                     <div className="text-xs" style={{ color: '#94A3B8' }}>{label}</div>
@@ -242,7 +237,7 @@ export default function SobreNosotros() {
                   style={{ padding: '16px 20px', borderBottom: i < arr.length - 1 ? '1px solid #E2E8F0' : 'none' }}
                 >
                   <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                    <Icon style={{ width: 14, height: 14, color: '#22C55E' }} />
+                    <Icon style={{ width: 14, height: 14, color: '#2563EB' }} />
                   </div>
                   <div>
                     <div className="text-xs mb-0.5" style={{ color: '#94A3B8' }}>{label}</div>
@@ -268,7 +263,7 @@ export default function SobreNosotros() {
             <div style={{ position: 'relative', padding: '48px 40px', textAlign: 'center' }}>
               <span
                 className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1 rounded-full"
-                style={{ background: 'rgba(34,197,94,0.12)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}
+                style={{ background: 'rgba(37,99,235,0.08)', color: '#2563EB', border: '1px solid rgba(37,99,235,0.15)' }}
               >
                 ¿Listo para comenzar?
               </span>
@@ -276,7 +271,7 @@ export default function SobreNosotros() {
                 className="font-black mb-3"
                 style={{ color: '#fff', fontSize: 28, letterSpacing: '-0.02em', lineHeight: 1.2 }}
               >
-                Únete a quienes ya confían en QoriCash
+                Únete a quienes ya confían en Qoricash
               </h2>
               <p className="text-sm mb-8 mx-auto" style={{ color: '#94A3B8', maxWidth: 420, lineHeight: 1.7 }}>
                 Miles de clientes cambian sus divisas con nosotros cada día. Seguro, rápido y sin sorpresas.
@@ -284,7 +279,7 @@ export default function SobreNosotros() {
               <Link
                 href="/crear-cuenta"
                 className="inline-flex items-center gap-2 font-bold text-sm"
-                style={{ background: '#22C55E', color: '#fff', padding: '13px 28px', borderRadius: 10, boxShadow: '0 4px 16px rgba(34,197,94,0.35)' }}
+                style={{ background: '#2563EB', color: '#fff', padding: '13px 28px', borderRadius: 10, boxShadow: '0 4px 16px rgba(34,197,94,0.35)' }}
               >
                 Crear cuenta gratis
                 <ArrowRight style={{ width: 15, height: 15 }} />
@@ -295,59 +290,8 @@ export default function SobreNosotros() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer style={{ background: '#0D1B2A', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '40px 24px 32px' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <Link href="/" className="flex items-center gap-2.5 mb-3 hover:opacity-80 transition-opacity w-fit">
-                <img src="/logo-principal.png" alt="QoriCash" style={{ height: 36 }} />
-                <span className="font-display font-bold text-base" style={{ color: '#fff' }}>QoriCash</span>
-              </Link>
-              <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>
-                Casa de cambio online en Perú. Seguridad, rapidez y los mejores tipos de cambio.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Servicios</p>
-              <ul className="space-y-1.5 text-xs">
-                {[
-                  ['/servicios#compra',      'Compra de dólares'],
-                  ['/servicios#venta',       'Venta de dólares' ],
-                  ['/servicios#tipo-cambio', 'Tipo de cambio'   ],
-                ].map(([href, label]) => (
-                  <li key={href}><Link href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Empresa</p>
-              <ul className="space-y-1.5 text-xs">
-                {[
-                  ['/sobre-nosotros',       'Sobre nosotros'         ],
-                  ['/terminos-condiciones', 'Términos y condiciones' ],
-                  ['/politica-privacidad',  'Política de privacidad' ],
-                  ['/politica-cookies',     'Política de cookies'    ],
-                  ['/libro-reclamaciones',  'Libro de reclamaciones' ],
-                ].map(([href, label]) => (
-                  <li key={href}><Link href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Contacto</p>
-              <ul className="space-y-2.5 text-xs" style={{ color: '#475569' }}>
-                <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a></li>
-                <li><a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">910 624 404</a></li>
-                <li style={{ lineHeight: 1.6 }}>Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</li>
-                <li style={{ lineHeight: 1.6 }}>Lun–Vie 9:00–18:00<br />Sáb 9:00–13:00</li>
-              </ul>
-            </div>
-          </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20 }} className="text-center">
-            <p className="text-xs" style={{ color: '#334155' }}>© 2025 QoriCash. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
+          <SiteFooter />
     </main>
   );
 }

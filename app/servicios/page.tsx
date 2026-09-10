@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import SiteFooter from '@/components/SiteFooter';
+import SiteNav from '@/components/SiteNav';
 import { useAuthStore } from '@/lib/store';
 import {
   ArrowRight,
@@ -76,20 +78,19 @@ export default function Servicios() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   const NAV_ITEMS = [
-    { id: 'compra',      Icon: TrendingUp,  label: 'Compra de dólares', accent: '#22C55E' },
+    { id: 'compra',      Icon: TrendingUp,  label: 'Compra de dólares', accent: '#2563EB' },
     { id: 'venta',       Icon: TrendingDown, label: 'Venta de dólares',  accent: '#3B82F6' },
     { id: 'tipo-cambio', Icon: Calculator,   label: 'Tipo de cambio',    accent: '#A78BFA' },
   ];
 
   return (
-    <main className="min-h-screen" style={{ background: '#F1F5F9' }}>
+    <main className="min-h-screen pt-[80px]" style={{ background: '#F8FAFC' }}>
 
       {/* ── Navbar ─────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50" style={{ background: '#0D1B2A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+      <nav className="sticky top-0 z-50" style={{ background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="max-w-5xl mx-auto px-6 flex justify-between items-center" style={{ height: 64 }}>
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <img src="/logo-principal.png" alt="QoriCash" style={{ height: 40 }} />
-            <span className="font-display font-bold text-lg" style={{ color: '#fff' }}>QoriCash</span>
+            <img src="/vg.png" alt="Qoricash" style={{ height: 40 }} />
           </Link>
           <Link href="/" className="text-xs font-medium" style={{ color: '#64748B' }}>← Inicio</Link>
         </div>
@@ -111,7 +112,7 @@ export default function Servicios() {
             <div className="text-center mb-10 reveal animate-fade-up">
               <span
                 className="inline-block text-xs font-bold tracking-widest uppercase mb-4 px-3 py-1 rounded-full"
-                style={{ background: 'rgba(34,197,94,0.12)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}
+                style={{ background: 'rgba(37,99,235,0.08)', color: '#2563EB', border: '1px solid rgba(37,99,235,0.15)' }}
               >
                 Servicios
               </span>
@@ -120,7 +121,7 @@ export default function Servicios() {
                 style={{ color: '#fff', fontSize: 38, letterSpacing: '-0.025em', lineHeight: 1.15 }}
               >
                 Cambio de divisas<br />
-                <span style={{ color: '#22C55E' }}>simple y seguro</span>
+                <span style={{ color: '#2563EB' }}>simple y seguro</span>
               </h1>
               <p className="text-sm max-w-lg mx-auto" style={{ color: '#64748B', lineHeight: 1.7 }}>
                 Elige el servicio que mejor se adapta a tus necesidades
@@ -157,9 +158,9 @@ export default function Servicios() {
         <div className="max-w-5xl mx-auto">
 
           <div className="mb-8 reveal animate-fade-up">
-            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#22C55E' }}>01 — Compra de dólares</p>
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#2563EB' }}>01 — Compra de dólares</p>
             <h2 className="font-black text-2xl" style={{ color: '#0D1B2A', letterSpacing: '-0.02em' }}>
-              QoriCash te compra tus dólares
+              Qoricash te compra tus dólares
             </h2>
             <p className="text-sm mt-1" style={{ color: '#64748B' }}>
               Convierte USD a soles al mejor tipo de cambio del mercado
@@ -171,11 +172,11 @@ export default function Servicios() {
             <div className="md:col-span-3 space-y-2">
               {[
                 { n: '01', title: 'Tienes dólares',        desc: 'Cuentas con USD que quieres convertir a soles' },
-                { n: '02', title: 'QoriCash te los compra', desc: 'Tipo de cambio competitivo y transparente'      },
+                { n: '02', title: 'Qoricash te los compra', desc: 'Tipo de cambio competitivo y transparente'      },
                 { n: '03', title: 'Recibes soles',          desc: 'En tu cuenta bancaria en menos de 10 minutos'   },
               ].map(({ n, title, desc }) => (
                 <div key={n} className="flex items-center gap-3" style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 12, padding: '14px 16px' }}>
-                  <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#22C55E', fontFamily: 'monospace' }}>
+                  <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#2563EB', fontFamily: 'monospace' }}>
                     {n}
                   </span>
                   <div>
@@ -185,7 +186,7 @@ export default function Servicios() {
                 </div>
               ))}
             </div>
-            <div className="md:col-span-2" style={{ background: '#0D1B2A', borderRadius: 16, padding: '20px' }}>
+            <div className="md:col-span-2" style={{ background: '#0A0A0A', borderRadius: 16, padding: '20px' }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#475569' }}>Ejemplo</p>
               <div className="space-y-2">
                 <div className="flex justify-between items-center" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 8, padding: '10px 12px' }}>
@@ -200,9 +201,9 @@ export default function Servicios() {
                   <span className="font-bold text-sm tabular-nums" style={{ color: '#94A3B8' }}>S/ 3.750</span>
                 </div>
                 <div style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
-                <div className="flex justify-between items-center" style={{ borderRadius: 8, padding: '10px 12px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
-                  <span className="text-xs font-medium" style={{ color: '#22C55E' }}>Recibes</span>
-                  <span className="font-black text-xl tabular-nums" style={{ color: '#22C55E', letterSpacing: '-0.02em' }}>S/ 3,750</span>
+                <div className="flex justify-between items-center" style={{ borderRadius: 8, padding: '10px 12px', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)' }}>
+                  <span className="text-xs font-medium" style={{ color: '#2563EB' }}>Recibes</span>
+                  <span className="font-black text-xl tabular-nums" style={{ color: '#2563EB', letterSpacing: '-0.02em' }}>S/ 3,750</span>
                 </div>
               </div>
             </div>
@@ -216,7 +217,7 @@ export default function Servicios() {
               overlay="linear-gradient(90deg, rgba(13,27,42,0.92) 0%, rgba(13,27,42,0.65) 50%, rgba(13,27,42,0.1) 100%)"
             >
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#22C55E' }}>Nuestro compromiso</p>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#2563EB' }}>Nuestro compromiso</p>
                 <p className="font-black text-lg" style={{ color: '#fff', letterSpacing: '-0.02em' }}>Sin costos ocultos</p>
                 <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>Transferencia confirmada en menos de 10 minutos</p>
               </div>
@@ -233,7 +234,7 @@ export default function Servicios() {
             ].map(({ Icon, label, sub }) => (
               <div key={label} className="flex items-center gap-3" style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 12, padding: '12px 14px' }}>
                 <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Icon style={{ width: 14, height: 14, color: '#22C55E' }} />
+                  <Icon style={{ width: 14, height: 14, color: '#2563EB' }} />
                 </div>
                 <div>
                   <div className="font-semibold text-xs" style={{ color: '#0D1B2A' }}>{label}</div>
@@ -247,7 +248,7 @@ export default function Servicios() {
             <Link
               href={isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta'}
               className="inline-flex items-center gap-2 text-sm font-bold"
-              style={{ background: '#22C55E', color: '#fff', padding: '11px 24px', borderRadius: 10, boxShadow: '0 3px 12px rgba(34,197,94,0.3)' }}
+              style={{ background: '#2563EB', color: '#fff', padding: '11px 24px', borderRadius: 10, boxShadow: '0 3px 12px rgba(37,99,235,0.25)' }}
             >
               {isAuthenticated ? 'Iniciar operación' : 'Abrir mi cuenta gratis'}
               <ArrowRight style={{ width: 15, height: 15 }} />
@@ -265,7 +266,7 @@ export default function Servicios() {
           <div className="mb-8 reveal animate-fade-up">
             <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#3B82F6' }}>02 — Venta de dólares</p>
             <h2 className="font-black text-2xl" style={{ color: '#0D1B2A', letterSpacing: '-0.02em' }}>
-              QoriCash te vende dólares
+              Qoricash te vende dólares
             </h2>
             <p className="text-sm mt-1" style={{ color: '#64748B' }}>
               Obtén USD con tus soles de forma rápida y sin comisiones
@@ -274,7 +275,7 @@ export default function Servicios() {
 
           {/* Steps + Example */}
           <div className="grid md:grid-cols-5 gap-5 mb-5 reveal animate-fade-up stagger-1">
-            <div className="md:col-span-2" style={{ background: '#0D1B2A', borderRadius: 16, padding: '20px' }}>
+            <div className="md:col-span-2" style={{ background: '#0A0A0A', borderRadius: 16, padding: '20px' }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#475569' }}>Ejemplo</p>
               <div className="space-y-2">
                 <div className="flex justify-between items-center" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 8, padding: '10px 12px' }}>
@@ -298,7 +299,7 @@ export default function Servicios() {
             <div className="md:col-span-3 space-y-2">
               {[
                 { n: '01', title: 'Necesitas dólares',    desc: 'Para pagos, ahorros, viajes o negocios'           },
-                { n: '02', title: 'QoriCash te los vende', desc: 'Al mejor tipo de cambio, sin comisiones ocultas' },
+                { n: '02', title: 'Qoricash te los vende', desc: 'Al mejor tipo de cambio, sin comisiones ocultas' },
                 { n: '03', title: 'Recibes USD',           desc: 'En tu cuenta bancaria en menos de 10 minutos'    },
               ].map(({ n, title, desc }) => (
                 <div key={n} className="flex items-center gap-3" style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 12, padding: '14px 16px' }}>
@@ -374,7 +375,7 @@ export default function Servicios() {
               ¿Cómo funciona el tipo de cambio?
             </h2>
             <p className="text-sm mt-1" style={{ color: '#64748B' }}>
-              Entiende las bases del mercado cambiario y la ventaja QoriCash
+              Entiende las bases del mercado cambiario y la ventaja Qoricash
             </p>
           </div>
 
@@ -385,9 +386,9 @@ export default function Servicios() {
               <p className="text-sm leading-relaxed mb-4" style={{ color: '#475569' }}>
                 El <strong style={{ color: '#0D1B2A' }}>tipo de cambio</strong> es el precio al que se convierte una moneda en otra — cuántos soles peruanos necesitas para obtener un dólar.
               </p>
-              <div className="flex items-center justify-between" style={{ background: '#0D1B2A', borderRadius: 10, padding: '14px 16px' }}>
+              <div className="flex items-center justify-between" style={{ background: '#0A0A0A', borderRadius: 10, padding: '14px 16px' }}>
                 <span className="text-xs" style={{ color: '#64748B' }}>1 USD equivale a</span>
-                <span className="font-black text-2xl tabular-nums" style={{ color: '#22C55E', letterSpacing: '-0.02em' }}>S/ 3.750</span>
+                <span className="font-black text-2xl tabular-nums" style={{ color: '#2563EB', letterSpacing: '-0.02em' }}>S/ 3.750</span>
               </div>
             </div>
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 14, padding: '20px' }}>
@@ -400,7 +401,7 @@ export default function Servicios() {
                   'Inflación y estabilidad económica',
                 ].map(item => (
                   <div key={item} className="flex items-center gap-2.5">
-                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#22C55E', flexShrink: 0 }} />
+                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#2563EB', flexShrink: 0 }} />
                     <span className="text-xs" style={{ color: '#475569' }}>{item}</span>
                   </div>
                 ))}
@@ -422,7 +423,7 @@ export default function Servicios() {
               </p>
               <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 10, padding: '14px' }}>
                 {[
-                  { label: 'TC Compra', value: 'S/ 3.750', color: '#22C55E' },
+                  { label: 'TC Compra', value: 'S/ 3.750', color: '#2563EB' },
                   { label: 'TC Venta',  value: 'S/ 3.770', color: '#3B82F6' },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="flex justify-between items-center py-1.5">
@@ -460,13 +461,13 @@ export default function Servicios() {
                 <div style={{ height: 1, background: '#E2E8F0', margin: '6px 0' }} />
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold" style={{ color: '#0D1B2A' }}>Variación</span>
-                  <span className="font-black text-xs tabular-nums" style={{ color: '#22C55E' }}>+25 pips</span>
+                  <span className="font-black text-xs tabular-nums" style={{ color: '#2563EB' }}>+25 pips</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Ventaja QoriCash — image background */}
+          {/* Ventaja Qoricash — image background */}
           <div className="mb-8 reveal animate-fade-up stagger-3" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden' }}>
             <img
               src="https://images.pexels.com/photos/159888/pexels-photo-159888.jpeg?auto=compress&cs=tinysrgb&w=1200"
@@ -478,9 +479,9 @@ export default function Servicios() {
               <div className="flex items-center gap-2 mb-5">
                 <span
                   className="text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                  style={{ background: 'rgba(34,197,94,0.12)', color: '#22C55E', border: '1px solid rgba(34,197,94,0.2)' }}
+                  style={{ background: 'rgba(37,99,235,0.08)', color: '#2563EB', border: '1px solid rgba(37,99,235,0.15)' }}
                 >
-                  Ventaja QoriCash
+                  Ventaja Qoricash
                 </span>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
@@ -490,8 +491,8 @@ export default function Servicios() {
                   { Icon: Clock,       label: 'Tiempo real',        sub: 'Cotizaciones actualizadas constantemente según el mercado' },
                 ].map(({ Icon, label, sub }) => (
                   <div key={label} className="flex items-start gap-3">
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                      <Icon style={{ width: 14, height: 14, color: '#22C55E' }} />
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(34,197,94,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                      <Icon style={{ width: 14, height: 14, color: '#2563EB' }} />
                     </div>
                     <div>
                       <div className="font-bold text-xs mb-0.5" style={{ color: '#fff' }}>{label}</div>
@@ -507,7 +508,7 @@ export default function Servicios() {
             <Link
               href={isAuthenticated ? '/dashboard/nueva-operacion' : '/crear-cuenta'}
               className="inline-flex items-center gap-2 text-sm font-bold"
-              style={{ background: '#22C55E', color: '#fff', padding: '11px 24px', borderRadius: 10, boxShadow: '0 3px 12px rgba(34,197,94,0.3)' }}
+              style={{ background: '#2563EB', color: '#fff', padding: '11px 24px', borderRadius: 10, boxShadow: '0 3px 12px rgba(37,99,235,0.25)' }}
             >
               {isAuthenticated ? 'Iniciar operación' : 'Abrir mi cuenta gratis'}
               <ArrowRight style={{ width: 15, height: 15 }} />
@@ -517,59 +518,8 @@ export default function Servicios() {
       </section>
 
       {/* ── Footer ─────────────────────────────────────────────── */}
-      <footer style={{ background: '#0D1B2A', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '40px 24px 32px' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <Link href="/" className="flex items-center gap-2.5 mb-3 hover:opacity-80 transition-opacity w-fit">
-                <img src="/logo-principal.png" alt="QoriCash" style={{ height: 36 }} />
-                <span className="font-display font-bold text-base" style={{ color: '#fff' }}>QoriCash</span>
-              </Link>
-              <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>
-                Casa de cambio online en Perú. Seguridad, rapidez y los mejores tipos de cambio.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Servicios</p>
-              <ul className="space-y-1.5 text-xs">
-                {[
-                  ['/servicios#compra',      'Compra de dólares'],
-                  ['/servicios#venta',       'Venta de dólares' ],
-                  ['/servicios#tipo-cambio', 'Tipo de cambio'   ],
-                ].map(([href, label]) => (
-                  <li key={href}><a href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</a></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Empresa</p>
-              <ul className="space-y-1.5 text-xs">
-                {[
-                  ['/sobre-nosotros',       'Sobre nosotros'         ],
-                  ['/terminos-condiciones', 'Términos y condiciones' ],
-                  ['/politica-privacidad',  'Política de privacidad' ],
-                  ['/politica-cookies',     'Política de cookies'    ],
-                  ['/libro-reclamaciones',  'Libro de reclamaciones' ],
-                ].map(([href, label]) => (
-                  <li key={href}><Link href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</Link></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Contacto</p>
-              <ul className="space-y-2.5 text-xs" style={{ color: '#475569' }}>
-                <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a></li>
-                <li><a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">910 624 404</a></li>
-                <li style={{ lineHeight: 1.6 }}>Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</li>
-                <li style={{ lineHeight: 1.6 }}>Lun–Vie 9:00–18:00<br />Sáb 9:00–13:00</li>
-              </ul>
-            </div>
-          </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20 }} className="text-center">
-            <p className="text-xs" style={{ color: '#334155' }}>© 2025 QoriCash. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
+
+      <SiteFooter />
     </main>
   );
 }

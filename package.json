@@ -1,7 +1,7 @@
 {
   "name": "qoricash-web",
   "version": "1.0.0",
-  "description": "QoriCash - Plataforma Web de Casa de Cambio Online",
+  "description": "Qoricash - Plataforma Web de Casa de Cambio Online",
   "private": true,
   "scripts": {
     "dev": "next dev",

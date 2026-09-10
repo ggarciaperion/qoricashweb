@@ -112,7 +112,7 @@ export default function AgregarCuentaPage() {
           Volver
         </button>
         <div className="ml-auto">
-          <img src="/logo-principal.png" alt="QoriCash" className="h-8 w-auto" />
+          <img src="/logo-principal.png" alt="Qoricash" className="h-8 w-auto" />
         </div>
       </header>
 

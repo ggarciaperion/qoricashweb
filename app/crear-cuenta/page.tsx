@@ -107,6 +107,7 @@ const SELECT_ARROW_STYLE: React.CSSProperties = {
 export default function CrearCuentaPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const backHref = searchParams.get('tipo') === 'empresa' ? '/empresa' : '/';
   const loginStore = useAuthStore((state) => state.login);
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -586,8 +587,8 @@ export default function CrearCuentaPage() {
       <header className="sticky top-0 z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <div className="w-full max-w-[960px] mx-auto px-4 sm:px-10 py-3.5">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-              <img src="/vg.png" alt="QoriCash" className="h-10 w-auto" />
+            <Link href={backHref} className="flex items-center gap-2 hover:opacity-80 transition">
+              <img src="/vg.png" alt="Qoricash" className="h-10 w-auto" />
             </Link>
             <Link href="/login" className="text-sm transition" style={{ color: '#6B7280' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
@@ -979,7 +980,7 @@ export default function CrearCuentaPage() {
                 {/* Título */}
                 <div className="mb-4" style={{ animation: 'successFadeUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.22s both' }}>
                   <h1 className="text-xl font-black mb-1" style={{ color: '#0D1117' }}>
-                    ¡Bienvenido a <span style={{ color: '#2563EB' }}>QoriCash</span>!
+                    ¡Bienvenido a <span style={{ color: '#2563EB' }}>Qoricash</span>!
                   </h1>
                   <p className="text-xs" style={{ color: '#6B7280' }}>Tu cuenta ha sido creada exitosamente</p>
                 </div>
@@ -994,7 +995,7 @@ export default function CrearCuentaPage() {
                   </div>
                   <div className="rounded-2xl px-5 py-4 text-center bg-white"
                     style={{ border: '1px solid rgba(30,41,59,0.08)', boxShadow: '0 6px 28px rgba(30,41,59,0.07)' }}>
-                    <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto mx-auto mb-3" />
+                    <img src="/logo-principal.png" alt="Qoricash" className="h-7 w-auto mx-auto mb-3" />
                     <p className="font-black leading-none mb-0.5" style={{ fontSize: '3rem', color: '#D4AF37' }}>20</p>
                     <p className="text-[10px] font-black tracking-[0.3em] mb-3" style={{ color: '#D4AF37' }}>QORICOINS</p>
                     <div className="mb-3" style={{ height: '1px', background: 'rgba(30,41,59,0.08)' }} />
@@ -1155,7 +1156,10 @@ export default function CrearCuentaPage() {
           {/* Flecha retroceso (visible solo en pasos > 0) */}
           <div className="mb-3" style={{ minHeight: '32px' }}>
             {paso > 0 && (
-              <button type="button" onClick={paso === 1 ? () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); } : anteriorPaso} className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: '#6B7280' }}>
+              <button type="button" onClick={paso === 1
+                ? (backHref !== '/' ? () => router.push(backHref) : () => { setPaso(0); setTipoPersona('natural'); setError(''); setLookupMsg(null); setLookupLocked(false); })
+                : anteriorPaso
+              } className="flex items-center gap-1.5 text-xs font-medium hover:opacity-70 transition" style={{ color: '#6B7280' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                 Volver
               </button>
@@ -1174,7 +1178,7 @@ export default function CrearCuentaPage() {
                 </>
               )}
             </h1>
-            <p className="text-sm" style={{ color: '#6B7280' }}>Únete a QoriCash en 3 simples pasos</p>
+            <p className="text-sm" style={{ color: '#6B7280' }}>Únete a Qoricash en 3 simples pasos</p>
           </div>
 
           {/* PASO 0 — Selección tipo de cliente */}
@@ -1251,7 +1255,7 @@ export default function CrearCuentaPage() {
                   <circle cx="40" cy="40" r="34" stroke="#000000" strokeWidth="6" strokeLinecap="round" strokeDasharray="80 140" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <img src="/logo-principal.png" alt="QoriCash" className="h-7 w-auto" />
+                  <img src="/logo-principal.png" alt="Qoricash" className="h-7 w-auto" />
                 </div>
               </div>
               <div className="text-center">
@@ -1272,9 +1276,9 @@ export default function CrearCuentaPage() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-amber-800 mb-0.5">Documento ya registrado</p>
-                <p className="text-sm text-amber-700">Este número de documento ya tiene una cuenta en QoriCash.{' '}
+                <p className="text-sm text-amber-700">Este número de documento ya tiene una cuenta en Qoricash.{' '}
                   <a
-                    href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20en%20QoriCash"
+                    href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20en%20Qoricash"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-semibold underline hover:opacity-80 transition"
@@ -1810,7 +1814,7 @@ export default function CrearCuentaPage() {
 
                   {/* Soporte */}
                   <p className="text-center pt-1">
-                    <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20registro%20en%20QoriCash" target="_blank" rel="noopener noreferrer" className="text-xs underline transition" style={{ color: '#2563EB' }}>
+                    <a href="https://wa.me/51910624404?text=Hola%2C%20necesito%20ayuda%20con%20mi%20registro%20en%20Qoricash" target="_blank" rel="noopener noreferrer" className="text-xs underline transition" style={{ color: '#2563EB' }}>
                       Contactar con soporte
                     </a>
                   </p>

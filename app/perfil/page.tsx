@@ -182,7 +182,7 @@ export default function PerfilPage() {
               Volver al Dashboard
             </Link>
             <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition cursor-pointer">
-              <img src="/vg.png" alt="QoriCash" className="h-10 w-auto" />
+              <img src="/vg.png" alt="Qoricash" className="h-10 w-auto" />
             </Link>
           </div>
         </div>

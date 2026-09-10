@@ -91,7 +91,7 @@ export async function GET() {
       {
         next: { revalidate: 600 },
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; QoriCashWeb/1.0)',
+          'User-Agent': 'Mozilla/5.0 (compatible; QoricashWeb/1.0)',
           'Accept': 'text/html,application/xhtml+xml',
           'Accept-Language': 'es-PE,es;q=0.9',
         },

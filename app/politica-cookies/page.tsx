@@ -1,91 +1,27 @@
 'use client';
 
 import Link from 'next/link';
+import SiteFooter from '@/components/SiteFooter';
+import SiteNav from '@/components/SiteNav';
 import { Cookie, CheckCircle, Settings, BarChart3, Shield, Info } from 'lucide-react';
-
-const FOOTER_LINKS = {
-  servicios: [['/servicios#compra','Compra de dólares'],['/servicios#venta','Venta de dólares'],['/servicios#tipo-cambio','Tipo de cambio']],
-  empresa: [['/sobre-nosotros','Sobre nosotros'],['/terminos-condiciones','Términos y condiciones'],['/politica-privacidad','Política de privacidad'],['/politica-cookies','Política de cookies'],['/libro-reclamaciones','Libro de reclamaciones']],
-};
-
-function PageFooter() {
-  return (
-    <footer style={{ background: '#0D1B2A', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '40px 24px 32px' }}>
-      <div className="max-w-5xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <Link href="/" className="flex items-center gap-2.5 mb-3 hover:opacity-80 transition-opacity w-fit">
-              <img src="/logo-principal.png" alt="QoriCash" style={{ height: 36 }} />
-              <span className="font-display font-bold text-base" style={{ color: '#fff' }}>QoriCash</span>
-            </Link>
-            <p className="text-xs leading-relaxed" style={{ color: '#475569' }}>Casa de cambio online en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Servicios</p>
-            <ul className="space-y-1.5 text-xs">
-              {FOOTER_LINKS.servicios.map(([href, label]) => <li key={href}><Link href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</Link></li>)}
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Empresa</p>
-            <ul className="space-y-1.5 text-xs">
-              {FOOTER_LINKS.empresa.map(([href, label]) => <li key={href}><Link href={href} className="transition-colors hover:text-white" style={{ color: '#475569' }}>{label}</Link></li>)}
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#475569' }}>Contacto</p>
-            <ul className="space-y-2.5 text-xs" style={{ color: '#475569' }}>
-              <li><a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a></li>
-              <li><a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">910 624 404</a></li>
-              <li style={{ lineHeight: 1.6 }}>Av. Brasil N° 2790, Int. 504<br />Lima – Pueblo Libre</li>
-              <li style={{ lineHeight: 1.6 }}>Lun–Vie 9:00–18:00<br />Sáb 9:00–13:00</li>
-            </ul>
-          </div>
-        </div>
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20 }} className="text-center">
-          <p className="text-xs" style={{ color: '#334155' }}>© 2025 QoriCash. Todos los derechos reservados.</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 export default function PoliticaCookies() {
   return (
-    <main className="min-h-screen" style={{ background: '#F1F5F9' }}>
-
-      {/* Nav */}
-      <nav className="sticky top-0 z-50" style={{ background: '#0D1B2A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="max-w-5xl mx-auto px-6 flex justify-between items-center" style={{ height: 64 }}>
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <img src="/logo-principal.png" alt="QoriCash" style={{ height: 40 }} />
-            <span className="font-display font-bold text-lg" style={{ color: '#fff' }}>QoriCash</span>
-          </Link>
-          <Link href="/" className="text-xs font-medium" style={{ color: '#64748B' }}>← Inicio</Link>
-        </div>
-      </nav>
-
+    <main className="min-h-screen pt-[80px]" style={{ background: '#F8FAFC' }}>
+      <SiteNav />
       {/* Hero */}
-      <section style={{ position: 'relative', overflow: 'hidden' }}>
-        <img
-          src="https://images.pexels.com/photos/1181677/pexels-photo-1181677.jpeg?auto=compress&cs=tinysrgb&w=1600"
-          alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-        />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(10,18,35,0.97) 0%, rgba(15,23,42,0.93) 100%)' }} />
-        <div style={{ position: 'relative', padding: '44px 24px 36px' }}>
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center gap-4">
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Cookie style={{ width: 20, height: 20, color: '#22C55E' }} />
-              </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#22C55E' }}>Documentos legales</p>
-                <h1 className="font-black text-2xl" style={{ color: '#fff', letterSpacing: '-0.02em' }}>Política de Cookies</h1>
-              </div>
+      <section style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', padding: '32px 24px 28px' }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-4">
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Cookie style={{ width: 20, height: 20, color: '#2563EB' }} />
             </div>
-            <p className="text-xs mt-3 ml-14" style={{ color: '#475569' }}>Última actualización: Diciembre 2025</p>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#2563EB' }}>Documentos legales</p>
+              <h1 className="font-black text-2xl" style={{ color: '#0D1117', letterSpacing: '-0.02em' }}>Política de Cookies</h1>
+            </div>
           </div>
+          <p className="text-xs mt-3 ml-14" style={{ color: '#6B7280' }}>Última actualización: Diciembre 2025</p>
         </div>
       </section>
 
@@ -107,7 +43,7 @@ export default function PoliticaCookies() {
             {/* Section 1 */}
             <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid #F1F5F9' }}>
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#22C55E', fontFamily: 'monospace' }}>01</span>
+                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#2563EB', color: '#ffffff', fontFamily: 'monospace' }}>01</span>
                 <h2 className="font-black text-base" style={{ color: '#0D1B2A' }}>¿Qué son las cookies?</h2>
               </div>
               <p className="text-sm leading-relaxed mb-3" style={{ color: '#475569' }}>
@@ -115,14 +51,14 @@ export default function PoliticaCookies() {
               </p>
               <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderLeft: '3px solid #3B82F6', borderRadius: 8, padding: '14px 16px' }}>
                 <p className="text-xs font-bold mb-1" style={{ color: '#0D1B2A' }}>Ejemplo práctico</p>
-                <p className="text-xs" style={{ color: '#475569' }}>Cuando inicias sesión en QoriCash, una cookie guarda esa información para que no tengas que volver a ingresar tus credenciales cada vez que cambias de página.</p>
+                <p className="text-xs" style={{ color: '#475569' }}>Cuando inicias sesión en Qoricash, una cookie guarda esa información para que no tengas que volver a ingresar tus credenciales cada vez que cambias de página.</p>
               </div>
             </div>
 
             {/* Section 2 */}
             <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid #F1F5F9' }}>
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#22C55E', fontFamily: 'monospace' }}>02</span>
+                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#2563EB', color: '#ffffff', fontFamily: 'monospace' }}>02</span>
                 <h2 className="font-black text-base" style={{ color: '#0D1B2A' }}>Tipos de cookies que utilizamos</h2>
               </div>
               <div className="space-y-3">
@@ -149,7 +85,7 @@ export default function PoliticaCookies() {
             {/* Section 3 */}
             <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid #F1F5F9' }}>
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#22C55E', fontFamily: 'monospace' }}>03</span>
+                <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#2563EB', color: '#ffffff', fontFamily: 'monospace' }}>03</span>
                 <h2 className="font-black text-base" style={{ color: '#0D1B2A' }}>Gestión de cookies</h2>
               </div>
               <p className="text-sm mb-4" style={{ color: '#475569' }}>Puedes configurar tu navegador para aceptar, rechazar o recibir notificaciones sobre el uso de cookies.</p>
@@ -196,7 +132,7 @@ export default function PoliticaCookies() {
               },
               {
                 num: '06', title: 'Actualización de esta política',
-                body: 'QoriCash puede actualizar esta Política periódicamente para reflejar cambios en nuestras prácticas o requisitos legales. Te recomendamos revisar esta página regularmente para estar informado sobre cómo utilizamos las cookies.',
+                body: 'Qoricash puede actualizar esta Política periódicamente para reflejar cambios en nuestras prácticas o requisitos legales. Te recomendamos revisar esta página regularmente para estar informado sobre cómo utilizamos las cookies.',
               },
               {
                 num: '07', title: '¿Tienes dudas?',
@@ -206,7 +142,7 @@ export default function PoliticaCookies() {
             ].map(({ num, title, body, items, custom }: any) => (
               <div key={num} style={{ marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid #F1F5F9' }}>
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#0D1B2A', color: '#22C55E', fontFamily: 'monospace' }}>{num}</span>
+                  <span className="font-black text-xs flex-shrink-0 flex items-center justify-center" style={{ width: 28, height: 28, borderRadius: 7, background: '#2563EB', color: '#ffffff', fontFamily: 'monospace' }}>{num}</span>
                   <h2 className="font-black text-base" style={{ color: '#0D1B2A' }}>{title}</h2>
                 </div>
                 {custom}
@@ -214,7 +150,7 @@ export default function PoliticaCookies() {
                 {items && (
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 10, padding: '14px' }}>
                     <ul className="space-y-1.5">
-                      {items.map((i: string) => <li key={i} className="flex gap-2 text-xs" style={{ color: '#475569' }}><span style={{ color: '#22C55E' }}>·</span>{i}</li>)}
+                      {items.map((i: string) => <li key={i} className="flex gap-2 text-xs" style={{ color: '#475569' }}><span style={{ color: '#2563EB' }}>·</span>{i}</li>)}
                     </ul>
                   </div>
                 )}
@@ -223,13 +159,13 @@ export default function PoliticaCookies() {
 
             {/* Commitment box */}
             <div style={{ background: '#0D1B2A', borderRadius: 12, padding: '24px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <CheckCircle style={{ width: 16, height: 16, color: '#22C55E' }} />
+              <div style={{ width: 36, height: 36, borderRadius: 9, background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <CheckCircle style={{ width: 16, height: 16, color: '#2563EB' }} />
               </div>
               <div>
                 <p className="font-black text-sm mb-2" style={{ color: '#fff' }}>Nuestro compromiso</p>
                 <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>
-                  En QoriCash utilizamos cookies de manera responsable y transparente, siempre respetando tu privacidad y cumpliendo con la normativa vigente. Tu confianza es nuestra prioridad.
+                  En Qoricash utilizamos cookies de manera responsable y transparente, siempre respetando tu privacidad y cumpliendo con la normativa vigente. Tu confianza es nuestra prioridad.
                 </p>
               </div>
             </div>
@@ -238,7 +174,7 @@ export default function PoliticaCookies() {
         </div>
       </section>
 
-      <PageFooter />
+      <SiteFooter />
     </main>
   );
 }

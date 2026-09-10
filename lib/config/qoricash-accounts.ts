@@ -1,5 +1,5 @@
 /**
- * Cuentas bancarias oficiales de QoriCash SAC — Fuente única de verdad.
+ * Cuentas bancarias oficiales de Qoricash SAC — Fuente única de verdad.
  * RUC: 20615113698
  *
  * Para actualizar las cuentas, modificar SOLO este archivo.
@@ -7,7 +7,7 @@
  */
 
 export const QORICASH_RUC = '20615113698';
-export const QORICASH_TITULAR = 'QoriCash SAC';
+export const QORICASH_TITULAR = 'Qoricash SAC';
 
 export interface QoricashAccount {
   banco: string;
@@ -60,7 +60,7 @@ export const QORICASH_ACCOUNTS: Record<string, Record<string, QoricashAccount>> 
 };
 
 /**
- * Bancos de clientes que no tienen cuenta directa en QoriCash.
+ * Bancos de clientes que no tienen cuenta directa en Qoricash.
  * Para estos se usa el CCI de Interbank como fallback.
  */
 export const FALLBACK_BANKS = ['BBVA', 'SCOTIABANK', 'PICHINCHA', 'BANBIF', 'OTROS'];
@@ -87,7 +87,7 @@ const FALLBACK: Record<string, QoricashAccount> = {
 };
 
 /**
- * Retorna la cuenta de QoriCash a la que el cliente debe transferir.
+ * Retorna la cuenta de Qoricash a la que el cliente debe transferir.
  *
  * @param clientBank - Banco normalizado del cliente (ej: 'BCP', 'BBVA')
  * @param currency   - Moneda: '$' para dólares, 'S/' para soles

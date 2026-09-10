@@ -81,29 +81,13 @@ export default function PerfilPage() {
 
   const backHref = isEmpresa ? '/dashboard/empresa' : '/dashboard';
 
-  // Empresa styles
-  const sectionBg = isEmpresa
-    ? { background: 'linear-gradient(135deg, rgba(74,104,132,0.22) 0%, rgba(13,27,42,0.28) 100%)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.18)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }
-    : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' };
-  const cardBg = isEmpresa
-    ? { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(143,184,204,0.25)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }
-    : { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)', borderRadius: 10 };
-  const labelColor = isEmpresa ? 'rgba(143,184,204,0.55)' : 'rgba(30,41,59,0.38)';
-  const valueColor = isEmpresa ? '#ffffff' : '#1E293B';
-  const sectionLabelColor = isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(30,41,59,0.4)';
-  const inputBorderActive = isEmpresa ? '#8fb8cc' : '#22C55E';
-  const cancelBg = isEmpresa ? 'rgba(255,255,255,0.07)' : '#F1F5F9';
-  const cancelColor = isEmpresa ? 'rgba(255,255,255,0.6)' : 'rgba(30,41,59,0.6)';
+  const sectionBg = { background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', borderRadius: 16, padding: '14px 14px 10px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' };
+  const cardBg    = { background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.06)', borderRadius: 10 };
 
   return (
-    <div
-      className="min-h-full"
-      style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-    >
-      <main
-        className="p-4 sm:p-6 space-y-3 max-w-2xl mx-auto"
-        style={{ animation: 'profileSlideIn 0.32s cubic-bezier(0.22,1,0.36,1) both' }}
-      >
+    <div className="min-h-full">
+      <main className="p-4 sm:p-6 space-y-3 max-w-2xl mx-auto"
+        style={{ animation: 'profileSlideIn 0.32s cubic-bezier(0.22,1,0.36,1) both' }}>
         <style>{`
           @keyframes profileSlideIn {
             from { opacity: 0; transform: translateY(18px); }
@@ -115,16 +99,18 @@ export default function PerfilPage() {
         <button
           onClick={() => router.push(backHref)}
           className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-          style={{ color: isEmpresa ? '#ffffff' : 'rgba(30,41,59,0.45)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = isEmpresa ? 'rgba(255,255,255,0.7)' : '#1E293B')}
-          onMouseLeave={e => (e.currentTarget.style.color = isEmpresa ? '#ffffff' : 'rgba(30,41,59,0.45)')}
+          style={{ color: 'rgba(30,41,59,0.45)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#1E293B')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(30,41,59,0.45)')}
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Volver al inicio
         </button>
 
         {/* Header */}
-        <div className="rounded-xl flex items-center gap-3 px-4 py-3" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }}>
+        <div className="rounded-xl flex items-center gap-3 px-4 py-3"
+          style={{ background: '#0A0A0A' }}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(255,255,255,0.12)' }}>
             {isEmpresa
               ? <Building2 className="w-4 h-4 text-white/80" />
               : <UserCircle className="w-4 h-4 text-white/80" />}
@@ -133,9 +119,12 @@ export default function PerfilPage() {
             <p className="text-sm font-black text-white leading-tight truncate">
               {isEmpresa ? user.razon_social : user.apellidos ? `${user.nombres} ${user.apellidos}` : user.nombres}
             </p>
-            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.5)' }}>{user.document_type} · {user.dni}</p>
+            <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              {user.document_type} · {user.dni}
+            </p>
           </div>
-          <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0" style={{ background: 'rgba(34,197,94,0.15)' }}>
+          <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full flex-shrink-0"
+            style={{ background: 'rgba(34,197,94,0.15)' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-[10px] font-semibold text-green-300">{(user as any).estado || 'Activo'}</span>
           </div>
@@ -143,9 +132,9 @@ export default function PerfilPage() {
 
         {/* Alert */}
         {profileMsg && (
-          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium ${profileMsg.type === 'success' ? 'bg-primary-50 border-primary-200 text-primary-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium ${profileMsg.type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
             {profileMsg.type === 'success'
-              ? <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-primary-600" />
+              ? <CheckCircle className="w-3.5 h-3.5 flex-shrink-0 text-green-600" />
               : <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 text-red-600" />}
             {profileMsg.text}
           </div>
@@ -153,7 +142,8 @@ export default function PerfilPage() {
 
         {/* Información personal */}
         <div style={sectionBg}>
-          <p className="text-[9px] font-bold uppercase tracking-widest mb-2.5 flex items-center gap-1" style={{ color: sectionLabelColor }}>
+          <p className="text-[9px] font-bold uppercase tracking-widest mb-2.5 flex items-center gap-1"
+            style={{ color: 'rgba(30,41,59,0.4)' }}>
             <FileText className="w-3 h-3" /> Información Personal
           </p>
           <div className="grid grid-cols-2 gap-1.5">
@@ -165,8 +155,9 @@ export default function PerfilPage() {
                 : [{ label: 'Nombres', value: user.nombres }, { label: 'Ap. Paterno', value: (user as any).apellido_paterno || user.apellidos }, { label: 'Ap. Materno', value: (user as any).apellido_materno || '-' }]),
             ].map(({ label, value }) => (
               <div key={label} className="px-2.5 py-2" style={cardBg}>
-                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: labelColor }}>{label}</p>
-                <p className="text-xs font-semibold truncate" style={{ color: valueColor }}>{value || '-'}</p>
+                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5"
+                  style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
+                <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>{value || '-'}</p>
               </div>
             ))}
           </div>
@@ -175,36 +166,45 @@ export default function PerfilPage() {
         {/* Contacto */}
         <div style={sectionBg}>
           <div className="flex items-center justify-between mb-2.5">
-            <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1" style={{ color: sectionLabelColor }}>
+            <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1"
+              style={{ color: 'rgba(30,41,59,0.4)' }}>
               <Mail className="w-3 h-3" /> Contacto
             </p>
             {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
+              <button onClick={() => setIsEditing(true)}
                 className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
-                style={{ color: '#ffffff', background: isEmpresa ? 'linear-gradient(135deg, #4A6884, #1a3353)' : '#22C55E', border: isEmpresa ? '1px solid rgba(143,184,204,0.3)' : '1px solid #16A34A' }}
-              >
+                style={{ color: '#ffffff', background: '#0A0A0A' }}>
                 Editar
               </button>
             )}
           </div>
           <div className="grid grid-cols-2 gap-1.5">
             <div className="px-2.5 py-2" style={cardBg}>
-              <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: labelColor }}>Teléfono</p>
+              <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5"
+                style={{ color: 'rgba(30,41,59,0.38)' }}>Teléfono</p>
               {isEditing ? (
-                <input type="tel" value={profileForm.phone} onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
-                  className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: valueColor, borderColor: inputBorderActive }} />
+                <input type="tel" value={profileForm.phone}
+                  onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
+                  className="w-full text-xs font-semibold bg-transparent outline-none border-b"
+                  style={{ color: '#1E293B', borderColor: '#2563EB' }} />
               ) : (
-                <p className="text-xs font-semibold truncate" style={{ color: valueColor }}>{user.phone || user.telefono || '-'}</p>
+                <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>
+                  {user.phone || user.telefono || '-'}
+                </p>
               )}
             </div>
             <div className="px-2.5 py-2" style={cardBg}>
-              <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: labelColor }}>Correo</p>
+              <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5"
+                style={{ color: 'rgba(30,41,59,0.38)' }}>Correo</p>
               {isEditing ? (
-                <input type="email" value={profileForm.email} onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
-                  className="w-full text-xs font-semibold bg-transparent outline-none border-b" style={{ color: valueColor, borderColor: inputBorderActive }} />
+                <input type="email" value={profileForm.email}
+                  onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
+                  className="w-full text-xs font-semibold bg-transparent outline-none border-b"
+                  style={{ color: '#1E293B', borderColor: '#2563EB' }} />
               ) : (
-                <p className="text-xs font-semibold truncate" style={{ color: valueColor }}>{user.email || '-'}</p>
+                <p className="text-xs font-semibold truncate" style={{ color: '#1E293B' }}>
+                  {user.email || '-'}
+                </p>
               )}
             </div>
           </div>
@@ -212,12 +212,13 @@ export default function PerfilPage() {
             <div className="flex gap-1.5 mt-2">
               <button onClick={handleProfileSave} disabled={isSaving}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
-                style={{ background: isEmpresa ? 'linear-gradient(135deg, #4A6884, #1a3353)' : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                style={{ background: '#0A0A0A' }}>
                 <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
               </button>
-              <button onClick={() => { setIsEditing(false); setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' }); }}
+              <button
+                onClick={() => { setIsEditing(false); setProfileForm({ phone: user.phone || user.telefono || '', email: user.email || '' }); }}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition"
-                style={{ background: cancelBg, color: cancelColor }}>
+                style={{ background: '#F1F5F9', color: 'rgba(30,41,59,0.6)' }}>
                 Cancelar
               </button>
             </div>
@@ -227,14 +228,13 @@ export default function PerfilPage() {
         {/* Seguridad */}
         <div className="flex items-center justify-between" style={sectionBg}>
           <div className="flex items-center gap-2">
-            <Lock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.35)' }} />
-            <p className="text-xs font-semibold" style={{ color: valueColor }}>Contraseña</p>
+            <Lock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'rgba(30,41,59,0.35)' }} />
+            <p className="text-xs font-semibold" style={{ color: '#1E293B' }}>Contraseña</p>
           </div>
           <button
             onClick={() => setIsChangePasswordModalOpen(true)}
             className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold text-white transition"
-            style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}
-          >
+            style={{ background: '#0A0A0A' }}>
             <Lock className="w-3 h-3" /> Cambiar
           </button>
         </div>
@@ -242,15 +242,14 @@ export default function PerfilPage() {
         {/* Dirección */}
         <div style={sectionBg}>
           <div className="flex items-center justify-between mb-2.5">
-            <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1" style={{ color: sectionLabelColor }}>
+            <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1"
+              style={{ color: 'rgba(30,41,59,0.4)' }}>
               <MapPin className="w-3 h-3" /> Dirección
             </p>
             {!isEditingAddress && (
-              <button
-                onClick={() => setIsEditingAddress(true)}
+              <button onClick={() => setIsEditingAddress(true)}
                 className="text-[10px] font-bold px-2 py-0.5 rounded transition-colors"
-                style={{ color: '#ffffff', background: isEmpresa ? 'linear-gradient(135deg, #4A6884, #1a3353)' : '#22C55E', border: isEmpresa ? '1px solid rgba(143,184,204,0.3)' : '1px solid #16A34A' }}
-              >
+                style={{ color: '#ffffff', background: '#0A0A0A' }}>
                 Editar
               </button>
             )}
@@ -263,19 +262,18 @@ export default function PerfilPage() {
               { label: 'Departamento', key: 'departamento', wide: false },
             ] as { label: string; key: keyof typeof addressForm; wide: boolean }[]).map(({ label, key, wide }) => (
               <div key={label} className={`px-2.5 py-2${wide ? ' col-span-2' : ''}`}
-                style={{ ...cardBg, border: `1px solid ${isEditingAddress ? (isEmpresa ? '#8fb8cc' : '#86efac') : (isEmpresa ? 'rgba(143,184,204,0.25)' : 'rgba(30,41,59,0.1)')}` }}>
-                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5" style={{ color: labelColor }}>{label}</p>
+                style={{ ...cardBg, border: `1px solid ${isEditingAddress ? '#2563EB' : 'rgba(30,41,59,0.1)'}` }}>
+                <p className="text-[8px] font-bold uppercase tracking-wider leading-none mb-0.5"
+                  style={{ color: 'rgba(30,41,59,0.38)' }}>{label}</p>
                 {isEditingAddress ? (
-                  <input
-                    type="text"
-                    value={addressForm[key]}
+                  <input type="text" value={addressForm[key]}
                     onChange={e => setAddressForm({ ...addressForm, [key]: e.target.value })}
                     placeholder={`Ingresa ${label.toLowerCase()}`}
                     className="w-full text-xs font-semibold bg-transparent outline-none border-b"
-                    style={{ color: valueColor, borderColor: inputBorderActive }}
-                  />
+                    style={{ color: '#1E293B', borderColor: '#2563EB' }} />
                 ) : (
-                  <p className="text-xs font-semibold truncate" style={{ color: (user as any)[key] ? valueColor : (isEmpresa ? 'rgba(143,184,204,0.3)' : 'rgba(30,41,59,0.3)') }}>
+                  <p className="text-xs font-semibold truncate"
+                    style={{ color: (user as any)[key] ? '#1E293B' : 'rgba(30,41,59,0.3)' }}>
                     {(user as any)[key] || 'Sin registrar'}
                   </p>
                 )}
@@ -286,20 +284,15 @@ export default function PerfilPage() {
             <div className="flex gap-1.5 mt-2">
               <button onClick={handleAddressSave} disabled={isSaving}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition disabled:opacity-50"
-                style={{ background: isEmpresa ? 'linear-gradient(135deg, #4A6884, #1a3353)' : 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)' }}>
+                style={{ background: '#0A0A0A' }}>
                 <Save className="w-3 h-3" />{isSaving ? 'Guardando...' : 'Guardar'}
               </button>
               <button onClick={() => {
                 setIsEditingAddress(false);
-                setAddressForm({
-                  direccion:    (user as any).direccion    || '',
-                  departamento: (user as any).departamento || '',
-                  provincia:    (user as any).provincia    || '',
-                  distrito:     (user as any).distrito     || '',
-                });
+                setAddressForm({ direccion: (user as any).direccion || '', departamento: (user as any).departamento || '', provincia: (user as any).provincia || '', distrito: (user as any).distrito || '' });
               }}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold transition"
-                style={{ background: cancelBg, color: cancelColor }}>
+                style={{ background: '#F1F5F9', color: 'rgba(30,41,59,0.6)' }}>
                 Cancelar
               </button>
             </div>

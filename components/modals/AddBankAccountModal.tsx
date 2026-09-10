@@ -328,7 +328,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                   {overlayPhase === 'saving' ? (
                     <Image
                       src="/logo-principal.png"
-                      alt="QoriCash"
+                      alt="Qoricash"
                       width={64}
                       height={64}
                       style={{ objectFit: 'contain', animation: 'qcPulse 1.8s ease-in-out infinite' }}

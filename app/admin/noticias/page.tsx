@@ -140,7 +140,7 @@ export default function AdminNoticiasPage() {
               <Lock className="w-6 h-6 text-primary-400" />
             </div>
             <h1 className="text-xl font-display font-bold text-white">Panel de Noticias</h1>
-            <p className="text-gray-500 text-sm mt-1">Acceso restringido · QoriCash Admin</p>
+            <p className="text-gray-500 text-sm mt-1">Acceso restringido · Qoricash Admin</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -194,7 +194,7 @@ export default function AdminNoticiasPage() {
           </div>
           <div>
             <h1 className="text-xl font-display font-bold text-white">Panel de Noticias</h1>
-            <p className="text-gray-500 text-xs">QoriCash · Análisis de Mercado</p>
+            <p className="text-gray-500 text-xs">Qoricash · Análisis de Mercado</p>
           </div>
         </div>
 
@@ -264,7 +264,7 @@ export default function AdminNoticiasPage() {
 
               <div>
                 <label className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5 block">
-                  <span className="text-primary-400">Análisis QoriCash</span> — impacto forex
+                  <span className="text-primary-400">Análisis Qoricash</span> — impacto forex
                 </label>
                 <textarea
                   value={form.analisis}
