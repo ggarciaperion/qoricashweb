@@ -2843,86 +2843,59 @@ export function NuevaOperacionContent() {
 
             {/* ── LOADING / SUCCESS STATE ── */}
             {(isUploadingKYC || kycUploadDone) && (
-              <>
-                <style>{`
-                  @keyframes kycProgress {
-                    from { stroke-dashoffset: 327; }
-                    to   { stroke-dashoffset: 0; }
-                  }
-                  @keyframes kycFadeUp {
-                    from { opacity: 0; transform: translateY(8px); }
-                    to   { opacity: 1; transform: translateY(0); }
-                  }
-                  @keyframes kycScaleIn {
-                    0%   { transform: scale(0); opacity: 0; }
-                    65%  { transform: scale(1.15); opacity: 1; }
-                    100% { transform: scale(1); opacity: 1; }
-                  }
-                  @keyframes kycCheck {
-                    from { stroke-dashoffset: 60; }
-                    to   { stroke-dashoffset: 0; }
-                  }
-                  @keyframes kycShimmer {
-                    0%   { background-position: -200% center; }
-                    100% { background-position: 200% center; }
-                  }
-                  @keyframes kycPulse {
-                    0%, 100% { transform: scale(1);    opacity: 1; }
-                    50%       { transform: scale(0.94); opacity: 0.8; }
-                  }
-                `}</style>
-                <div className="flex flex-col items-center justify-center gap-7" style={{ width: '100%', height: 300 }}>
-                  <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                      <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(37,99,235,0.15)" strokeWidth="7" />
-                      {isUploadingKYC && (
-                        <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
-                          strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
-                          style={{ animation: 'kycProgress 5s cubic-bezier(0.4,0,0.6,1) forwards' }}
-                        />
-                      )}
-                      {kycUploadDone && (
-                        <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
-                          strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
-                      )}
-                    </svg>
-                    <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(13,27,42,0.8)' : '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-                      {isUploadingKYC ? (
-                        <Image src="/logo-principal.png" alt="Qoricash" width={56} height={56}
-                          style={{ objectFit: 'contain', animation: 'kycPulse 1.8s ease-in-out infinite' }} />
-                      ) : (
-                        <div style={{ animation: 'kycScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-                          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                            <circle cx="22" cy="22" r="22" fill="#2563EB" />
-                            <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
-                              strokeLinecap="round" strokeLinejoin="round"
-                              strokeDasharray="60" strokeDashoffset="60"
-                              style={{ animation: 'kycCheck 0.5s ease-out 0.15s forwards' }} />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
+              <div className="flex flex-col items-center justify-center gap-7" style={{ width: '100%', height: 300 }}>
+                <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+                    <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="7" />
+                    {isUploadingKYC && (
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                        strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
+                        style={{ animation: 'op-progress 5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                      />
+                    )}
+                    {kycUploadDone && (
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                        strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
+                    )}
+                  </svg>
+                  <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(13,27,42,0.8)' : '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                    {isUploadingKYC ? (
+                      <Image src="/logo-principal.png" alt="Qoricash" width={56} height={56}
+                        style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
+                    ) : (
+                      <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                          <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
+                          <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
+                            strokeLinecap="round" strokeLinejoin="round"
+                            strokeDasharray="60" strokeDashoffset="60"
+                            style={{ animation: 'op-check 0.5s ease-out 0.15s forwards' }} />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  {isUploadingKYC ? (
-                    <div style={{ textAlign: 'center', animation: 'kycFadeUp 0.35s ease-out both' }}>
-                      <p style={{
-                        fontSize: 14, fontWeight: 700, margin: 0,
-                        background: 'linear-gradient(90deg,#1d4ed8 0%,#2563EB 45%,#1d4ed8 90%)',
-                        backgroundSize: '200% auto',
-                        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                        animation: 'kycShimmer 1.8s linear infinite',
-                      }}>Enviando documentos...</p>
-                      <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Por favor espera un momento</p>
-                    </div>
-                  ) : (
-                    <div style={{ textAlign: 'center', animation: 'kycFadeUp 0.4s ease-out both' }}>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Documentos enviados!</p>
-                      <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9ca3af', marginTop: 4 }}>Los revisaremos en aprox. 10 minutos</p>
-                    </div>
-                  )}
                 </div>
-              </>
+                {isUploadingKYC ? (
+                  <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                      Enviando documentos
+                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
+                      {[0, 0.18, 0.36].map((delay, i) => (
+                        <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
+                          background: isEmpresa ? '#8fb8cc' : '#0D1B2A',
+                          animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
+                      ))}
+                    </div>
+                    <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>Por favor espera un momento</p>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Documentos enviados!</p>
+                    <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9ca3af', marginTop: 4 }}>Los revisaremos en aprox. 10 minutos</p>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* ── FORM STATE ── */}
@@ -3074,64 +3047,37 @@ export function NuevaOperacionContent() {
 
       {/* ── Overlay: Creando operación ── */}
       {showCreatingOverlay && (
-        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
-          <style>{`
-            @keyframes opProgress {
-              from { stroke-dashoffset: 327; }
-              to   { stroke-dashoffset: 0; }
-            }
-            @keyframes opFadeUp {
-              from { opacity: 0; transform: translateY(8px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes opScaleIn {
-              0%   { transform: scale(0); opacity: 0; }
-              65%  { transform: scale(1.15); opacity: 1; }
-              100% { transform: scale(1); opacity: 1; }
-            }
-            @keyframes opCheck {
-              from { stroke-dashoffset: 60; }
-              to   { stroke-dashoffset: 0; }
-            }
-            @keyframes opShimmer {
-              0%   { background-position: -200% center; }
-              100% { background-position: 200% center; }
-            }
-            @keyframes opPulse {
-              0%, 100% { transform: scale(1);    opacity: 1; }
-              50%       { transform: scale(0.94); opacity: 0.8; }
-            }
-          `}</style>
-          <div className="rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', backdropFilter: isEmpresa ? 'blur(18px)' : undefined, border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.72)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(0,0,0,0.06)' }}>
 
             {/* Ring + center */}
             <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(37,99,235,0.15)'} strokeWidth="7" />
+                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(13,27,42,0.08)'} strokeWidth="7" />
                 {!showCreatingSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
-                    style={{ animation: 'opProgress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                    style={{ animation: 'op-progress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
                     onAnimationEnd={handleCreateProgressEnd}
                   />
                 )}
                 {showCreatingSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                 )}
               </svg>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 {!showCreatingSuccess ? (
                   <Image src="/logo-principal.png" alt="Qoricash" width={64} height={64}
-                    style={{ objectFit: 'contain', animation: 'opPulse 1.8s ease-in-out infinite' }} />
+                    style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
                 ) : (
-                  <div style={{ animation: 'opScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                  <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                     <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                      <circle cx="22" cy="22" r="22" fill="#2563EB" />
+                      <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
                       <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                         strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="60" strokeDashoffset="60"
-                        style={{ animation: 'opCheck 0.5s ease-out 0.15s forwards' }} />
+                        style={{ animation: 'op-check 0.5s ease-out 0.15s forwards' }} />
                     </svg>
                   </div>
                 )}
@@ -3140,21 +3086,21 @@ export function NuevaOperacionContent() {
 
             {/* Text */}
             {!showCreatingSuccess ? (
-              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.35s ease-out both' }}>
-                <p style={{
-                  fontSize: 14, fontWeight: 700, margin: 0,
-                  background: 'linear-gradient(90deg,#1d4ed8 0%,#2563EB 45%,#1d4ed8 90%)',
-                  backgroundSize: '200% auto',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  animation: 'opShimmer 1.8s linear infinite',
-                }}>Creando operación...</p>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 4 }}>Por favor espera</p>
+              <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                  Creando operación
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
+                  {[0, 0.18, 0.36].map((delay, i) => (
+                    <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: isEmpresa ? '#8fb8cc' : '#0D1117', animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
+                  ))}
+                </div>
+                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.55)' : '#9ca3af', marginTop: 8 }}>Por favor espera</p>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.4s ease-out both' }}>
-                <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Operación generada!</p>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 4 }}>Preparando transferencia...</p>
+              <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
+                <p style={{ fontSize: 15, fontWeight: 800, color: isEmpresa ? '#ffffff' : '#0D1117', margin: '0 0 4px' }}>¡Operación generada!</p>
+                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af' }}>Preparando transferencia...</p>
               </div>
             )}
 
@@ -3164,22 +3110,22 @@ export function NuevaOperacionContent() {
 
       {/* ── Overlay: Verificando estado KYC ── */}
       {showVerifyOverlay && (
-        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
-          <div className="rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-6" style={{ width: 260, height: 260, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', backdropFilter: isEmpresa ? 'blur(18px)' : undefined, border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-6" style={{ width: 260, height: 260, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
             <div style={{ position: 'relative', width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(96,165,250,0.15)'} strokeWidth="6" />
-                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#3b82f6'} strokeWidth="6"
+                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(0,0,0,0.08)'} strokeWidth="6" />
+                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="6"
                   strokeLinecap="round" strokeDasharray="289" strokeDashoffset="289"
-                  style={{ animation: 'kycProgress 2s cubic-bezier(0.4,0,0.6,1) forwards' }} />
+                  style={{ animation: 'op-progress-289 2s cubic-bezier(0.4,0,0.6,1) forwards' }} />
               </svg>
               <div style={{ width: 76, height: 76, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 <Image src="/logo-principal.png" alt="Qoricash" width={48} height={48}
-                  style={{ objectFit: 'contain', animation: 'kycPulse 1.2s ease-in-out infinite' }} />
+                  style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.2s ease-in-out infinite' }} />
               </div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#1d4ed8', margin: 0 }}>Verificando estado...</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: 0 }}>Verificando estado...</p>
               <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 3 }}>Consultando tu cuenta</p>
             </div>
           </div>
@@ -3188,81 +3134,56 @@ export function NuevaOperacionContent() {
 
       {/* ── Overlay: Procesando comprobante ── */}
       {showProofOverlay && (
-        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)' }}>
-          <style>{`
-            @keyframes opProgress {
-              from { stroke-dashoffset: 327; }
-              to   { stroke-dashoffset: 0; }
-            }
-            @keyframes opFadeUp {
-              from { opacity: 0; transform: translateY(8px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes opScaleIn {
-              0%   { transform: scale(0); opacity: 0; }
-              65%  { transform: scale(1.15); opacity: 1; }
-              100% { transform: scale(1); opacity: 1; }
-            }
-            @keyframes opCheck {
-              from { stroke-dashoffset: 60; }
-              to   { stroke-dashoffset: 0; }
-            }
-            @keyframes opShimmer {
-              0%   { background-position: -200% center; }
-              100% { background-position: 200% center; }
-            }
-            @keyframes opPulse {
-              0%, 100% { transform: scale(1);    opacity: 1; }
-              50%       { transform: scale(0.94); opacity: 0.8; }
-            }
-          `}</style>
-          <div className="rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', backdropFilter: isEmpresa ? 'blur(18px)' : undefined, border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+        <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
             <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(37,99,235,0.15)'} strokeWidth="7" />
+                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(0,0,0,0.08)'} strokeWidth="7" />
                 {!showProofSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
-                    style={{ animation: 'opProgress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
+                    style={{ animation: 'op-progress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
                     onAnimationEnd={handleProofProgressEnd}
                   />
                 )}
                 {showProofSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke="#2563EB" strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                 )}
               </svg>
               <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 {!showProofSuccess ? (
                   <Image src="/logo-principal.png" alt="Qoricash" width={64} height={64}
-                    style={{ objectFit: 'contain', animation: 'opPulse 1.8s ease-in-out infinite' }} />
+                    style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
                 ) : (
-                  <div style={{ animation: 'opScaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+                  <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                     <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                      <circle cx="22" cy="22" r="22" fill="#2563EB" />
+                      <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
                       <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                         strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="60" strokeDashoffset="60"
-                        style={{ animation: 'opCheck 0.5s ease-out 0.15s forwards' }} />
+                        style={{ animation: 'op-check 0.5s ease-out 0.15s forwards' }} />
                     </svg>
                   </div>
                 )}
               </div>
             </div>
             {!showProofSuccess ? (
-              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.35s ease-out both' }}>
-                <p style={{
-                  fontSize: 14, fontWeight: 700, margin: 0,
-                  background: 'linear-gradient(90deg,#1d4ed8 0%,#2563EB 45%,#1d4ed8 90%)',
-                  backgroundSize: '200% auto',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  animation: 'opShimmer 1.8s linear infinite',
-                }}>Operación en proceso...</p>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 4 }}>Registrando tu transferencia</p>
+              <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                  Operación en proceso
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
+                  {[0, 0.18, 0.36].map((delay, i) => (
+                    <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
+                      background: isEmpresa ? '#8fb8cc' : '#0D1B2A',
+                      animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
+                  ))}
+                </div>
+                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 8 }}>Registrando tu transferencia</p>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', animation: 'opFadeUp 0.4s ease-out both' }}>
+              <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
                 <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Transferencia registrada!</p>
                 <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 4 }}>Procesando tu operación...</p>
               </div>
@@ -3273,8 +3194,8 @@ export function NuevaOperacionContent() {
 
       {/* ── Overlay: Cancelando operación ── */}
       {showCancelOverlay && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4">
-          <div className="rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center" style={{ background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', backdropFilter: isEmpresa ? 'blur(18px)' : undefined, border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4" style={{ WebkitBackdropFilter: 'blur(3px)', backdropFilter: 'blur(3px)' }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center" style={{ background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
             {!showCancelOverlaySuccess ? (
               <>
                 <div className="w-16 h-16 rounded-full animate-spin mx-auto mb-5" style={{ border: isEmpresa ? '4px solid rgba(143,184,204,0.2)' : '4px solid #fee2e2', borderTopColor: '#ef4444' }} />

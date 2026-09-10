@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, X, CheckCircle } from 'lucide-react';
+import { Clock, ArrowRight, X } from 'lucide-react';
 
 interface OffHoursModalProps {
   isOpen: boolean;
@@ -15,95 +15,111 @@ export default function OffHoursModal({
   nextBusinessDay,
   onConfirm,
   onCancel,
-  isEmpresa = false,
 }: OffHoursModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="animate-modal-backdrop fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 px-4"
-      style={{ background: isEmpresa ? 'rgba(13,27,42,0.85)' : 'rgba(0,0,0,0.65)' }}>
-      <div className="animate-modal-enter rounded-2xl w-full max-w-md overflow-hidden"
-        style={isEmpresa
-          ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(143,184,204,0.15)', boxShadow: '0 32px 64px rgba(0,0,0,0.4)' }
-          : { background: '#fff', boxShadow: '0 32px 64px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06)' }}>
-
-        {/* Header — dark gradient */}
-        <div className="relative flex items-center justify-between px-5 py-4 overflow-hidden"
-          style={{ background: isEmpresa ? 'rgba(74,104,132,0.4)' : 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)' }}>
-          <div className="absolute -top-4 -left-4 w-24 h-24 rounded-full pointer-events-none"
-            style={{ background: 'rgba(245,158,11,0.10)', filter: 'blur(24px)' }} />
-          <div className="absolute -bottom-6 right-10 w-20 h-20 rounded-full pointer-events-none"
-            style={{ background: 'rgba(245,158,11,0.06)', filter: 'blur(20px)' }} />
-
-          <div className="relative flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(245,158,11,0.18)' }}>
-              <Clock className="w-[18px] h-[18px] text-amber-400" />
-            </div>
-            <div>
-              <p className="text-white font-extrabold text-sm leading-tight">Fuera de horario</p>
-              <p className="text-[10px] font-medium mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                Tu operación será atendida el próximo día hábil
-              </p>
-            </div>
-          </div>
-          <button onClick={onCancel}
-            className="relative p-1.5 rounded-lg transition-colors"
-            style={{ color: 'rgba(255,255,255,0.4)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.4)')}>
-            <X style={{ width: '18px', height: '18px' }} />
+    <div
+      className="animate-modal-backdrop fixed inset-0 flex items-end sm:items-center justify-center z-50 px-4 pb-5 sm:pb-0"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+    >
+      <div
+        className="animate-modal-slide-up w-full max-w-sm rounded-2xl overflow-hidden"
+        style={{
+          background: '#ffffff',
+          boxShadow: '0 32px 64px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05)',
+        }}
+      >
+        {/* Header */}
+        <div className="relative px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+          <button
+            onClick={onCancel}
+            className="absolute top-4 right-4 p-1.5 rounded-lg transition-colors"
+            style={{ color: 'rgba(0,0,0,0.28)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(0,0,0,0.28)')}
+          >
+            <X className="w-4 h-4" />
           </button>
+
+          {/* Badge */}
+          <span
+            className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-3"
+            style={{ background: 'rgba(0,0,0,0.06)', color: '#374151', border: '1px solid rgba(0,0,0,0.08)' }}
+          >
+            <Clock className="w-3 h-3" />
+            Fuera de horario
+          </span>
+
+          <h2 className="text-lg font-black leading-tight" style={{ color: '#0D1117' }}>
+            Tu operación se registrará
+          </h2>
+          <p className="text-sm mt-1" style={{ color: '#6B7280' }}>
+            Actualmente estamos fuera de horario de atención
+          </p>
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 space-y-4">
-          <p className="text-sm leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.75)' : '#4b5563' }}>
-            Actualmente estamos fuera de nuestro horario de atención:
-          </p>
+        <div className="px-5 py-4 space-y-3">
 
-          <div className="rounded-xl overflow-hidden" style={{ border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(13,27,42,0.08)' }}>
-            <div className="px-4 py-2.5" style={isEmpresa
-              ? { background: 'rgba(74,104,132,0.25)', borderBottom: '1px solid rgba(143,184,204,0.15)' }
-              : { background: '#F8FAFC', borderBottom: '1px solid rgba(13,27,42,0.06)' }}>
-              <p className="text-[9px] uppercase tracking-widest font-bold" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(13,27,42,0.4)' }}>Horario de atención</p>
+          {/* Horario card */}
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{ border: '1px solid rgba(0,0,0,0.07)' }}
+          >
+            <div className="px-4 py-2" style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+              <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: '#9CA3AF' }}>
+                Horario de atención
+              </p>
             </div>
-            <div className="px-4 py-3 space-y-2.5" style={{ background: isEmpresa ? 'rgba(255,255,255,0.03)' : 'transparent' }}>
+            <div className="px-4 py-3 space-y-2.5">
               <div className="flex justify-between items-center">
-                <span className="text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6b7280' }}>Lunes a Viernes</span>
-                <span className="text-sm font-bold" style={{ color: isEmpresa ? '#ffffff' : '#1f2937' }}>9:00 am – 6:00 pm</span>
+                <span className="text-sm" style={{ color: '#6B7280' }}>Lunes – Viernes</span>
+                <span className="text-sm font-bold" style={{ color: '#0D1117' }}>9:00 am – 6:00 pm</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6b7280' }}>Sábados</span>
-                <span className="text-sm font-bold" style={{ color: isEmpresa ? '#ffffff' : '#1f2937' }}>9:00 am – 1:00 pm</span>
+                <span className="text-sm" style={{ color: '#6B7280' }}>Sábados</span>
+                <span className="text-sm font-bold" style={{ color: '#0D1117' }}>9:00 am – 1:00 pm</span>
               </div>
             </div>
           </div>
 
-          <p className="text-sm leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.75)' : '#4b5563' }}>
-            Puedes registrar tu operación ahora, pero será atendida a primera hora del{' '}
-            <span className="font-bold" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>{nextBusinessDay}</span>.
-          </p>
+          {/* Info row */}
+          <div
+            className="rounded-xl px-4 py-3 flex items-start gap-3"
+            style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.06)' }}
+          >
+            <div
+              className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              style={{ background: '#0D1117' }}
+            >
+              <span className="text-white font-black leading-none" style={{ fontSize: 11 }}>i</span>
+            </div>
+            <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>
+              Puedes registrar tu operación ahora. Será atendida a primera hora del{' '}
+              <span className="font-bold" style={{ color: '#0D1117' }}>{nextBusinessDay}</span>.
+            </p>
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 px-6 pb-6">
-          <button onClick={onCancel}
-            className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-all active:scale-[0.98]"
-            style={isEmpresa
-              ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }
-              : { border: '1px solid #e5e7eb', color: '#4b5563' }}>
+        <div className="flex gap-2.5 px-5 pb-5">
+          <button
+            onClick={onCancel}
+            className="flex-1 px-4 py-3 rounded-xl text-sm font-semibold transition-all active:scale-[0.97]"
+            style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#4B5563' }}
+          >
             Cancelar
           </button>
-          <button onClick={onConfirm}
-            className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-            style={isEmpresa
-              ? { background: 'linear-gradient(135deg, #4A6884, #1a3353)', boxShadow: '0 4px 14px rgba(74,104,132,0.4)' }
-              : { background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', boxShadow: '0 4px 14px rgba(34,197,94,0.35)' }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; }}
-            onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
-            <CheckCircle className="w-4 h-4" />
-            Entendido, continuar
+          <button
+            onClick={onConfirm}
+            className="flex-1 px-4 py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+            style={{ background: '#0D1B2A', boxShadow: '0 4px 14px rgba(13,27,42,0.22)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2f47'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#0D1B2A'; }}
+          >
+            Continuar
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
