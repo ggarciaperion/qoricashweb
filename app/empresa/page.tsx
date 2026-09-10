@@ -5,7 +5,6 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Calculator from '@/components/Calculator';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import AlertaTCModal from '@/components/AlertaTCModal';
@@ -18,7 +17,7 @@ import {
 export default function EmpresaPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { currentRates } = useExchangeStore();
+  const { currentRates, fetchRates, startRateSubscription } = useExchangeStore();
   const [buyRate] = useState('3.750');
   const [sellRate] = useState('3.770');
 
@@ -48,6 +47,13 @@ export default function EmpresaPage() {
     fetch('/api/noticias').then(r => r.json()).then(data => {
       if (Array.isArray(data)) setNoticiasCorp(data.slice(0, 6));
     }).catch(() => {});
+  }, []);
+
+  // Real-time exchange rates
+  useEffect(() => {
+    fetchRates();
+    const unsub = startRateSubscription();
+    return () => unsub();
   }, []);
 
   // News carousel
@@ -384,16 +390,96 @@ export default function EmpresaPage() {
               <div className="order-1 sm:order-2 flex items-center justify-center">
                 <div className="w-full max-w-[400px]">
                   {isAuthenticated ? (
-                    <Calculator
-                      initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
-                      showContinueButton={true}
-                      dark={false}
-                      onOperationReady={(operationType, amountUSD, exchangeRate) => {
-                        const params = amountUSD && parseFloat(amountUSD) > 0
-                          ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}` : '';
-                        router.push(isAuthenticated ? `/dashboard/empresa/nueva-operacion${params}` : '/login?from=/empresa');
-                      }}
-                    />
+                    /* ── Authenticated: live exchange rate card ── */
+                    <div className="flex flex-col gap-3 w-full">
+                      <div style={{
+                        background: 'linear-gradient(160deg, #070C18 0%, #0A1020 50%, #080E1A 100%)',
+                        borderRadius: 22,
+                        overflow: 'hidden',
+                        border: '1px solid rgba(255,255,255,0.07)',
+                        boxShadow: '0 24px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
+                        animation: 'tcSlide 0.4s cubic-bezier(0.16,1,0.3,1) both',
+                      }}>
+                        {/* Header */}
+                        <div style={{ padding: '13px 20px 11px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inset-0 rounded-full opacity-70" style={{ background: '#22C55E' }} />
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#22C55E' }} />
+                            </span>
+                            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>En vivo</span>
+                          </div>
+                          <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.12em' }}>USD · PEN</span>
+                        </div>
+
+                        {/* Compramos */}
+                        <div style={{ padding: '22px 22px 20px' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#4ADE80', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(74,222,128,0.7)', animation: 'tcGlowGreen 2.5s ease-in-out infinite' }} />
+                                <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#4ADE80' }}>Compramos</span>
+                              </div>
+                              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú vendes dólares</p>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                              <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
+                              <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
+                                {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Divisor */}
+                        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.07) 75%, transparent)', margin: '0 22px' }} />
+
+                        {/* Vendemos */}
+                        <div style={{ padding: '20px 22px 22px' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
+                                <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#60A5FA', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(96,165,250,0.7)', animation: 'tcGlowBlue 2.5s ease-in-out 0.8s infinite' }} />
+                                <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA' }}>Vendemos</span>
+                              </div>
+                              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú compras dólares</p>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                              <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
+                              <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
+                                {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{ padding: '9px 22px 13px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <Shield size={9} style={{ color: 'rgba(255,255,255,0.45)' }} />
+                            <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.45)' }}>Regulado SBS</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* CTA */}
+                      <button
+                        onClick={() => router.push('/dashboard/empresa/nueva-operacion')}
+                        className="w-full font-bold text-sm text-white flex items-center justify-center gap-2.5 group active:scale-[0.98]"
+                        style={{
+                          padding: '15px 20px',
+                          background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+                          borderRadius: 14,
+                          border: 'none',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          animation: 'tcSlide 0.55s cubic-bezier(0.16,1,0.3,1) both',
+                        }}
+                      >
+                        Nueva operación corporativa
+                        <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                      </button>
+                    </div>
                   ) : (
                     /* Corporate card */
                     <div className="relative overflow-hidden rounded-2xl" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', animation: 'ec-glow-in 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s both' }}>

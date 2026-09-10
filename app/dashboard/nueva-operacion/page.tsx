@@ -1220,7 +1220,7 @@ export function NuevaOperacionContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'transparent' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Cargando...</p>
@@ -1231,7 +1231,7 @@ export function NuevaOperacionContent() {
 
 
   return (
-    <div className="min-h-screen" style={isEmpresa ? { backgroundColor: '#0A1628', backgroundImage: "url('/xc.webp')", backgroundSize: 'cover', backgroundPosition: 'center' } : { background: 'transparent' }}>
+    <div className="min-h-screen" style={{ background: 'transparent' }}>
 
       {/* Main Layout: Sidebar + Content */}
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-1 pb-4">
@@ -1250,19 +1250,19 @@ export function NuevaOperacionContent() {
                       else router.push('/dashboard');
                     }}
                     className="absolute left-0 inline-flex items-center transition text-sm"
-                    style={{ color: isEmpresa ? '#ffffff' : '#6B7280' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = isEmpresa ? 'rgba(255,255,255,0.65)' : '#0D1117')}
-                    onMouseLeave={e => (e.currentTarget.style.color = isEmpresa ? '#ffffff' : '#6B7280')}
+                    style={{ color: '#6B7280' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#0D1117')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#6B7280')}
                   >
                     <ArrowLeft className="w-4 h-4 mr-1" />
                     <span className="font-medium">Volver</span>
                   </button>
                 )}
                 <div className="text-center">
-                  <h1 className="text-xl font-bold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
+                  <h1 className="text-xl font-bold mb-1" style={{ color: '#0D1117' }}>
                     {currentStep === 1 ? 'Nueva Operación' : currentStep === 2 ? 'Selección de cuentas' : currentStep === 3 ? 'Transfiere el dinero' : 'Operación en proceso'}
                   </h1>
-                  <p className="text-xs" style={{ color: isEmpresa ? 'rgba(255,255,255,0.65)' : '#6B7280' }}>
+                  <p className="text-xs" style={{ color: '#6B7280' }}>
                     {currentStep === 1
                       ? 'Cotiza tu tipo de cambio'
                       : currentStep === 2
@@ -1835,34 +1835,28 @@ export function NuevaOperacionContent() {
                   <div className="relative flex justify-center mt-12">
                   {kycNeedsDocs && !kycBlocked ? (
                     <div className="w-full max-w-[400px] mx-auto">
-                      <div className="rounded-2xl overflow-hidden" style={isEmpresa ? {
-                        background: 'rgba(255,255,255,0.10)',
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
-                        border: '1px solid rgba(255,255,255,0.18)',
-                        boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
-                      } : {
+                      <div className="rounded-2xl overflow-hidden" style={{
                         background: '#ffffff',
                         border: '1px solid rgba(0,0,0,0.08)',
                         boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
                       }}>
                         {/* Header */}
-                        <div className="flex items-center gap-3 px-5 py-4" style={isEmpresa ? { background: 'rgba(0,0,0,0.25)', borderBottom: '1px solid rgba(255,255,255,0.1)' } : { background: '#FFFBEB', borderBottom: '1px solid rgba(234,179,8,0.25)' }}>
+                        <div className="flex items-center gap-3 px-5 py-4" style={{ background: '#FFFBEB', borderBottom: '1px solid rgba(234,179,8,0.25)' }}>
                           <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(251,191,36,0.18)', border: '1.5px solid rgba(251,191,36,0.4)' }}>
                             <AlertCircle className="w-5 h-5" style={{ color: '#fbbf24' }} />
                           </div>
                           <div>
-                            <p className="text-sm font-black leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#92400E' }}>Validación requerida para operar</p>
-                            <p className="text-[11px] mt-0.5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#78350F' }}>
+                            <p className="text-sm font-black leading-tight" style={{ color: '#92400E' }}>Validación requerida para operar</p>
+                            <p className="text-[11px] mt-0.5" style={{ color: '#78350F' }}>
                               Proceso único · aprox. 10 minutos
                             </p>
                           </div>
                         </div>
                         {/* Body */}
                         <div className="px-5 py-5">
-                          <p className="text-xs leading-relaxed mb-5" style={{ color: isEmpresa ? 'rgba(255,255,255,0.7)' : '#374151' }}>
+                          <p className="text-xs leading-relaxed mb-5" style={{ color: '#374151' }}>
                             Para realizar operaciones en nuestra plataforma necesitas validar tu identidad.
-                            Sube tu <b style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'}</b> y en menos de 10 minutos podrás operar.
+                            Sube tu <b style={{ color: '#0D1117' }}>{isEmpresa ? 'Ficha RUC' : 'DNI (ambas caras)'}</b> y en menos de 10 minutos podrás operar.
                           </p>
                           {/* Pasos */}
                           <div className="space-y-2.5 mb-5">
@@ -1870,11 +1864,11 @@ export function NuevaOperacionContent() {
                               ? [{ icon: '📄', text: 'Ficha RUC de tu empresa' }]
                               : [{ icon: '🪪', text: 'Foto del DNI — parte delantera' }, { icon: '🪪', text: 'Foto del DNI — parte trasera' }]
                             ).map((item, idx) => (
-                              <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={isEmpresa ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' } : { background: '#F9FAFB', border: '1px solid rgba(0,0,0,0.06)' }}>
+                              <div key={idx} className="flex items-center gap-2.5 px-3 py-2 rounded-xl" style={{ background: '#F9FAFB', border: '1px solid rgba(0,0,0,0.06)' }}>
                                 <span className="text-base">{item.icon}</span>
-                                <span className="text-xs font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{item.text}</span>
-                                <div className="ml-auto w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: isEmpresa ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)' }}>
-                                  <div className="w-2 h-2 rounded-full" style={{ background: isEmpresa ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)' }} />
+                                <span className="text-xs font-medium" style={{ color: '#374151' }}>{item.text}</span>
+                                <div className="ml-auto w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(0,0,0,0.06)' }}>
+                                  <div className="w-2 h-2 rounded-full" style={{ background: 'rgba(0,0,0,0.15)' }} />
                                 </div>
                               </div>
                             ))}
@@ -1895,7 +1889,7 @@ export function NuevaOperacionContent() {
                       <Calculator
                         showContinueButton
                         compact
-                        darkTheme={isEmpresa}
+                        darkTheme={false}
                         onOperationReady={(opType, amountRaw, rate) => {
                           if (hasActiveOperation || kycBlocksOperation) {
                             if (kycBlocksOperation) setShowKycBlockedToast(true);
@@ -1979,16 +1973,13 @@ export function NuevaOperacionContent() {
                   {!canCreateOperation && (
                     <div
                       className="p-3 rounded-lg border"
-                      style={isEmpresa ? {
-                        background: 'linear-gradient(135deg, #0D1B2A 0%, #1a3353 100%)',
-                        border: '1px solid rgba(143,184,204,0.2)',
-                      } : {
+                      style={{
                         background: '#fefce8',
                         border: '1px solid #fde68a',
                       }}
                     >
-                      <p className="text-sm flex items-start" style={{ color: isEmpresa ? '#f87171' : '#92400e' }}>
-                        <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" style={{ color: isEmpresa ? '#f87171' : '#d97706' }} />
+                      <p className="text-sm flex items-start" style={{ color: '#92400e' }}>
+                        <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0 mt-0.5" style={{ color: '#d97706' }} />
                         <span>Necesitas <strong>una cuenta en Soles</strong> y <strong>una cuenta en Dólares</strong> para crear operaciones.</span>
                       </p>
                     </div>
@@ -1997,9 +1988,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de cargo */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
+                      <label className="block text-sm font-semibold" style={{ color: '#0D1117' }}>
                         1. Su cuenta de origen
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: '#6B7280' }}>
                           (desde donde usted paga)
                         </span>
                       </label>
@@ -2010,9 +2001,7 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={isEmpresa
-                          ? { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }
-                          : { color: '#ffffff', border: '1px solid rgba(37,99,235,0.4)', background: '#2563EB' }}
+                        style={{ color: '#ffffff', border: '1px solid rgba(37,99,235,0.4)', background: '#2563EB' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -2024,9 +2013,7 @@ export function NuevaOperacionContent() {
                         type="button"
                         onClick={() => { setOriginDropdownOpen(o => !o); setDestDropdownOpen(false); }}
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
-                        style={isEmpresa
-                          ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
+                        style={{ minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
                       >
                         {selectedOriginAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedOriginAccount);
@@ -2041,26 +2028,26 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(255,255,255,0.15)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#ffffff' : '#374151' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#0D1117' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: '#374151' }}>{moneda}</span>
                             </>
                           );
                         })() : (
                           <>
-                            <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }} />
-                            <span style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }} className="flex-1">Selecciona una cuenta</span>
+                            <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: '#9CA3AF' }} />
+                            <span style={{ color: '#9CA3AF' }} className="flex-1">Selecciona una cuenta</span>
                           </>
                         )}
-                        <svg className="w-4 h-4 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }}>
+                        <svg className="w-4 h-4 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#9CA3AF' }}>
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={originDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
                         </svg>
                       </button>
                       {originDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setOriginDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={{ background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
                           {getOriginAccounts().length === 0 ? (
-                            <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
+                            <div className="px-4 py-3 text-sm" style={{ color: '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getOriginAccounts().map((account) => {
                             const logo = getBankLogo(account.banco || account.bank_name || '');
                             const numero = account.numero_cuenta || account.account_number || '';
@@ -2073,19 +2060,19 @@ export function NuevaOperacionContent() {
                                 onClick={() => { setSelectedOriginAccount(account.id ?? null); setOriginDropdownOpen(false); }}
                                 className="w-full flex items-center gap-2.5 px-3 py-2.5 transition-colors text-left"
                                 style={isSelected
-                                  ? { background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(37,99,235,0.07)' }
+                                  ? { background: 'rgba(37,99,235,0.07)' }
                                   : {}}
-                                onMouseEnter={e => (e.currentTarget.style.background = isEmpresa ? 'rgba(143,184,204,0.08)' : '#F9FAFB')}
-                                onMouseLeave={e => (e.currentTarget.style.background = isSelected ? (isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(37,99,235,0.07)') : 'transparent')}
+                                onMouseEnter={e => (e.currentTarget.style.background = '#F9FAFB')}
+                                onMouseLeave={e => (e.currentTarget.style.background = isSelected ? ('rgba(37,99,235,0.07)') : 'transparent')}
                               >
                                 {logo ? (
                                   <img src={logo} alt={account.banco || account.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
                                 ) : (
-                                  <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }} />
+                                  <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: '#9CA3AF' }} />
                                 )}
-                                <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{numero}</span>
-                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#8fb8cc' : 'rgba(30,41,59,0.6)' }}>{moneda}</span>
-                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: isEmpresa ? '#8fb8cc' : '#2563EB' }} />}
+                                <span className="text-xs truncate flex-1 font-medium" style={{ color: '#374151' }}>{numero}</span>
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />}
                               </button>
                             );
                           })}
@@ -2114,9 +2101,9 @@ export function NuevaOperacionContent() {
                   {/* Cuenta de destino */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>
+                      <label className="block text-sm font-semibold" style={{ color: '#0D1117' }}>
                         2. Su cuenta de destino
-                        <span className="text-xs font-normal ml-2" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6B7280' }}>
+                        <span className="text-xs font-normal ml-2" style={{ color: '#6B7280' }}>
                           (donde usted recibe)
                         </span>
                       </label>
@@ -2127,9 +2114,7 @@ export function NuevaOperacionContent() {
                           setIsAddAccountModalOpen(true);
                         }}
                         className="inline-flex items-center gap-1 text-xs font-semibold transition px-2.5 py-1 rounded-lg"
-                        style={isEmpresa
-                          ? { color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.1)' }
-                          : { color: '#ffffff', border: '1px solid rgba(37,99,235,0.4)', background: '#2563EB' }}
+                        style={{ color: '#ffffff', border: '1px solid rgba(37,99,235,0.4)', background: '#2563EB' }}
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Añadir
@@ -2141,9 +2126,7 @@ export function NuevaOperacionContent() {
                         type="button"
                         onClick={() => { setDestDropdownOpen(o => !o); setOriginDropdownOpen(false); }}
                         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-colors text-left"
-                        style={isEmpresa
-                          ? { minHeight: '46px', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(10px)', border: '1.5px solid rgba(143,184,204,0.22)' }
-                          : { minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
+                        style={{ minHeight: '46px', background: '#ffffff', border: '1.5px solid #E5E7EB' }}
                       >
                         {selectedDestinationAccount !== null ? (() => {
                           const acc = bankAccounts.find(a => a.id === selectedDestinationAccount);
@@ -2158,26 +2141,26 @@ export function NuevaOperacionContent() {
                               ) : (
                                 <CreditCard className="w-5 h-5 text-gray-400 flex-shrink-0" />
                               )}
-                              <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#0D1117' }}>{numero}</span>
-                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(255,255,255,0.15)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#ffffff' : '#374151' }}>{moneda}</span>
+                              <span className="text-xs truncate flex-1 font-medium" style={{ color: '#0D1117' }}>{numero}</span>
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: '#374151' }}>{moneda}</span>
                             </>
                           );
                         })() : (
                           <>
-                            <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }} />
-                            <span style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }} className="flex-1">Selecciona una cuenta</span>
+                            <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: '#9CA3AF' }} />
+                            <span style={{ color: '#9CA3AF' }} className="flex-1">Selecciona una cuenta</span>
                           </>
                         )}
-                        <svg className="w-4 h-4 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }}>
+                        <svg className="w-4 h-4 flex-shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ color: '#9CA3AF' }}>
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={destDropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
                         </svg>
                       </button>
                       {destDropdownOpen && (
                         <>
                         <div className="fixed inset-0 z-10" onClick={() => setDestDropdownOpen(false)} />
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={isEmpresa ? { background: 'rgba(13,27,42,0.92)', backdropFilter: 'blur(16px)', border: '1px solid rgba(143,184,204,0.2)' } : { background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 rounded-lg shadow-lg overflow-hidden" style={{ background: '#ffffff', border: '1px solid #E5E7EB', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
                           {getDestinationAccounts().length === 0 ? (
-                            <div className="px-4 py-3 text-sm" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#9CA3AF' }}>No hay cuentas disponibles</div>
+                            <div className="px-4 py-3 text-sm" style={{ color: '#9CA3AF' }}>No hay cuentas disponibles</div>
                           ) : getDestinationAccounts().map((account) => {
                             const logo = getBankLogo(account.banco || account.bank_name || '');
                             const numero = account.numero_cuenta || account.account_number || '';
@@ -2189,18 +2172,18 @@ export function NuevaOperacionContent() {
                                 type="button"
                                 onClick={() => { setSelectedDestinationAccount(account.id ?? null); setDestDropdownOpen(false); }}
                                 className="w-full flex items-center gap-2.5 px-3 py-2.5 transition-colors text-left"
-                                style={isSelected ? { background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(37,99,235,0.07)' } : {}}
-                                onMouseEnter={e => (e.currentTarget.style.background = isEmpresa ? 'rgba(143,184,204,0.08)' : '#F9FAFB')}
-                                onMouseLeave={e => (e.currentTarget.style.background = isSelected ? (isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(37,99,235,0.07)') : 'transparent')}
+                                style={isSelected ? { background: 'rgba(37,99,235,0.07)' } : {}}
+                                onMouseEnter={e => (e.currentTarget.style.background = '#F9FAFB')}
+                                onMouseLeave={e => (e.currentTarget.style.background = isSelected ? ('rgba(37,99,235,0.07)') : 'transparent')}
                               >
                                 {logo ? (
                                   <img src={logo} alt={account.banco || account.bank_name} className="w-6 h-6 object-contain rounded flex-shrink-0" />
                                 ) : (
-                                  <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: isEmpresa ? 'rgba(143,184,204,0.4)' : '#9CA3AF' }} />
+                                  <CreditCard className="w-5 h-5 flex-shrink-0" style={{ color: '#9CA3AF' }} />
                                 )}
-                                <span className="text-xs truncate flex-1 font-medium" style={{ color: isEmpresa ? '#ffffff' : '#374151' }}>{numero}</span>
-                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(30,41,59,0.07)', color: isEmpresa ? '#8fb8cc' : 'rgba(30,41,59,0.6)' }}>{moneda}</span>
-                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: isEmpresa ? '#8fb8cc' : '#2563EB' }} />}
+                                <span className="text-xs truncate flex-1 font-medium" style={{ color: '#374151' }}>{numero}</span>
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.6)' }}>{moneda}</span>
+                                {isSelected && <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />}
                               </button>
                             );
                           })}
@@ -2228,14 +2211,14 @@ export function NuevaOperacionContent() {
 
                   {/* Confirmación de titularidad */}
                   <div>
-                    <label className="flex items-center cursor-pointer rounded-lg p-3" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.18)', backdropFilter: 'blur(8px)' } : { background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
+                    <label className="flex items-center cursor-pointer rounded-lg p-3" style={{ background: '#EFF6FF', border: '1px solid #BFDBFE' }}>
                       <input
                         type="checkbox"
                         checked={ownershipConfirmed}
                         onChange={(e) => setOwnershipConfirmed(e.target.checked)}
                         className="w-5 h-5 text-secondary focus:ring-secondary border-gray-300 rounded flex-shrink-0"
                       />
-                      <span className="ml-3 text-sm font-semibold flex-1" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>
+                      <span className="ml-3 text-sm font-semibold flex-1" style={{ color: '#111827' }}>
                         Soy titular de las cuentas bancarias
                       </span>
                       <div className="relative ml-2 flex-shrink-0 group">
@@ -2275,7 +2258,7 @@ export function NuevaOperacionContent() {
                       isConfirmAnimating
                     }
                     className="w-full text-white py-4 rounded-lg font-bold text-base transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg hover:shadow-xl group"
-                    style={isEmpresa ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)', boxShadow: '0 4px 16px rgba(74,104,132,0.35)' } : { background: '#2563EB', boxShadow: '0 4px 16px rgba(37,99,235,0.35)' }}
+                    style={{ background: '#2563EB', boxShadow: '0 4px 16px rgba(37,99,235,0.35)' }}
                   >
                     {isSubmitting || isConfirmAnimating ? (
                       <>
@@ -2290,7 +2273,7 @@ export function NuevaOperacionContent() {
                       </>
                     )}
                   </button>
-                  <p className="text-xs text-center mt-3" style={{ color: isEmpresa ? '#ffffff' : '#6B7280' }}>
+                  <p className="text-xs text-center mt-3" style={{ color: '#6B7280' }}>
                     Tu dinero será transferido en menos de 10 minutos
                   </p>
                 </div>
@@ -2322,14 +2305,11 @@ export function NuevaOperacionContent() {
                   `}</style>
                   <div
                     className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 processing-icon"
-                    style={isEmpresa ? {
-                      background: 'rgba(74,104,132,0.18)',
-                      border: '1.5px solid rgba(143,184,204,0.25)',
-                    } : { background: '#DBEAFE' }}
+                    style={{ background: '#DBEAFE' }}
                   >
                     <RefreshCw
                       className="w-10 h-10 animate-spin"
-                      style={{ animationDuration: '2s', color: isEmpresa ? '#8fb8cc' : '#2563EB' }}
+                      style={{ animationDuration: '2s', color: '#2563EB' }}
                     />
                   </div>
                   <h3
@@ -2347,10 +2327,7 @@ export function NuevaOperacionContent() {
                   <button
                     onClick={() => router.push('/dashboard/historial')}
                     className="text-white py-3 px-8 rounded-lg font-semibold transition flex items-center gap-2 mx-auto"
-                    style={isEmpresa
-                      ? { background: 'linear-gradient(135deg, #4A6884 0%, #1a3353 100%)' }
-                      : { background: '#2563EB' }
-                    }
+                    style={{ background: '#2563EB' }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     Ver mi operación
@@ -2367,19 +2344,17 @@ export function NuevaOperacionContent() {
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4"
           style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)' }}>
           <div className="rounded-2xl max-w-sm w-full animate-in fade-in slide-in-from-bottom-2 duration-200"
-            style={isEmpresa
-              ? { background: '#0D1B2A', boxShadow: '0 32px 80px rgba(0,0,0,0.6)' }
-              : { background: '#ffffff', boxShadow: '0 32px 80px rgba(0,0,0,0.18)' }}>
+            style={{ background: '#ffffff', boxShadow: '0 32px 80px rgba(0,0,0,0.18)' }}>
 
 
             {/* Header */}
             <div style={{ padding: '20px 24px 0' }}>
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: isEmpresa ? 'rgba(143,184,204,0.55)' : '#94A3B8' }}>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: '#94A3B8' }}>
                     Confirmación requerida
                   </p>
-                  <h3 className="text-lg font-bold leading-tight" style={{ color: isEmpresa ? '#ffffff' : '#0F172A' }}>
+                  <h3 className="text-lg font-bold leading-tight" style={{ color: '#0F172A' }}>
                     Cancelar operación
                   </h3>
                 </div>
@@ -2387,7 +2362,7 @@ export function NuevaOperacionContent() {
                   onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); setError(null); }}
                   disabled={isCancelling}
                   className="rounded-lg p-1.5 transition"
-                  style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#94A3B8', background: isEmpresa ? 'rgba(255,255,255,0.04)' : '#F1F5F9' }}
+                  style={{ color: '#94A3B8', background: '#F1F5F9' }}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -2395,7 +2370,7 @@ export function NuevaOperacionContent() {
             </div>
 
             {/* Divider */}
-            <div style={{ height: 1, margin: '16px 0 0', background: isEmpresa ? 'rgba(143,184,204,0.08)' : '#F1F5F9' }} />
+            <div style={{ height: 1, margin: '16px 0 0', background: '#F1F5F9' }} />
 
             {/* Body */}
             <div style={{ padding: '20px 24px 24px' }} className="space-y-4">
@@ -2403,35 +2378,33 @@ export function NuevaOperacionContent() {
               {/* Operation pill */}
               {createdOperation && (
                 <div className="flex items-center justify-between rounded-xl px-4 py-3"
-                  style={isEmpresa
-                    ? { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(143,184,204,0.1)' }
-                    : { background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                  style={{ background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
                   <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#94A3B8' }}>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: '#94A3B8' }}>
                       Operación
                     </p>
-                    <p className="text-sm font-bold font-mono" style={{ color: isEmpresa ? '#ffffff' : '#0F172A' }}>
+                    <p className="text-sm font-bold font-mono" style={{ color: '#0F172A' }}>
                       {createdOperation.codigo_operacion}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : '#94A3B8' }}>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: '#94A3B8' }}>
                       Monto
                     </p>
-                    <p className="text-sm font-semibold" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#374151' }}>
+                    <p className="text-sm font-semibold" style={{ color: '#374151' }}>
                       ${createdOperation.monto_dolares} · S/{createdOperation.monto_soles}
                     </p>
                   </div>
                 </div>
               )}
 
-              <p className="text-sm leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.5)' : '#64748B' }}>
+              <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>
                 Esta acción no se puede deshacer. Por favor indica el motivo antes de continuar.
               </p>
 
               {/* Reason textarea */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#64748B' }}>
+                <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wider" style={{ color: '#64748B' }}>
                   Motivo *
                 </label>
                 <textarea
@@ -2439,9 +2412,7 @@ export function NuevaOperacionContent() {
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Ej: No puedo realizar la transferencia en este momento"
                   className="w-full px-3.5 py-2.5 rounded-xl resize-none outline-none text-sm transition"
-                  style={isEmpresa
-                    ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)', color: '#ffffff' }
-                    : { background: '#F8FAFC', border: '1.5px solid #E2E8F0', color: '#0F172A' }}
+                  style={{ background: '#F8FAFC', border: '1.5px solid #E2E8F0', color: '#0F172A' }}
                   rows={3}
                   disabled={isCancelling}
                 />
@@ -2450,11 +2421,9 @@ export function NuevaOperacionContent() {
               {/* Error */}
               {error && (
                 <div className="flex items-start gap-2 rounded-xl px-3.5 py-3"
-                  style={isEmpresa
-                    ? { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }
-                    : { background: '#FEF2F2', border: '1px solid #FECACA' }}>
-                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: isEmpresa ? '#FCA5A5' : '#DC2626' }} />
-                  <p className="text-xs" style={{ color: isEmpresa ? '#FCA5A5' : '#991B1B' }}>{error}</p>
+                  style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}>
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#DC2626' }} />
+                  <p className="text-xs" style={{ color: '#991B1B' }}>{error}</p>
                 </div>
               )}
 
@@ -2464,9 +2433,7 @@ export function NuevaOperacionContent() {
                   onClick={() => { setIsCancelModalOpen(false); setCancelReason(''); setError(null); }}
                   disabled={isCancelling}
                   className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition"
-                  style={isEmpresa
-                    ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)', color: 'rgba(255,255,255,0.7)' }
-                    : { background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#374151' }}
+                  style={{ background: '#F1F5F9', border: '1px solid #E2E8F0', color: '#374151' }}
                 >
                   Volver
                 </button>
@@ -2570,23 +2537,23 @@ export function NuevaOperacionContent() {
             <div className="px-5 pb-5 space-y-4">
 
               {/* Summary card */}
-              <div className="rounded-xl overflow-hidden" style={{ border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(30,41,59,0.1)' }}>
+              <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(30,41,59,0.1)' }}>
                 {/* Operation type banner */}
-                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: isEmpresa ? 'rgba(74,104,132,0.3)' : 'rgba(13,27,42,0.04)' }}>
-                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : 'rgba(30,41,59,0.45)' }}>Operación</span>
-                  <span className="text-sm font-bold" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>
+                <div className="px-4 py-2.5 flex items-center justify-between" style={{ background: 'rgba(13,27,42,0.04)' }}>
+                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(30,41,59,0.45)' }}>Operación</span>
+                  <span className="text-sm font-bold" style={{ color: '#0D1B2A' }}>
                     {tipo === 'Compra' ? 'Qoricash Compra' : 'Qoricash Vende'}
                   </span>
                 </div>
 
                 {/* Amount rows */}
-                <div className="divide-y" style={{ borderColor: isEmpresa ? 'rgba(143,184,204,0.12)' : 'rgba(30,41,59,0.07)' }}>
+                <div className="divide-y" style={{ borderColor: 'rgba(30,41,59,0.07)' }}>
                   {/* Usted paga */}
-                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: isEmpresa ? 'rgba(255,255,255,0.03)' : 'transparent' }}>
-                    <span className="text-xs font-medium" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6b7280' }}>Usted paga</span>
+                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'transparent' }}>
+                    <span className="text-xs font-medium" style={{ color: '#6b7280' }}>Usted paga</span>
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: 18, lineHeight: 1 }}>{tipo === 'Compra' ? '🇺🇸' : '🇵🇪'}</span>
-                      <span className="text-base font-bold" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>
+                      <span className="text-base font-bold" style={{ color: '#0D1B2A' }}>
                         {tipo === 'Compra'
                           ? `$ ${parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                           : `S/ ${parseFloat(amountInput).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -2594,8 +2561,8 @@ export function NuevaOperacionContent() {
                     </div>
                   </div>
                   {/* Usted recibe */}
-                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: isEmpresa ? 'rgba(37,99,235,0.06)' : 'rgba(37,99,235,0.04)' }}>
-                    <span className="text-xs font-medium" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6b7280' }}>Usted recibe</span>
+                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(37,99,235,0.04)' }}>
+                    <span className="text-xs font-medium" style={{ color: '#6b7280' }}>Usted recibe</span>
                     <div className="flex items-center gap-2">
                       <span style={{ fontSize: 18, lineHeight: 1 }}>{tipo === 'Compra' ? '🇵🇪' : '🇺🇸'}</span>
                       <span className="text-base font-bold" style={{ color: '#2563EB' }}>
@@ -2606,9 +2573,9 @@ export function NuevaOperacionContent() {
                     </div>
                   </div>
                   {/* TC */}
-                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: isEmpresa ? 'rgba(255,255,255,0.03)' : 'transparent' }}>
-                    <span className="text-xs font-medium" style={{ color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#6b7280' }}>Tipo de cambio</span>
-                    <span className="text-sm font-semibold" style={{ color: isEmpresa ? '#ffffff' : '#0D1B2A' }}>
+                  <div className="px-4 py-3 flex items-center justify-between" style={{ background: 'transparent' }}>
+                    <span className="text-xs font-medium" style={{ color: '#6b7280' }}>Tipo de cambio</span>
+                    <span className="text-sm font-semibold" style={{ color: '#0D1B2A' }}>
                       S/ {getAdjustedRate()?.toFixed(3)}
                     </span>
                   </div>
@@ -2628,28 +2595,28 @@ export function NuevaOperacionContent() {
                 const dest   = bankAccounts.find(a => a.id === selectedDestinationAccount);
                 if (!origin && !dest) return null;
                 return (
-                  <div className="rounded-xl p-3 space-y-2" style={isEmpresa ? { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(143,184,204,0.15)' } : { background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.07)' }}>
+                  <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(30,41,59,0.03)', border: '1px solid rgba(30,41,59,0.07)' }}>
                     {origin && (
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(30,41,59,0.4)' }}>Cuenta de cargo</span>
+                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'rgba(30,41,59,0.4)' }}>Cuenta de cargo</span>
                         <div className="flex items-center gap-1.5">
                           {getBankLogo(origin.banco) && (
                             <img src={getBankLogo(origin.banco)!} alt={origin.banco} className="w-4 h-4 object-contain rounded" />
                           )}
-                          <span className="text-xs font-medium" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.6)' }}>{origin.numero_cuenta}</span>
-                          <span className="text-[10px] px-1 py-0.5 rounded" style={isEmpresa ? { background: 'rgba(143,184,204,0.15)', color: 'rgba(143,184,204,0.7)' } : { background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{origin.moneda}</span>
+                          <span className="text-xs font-medium" style={{ color: 'rgba(30,41,59,0.6)' }}>{origin.numero_cuenta}</span>
+                          <span className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{origin.moneda}</span>
                         </div>
                       </div>
                     )}
                     {dest && (
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(30,41,59,0.4)' }}>Cuenta de destino</span>
+                        <span className="text-[10px] font-medium uppercase tracking-wide" style={{ color: 'rgba(30,41,59,0.4)' }}>Cuenta de destino</span>
                         <div className="flex items-center gap-1.5">
                           {getBankLogo(dest.banco) && (
                             <img src={getBankLogo(dest.banco)!} alt={dest.banco} className="w-4 h-4 object-contain rounded" />
                           )}
-                          <span className="text-xs font-medium" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.6)' }}>{dest.numero_cuenta}</span>
-                          <span className="text-[10px] px-1 py-0.5 rounded" style={isEmpresa ? { background: 'rgba(143,184,204,0.15)', color: 'rgba(143,184,204,0.7)' } : { background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{dest.moneda}</span>
+                          <span className="text-xs font-medium" style={{ color: 'rgba(30,41,59,0.6)' }}>{dest.numero_cuenta}</span>
+                          <span className="text-[10px] px-1 py-0.5 rounded" style={{ background: 'rgba(30,41,59,0.07)', color: 'rgba(30,41,59,0.45)' }}>{dest.moneda}</span>
                         </div>
                       </div>
                     )}
@@ -2659,7 +2626,7 @@ export function NuevaOperacionContent() {
 
               {/* Disclaimer */}
               <div className="flex items-center justify-center gap-1.5">
-                <span className="text-xs" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : 'rgba(30,41,59,0.4)' }}>
+                <span className="text-xs" style={{ color: 'rgba(30,41,59,0.4)' }}>
                   Al confirmar, aceptas las condiciones de la operación.
                 </span>
                 <div className="relative group flex-shrink-0">
@@ -2680,9 +2647,7 @@ export function NuevaOperacionContent() {
 
               {/* Error */}
               {error && (
-                <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg text-sm" style={isEmpresa
-                  ? { background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5' }
-                  : { background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}>
+                <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg text-sm" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c' }}>
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   {error}
                 </div>
@@ -2695,9 +2660,7 @@ export function NuevaOperacionContent() {
                   onClick={() => { setIsConfirmModalOpen(false); setError(null); }}
                   disabled={isSubmitting}
                   className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-50"
-                  style={isEmpresa
-                    ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }
-                    : { background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
+                  style={{ background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
                 >
                   Volver
                 </button>
@@ -2706,9 +2669,7 @@ export function NuevaOperacionContent() {
                   onClick={handleConfirmAndCreate}
                   disabled={isSubmitting}
                   className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
-                  style={isEmpresa
-                    ? { background: 'linear-gradient(135deg, #4A6884, #1a3353)', boxShadow: '0 4px 14px rgba(74,104,132,0.4)' }
-                    : { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.35)' }}
+                  style={{ background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.35)' }}
                 >
                   {isSubmitting ? (
                     <><RefreshCw className="w-4 h-4 animate-spin" />Procesando...</>
@@ -2725,14 +2686,12 @@ export function NuevaOperacionContent() {
 
       {/* Upload Proof Modal */}
       {isUploadProofModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: isEmpresa ? 'rgba(4,10,20,0.7)' : 'rgba(13,27,42,0.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
-          <div className="rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420, ...(isEmpresa
-            ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.6) 0%, rgba(26,51,83,0.55) 100%)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(143,184,204,0.22)', boxShadow: '0 32px 64px rgba(0,0,0,0.45)' }
-            : { background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }) }}>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(13,27,42,0.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
+          <div className="rounded-2xl shadow-2xl w-full" style={{ maxWidth: 420, background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }}>
 
             {/* Header institucional */}
             <div className="relative flex items-center justify-between px-5 py-4 rounded-t-2xl overflow-hidden"
-              style={{ background: isEmpresa ? 'linear-gradient(160deg, #0D1B2A 0%, #1A3353 100%)' : 'linear-gradient(160deg, #1E3A8A 0%, #2563EB 100%)' }}>
+              style={{ background: 'linear-gradient(160deg, #1E3A8A 0%, #2563EB 100%)' }}>
 
               {/* Subtle grid overlay */}
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '20px 20px', pointerEvents: 'none' }} />
@@ -2760,18 +2719,16 @@ export function NuevaOperacionContent() {
             <div className="px-5 py-5 space-y-4">
 
               {/* Info strip */}
-              <div className="flex items-start gap-3 px-3 py-2.5 rounded-xl" style={isEmpresa
-                ? { background: 'rgba(74,104,132,0.2)', border: '1px solid rgba(143,184,204,0.2)' }
-                : { background: 'rgba(37,99,235,0.06)', border: '1px solid rgba(37,99,235,0.18)' }}>
+              <div className="flex items-start gap-3 px-3 py-2.5 rounded-xl" style={{ background: 'rgba(37,99,235,0.06)', border: '1px solid rgba(37,99,235,0.18)' }}>
                 <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#2563EB' }} />
-                <p className="text-xs leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.8)' : '#4b5563' }}>
+                <p className="text-xs leading-relaxed" style={{ color: '#4b5563' }}>
                   Ingresa el número de operación que aparece en el comprobante de tu transferencia. Con eso podemos identificar tu pago al instante.
                 </p>
               </div>
 
               {/* Número de operación — campo principal */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.8)' : 'rgba(30,41,59,0.5)' }}>
+                <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'rgba(30,41,59,0.5)' }}>
                   N° de operación de tu transferencia
                 </label>
                 <input
@@ -2782,22 +2739,18 @@ export function NuevaOperacionContent() {
                   disabled={isUploadingProof}
                   autoFocus
                   className="w-full px-4 py-3 text-sm font-semibold rounded-xl outline-none transition"
-                  style={isEmpresa
-                    ? { border: '1.5px solid rgba(143,184,204,0.25)', background: 'rgba(255,255,255,0.07)', color: '#ffffff', letterSpacing: '0.04em' }
-                    : { border: '1.5px solid rgba(30,41,59,0.15)', background: 'rgba(30,41,59,0.02)', color: '#1E293B', letterSpacing: '0.04em' }}
-                  onFocus={e => (e.currentTarget.style.borderColor = isEmpresa ? '#8fb8cc' : '#2563EB')}
-                  onBlur={e => (e.currentTarget.style.borderColor = isEmpresa ? 'rgba(143,184,204,0.25)' : 'rgba(30,41,59,0.15)')}
+                  style={{ border: '1.5px solid rgba(30,41,59,0.15)', background: 'rgba(30,41,59,0.02)', color: '#1E293B', letterSpacing: '0.04em' }}
+                  onFocus={e => (e.currentTarget.style.borderColor = '#2563EB')}
+                  onBlur={e => (e.currentTarget.style.borderColor = 'rgba(30,41,59,0.15)')}
                 />
-                <p className="text-[11px] mt-1.5" style={{ color: isEmpresa ? 'rgba(143,184,204,0.5)' : 'rgba(30,41,59,0.4)' }}>
+                <p className="text-[11px] mt-1.5" style={{ color: 'rgba(30,41,59,0.4)' }}>
                   Este número aparece en el voucher o constancia de tu banco tras realizar la transferencia.
                 </p>
               </div>
 
               {/* Error */}
               {error && (
-                <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs" style={isEmpresa
-                  ? { background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5' }
-                  : { background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', color: '#b91c1c' }}>
+                <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)', color: '#b91c1c' }}>
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   {error}
                 </div>
@@ -2809,9 +2762,7 @@ export function NuevaOperacionContent() {
                   onClick={() => { setIsUploadProofModalOpen(false); setVoucherCode(''); setError(null); }}
                   disabled={isUploadingProof}
                   className="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition disabled:opacity-40"
-                  style={isEmpresa
-                    ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }
-                    : { background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
+                  style={{ background: 'rgba(30,41,59,0.06)', color: '#0D1B2A' }}
                 >
                   Cancelar
                 </button>
@@ -2819,9 +2770,7 @@ export function NuevaOperacionContent() {
                   onClick={handleSubmitProof}
                   disabled={isUploadingProof || !voucherCode.trim()}
                   className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white transition disabled:opacity-50 flex items-center justify-center gap-2"
-                  style={isEmpresa
-                    ? { background: 'linear-gradient(135deg, #4A6884, #1a3353)', boxShadow: '0 4px 14px rgba(74,104,132,0.4)' }
-                    : { background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.35)' }}
+                  style={{ background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.35)' }}
                 >
                   {isUploadingProof ? (
                     <><RefreshCw className="w-4 h-4 animate-spin" /> Procesando...</>
@@ -2838,8 +2787,8 @@ export function NuevaOperacionContent() {
 
       {/* KYC Document Upload Modal */}
       {isKYCModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm" style={{ background: isEmpresa ? 'rgba(13,27,42,0.85)' : 'rgba(0,0,0,0.6)' }}>
-          <div className="rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200" style={isEmpresa ? { background: 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(143,184,204,0.15)' } : { background: '#fff' }}>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.6)' }}>
+          <div className="rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200" style={{ background: '#fff' }}>
 
             {/* ── LOADING / SUCCESS STATE ── */}
             {(isUploadingKYC || kycUploadDone) && (
@@ -2848,24 +2797,24 @@ export function NuevaOperacionContent() {
                   <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
                     <circle cx="64" cy="64" r="52" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="7" />
                     {isUploadingKYC && (
-                      <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                         strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
                         style={{ animation: 'op-progress 5s cubic-bezier(0.4,0,0.6,1) forwards' }}
                       />
                     )}
                     {kycUploadDone && (
-                      <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                      <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                         strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                     )}
                   </svg>
-                  <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(13,27,42,0.8)' : '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                  <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                     {isUploadingKYC ? (
                       <Image src="/logo-principal.png" alt="Qoricash" width={56} height={56}
                         style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
                     ) : (
                       <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                          <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
+                          <circle cx="22" cy="22" r="22" fill={'#0D1B2A'} />
                           <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                             strokeLinecap="round" strokeLinejoin="round"
                             strokeDasharray="60" strokeDashoffset="60"
@@ -2877,13 +2826,13 @@ export function NuevaOperacionContent() {
                 </div>
                 {isUploadingKYC ? (
                   <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#0D1117', margin: '0 0 8px' }}>
                       Enviando documentos
                     </p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
                       {[0, 0.18, 0.36].map((delay, i) => (
                         <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
-                          background: isEmpresa ? '#8fb8cc' : '#0D1B2A',
+                          background: '#0D1B2A',
                           animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
                       ))}
                     </div>
@@ -2891,8 +2840,8 @@ export function NuevaOperacionContent() {
                   </div>
                 ) : (
                   <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Documentos enviados!</p>
-                    <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.7)' : '#9ca3af', marginTop: 4 }}>Los revisaremos en aprox. 10 minutos</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Documentos enviados!</p>
+                    <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Los revisaremos en aprox. 10 minutos</p>
                   </div>
                 )}
               </div>
@@ -2923,13 +2872,11 @@ export function NuevaOperacionContent() {
                 {/* Body */}
                 <div className="px-5 py-4 space-y-3">
                   {/* Info pill */}
-                  <div className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={isEmpresa
-                    ? { background: 'rgba(74,104,132,0.2)', border: '1px solid rgba(143,184,204,0.2)' }
-                    : { background: '#f0f9ff', border: '1px solid #bae6fd' }}>
-                    <div className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: isEmpresa ? '#8fb8cc' : '#0ea5e9' }}>
+                  <div className="flex items-start gap-2.5 rounded-xl px-3 py-2.5" style={{ background: '#f0f9ff', border: '1px solid #bae6fd' }}>
+                    <div className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#0ea5e9' }}>
                       <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 3a.75.75 0 1 1 0 1.5A.75.75 0 0 1 8 4Zm-.25 3h.5a.75.75 0 0 1 0 1.5v2.25a.75.75 0 0 1-1.5 0V8.5A.75.75 0 0 1 7.75 7Z"/></svg>
                     </div>
-                    <p className="text-xs leading-relaxed" style={{ color: isEmpresa ? 'rgba(255,255,255,0.85)' : '#0c4a6e' }}>
+                    <p className="text-xs leading-relaxed" style={{ color: '#0c4a6e' }}>
                       {user?.document_type === 'RUC'
                         ? 'Adjunta la Ficha RUC de tu empresa para activar tu cuenta.'
                         : 'Adjunta ambas caras de tu DNI o CE para activar tu cuenta.'}
@@ -2980,11 +2927,9 @@ export function NuevaOperacionContent() {
 
                   {/* Error */}
                   {error && (
-                    <div className="flex items-start gap-2 rounded-lg px-3 py-2.5" style={isEmpresa
-                      ? { background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)' }
-                      : { background: '#fef2f2', border: '1px solid #fecaca' }}>
-                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: isEmpresa ? '#fca5a5' : '#ef4444' }} />
-                      <p className="text-xs" style={{ color: isEmpresa ? '#fca5a5' : '#b91c1c' }}>{error}</p>
+                    <div className="flex items-start gap-2 rounded-lg px-3 py-2.5" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#ef4444' }} />
+                      <p className="text-xs" style={{ color: '#b91c1c' }}>{error}</p>
                     </div>
                   )}
                 </div>
@@ -2994,9 +2939,7 @@ export function NuevaOperacionContent() {
                   <button
                     onClick={() => { setIsKYCModalOpen(false); setDnifront(null); setDniBack(null); setRucFicha(null); setError(null); }}
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition"
-                    style={isEmpresa
-                      ? { background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(143,184,204,0.2)', color: '#ffffff' }
-                      : { border: '1px solid #e5e7eb', color: '#4b5563' }}
+                    style={{ border: '1px solid #e5e7eb', color: '#4b5563' }}
                   >
                     Cancelar
                   </button>
@@ -3004,9 +2947,7 @@ export function NuevaOperacionContent() {
                     onClick={handleUploadKYCDocuments}
                     disabled={user?.document_type === 'RUC' ? !rucFicha : (!dniFront || !dniBack)}
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    style={isEmpresa
-                      ? { background: 'linear-gradient(135deg, #4A6884, #1a3353)', boxShadow: '0 4px 14px rgba(74,104,132,0.4)' }
-                      : { background: '#0D1B2A' }}
+                    style={{ background: '#2563EB' }}
                   >
                     <Upload className="w-4 h-4" />
                     Enviar Documentos
@@ -3048,32 +2989,32 @@ export function NuevaOperacionContent() {
       {/* ── Overlay: Creando operación ── */}
       {showCreatingOverlay && (
         <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.72)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
-          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : '1px solid rgba(0,0,0,0.06)' }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: '#ffffff', border: '1px solid rgba(0,0,0,0.06)' }}>
 
             {/* Ring + center */}
             <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(13,27,42,0.08)'} strokeWidth="7" />
+                <circle cx="64" cy="64" r="52" fill="none" stroke={'rgba(13,27,42,0.08)'} strokeWidth="7" />
                 {!showCreatingSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
                     style={{ animation: 'op-progress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
                     onAnimationEnd={handleCreateProgressEnd}
                   />
                 )}
                 {showCreatingSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                 )}
               </svg>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 20px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 {!showCreatingSuccess ? (
                   <Image src="/logo-principal.png" alt="Qoricash" width={64} height={64}
                     style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
                 ) : (
                   <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                     <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                      <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
+                      <circle cx="22" cy="22" r="22" fill={'#0D1B2A'} />
                       <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                         strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="60" strokeDashoffset="60"
@@ -3087,20 +3028,20 @@ export function NuevaOperacionContent() {
             {/* Text */}
             {!showCreatingSuccess ? (
               <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
-                <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#0D1117', margin: '0 0 8px' }}>
                   Creando operación
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
                   {[0, 0.18, 0.36].map((delay, i) => (
-                    <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: isEmpresa ? '#8fb8cc' : '#0D1117', animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
+                    <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#0D1117', animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
                   ))}
                 </div>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.55)' : '#9ca3af', marginTop: 8 }}>Por favor espera</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>Por favor espera</p>
               </div>
             ) : (
               <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
-                <p style={{ fontSize: 15, fontWeight: 800, color: isEmpresa ? '#ffffff' : '#0D1117', margin: '0 0 4px' }}>¡Operación generada!</p>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af' }}>Preparando transferencia...</p>
+                <p style={{ fontSize: 15, fontWeight: 800, color: '#0D1117', margin: '0 0 4px' }}>¡Operación generada!</p>
+                <p style={{ fontSize: 11, color: '#9ca3af' }}>Preparando transferencia...</p>
               </div>
             )}
 
@@ -3111,22 +3052,22 @@ export function NuevaOperacionContent() {
       {/* ── Overlay: Verificando estado KYC ── */}
       {showVerifyOverlay && (
         <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}>
-          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-6" style={{ width: 260, height: 260, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-6" style={{ width: 260, height: 260, background: '#ffffff', border: undefined }}>
             <div style={{ position: 'relative', width: 110, height: 110, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="110" height="110" viewBox="0 0 110 110" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(0,0,0,0.08)'} strokeWidth="6" />
-                <circle cx="55" cy="55" r="46" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="6"
+                <circle cx="55" cy="55" r="46" fill="none" stroke={'rgba(0,0,0,0.08)'} strokeWidth="6" />
+                <circle cx="55" cy="55" r="46" fill="none" stroke={'#0D1B2A'} strokeWidth="6"
                   strokeLinecap="round" strokeDasharray="289" strokeDashoffset="289"
                   style={{ animation: 'op-progress-289 2s cubic-bezier(0.4,0,0.6,1) forwards' }} />
               </svg>
-              <div style={{ width: 76, height: 76, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <div style={{ width: 76, height: 76, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 <Image src="/logo-principal.png" alt="Qoricash" width={48} height={48}
                   style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.2s ease-in-out infinite' }} />
               </div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: 0 }}>Verificando estado...</p>
-              <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 3 }}>Consultando tu cuenta</p>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#0D1117', margin: 0 }}>Verificando estado...</p>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 3 }}>Consultando tu cuenta</p>
             </div>
           </div>
         </div>
@@ -3135,30 +3076,30 @@ export function NuevaOperacionContent() {
       {/* ── Overlay: Procesando comprobante ── */}
       {showProofOverlay && (
         <div className="fixed inset-0 flex items-center justify-center z-[200] p-4" style={{ background: 'rgba(13,27,42,0.7)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}>
-          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-7" style={{ width: 280, height: 300, background: '#ffffff', border: undefined }}>
             <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
-                <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? 'rgba(143,184,204,0.15)' : 'rgba(0,0,0,0.08)'} strokeWidth="7" />
+                <circle cx="64" cy="64" r="52" fill="none" stroke={'rgba(0,0,0,0.08)'} strokeWidth="7" />
                 {!showProofSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="327"
                     style={{ animation: 'op-progress 4.5s cubic-bezier(0.4,0,0.6,1) forwards' }}
                     onAnimationEnd={handleProofProgressEnd}
                   />
                 )}
                 {showProofSuccess && (
-                  <circle cx="64" cy="64" r="52" fill="none" stroke={isEmpresa ? '#8fb8cc' : '#0D1B2A'} strokeWidth="7"
+                  <circle cx="64" cy="64" r="52" fill="none" stroke={'#0D1B2A'} strokeWidth="7"
                     strokeLinecap="round" strokeDasharray="327" strokeDashoffset="0" />
                 )}
               </svg>
-              <div style={{ width: 88, height: 88, borderRadius: '50%', background: isEmpresa ? 'rgba(255,255,255,0.07)' : '#fff', boxShadow: isEmpresa ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)', border: isEmpresa ? '1px solid rgba(143,184,204,0.2)' : '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+              <div style={{ width: 88, height: 88, borderRadius: '50%', background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
                 {!showProofSuccess ? (
                   <Image src="/logo-principal.png" alt="Qoricash" width={64} height={64}
                     style={{ objectFit: 'contain', animation: 'op-pulse-logo 1.8s ease-in-out infinite' }} />
                 ) : (
                   <div style={{ animation: 'op-scale-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
                     <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                      <circle cx="22" cy="22" r="22" fill={isEmpresa ? '#4A6884' : '#0D1B2A'} />
+                      <circle cx="22" cy="22" r="22" fill={'#0D1B2A'} />
                       <polyline points="11,23 18,30 33,14" stroke="white" strokeWidth="3.5"
                         strokeLinecap="round" strokeLinejoin="round"
                         strokeDasharray="60" strokeDashoffset="60"
@@ -3170,22 +3111,22 @@ export function NuevaOperacionContent() {
             </div>
             {!showProofSuccess ? (
               <div style={{ textAlign: 'center', animation: 'op-fade-up 0.35s ease-out both' }}>
-                <p style={{ fontSize: 14, fontWeight: 700, color: isEmpresa ? '#8fb8cc' : '#0D1117', margin: '0 0 8px' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#0D1117', margin: '0 0 8px' }}>
                   Operación en proceso
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
                   {[0, 0.18, 0.36].map((delay, i) => (
                     <span key={i} style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
-                      background: isEmpresa ? '#8fb8cc' : '#0D1B2A',
+                      background: '#0D1B2A',
                       animation: `op-dot 1.2s ease-in-out ${delay}s infinite` }} />
                   ))}
                 </div>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 8 }}>Registrando tu transferencia</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 8 }}>Registrando tu transferencia</p>
               </div>
             ) : (
               <div style={{ textAlign: 'center', animation: 'op-fade-up 0.4s ease-out both' }}>
-                <p style={{ fontSize: 15, fontWeight: 700, color: isEmpresa ? '#ffffff' : '#111827', margin: 0 }}>¡Transferencia registrada!</p>
-                <p style={{ fontSize: 11, color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#9ca3af', marginTop: 4 }}>Procesando tu operación...</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', margin: 0 }}>¡Transferencia registrada!</p>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Procesando tu operación...</p>
               </div>
             )}
           </div>
@@ -3195,20 +3136,20 @@ export function NuevaOperacionContent() {
       {/* ── Overlay: Cancelando operación ── */}
       {showCancelOverlay && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4" style={{ WebkitBackdropFilter: 'blur(3px)', backdropFilter: 'blur(3px)' }}>
-          <div className="op-overlay-card rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center" style={{ background: isEmpresa ? 'linear-gradient(135deg, rgba(13,27,42,0.97) 0%, rgba(26,51,83,0.97) 100%)' : '#ffffff', border: isEmpresa ? '1px solid rgba(143,184,204,0.15)' : undefined }}>
+          <div className="op-overlay-card rounded-2xl shadow-2xl w-full max-w-xs p-8 text-center" style={{ background: '#ffffff', border: undefined }}>
             {!showCancelOverlaySuccess ? (
               <>
-                <div className="w-16 h-16 rounded-full animate-spin mx-auto mb-5" style={{ border: isEmpresa ? '4px solid rgba(143,184,204,0.2)' : '4px solid #fee2e2', borderTopColor: '#ef4444' }} />
-                <p className="text-lg font-bold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>Procesando cancelación...</p>
-                <p className="text-sm mt-1" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6b7280' }}>Un momento, por favor</p>
+                <div className="w-16 h-16 rounded-full animate-spin mx-auto mb-5" style={{ border: '4px solid #fee2e2', borderTopColor: '#ef4444' }} />
+                <p className="text-lg font-bold mb-1" style={{ color: '#111827' }}>Procesando cancelación...</p>
+                <p className="text-sm mt-1" style={{ color: '#6b7280' }}>Un momento, por favor</p>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: isEmpresa ? 'rgba(239,68,68,0.12)' : '#fee2e2' }}>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: '#fee2e2' }}>
                   <XCircle className="w-9 h-9 text-red-500" />
                 </div>
-                <p className="text-lg font-bold mb-1" style={{ color: isEmpresa ? '#ffffff' : '#111827' }}>Operación cancelada</p>
-                <p className="text-sm leading-relaxed" style={{ color: isEmpresa ? 'rgba(143,184,204,0.6)' : '#6b7280' }}>
+                <p className="text-lg font-bold mb-1" style={{ color: '#111827' }}>Operación cancelada</p>
+                <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>
                   Recuerda que cancelar operaciones de forma recurrente puede afectar tu historial.
                 </p>
               </>
