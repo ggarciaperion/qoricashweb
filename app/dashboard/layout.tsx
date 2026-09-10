@@ -131,7 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setLogoutPhase('done');
     await new Promise(r => setTimeout(r, 2000));
     await logout();
-    router.push('/');
+    router.push(isEmpresaUser ? '/empresa' : '/');
   };
 
   // Solo primer nombre para persona natural (máximo una palabra)
@@ -171,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         {/* Logo */}
         <div className="h-[60px] flex items-center justify-between px-5">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition">
+          <Link href={isEmpresaUser ? '/dashboard/empresa' : '/'} className="flex items-center gap-2.5 hover:opacity-80 transition">
             <img src="/vg.png" alt="Qoricash" className="h-10 w-auto" />
           </Link>
           <button
