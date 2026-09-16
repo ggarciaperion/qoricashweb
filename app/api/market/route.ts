@@ -23,10 +23,10 @@ export async function GET() {
       : { success: false, news: [] };
 
     return NextResponse.json(
-      { success: true, items: ticker.items ?? [], news: news.news ?? [] },
+      { success: true, items: ticker.items ?? [], macro: ticker.macro ?? [], news: news.news ?? [] },
       { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60' } }
     );
   } catch {
-    return NextResponse.json({ success: false, items: [], news: [] }, { status: 200 });
+    return NextResponse.json({ success: false, items: [], macro: [], news: [] }, { status: 200 });
   }
 }
