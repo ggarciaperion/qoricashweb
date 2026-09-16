@@ -134,8 +134,6 @@ export default function Home() {
     }).catch(() => {});
   }, [isEmpresaPage]);
 
-  useEffect(() => {
-
   const displayName = user?.document_type === 'RUC'
     ? (user?.razon_social || user?.nombres)
     : (user?.nombres?.trim().split(/\s+/)[0] ?? '');
