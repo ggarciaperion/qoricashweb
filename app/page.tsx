@@ -2024,6 +2024,7 @@ export default function Home() {
             Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+      </>
       )}
 
       {/* MarketSection - mercado en tiempo real para personas */}
