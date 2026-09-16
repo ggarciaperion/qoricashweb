@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { DM_Sans, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -9,16 +9,17 @@ import BackgroundDecor from "@/components/BackgroundDecor";
 import CookieBanner from "@/components/CookieBanner";
 import SwRegister from "@/components/SwRegister";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const poppins = Poppins({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -68,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="es" className={`${dmSans.variable} ${playfair.variable}`}>
       <head>
         {/* PWA — Apple splash / extra meta */}
         <meta name="mobile-web-app-capable" content="yes" />
