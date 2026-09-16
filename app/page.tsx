@@ -11,7 +11,7 @@ import BgImage from '@/components/BgImage';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import {
-  ArrowRight, ArrowLeft, Shield, Clock, TrendingUp, TrendingDown, Minus,
+  ArrowRight, Shield, Clock, TrendingUp, TrendingDown, Minus,
   Users, CheckCircle2, Lock, UserPlus, Banknote, DollarSign,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
   HelpCircle, Gift, Calculator as CalculatorIcon,
@@ -20,6 +20,7 @@ import {
 import AlertaTCModal from '@/components/AlertaTCModal';
 import AlertaTCBanner from '@/components/AlertaTCBanner';
 import MarketTicker from '@/components/MarketTicker';
+import MarketSection from '@/components/MarketSection';
 
 export default function Home() {
   const router = useRouter();
@@ -41,8 +42,6 @@ export default function Home() {
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [noticiasCorp, setNoticiasCorp] = useState<Array<{id:string;titulo:string;descripcion:string;categoria:string;imagen?:string;fecha:string}>>([]);
-  const [newsCorpIdx, setNewsCorpIdx] = useState(0);
   const [bcrpData, setBcrpData] = useState<Array<{fecha:string;compra:number;venta:number}>>([]);
 
   const BANK_ACCOUNTS = {
@@ -130,19 +129,12 @@ export default function Home() {
 
   useEffect(() => {
     if (!isEmpresaPage) return;
-    fetch('/api/noticias').then(r => r.json()).then(data => {
-      if (Array.isArray(data)) setNoticiasCorp(data.slice(0, 6));
-    }).catch(() => {});
     fetch('/api/bcrp-tc').then(r => r.json()).then(res => {
       if (res.ok && Array.isArray(res.data) && res.data.length > 0) setBcrpData(res.data);
     }).catch(() => {});
   }, [isEmpresaPage]);
 
   useEffect(() => {
-    if (!isEmpresaPage || noticiasCorp.length < 2) return;
-    const t = setInterval(() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length), 6000);
-    return () => clearInterval(t);
-  }, [isEmpresaPage, noticiasCorp.length]);
 
   const displayName = user?.document_type === 'RUC'
     ? (user?.razon_social || user?.nombres)
@@ -2023,105 +2015,21 @@ export default function Home() {
       )}
 
       {isEmpresaPage && isAuthenticated && (
-      <section style={{ position: 'relative', overflow: 'hidden', background: '#F8FAFC', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(143,184,204,0.03) 1px, transparent 0)', backgroundSize: '28px 28px' }} />
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
-            <div>
-              <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: 'rgba(143,184,204,0.55)' }}>Mercados globales</span>
-              <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl" style={{ color: '#ffffff' }}>
-                Noticias que mueven <span style={{ color: '#22c55e' }}>el tipo de cambio</span>
-              </h2>
-            </div>
-            {noticiasCorp.length > 0 && (
-              <div className="flex items-center gap-2 flex-shrink-0 sm:mt-8">
-                <button onClick={() => setNewsCorpIdx(i => (i - 1 + noticiasCorp.length) % noticiasCorp.length)} className="w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
-                  <ArrowLeft className="w-5 h-5 sm:w-4 sm:h-4" />
-                </button>
-                <button onClick={() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length)} className="w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95" style={{ background: 'rgba(143,184,204,0.1)', border: '1px solid rgba(143,184,204,0.2)', color: 'rgba(143,184,204,0.7)', cursor: 'pointer' }}>
-                  <ArrowRight className="w-5 h-5 sm:w-4 sm:h-4" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {noticiasCorp.length > 0 ? (
-            <>
-              {/* Main carousel card */}
-              <div className="rounded-2xl overflow-hidden mb-4" style={{ background: 'rgba(143,184,204,0.05)', border: '1px solid rgba(143,184,204,0.12)' }}>
-                <div className="grid sm:grid-cols-5">
-                  {noticiasCorp[newsCorpIdx]?.imagen && (
-                    <div className="sm:col-span-2 relative overflow-hidden" style={{ minHeight: 180 }}>
-                      <Image
-                        src={noticiasCorp[newsCorpIdx].imagen!}
-                        alt={noticiasCorp[newsCorpIdx].titulo}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 40vw"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(6,14,26,0.3), transparent)' }} />
-                    </div>
-                  )}
-                  <div className={`p-5 sm:p-6 flex flex-col justify-between ${noticiasCorp[newsCorpIdx]?.imagen ? 'sm:col-span-3' : 'sm:col-span-5'}`}>
-                    <div>
-                      <span className="inline-block text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.2)' }}>
-                        {noticiasCorp[newsCorpIdx]?.categoria}
-                      </span>
-                      <h3 className="font-display font-bold text-lg leading-snug mb-3 text-white" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
-                        {noticiasCorp[newsCorpIdx]?.titulo}
-                      </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: 'rgba(143,184,204,0.6)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
-                        {noticiasCorp[newsCorpIdx]?.descripcion}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between mt-4 pt-4" style={{ borderTop: '1px solid rgba(143,184,204,0.1)' }}>
-                      <span className="text-[11px]" style={{ color: 'rgba(143,184,204,0.4)' }}>
-                        {noticiasCorp[newsCorpIdx]?.fecha
-                          ? new Date(noticiasCorp[newsCorpIdx].fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' })
-                          : ''}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {noticiasCorp.map((_, i) => (
-                          <button key={i} onClick={() => setNewsCorpIdx(i)} style={{ width: i === newsCorpIdx ? 20 : 6, height: 6, borderRadius: 3, background: i === newsCorpIdx ? '#22c55e' : 'rgba(143,184,204,0.25)', border: 'none', padding: 0, cursor: 'pointer', transition: 'all 0.3s' }} />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mini cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {noticiasCorp.filter((_, i) => i !== newsCorpIdx).slice(0, 3).map((n) => (
-                  <button key={n.id} onClick={() => setNewsCorpIdx(noticiasCorp.indexOf(n))} className="text-left rounded-xl p-3 transition-all hover:scale-[1.02]" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.09)', cursor: 'pointer' }}>
-                    <span className="inline-block text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.15)' }}>{n.categoria}</span>
-                    <p className="text-[11px] font-semibold text-white leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>{n.titulo}</p>
-                  </button>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="rounded-2xl flex items-center justify-center" style={{ background: 'rgba(143,184,204,0.04)', border: '1px solid rgba(143,184,204,0.1)', height: 280 }}>
-              <div className="flex gap-1.5">
-                {[0, 0.15, 0.3].map(d => (
-                  <div key={d} className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'rgba(143,184,204,0.3)', animationDelay: `${d}s` }} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="mt-8 sm:mt-10">
-            <Link
-              href="/login"
-              className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5 active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 8px 24px rgba(34,197,94,0.32)' }}
-            >
-              Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+      <>
+        <MarketSection variant="empresa" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 pb-10 pt-2">
+          <Link
+            href="/login"
+            className="flex sm:inline-flex justify-center items-center gap-2.5 font-bold px-9 py-4 rounded-full transition-all text-sm hover:-translate-y-0.5 active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)', color: '#ffffff', boxShadow: '0 8px 24px rgba(34,197,94,0.32)' }}
+          >
+            Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-      </section>
       )}
+
+      {/* MarketSection - mercado en tiempo real para personas */}
+      {!isEmpresaPage && <MarketSection variant="persona" />}
 
       {/* AlertaTCBanner - solo en página personas */}
       {!isAuthenticated && !isEmpresaPage && <AlertaTCBanner />}
@@ -2178,7 +2086,6 @@ export default function Home() {
                   <li><Link href="/servicios#compra" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Compra USD</Link></li>
                   <li><Link href="/servicios#venta" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Venta USD</Link></li>
                   <li><Link href="/servicios#tipo-cambio" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Tipo de cambio</Link></li>
-                  <li><Link href="/noticias" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">Noticias</Link></li>
                   <li><Link href="/preguntas-frecuentes" className="transition-colors text-[11px] sm:text-xs hover:text-gray-900">FAQ</Link></li>
                 </ul>
               </div>

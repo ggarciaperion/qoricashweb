@@ -53,7 +53,6 @@ export default function SiteFooter() {
                   ['/servicios#compra', 'Compra USD'],
                   ['/servicios#venta', 'Venta USD'],
                   ['/servicios#tipo-cambio', 'Tipo de cambio'],
-                  ['/noticias', 'Noticias'],
                   ['/preguntas-frecuentes', 'FAQ'],
                 ].map(([href, label]) => (
                   <li key={href}><Link href={href} className="transition-colors text-[11px] sm:text-xs hover:text-gray-900" style={{ color: '#6B7280' }}>{label}</Link></li>

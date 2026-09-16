@@ -8,8 +8,9 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { useExchangeStore } from '@/lib/store/exchangeStore';
 import AlertaTCModal from '@/components/AlertaTCModal';
+import MarketSection from '@/components/MarketSection';
 import {
-  ArrowRight, ArrowLeft, Shield, Clock, CheckCircle2, Lock,
+  ArrowRight, Shield, Clock, CheckCircle2, Lock,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
   HelpCircle, Banknote,
 } from 'lucide-react';
@@ -30,8 +31,6 @@ export default function EmpresaPage() {
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
-  const [noticiasCorp, setNoticiasCorp] = useState<Array<{ id: string; titulo: string; descripcion: string; categoria: string; imagen?: string; fecha: string }>>([]);
-  const [newsCorpIdx, setNewsCorpIdx] = useState(0);
   const [roiVolume, setRoiVolume] = useState(50000);
 
   const BANK_ACCOUNTS = {
@@ -42,26 +41,12 @@ export default function EmpresaPage() {
 
   // No auto-redirigir: usuarios autenticados pueden navegar a esta página desde el dashboard
 
-  // Load data
-  useEffect(() => {
-    fetch('/api/noticias').then(r => r.json()).then(data => {
-      if (Array.isArray(data)) setNoticiasCorp(data.slice(0, 6));
-    }).catch(() => {});
-  }, []);
-
   // Real-time exchange rates
   useEffect(() => {
     fetchRates();
     const unsub = startRateSubscription();
     return () => unsub();
   }, []);
-
-  // News carousel
-  useEffect(() => {
-    if (noticiasCorp.length < 2) return;
-    const t = setInterval(() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length), 6000);
-    return () => clearInterval(t);
-  }, [noticiasCorp.length]);
 
   // Banks observer
   useEffect(() => {
@@ -926,76 +911,9 @@ export default function EmpresaPage() {
 
 
         {/* ================================================================
-            NEWS — authenticated only
+            MARKET SECTION — mercado en tiempo real, solo autenticados
         ================================================================ */}
-        {isAuthenticated && noticiasCorp.length > 0 && (
-          <section style={{ background: '#0B1426', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-            <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-14 sm:py-20">
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)', backgroundSize: '52px 52px', pointerEvents: 'none' }} />
-              <div className="relative z-10">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
-                  <div>
-                    <span className="block text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: 'rgba(96,165,250,0.5)' }}>Mercados globales</span>
-                    <h2 className="font-display font-black text-white" style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)' }}>
-                      Noticias que mueven <span style={{ color: '#22c55e' }}>el TC</span>
-                    </h2>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0 sm:mt-8">
-                    <button onClick={() => setNewsCorpIdx(i => (i - 1 + noticiasCorp.length) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>
-                      <ArrowLeft className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setNewsCorpIdx(i => (i + 1) % noticiasCorp.length)} className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)' }}>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl overflow-hidden mb-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div className="grid sm:grid-cols-5">
-                    {noticiasCorp[newsCorpIdx]?.imagen && (
-                      <div className="sm:col-span-2 relative overflow-hidden" style={{ minHeight: 180 }}>
-                        <Image src={noticiasCorp[newsCorpIdx].imagen!} alt={noticiasCorp[newsCorpIdx].titulo} fill sizes="(max-width: 640px) 100vw, 40vw" className="object-cover" />
-                        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(6,14,26,0.3), transparent)' }} />
-                      </div>
-                    )}
-                    <div className={`p-5 sm:p-6 flex flex-col justify-between ${noticiasCorp[newsCorpIdx]?.imagen ? 'sm:col-span-3' : 'sm:col-span-5'}`}>
-                      <div>
-                        <span className="inline-block text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3" style={{ background: 'rgba(34,197,94,0.1)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.18)' }}>
-                          {noticiasCorp[newsCorpIdx]?.categoria}
-                        </span>
-                        <h3 className="font-display font-bold text-lg leading-snug mb-3 text-white" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
-                          {noticiasCorp[newsCorpIdx]?.titulo}
-                        </h3>
-                        <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.38)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
-                          {noticiasCorp[newsCorpIdx]?.descripcion}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-                        <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.28)' }}>
-                          {noticiasCorp[newsCorpIdx]?.fecha ? new Date(noticiasCorp[newsCorpIdx].fecha).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          {noticiasCorp.map((_, i) => (
-                            <button key={i} onClick={() => setNewsCorpIdx(i)} style={{ width: i === newsCorpIdx ? 20 : 6, height: 6, borderRadius: 3, background: i === newsCorpIdx ? '#22c55e' : 'rgba(255,255,255,0.18)', border: 'none', padding: 0, cursor: 'pointer', transition: 'all 0.3s' }} />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {noticiasCorp.filter((_, i) => i !== newsCorpIdx).slice(0, 3).map(n => (
-                    <button key={n.id} onClick={() => setNewsCorpIdx(noticiasCorp.indexOf(n))} className="text-left rounded-xl p-3 transition-all hover:scale-[1.02]" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                      <span className="inline-block text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2" style={{ background: 'rgba(34,197,94,0.08)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.14)' }}>{n.categoria}</span>
-                      <p className="text-[11px] font-semibold text-white leading-snug" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>{n.titulo}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+        {isAuthenticated && <MarketSection variant="empresa" />}
 
         {/* ================================================================
             TRUST STRIP
@@ -1172,7 +1090,6 @@ export default function EmpresaPage() {
                     <li><Link href="/servicios#compra" className="hover:text-gray-900 transition-colors">Compra USD</Link></li>
                     <li><Link href="/servicios#venta" className="hover:text-gray-900 transition-colors">Venta USD</Link></li>
                     <li><Link href="/servicios#tipo-cambio" className="hover:text-gray-900 transition-colors">Tipo de cambio</Link></li>
-                    <li><Link href="/noticias" className="hover:text-gray-900 transition-colors">Noticias</Link></li>
                     <li><Link href="/preguntas-frecuentes" className="hover:text-gray-900 transition-colors">FAQ</Link></li>
                   </ul>
                 </div>
