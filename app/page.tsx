@@ -1168,7 +1168,7 @@ export default function Home() {
           <div className="wsp-outer-flex flex flex-row items-start gap-3 sm:gap-12 lg:gap-20">
 
             {/* Imagen + pills flotantes */}
-            <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '48%', maxWidth: 500 }}>
+            <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '34%', maxWidth: 380 }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <img
                   src="/wsp.png"
@@ -1729,7 +1729,7 @@ export default function Home() {
           </div>
 
           {/* Mobile layout — stacked, image anchored to bottom */}
-          <div className="rounded-2xl sm:hidden" style={{ background: '#1463FF', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div className="rounded-2xl sm:hidden flex flex-col" style={{ background: '#1463FF', overflow: 'hidden' }}>
             {/* Headline + body text + CTA */}
             <div style={{ padding: '36px 24px 28px', display: 'flex', flexDirection: 'column', gap: 0 }}>
               {/* Headline */}
