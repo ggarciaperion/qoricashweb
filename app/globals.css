@@ -1326,11 +1326,32 @@ main {
   /* Prevent horizontal overflow from absolute-positioned floating elements */
   .hero-section { overflow-x: hidden !important; }
 
-  /* Hide floating TC rate cards (overflow right) */
-  .hero-tc-cards { display: none !important; }
+  /* TC rate cards — reposition inside photo bounds on mobile */
+  .hero-tc-cards {
+    right: 8px !important;
+    transform: none !important;
+    width: 44% !important;
+  }
+  .hero-tc-cards > div {
+    padding: 6px 10px !important;
+    border-radius: 12px !important;
+  }
+  .tc-rate-number { font-size: 20px !important; }
 
-  /* Hide floating CTA pills (overflow left) */
-  .hero-cta-pills { display: none !important; }
+  /* CTA pills — reposition inside photo bounds on mobile */
+  .hero-cta-pills {
+    left: 8px !important;
+    transform: none !important;
+    top: 68% !important;
+    gap: 7px !important;
+  }
+  .hero-cta-pills .pill-iniciar {
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    gap: 7px !important;
+  }
+  .hero-cta-pills .pill-iniciar > span { font-size: 9px !important; }
+  .hero-cta-pills .pill-icon { width: 11px !important; height: 11px !important; }
 
   /* Reduce photo height */
   .hero-photo-wrap {
@@ -1350,33 +1371,23 @@ main {
 
 /* ── 2. WSP phone + pills section ───────────────────────────── */
 @media (max-width: 639px) {
-  /* Phone column: controlled width */
+  /* Stack phone above text on mobile to avoid overlap */
+  .wsp-outer-flex {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 28px !important;
+  }
   .wsp-phone-col {
-    width: 50% !important;
+    width: 72% !important;
+    max-width: 260px !important;
     flex-shrink: 0 !important;
   }
+  /* Hide floating pills on mobile — phone image stands alone */
+  .ps-wsp-wrap { display: none !important; }
 
-  /* Reduce pills translateX so they stay visible */
-  .ps-wsp-wrap {
-    position: absolute !important;
-    transform: translateX(38%) !important;
-  }
-
-  /* Smaller pill text and badge */
-  .ps-wsp-wrap > div {
-    padding: 6px 10px 6px 6px !important;
-    border-radius: 999px !important;
-    gap: 6px !important;
-  }
-  .ps-wsp-wrap > div span:last-child {
-    font-size: 10px !important;
-    white-space: nowrap !important;
-  }
-  .ps-wsp-wrap > div > div:first-child {
-    width: 20px !important;
-    height: 20px !important;
-    font-size: 9px !important;
-    flex-shrink: 0 !important;
+  .wsp-text-col {
+    width: 100% !important;
+    order: 2 !important;
   }
 
   /* WSP section reduced padding */

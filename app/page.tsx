@@ -1148,7 +1148,7 @@ export default function Home() {
       ====================================== */}
       <section style={{ background: '#ffffff' }} className="wsp-section py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-10">
-          <div className="flex flex-row items-start gap-3 sm:gap-12 lg:gap-20">
+          <div className="wsp-outer-flex flex flex-row items-start gap-3 sm:gap-12 lg:gap-20">
 
             {/* Imagen + pills flotantes */}
             <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '48%', maxWidth: 500 }}>
@@ -1261,9 +1261,20 @@ export default function Home() {
                 Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros se realizan vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
               </p>
 
-              {/* Mobile: bank image below text */}
-              <div className="flex lg:hidden justify-center mt-6">
-                <img src="/kj.jpeg" alt="Qoricash bancos" style={{ width: '75%', maxWidth: 280, borderRadius: 14, display: 'block' }} />
+              {/* Mobile: bank image + BCP/Interbank/BanBif pills below text */}
+              <div className="flex lg:hidden flex-col items-center mt-6 gap-3">
+                <img src="/kj.jpeg" alt="Qoricash bancos" style={{ width: '75%', maxWidth: 260, borderRadius: 14, display: 'block' }} />
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  {[
+                    { logo: '/BCP.png',      name: 'BCP',      h: 26 },
+                    { logo: '/Interbank.png', name: 'Interbank', h: 36 },
+                    { logo: '/BanBif.png',    name: 'BanBif',   h: 26 },
+                  ].map((bank) => (
+                    <div key={bank.name} style={{ background: '#ffffff', borderRadius: 10, padding: '6px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 10px rgba(0,0,0,0.18)' }}>
+                      <img src={bank.logo} alt={bank.name} style={{ height: bank.h, maxWidth: 80, width: 'auto', objectFit: 'contain' }} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -1697,31 +1708,34 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile layout — stacked */}
-          <div className="rounded-2xl sm:hidden" style={{ background: '#1463FF', padding: '36px 24px 0', overflow: 'hidden' }}>
-            {/* Headline */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, marginBottom: 24 }}>
-              {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
-                <span key={line} style={{ fontSize: 'clamp(2.6rem, 10vw, 3.6rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
-                  {line}
-                </span>
-              ))}
+          {/* Mobile layout — stacked, image anchored to bottom */}
+          <div className="rounded-2xl sm:hidden" style={{ background: '#1463FF', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {/* Headline + body text + CTA */}
+            <div style={{ padding: '36px 24px 28px', display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {/* Headline */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, marginBottom: 24 }}>
+                {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
+                  <span key={line} style={{ fontSize: 'clamp(2.6rem, 10vw, 3.6rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
+                    {line}
+                  </span>
+                ))}
+              </div>
+              {/* Body text */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                  ¿Sigues cambiando con el app de tu banco? Cada operación tiene un margen que sale de tu bolsillo sin que lo notes.
+                </p>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                  Qoricash te da el <strong style={{ color: '#ffffff' }}>tipo de cambio real del mercado</strong>. Tu dinero llega en menos de 15 minutos desde cualquier banco del Perú.
+                </p>
+                <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares" target="_blank" rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#ffffff', color: '#1463FF', fontWeight: 800, fontSize: 13, padding: '11px 22px', borderRadius: 10, textDecoration: 'none', alignSelf: 'flex-start' }}
+                >Empieza a ganar más →</a>
+              </div>
             </div>
-            {/* Image */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 0 }}>
-              <img src="/wwws.png" alt="" style={{ maxWidth: 280, width: '85%', height: 'auto', display: 'block' }} />
-            </div>
-            {/* Body text + CTA */}
-            <div style={{ padding: '28px 0 36px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
-                ¿Sigues cambiando con el app de tu banco? Cada operación tiene un margen que sale de tu bolsillo sin que lo notes.
-              </p>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
-                Qoricash te da el <strong style={{ color: '#ffffff' }}>tipo de cambio real del mercado</strong>. Tu dinero llega en menos de 15 minutos desde cualquier banco del Perú.
-              </p>
-              <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares" target="_blank" rel="noopener noreferrer"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#ffffff', color: '#1463FF', fontWeight: 800, fontSize: 13, padding: '11px 22px', borderRadius: 10, textDecoration: 'none', alignSelf: 'flex-start' }}
-              >Empieza a ganar más →</a>
+            {/* Image — anchored to bottom of card, no bottom padding */}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', marginTop: 'auto', paddingTop: 16 }}>
+              <img src="/wwws.png" alt="" style={{ maxWidth: '85%', width: '85%', height: 'auto', display: 'block', verticalAlign: 'bottom' }} />
             </div>
           </div>
         </div>
