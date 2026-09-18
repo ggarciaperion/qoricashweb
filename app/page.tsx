@@ -1003,10 +1003,10 @@ export default function Home() {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium hero-anim hero-delay-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                  <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />Registrados ante la SBS</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />En 15 minutos</span>
-                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />0 comisiones</span>
+                <div className="hero-sbs-badges flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-6 text-[10px] sm:text-xs font-medium hero-anim hero-delay-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                  <span className="flex items-center gap-1"><Shield className="hero-sbs-icon w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.9)' }} />Registrados ante la SBS</span>
+                  <span className="flex items-center gap-1"><Clock className="hero-sbs-icon w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.9)' }} />En 15 minutos</span>
+                  <span className="flex items-center gap-1"><CheckCircle2 className="hero-sbs-icon w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" style={{ color: 'rgba(255,255,255,0.9)' }} />0 comisiones</span>
                 </div>
               </div>
 
@@ -1036,18 +1036,30 @@ export default function Home() {
                   </div>
 
                   {/* Mobile: barra TC prominente en la parte inferior de la foto */}
-                  <div className="sm:hidden" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', padding: '14px 20px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div className="sm:hidden flex justify-around items-center" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.68)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', padding: '18px 20px', borderTop: '1px solid rgba(255,255,255,0.12)' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Compramos</div>
-                      <div style={{ fontSize: 30, fontWeight: 900, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
-                        {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginBottom: 5 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block', boxShadow: '0 0 6px #22C55E' }} />
+                        <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>Compramos</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>S/</span>
+                        <span style={{ fontSize: 38, fontWeight: 900, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.03em', fontVariantNumeric: 'tabular-nums' }}>
+                          {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
+                        </span>
                       </div>
                     </div>
-                    <div style={{ width: 1, height: 42, background: 'rgba(255,255,255,0.2)' }} />
+                    <div style={{ width: 1, height: 52, background: 'rgba(255,255,255,0.15)' }} />
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Vendemos</div>
-                      <div style={{ fontSize: 30, fontWeight: 900, color: '#70b4ff', lineHeight: 1, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
-                        {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginBottom: 5 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#70b4ff', display: 'inline-block', boxShadow: '0 0 6px #70b4ff' }} />
+                        <span style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>Vendemos</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>S/</span>
+                        <span style={{ fontSize: 38, fontWeight: 900, color: '#70b4ff', lineHeight: 1, letterSpacing: '-0.03em', fontVariantNumeric: 'tabular-nums' }}>
+                          {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                        </span>
                       </div>
                     </div>
                   </div>

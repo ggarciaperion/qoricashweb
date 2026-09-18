@@ -1402,3 +1402,22 @@ main {
   /* Reduce hero grid gap on mobile */
   .hero-persona-grid { gap: 12px !important; }
 }
+
+/* ── 6. Hero SBS badges — una sola línea en móvil ───────────── */
+@media (max-width: 639px) {
+  .hero-sbs-badges {
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    font-size: 9.5px !important;
+    white-space: nowrap;
+  }
+  .hero-sbs-badges span {
+    gap: 3px !important;
+    white-space: nowrap;
+  }
+  .hero-sbs-icon {
+    width: 11px !important;
+    height: 11px !important;
+    flex-shrink: 0 !important;
+  }
+}
