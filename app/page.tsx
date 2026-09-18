@@ -886,14 +886,39 @@ export default function Home() {
                 <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to left, transparent, #0A0A0A)' }} />
               </div>
 
-              {/* Fade top + bottom sobre las columnas */}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 20%, transparent 80%, #0A0A0A 100%)' }} />
+              {/* Fade top + bottom sobre las columnas (desktop) */}
+              <div className="hidden lg:block" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 20%, transparent 80%, #0A0A0A 100%)', pointerEvents: 'none' }} />
+
+              {/* ── MÓVIL: 2 columnas film strip al tope ── */}
+              <div className="flex lg:hidden" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '44vh', gap: 6, padding: '0 6px' }}>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-1" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {[...col1, ...col1].map((src, i) => (
+                      <img key={`m1-${i}`} src={src} alt="" style={{ width: '100%', height: 150, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                    ))}
+                  </div>
+                </div>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-3" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {[...col3, ...col3].map((src, i) => (
+                      <img key={`m3-${i}`} src={src} alt="" style={{ width: '100%', height: 150, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                    ))}
+                  </div>
+                </div>
+                {/* Fade superior (navbar) */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 80, background: 'linear-gradient(to bottom, #0A0A0A, transparent)', pointerEvents: 'none' }} />
+                {/* Fade inferior → contenido */}
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to bottom, transparent, #0A0A0A)', pointerEvents: 'none' }} />
+              </div>
             </div>
           );
         })()}
 
+        {/* Spacer móvil empresa — deja espacio para el film strip */}
+        {isEmpresaPage && <div className="lg:hidden empresa-mobile-spacer" style={{ flexShrink: 0 }} />}
+
         <div
-          className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : 'items-center justify-center px-4 text-center'}`}
+          className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : `items-center justify-center px-4 text-center${isEmpresaPage ? ' empresa-hero-content' : ''}`}`}
           style={{ paddingTop: isAuthenticated ? 96 : (topBarHidden ? 96 : 132) }}
         >
 

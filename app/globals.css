@@ -1403,7 +1403,17 @@ main {
   .hero-persona-grid { gap: 12px !important; }
 }
 
-/* ── 6. Hero SBS badges — una sola línea en móvil ───────────── */
+/* ── 6. Empresa hero móvil — film strip + contenido secuencial ─ */
+@media (max-width: 1023px) {
+  /* Spacer que empuja el contenido debajo del film strip */
+  .empresa-mobile-spacer { height: 44vh; }
+
+  /* Anula el paddingTop inline (que es para el navbar fijo) —
+     el contenido ya está desplazado por el spacer       */
+  .empresa-hero-content { padding-top: 28px !important; }
+}
+
+/* ── 7. Hero SBS badges — una sola línea en móvil ───────────── */
 @media (max-width: 639px) {
   .hero-sbs-badges {
     flex-wrap: nowrap !important;
