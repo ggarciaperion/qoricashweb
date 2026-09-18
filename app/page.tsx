@@ -1168,7 +1168,7 @@ export default function Home() {
           <div className="wsp-outer-flex flex flex-row items-start gap-3 sm:gap-12 lg:gap-20">
 
             {/* Imagen + pills flotantes */}
-            <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '34%', maxWidth: 380 }}>
+            <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '26%', maxWidth: 300 }}>
               <div style={{ position: 'relative', width: '100%' }}>
                 <img
                   src="/wsp.png"
@@ -1176,8 +1176,8 @@ export default function Home() {
                   className="wsp-img"
                   style={{ width: '100%', height: 'auto', display: 'block', border: 'none', outline: 'none', background: 'transparent' }}
                 />
-                {/* Pills flotantes sobre el borde derecho */}
-                <div className="ps-wsp-wrap" style={{ position: 'absolute', top: '8%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 12, zIndex: 10 }}>
+                {/* Pills flotantes — desbordan levemente sin llegar al texto */}
+                <div className="ps-wsp-wrap" style={{ position: 'absolute', top: '8%', right: 0, transform: 'translateX(20%)', display: 'flex', flexDirection: 'column', gap: 12, zIndex: 10 }}>
                   {[
                     { n: 1, text: 'Escríbenos cuánto quieres cambiar', cls: 'wsp-pill-1' },
                     { n: 2, text: 'Te damos el tipo de cambio al instante', cls: 'wsp-pill-2' },
@@ -1204,7 +1204,7 @@ export default function Home() {
             </div>
 
             {/* Texto */}
-            <div className="wsp-text-col flex-1 min-w-0 order-2">
+            <div className="wsp-text-col flex-1 min-w-0 order-2 sm:pl-12 lg:pl-16">
               <h2 className="reveal font-display font-black leading-[1.08] mb-6"
                 style={{ color: '#0D1117', fontSize: 'clamp(1.9rem, 3.8vw, 3rem)' }}>
                 Opera 100% desde<br />
