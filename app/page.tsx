@@ -1016,7 +1016,7 @@ export default function Home() {
                   <div ref={heroMediaRef} className="relative w-full">
 
                 {/* Foto — ancho completo */}
-                <div style={{ borderRadius: 24, overflow: 'hidden', aspectRatio: '3/4', maxHeight: 480, position: 'relative' }}>
+                <div className="hero-photo-wrap" style={{ borderRadius: 24, overflow: 'hidden', aspectRatio: '3/4', maxHeight: 480, position: 'relative' }}>
                   <img
                     src="/pl.jpeg"
                     alt=""
@@ -1038,7 +1038,7 @@ export default function Home() {
                 </div>
 
                 {/* ── Pills: borde izquierdo de la foto, mitad dentro mitad fuera ── */}
-                <div style={{
+                <div className="hero-cta-pills" style={{
                   position: 'absolute',
                   top: '75%',
                   left: 0,
@@ -1072,7 +1072,7 @@ export default function Home() {
                 </div>
 
                 {/* ── Cards flotantes: borde derecho de la foto, mitad dentro mitad fuera ── */}
-                <div style={{
+                <div className="hero-tc-cards" style={{
                   position: 'absolute',
                   top: '10%',
                   right: 0,
@@ -1146,13 +1146,13 @@ export default function Home() {
       {/* ======================================
           WHATSAPP - Opera sin descargar nada
       ====================================== */}
-      <section style={{ background: '#ffffff' }} className="py-16 sm:py-24">
+      <section style={{ background: '#ffffff' }} className="wsp-section py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-10">
-          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex flex-row items-start gap-3 sm:gap-12 lg:gap-20">
 
             {/* Imagen + pills flotantes */}
-            <div ref={wspMediaRef} className="flex-1 order-1 w-full flex items-center justify-start" style={{ maxWidth: 500 }}>
-              <div style={{ position: 'relative', width: '65%' }}>
+            <div ref={wspMediaRef} className="wsp-phone-col order-1 flex items-start justify-start" style={{ flexShrink: 0, width: '48%', maxWidth: 500 }}>
+              <div style={{ position: 'relative', width: '100%' }}>
                 <img
                   src="/wsp.png"
                   alt="Opera por WhatsApp sin descargar ningún app"
@@ -1187,7 +1187,7 @@ export default function Home() {
             </div>
 
             {/* Texto */}
-            <div className="flex-1 order-2">
+            <div className="wsp-text-col flex-1 min-w-0 order-2">
               <h2 className="reveal font-display font-black leading-[1.08] mb-6"
                 style={{ color: '#0D1117', fontSize: 'clamp(1.9rem, 3.8vw, 3rem)' }}>
                 Opera 100% desde<br />
@@ -1224,7 +1224,7 @@ export default function Home() {
       ====================================== */}
       <section ref={banksSectionRef} className="py-10 sm:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl overflow-hidden reveal" style={{ background: '#1463FF', padding: '44px 52px' }}>
+        <div className="rounded-2xl overflow-hidden reveal ps-banks-card" style={{ background: '#1463FF', padding: '44px 52px' }}>
           <div ref={banksMediaRef} className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
 
             {/* LEFT — Texto */}
@@ -1260,9 +1260,14 @@ export default function Home() {
               <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, marginTop: 10, textAlign: 'justify' }}>
                 Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros se realizan vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
               </p>
+
+              {/* Mobile: bank image below text */}
+              <div className="flex lg:hidden justify-center mt-6">
+                <img src="/kj.jpeg" alt="Qoricash bancos" style={{ width: '75%', maxWidth: 280, borderRadius: 14, display: 'block' }} />
+              </div>
             </div>
 
-            {/* RIGHT — Imagen con pills */}
+            {/* RIGHT — Imagen con pills (desktop only) */}
             <div className="flex-1 hidden lg:flex flex-col items-center justify-center gap-4">
 
               {/* Imagen + pills en borde derecho */}
@@ -1658,19 +1663,18 @@ export default function Home() {
       `}</style>
 
       {!isEmpresaPage && (
-      <section className="pb-10 sm:pb-16" style={{ paddingTop: 200 }}>
+      <section className="pb-10 sm:pb-16 ps-hdtd-section" style={{ paddingTop: 200 }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl reveal ps-hdtd-banner" style={{ background: '#1463FF', padding: '44px 52px', height: 460, display: 'flex', alignItems: 'flex-end', overflow: 'visible', position: 'relative' }}>
-            {/* Texto lado izquierdo */}
-            <div className="reveal-left reveal-delay-1 ps-hdtd-left" style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, zIndex: 2, position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)' }}>
+          {/* Desktop layout */}
+          <div className="rounded-2xl reveal ps-hdtd-banner hidden sm:block" style={{ background: '#1463FF', padding: '44px 52px', height: 460, overflow: 'visible', position: 'relative' }}>
+            <div className="reveal-left reveal-delay-1" style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, zIndex: 2, position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)' }}>
               {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
                 <span key={line} className={`reveal-left reveal-delay-${i + 1}`} style={{ fontSize: 'clamp(2.4rem, 4.5vw, 4rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
                   {line}
                 </span>
               ))}
             </div>
-            {/* Texto lado derecho */}
-            <div className="reveal-right reveal-delay-2 ps-hdtd-right" style={{ position: 'absolute', right: 52, top: '50%', transform: 'translateY(-50%)', maxWidth: 260, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="reveal-right reveal-delay-2" style={{ position: 'absolute', right: 52, top: '50%', transform: 'translateY(-50%)', maxWidth: 260, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 16 }}>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
                 ¿Sigues cambiando con el app de tu banco? Tu banco no te ofrece el mejor precio, te ofrece el precio que más le conviene a él. Cada operación tiene un margen que sale silenciosamente de tu bolsillo, sin que lo notes.
               </p>
@@ -1680,22 +1684,44 @@ export default function Home() {
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
                 La diferencia entre cambiar con tu banco y cambiar con Qoricash <strong style={{ color: '#4ade80' }}>se acumula con cada operación</strong>. Ese dinero puede quedarse contigo.
               </p>
-              <a
-                href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares"
-                target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares" target="_blank" rel="noopener noreferrer"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#ffffff', color: '#1463FF', fontWeight: 800, fontSize: 13, padding: '11px 22px', borderRadius: 10, textDecoration: 'none', letterSpacing: '-0.01em', boxShadow: '0 4px 20px rgba(0,0,0,0.2)', transition: 'opacity 0.2s', alignSelf: 'flex-start' }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
                 onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-              >
-                Empieza a ganar más →
-              </a>
+              >Empieza a ganar más →</a>
             </div>
-
-            {/* Imagen centrada */}
             <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }}>
               <div className="reveal reveal-delay-2">
                 <img src="/wwws.png" alt="" style={{ maxWidth: 360, width: '100%', height: 'auto', display: 'block' }} />
               </div>
+            </div>
+          </div>
+
+          {/* Mobile layout — stacked */}
+          <div className="rounded-2xl sm:hidden" style={{ background: '#1463FF', padding: '36px 24px 0', overflow: 'hidden' }}>
+            {/* Headline */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, marginBottom: 24 }}>
+              {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
+                <span key={line} style={{ fontSize: 'clamp(2.6rem, 10vw, 3.6rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
+                  {line}
+                </span>
+              ))}
+            </div>
+            {/* Image */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 0 }}>
+              <img src="/wwws.png" alt="" style={{ maxWidth: 280, width: '85%', height: 'auto', display: 'block' }} />
+            </div>
+            {/* Body text + CTA */}
+            <div style={{ padding: '28px 0 36px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                ¿Sigues cambiando con el app de tu banco? Cada operación tiene un margen que sale de tu bolsillo sin que lo notes.
+              </p>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                Qoricash te da el <strong style={{ color: '#ffffff' }}>tipo de cambio real del mercado</strong>. Tu dinero llega en menos de 15 minutos desde cualquier banco del Perú.
+              </p>
+              <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares" target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#ffffff', color: '#1463FF', fontWeight: 800, fontSize: 13, padding: '11px 22px', borderRadius: 10, textDecoration: 'none', alignSelf: 'flex-start' }}
+              >Empieza a ganar más →</a>
             </div>
           </div>
         </div>

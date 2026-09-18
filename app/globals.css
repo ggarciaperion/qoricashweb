@@ -1316,3 +1316,99 @@ main {
   .ps-cada-sol-right { display: none !important; }
   .ps-bank-pills     { flex-wrap: wrap !important; }
 }
+
+/* ================================================================
+   RESPONSIVE — Personas page deep fixes (mobile-first)
+================================================================ */
+
+/* ── 1. Hero section ─────────────────────────────────────────── */
+@media (max-width: 639px) {
+  /* Prevent horizontal overflow from absolute-positioned floating elements */
+  .hero-section { overflow-x: hidden !important; }
+
+  /* Hide floating TC rate cards (overflow right) */
+  .hero-tc-cards { display: none !important; }
+
+  /* Hide floating CTA pills (overflow left) */
+  .hero-cta-pills { display: none !important; }
+
+  /* Reduce photo height */
+  .hero-photo-wrap {
+    aspect-ratio: auto !important;
+    max-height: 280px !important;
+  }
+
+  /* Compact hero buttons */
+  .pill-iniciar {
+    padding: 10px 16px !important;
+    font-size: 11px !important;
+  }
+
+  /* Hero section top padding */
+  .hero-photo-wrap img { object-position: center 15% !important; }
+}
+
+/* ── 2. WSP phone + pills section ───────────────────────────── */
+@media (max-width: 639px) {
+  /* Phone column: controlled width */
+  .wsp-phone-col {
+    width: 50% !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Reduce pills translateX so they stay visible */
+  .ps-wsp-wrap {
+    position: absolute !important;
+    transform: translateX(38%) !important;
+  }
+
+  /* Smaller pill text and badge */
+  .ps-wsp-wrap > div {
+    padding: 6px 10px 6px 6px !important;
+    border-radius: 999px !important;
+    gap: 6px !important;
+  }
+  .ps-wsp-wrap > div span:last-child {
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+  .ps-wsp-wrap > div > div:first-child {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 9px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* WSP section reduced padding */
+  .wsp-section { padding-top: 40px !important; padding-bottom: 40px !important; }
+
+  /* WSP text: smaller heading */
+  .wsp-text-col h2 { font-size: clamp(1.4rem, 5vw, 1.8rem) !important; }
+  .wsp-text-col p  { font-size: 13px !important; }
+}
+
+/* ── 3. Banks section ───────────────────────────────────────── */
+@media (max-width: 639px) {
+  .ps-banks-card { padding: 32px 24px !important; }
+
+  /* Make left panel full width on mobile (flex-col already via Tailwind) */
+  .ps-banks-card .min-w-0 { flex: none !important; width: 100% !important; }
+
+  /* Bank pills wrap */
+  .ps-bank-pills { flex-wrap: wrap !important; gap: 6px !important; }
+}
+
+/* ── 4. "Haz que tu dinero" section ────────────────────────── */
+@media (max-width: 639px) {
+  /* Reduce the massive paddingTop on mobile */
+  .ps-hdtd-section { padding-top: 48px !important; }
+}
+
+/* ── 5. Global hero overflow fix ────────────────────────────── */
+@media (max-width: 639px) {
+  /* Prevent ANY horizontal scroll on the page */
+  body { overflow-x: hidden !important; }
+
+  /* Reduce hero grid gap on mobile */
+  .hero-persona-grid { gap: 12px !important; }
+}
