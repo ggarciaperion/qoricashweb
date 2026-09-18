@@ -66,6 +66,18 @@ export default function Home() {
     (!isEmpresaPage && isEmpresaUser)      // empresa en página personas
   );
 
+  // ── Ruta protegida ─────────────────────────────────────────────────────
+  // Persona natural (DNI/CE) no puede navegar a /empresa → redirect a /
+  // Persona jurídica (RUC)   no puede navegar a /       → redirect a /empresa
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    if (!isEmpresaPage && user.document_type === 'RUC') {
+      router.replace('/empresa');
+    } else if (isEmpresaPage && user.document_type !== 'RUC') {
+      router.replace('/');
+    }
+  }, [isAuthenticated, user, isEmpresaPage]);
+
   // Wrapper para acciones protegidas: bloquea si hay conflicto de perfil
   const guardedAction = (action: () => void) => {
     if (hasProfileMismatch) { setProfileMismatchModal(true); return; }
@@ -468,8 +480,8 @@ export default function Home() {
       {/* == FONDO FIJO == */}
       <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F8FAFC' }} />
 
-      {/* == TOP BAR — desaparece al hacer scroll == */}
-      <div
+      {/* == TOP BAR — solo visible para visitantes no autenticados == */}
+      {!isAuthenticated && <div
         className="fixed left-0 right-0 w-full z-[51] transition-transform duration-300 ease-in-out"
         style={{
           top: 0,
@@ -515,13 +527,13 @@ export default function Home() {
             Negocios
           </button>
         </div>
-      </div>
+      </div>}
 
       {/* == NAVBAR == */}
       <header
         className="fixed left-0 right-0 w-full z-50 transition-all duration-500 ease-in-out"
         style={{
-          top: topBarHidden ? 0 : 36,
+          top: isAuthenticated ? 0 : (topBarHidden ? 0 : 36),
           background: headerBg,
           borderBottom: headerBg === '#ffffff' ? '1px solid rgba(0,0,0,0.06)' : 'none',
           boxShadow: headerBg === '#ffffff' ? '0 1px 8px rgba(0,0,0,0.04)' : 'none',
@@ -882,7 +894,7 @@ export default function Home() {
 
         <div
           className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : 'items-center justify-center px-4 text-center'}`}
-          style={{ paddingTop: topBarHidden ? 96 : 132 }}
+          style={{ paddingTop: isAuthenticated ? 96 : (topBarHidden ? 96 : 132) }}
         >
 
           {/* H1 personas - entre encabezado y grid, solo móvil */}

@@ -19,6 +19,13 @@ export default function EmpresaPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { currentRates, fetchRates, startRateSubscription } = useExchangeStore();
+
+  // ── Ruta protegida: solo personas jurídicas (RUC) ────────────────────
+  useEffect(() => {
+    if (isAuthenticated && user && user.document_type !== 'RUC') {
+      router.replace('/');
+    }
+  }, [isAuthenticated, user]);
   const [buyRate] = useState('3.750');
   const [sellRate] = useState('3.770');
 
@@ -183,7 +190,8 @@ export default function EmpresaPage() {
         {/* ================================================================
             TOP BAR — Personas · Negocios
         ================================================================ */}
-        {/* Cinta full-width — fondo negro, se oculta al hacer scroll */}
+        {/* Cinta full-width — solo visible para visitantes no autenticados */}
+        {!isAuthenticated && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 36, background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 51, transform: topBarHidden ? 'translateY(-100%)' : 'translateY(0)', transition: 'transform 0.3s ease' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>
             <button onClick={() => router.push('/')} style={{ padding: '2px 12px', borderRadius: 999, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.4)', fontWeight: 500, fontSize: 12, cursor: 'pointer' }}>Personas</button>
@@ -191,11 +199,12 @@ export default function EmpresaPage() {
             <button style={{ padding: '2px 12px', borderRadius: 999, border: 'none', background: 'rgba(255,255,255,0.1)', color: '#ffffff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>Negocios</button>
           </div>
         </div>
+        )}
 
         {/* ================================================================
             NAVBAR — Floating card
         ================================================================ */}
-        <header style={{ position: 'fixed', top: topBarHidden ? 12 : 44, left: '50%', transform: 'translateX(-50%)', width: 'min(680px, calc(100% - 24px))', zIndex: 50, transition: 'top 0.3s ease', borderRadius: 16, background: 'rgba(5,8,18,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}>
+        <header style={{ position: 'fixed', top: isAuthenticated ? 12 : (topBarHidden ? 12 : 44), left: '50%', transform: 'translateX(-50%)', width: 'min(680px, calc(100% - 24px))', zIndex: 50, transition: 'top 0.3s ease', borderRadius: 16, background: 'rgba(5,8,18,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}>
           <nav className="flex justify-between items-center px-5 sm:px-7" style={{ height: 52 }}>
 
             {/* Logo blanco */}
