@@ -1148,7 +1148,7 @@ export default function Home() {
                   style={{ width: '100%', height: 'auto', display: 'block', border: 'none', outline: 'none', background: 'transparent' }}
                 />
                 {/* Pills flotantes sobre el borde derecho */}
-                <div style={{ position: 'absolute', top: '8%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 12, zIndex: 10 }}>
+                <div className="ps-wsp-wrap" style={{ position: 'absolute', top: '8%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 12, zIndex: 10 }}>
                   {[
                     { n: 1, text: 'Escríbenos cuánto quieres cambiar', cls: 'wsp-pill-1' },
                     { n: 2, text: 'Te damos el tipo de cambio al instante', cls: 'wsp-pill-2' },
@@ -1228,7 +1228,7 @@ export default function Home() {
               </p>
 
               {/* Fila bancos secundarios */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'nowrap' }}>
+              <div className="ps-bank-pills" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                 {[
                   { logo: '/BBVA.png',           name: 'BBVA',      h: 28, cls: 'banks-rp1' },
                   { logo: '/Scotiabank.png',      name: 'Scotiabank',h: 42, cls: 'banks-rp2' },
@@ -1289,9 +1289,9 @@ export default function Home() {
       <section className="pt-8 sm:pt-12" style={{ position: 'relative', overflow: 'hidden', background: '#42434b', paddingBottom: 16 }}>
         {/* Fondo sutil */}
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 0 }}>
+        <div className="ps-cada-sol-outer" style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 0 }}>
           {/* Contenedor izq+centro: padded */}
-          <div style={{ flex: '0 0 58%', paddingLeft: 24, paddingRight: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+          <div className="ps-cada-sol-left" style={{ flex: '0 0 58%', paddingLeft: 24, paddingRight: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
 
             {/* LEFT */}
             <div className="flex flex-col gap-6">
@@ -1362,7 +1362,7 @@ export default function Home() {
           </div>{/* fin contenedor izq+centro */}
 
           {/* RIGHT — cards comparativas, llega al borde derecho */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 20, padding: '32px 0 32px 20px', alignSelf: 'stretch', minWidth: 0 }}>
+          <div className="ps-cada-sol-right" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 20, padding: '32px 0 32px 20px', alignSelf: 'stretch', minWidth: 0 }}>
 
             {/* Card Qoricash — azul (arriba) */}
             {(() => {
@@ -1648,9 +1648,9 @@ export default function Home() {
       {!isEmpresaPage && (
       <section className="pb-10 sm:pb-16" style={{ paddingTop: 200 }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl reveal" style={{ background: '#1463FF', padding: '44px 52px', height: 460, display: 'flex', alignItems: 'flex-end', overflow: 'visible', position: 'relative' }}>
+          <div className="rounded-2xl reveal ps-hdtd-banner" style={{ background: '#1463FF', padding: '44px 52px', height: 460, display: 'flex', alignItems: 'flex-end', overflow: 'visible', position: 'relative' }}>
             {/* Texto lado izquierdo */}
-            <div className="reveal-left reveal-delay-1" style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, zIndex: 2, position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)' }}>
+            <div className="reveal-left reveal-delay-1 ps-hdtd-left" style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, zIndex: 2, position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)' }}>
               {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
                 <span key={line} className={`reveal-left reveal-delay-${i + 1}`} style={{ fontSize: 'clamp(2.4rem, 4.5vw, 4rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
                   {line}
@@ -1658,7 +1658,7 @@ export default function Home() {
               ))}
             </div>
             {/* Texto lado derecho */}
-            <div className="reveal-right reveal-delay-2" style={{ position: 'absolute', right: 52, top: '50%', transform: 'translateY(-50%)', maxWidth: 260, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div className="reveal-right reveal-delay-2 ps-hdtd-right" style={{ position: 'absolute', right: 52, top: '50%', transform: 'translateY(-50%)', maxWidth: 260, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 16 }}>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
                 ¿Sigues cambiando con el app de tu banco? Tu banco no te ofrece el mejor precio, te ofrece el precio que más le conviene a él. Cada operación tiene un margen que sale silenciosamente de tu bolsillo, sin que lo notes.
               </p>

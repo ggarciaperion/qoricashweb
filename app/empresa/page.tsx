@@ -12,7 +12,7 @@ import MarketSection from '@/components/MarketSection';
 import {
   ArrowRight, Shield, Clock, CheckCircle2, Lock,
   LogOut, User as UserIcon, ChevronDown, Menu, X,
-  HelpCircle, Banknote,
+  HelpCircle, Banknote, Building2, Zap, BadgeCheck,
 } from 'lucide-react';
 
 export default function EmpresaPage() {
@@ -32,6 +32,23 @@ export default function EmpresaPage() {
   const [isBanksSectionVisible, setIsBanksSectionVisible] = useState(false);
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [roiVolume, setRoiVolume] = useState(50000);
+  const [topBarHidden, setTopBarHidden] = useState(false);
+  const [cardVisible, setCardVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const banksCorpRef = useRef<HTMLDivElement>(null);
+  const [fanIndex, setFanIndex] = useState(0);
+  const fanPaused = useRef(false);
+
+  useEffect(() => {
+    let lastY = 0;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setTopBarHidden(y > 40);
+      lastY = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const BANK_ACCOUNTS = {
     bcp:       { soles: '1937353150041',  dolares: '1917357790119'  },
@@ -46,6 +63,39 @@ export default function EmpresaPage() {
     fetchRates();
     const unsub = startRateSubscription();
     return () => unsub();
+  }, []);
+
+  // Card images observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setCardVisible(true); else setCardVisible(false); },
+      { threshold: 0.15 }
+    );
+    if (cardRef.current) observer.observe(cardRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Banks corp observer
+  useEffect(() => {
+    const el = banksCorpRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) el.classList.add('banks-section-visible');
+        else el.classList.remove('banks-section-visible');
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Fan carousel auto-rotation
+  useEffect(() => {
+    const t = setInterval(() => {
+      if (!fanPaused.current) setFanIndex(i => (i + 1) % 11);
+    }, 5500);
+    return () => clearInterval(t);
   }, []);
 
   // Banks observer
@@ -128,18 +178,30 @@ export default function EmpresaPage() {
         .reveal-corp.visible { opacity:1; transform:translateY(0); }
       `}</style>
 
-      <main className="min-h-screen" style={{ background: '#F8FAFC' }}>
+      <main className="min-h-screen" style={{ background: '#0A0A0A' }}>
 
         {/* ================================================================
-            NAVBAR
+            TOP BAR — Personas · Negocios
         ================================================================ */}
-        <header className="fixed top-0 left-0 right-0 z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
-          <nav className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
+        {/* Cinta full-width — fondo negro, se oculta al hacer scroll */}
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: 36, background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 51, transform: topBarHidden ? 'translateY(-100%)' : 'translateY(0)', transition: 'transform 0.3s ease' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>
+            <button onClick={() => router.push('/')} style={{ padding: '2px 12px', borderRadius: 999, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.4)', fontWeight: 500, fontSize: 12, cursor: 'pointer' }}>Personas</button>
+            <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+            <button style={{ padding: '2px 12px', borderRadius: 999, border: 'none', background: 'rgba(255,255,255,0.1)', color: '#ffffff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>Negocios</button>
+          </div>
+        </div>
 
-            {/* Logo + badge */}
+        {/* ================================================================
+            NAVBAR — Floating card
+        ================================================================ */}
+        <header style={{ position: 'fixed', top: topBarHidden ? 12 : 44, left: '50%', transform: 'translateX(-50%)', width: 'min(680px, calc(100% - 24px))', zIndex: 50, transition: 'top 0.3s ease', borderRadius: 16, background: 'rgba(5,8,18,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(0,0,0,0.6)' }}>
+          <nav className="flex justify-between items-center px-5 sm:px-7" style={{ height: 52 }}>
+
+            {/* Logo blanco */}
             <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <img src="/vg.png" alt="Qoricash" className="h-16 w-auto" />
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.45em', textTransform: 'uppercase', color: '#9CA3AF' }}>Corporate</span>
+              <img src="/vg.png" alt="Qoricash" style={{ height: 28, width: 'auto', filter: 'invert(1)' }} />
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', alignSelf: 'center' }}>Negocios</span>
             </Link>
 
             {/* Desktop */}
@@ -162,7 +224,8 @@ export default function EmpresaPage() {
                       }
                       setIsUserMenuOpen(!isUserMenuOpen);
                     }}
-                    className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: 'rgba(255,255,255,0.85)' }}
                   >
                     <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-black" style={{ background: '#2563EB' }}>
                       {((user?.razon_social || user?.nombres) ?? '?').charAt(0).toUpperCase()}
@@ -175,19 +238,10 @@ export default function EmpresaPage() {
                 </div>
               ) : (
                 <>
-                  <button
-                    onClick={() => router.push('/')}
-                    className="relative text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors group py-1"
-                  >
-                    Personas
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gray-900 rounded-full transition-all duration-300 group-hover:w-full" />
-                  </button>
-                  <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} />
-                  <Link href="/login?from=/empresa" className="relative text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors group py-1">
+                  <Link href="/login?from=/empresa" className="text-sm font-medium transition-colors hover:opacity-80" style={{ color: 'rgba(255,255,255,0.55)' }}>
                     Iniciar Sesión
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gray-900 rounded-full transition-all duration-300 group-hover:w-full" />
                   </Link>
-                  <Link href="/crear-cuenta?tipo=empresa" className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all shadow-md text-white" style={{ background: '#0A0A0A' }}>
+                  <Link href="/crear-cuenta?tipo=empresa" className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all text-white" style={{ background: '#2563EB', boxShadow: '0 4px 14px rgba(37,99,235,0.4)' }}>
                     Regístrate
                   </Link>
                 </>
@@ -195,20 +249,14 @@ export default function EmpresaPage() {
             </div>
 
             {/* Mobile */}
-            <div className="lg:hidden flex items-center gap-1">
-              {!isAuthenticated && (
-                <>
-                  <button onClick={() => router.push('/')} className="text-sm font-medium text-gray-500 hover:text-gray-900 px-2 transition-colors">Personas</button>
-                  <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} />
-                </>
-              )}
+            <div className="lg:hidden flex items-center gap-2">
               {isAuthenticated && user && (
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black mr-1" style={{ background: '#2563EB' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black" style={{ background: '#2563EB' }}>
                   {((user.razon_social || user.nombres) ?? '?').charAt(0).toUpperCase()}
                 </div>
               )}
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-700 hover:text-gray-900 transition-colors">
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 transition-colors hover:opacity-80" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </nav>
@@ -223,8 +271,8 @@ export default function EmpresaPage() {
 
         {/* Mobile menu panel */}
         <div
-          className={`lg:hidden fixed right-3 z-[49] rounded-3xl overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          style={{ width: 220, top: 74, maxHeight: isMobileMenuOpen ? '70vh' : 0, transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease', background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 20px 48px rgba(0,0,0,0.18)' }}
+          className={`lg:hidden fixed right-3 z-[49] rounded-2xl overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          style={{ width: 220, top: 124, maxHeight: isMobileMenuOpen ? '70vh' : 0, transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease', background: 'rgba(13,20,38,0.97)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 48px rgba(0,0,0,0.5)' }}
         >
           <div className="px-4 pt-4 pb-5">
             {isAuthenticated ? (
@@ -367,31 +415,39 @@ export default function EmpresaPage() {
             );
           })()}
 
-          <div className="relative z-10 max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 sm:pt-24 pb-16 sm:pb-24 flex flex-col items-center text-center">
+          <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 flex flex-col items-center text-center" style={{ paddingTop: 'clamp(70px, 9vw, 110px)', paddingBottom: 'clamp(60px, 8vw, 100px)', minHeight: '100dvh', justifyContent: 'center' }}>
 
-                <h1 className="font-display font-black leading-[1.0] mb-6 uppercase" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', color: '#ffffff', letterSpacing: '-0.02em' }}>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 mb-6" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.25)', borderRadius: 999, padding: '6px 16px' }}>
+                  <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inset-0 rounded-full opacity-75" style={{ background: '#60A5FA' }}/><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-400"/></span>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA' }}>Tipo de cambio corporativo en vivo</span>
+                </div>
+
+                <h1 className="font-display font-black leading-[1.0] mb-6 uppercase" style={{ fontSize: 'clamp(2.6rem, 6.5vw, 5rem)', color: '#ffffff', letterSpacing: '-0.02em' }}>
                   En los negocios<br />cada centavo<br /><span style={{ color: '#2563EB' }}>cuenta.</span>
                 </h1>
 
-                <p className="text-base sm:text-lg leading-relaxed mb-10 max-w-xl" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Tu empresa merece más que el banco. Cambia dólares con el mejor tipo de cambio del mercado, sin comisiones ocultas y con un ejecutivo dedicado que gestiona cada operación.
+                <p className="text-base sm:text-lg leading-relaxed mb-8 max-w-xl" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                  Tu empresa merece el mejor tipo de cambio. En Qoricash te ayudamos a rentabilizar cada operación, sin comisiones y con atención dedicada.
                 </p>
 
-                {/* Trust strip */}
-                <div className="flex flex-wrap items-center justify-center gap-6 text-[11px] font-medium mb-10" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  <span className="flex items-center gap-1.5">
-                    <Shield className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#2563EB' }} />
-                    Registrado SBS
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#2563EB' }} />
-                    Liquidación 15 min
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#2563EB' }} />
-                    0 comisiones
-                  </span>
+                <div className="flex items-center gap-4 justify-center mb-12 flex-wrap">
+                  <button
+                    onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/crear-cuenta?tipo=empresa')}
+                    className="inline-flex items-center gap-2 font-bold text-sm text-white hover:-translate-y-0.5 transition-all"
+                    style={{ background: '#2563EB', borderRadius: 999, padding: '14px 32px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 28px rgba(37,99,235,0.45)' }}
+                  >
+                    {isAuthenticated ? 'Nueva operación' : 'Empieza a cambiar ahora'}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo." target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-bold text-sm hover:-translate-y-0.5 transition-all"
+                    style={{ borderRadius: 999, padding: '14px 32px', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.65)', cursor: 'pointer', background: 'rgba(255,255,255,0.04)' }}
+                  >
+                    Cotizar por WhatsApp
+                  </a>
                 </div>
+
 
                 <div className="w-full max-w-[420px]">
                   {isAuthenticated ? (
@@ -490,462 +546,353 @@ export default function EmpresaPage() {
           </div>
         </section>
 
-        {/* ================================================================
-            STATS STRIP
-        ================================================================ */}
-        <section style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-10 sm:py-12">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
-              {[
-                { value: '+3,000',  label: 'empresas confían en nosotros', sub: 'y siguen operando' },
-                { value: '< 15',    label: 'minutos de liquidación', sub: 'tiempo promedio garantizado' },
-                { value: '0%',      label: 'comisiones ni cargos ocultos', sub: 'siempre, sin excepción' },
-                { value: '+TC',     label: 'preferencial corporativo', sub: 'exclusivo para clientes registrados' },
-              ].map(({ value, label, sub }, i) => (
-                <div key={i} className="text-center sm:text-left">
-                  <div className="text-2xl sm:text-3xl font-black mb-1" style={{ color: '#2563EB' }}>{value}</div>
-                  <div className="text-[11px] sm:text-xs font-semibold leading-snug" style={{ color: '#0D1117' }}>{label}</div>
-                  <div className="text-[10px] mt-0.5" style={{ color: '#9CA3AF' }}>{sub}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* ================================================================
-            BANKS
+            HEADLINE SECTION
         ================================================================ */}
-        <section ref={banksSectionRef} style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-10 sm:py-12">
-
-            <div className="mb-7 text-center">
-              <h2 className="font-display font-black" style={{ color: '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.5rem)' }}>
-                Operamos con los principales <span style={{ color: '#2563EB' }}>bancos del Perú</span>
+        <section style={{ background: '#0A0A0A', paddingTop: 80, paddingBottom: 48, overflow: 'hidden' }}>
+          <div className="ec-hl-row" style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+            <div className="ec-hl-txt" style={{ flex: 1, paddingLeft: 'max(24px, calc((100vw - 1100px) / 2))' }}>
+              <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 20 }}>Qoricash para empresas</p>
+              <h2 style={{ color: '#ffffff', fontSize: 'clamp(2.4rem, 5vw, 4rem)', fontWeight: 900, lineHeight: 1.05, margin: 0, textTransform: 'uppercase' }}>
+                Cada operación<br />
+                de cambio es una<br />
+                oportunidad de ganar más.
               </h2>
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-
-              {/* Group 1 — BCP + Interbank + BanBif */}
-              <div className="flex-[3]">
-                <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>Transferencias inmediatas</p>
-                {(() => {
-                  const hovered = hoveredBank === 'group1';
-                  return (
-                    <div
-                      className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-                      style={{ border: `1px solid ${hovered ? 'rgba(37,99,235,0.4)' : 'rgba(0,0,0,0.07)'}`, background: hovered ? 'rgba(37,99,235,0.025)' : '#ffffff', boxShadow: hovered ? '0 16px 40px rgba(37,99,235,0.12)' : '0 2px 8px rgba(0,0,0,0.03)', minHeight: 110, transform: hovered ? 'translateY(-3px)' : 'none' }}
-                      onMouseEnter={() => setHoveredBank('group1')}
-                      onMouseLeave={() => setHoveredBank(null)}
-                      onClick={() => setHoveredBank(hoveredBank === 'group1' ? null : 'group1')}
-                    >
-                      <div className="grid grid-cols-3 h-full">
-                        {[
-                          { id: 'bcp',       img: '/BCP.png',      alt: 'BCP',      imgClass: 'h-16 sm:h-20', acc: BANK_ACCOUNTS.bcp,      keys: { s: 'bcp-s', d: 'bcp-d' } },
-                          { id: 'interbank', img: '/Interbank.png', alt: 'Interbank',imgClass: 'h-24 sm:h-28', acc: BANK_ACCOUNTS.interbank, keys: { s: 'itb-s', d: 'itb-d' } },
-                          { id: 'banbif',    img: '/BanBif.png',    alt: 'BanBif',   imgClass: 'h-16 sm:h-20', acc: BANK_ACCOUNTS.banbif,   keys: { s: 'bbf-s', d: 'bbf-d' } },
-                        ].map(({ id, img, alt, imgClass, acc, keys }) => (
-                          <div key={id} className="relative overflow-hidden flex flex-col items-center justify-center px-3 cursor-default" style={{ minHeight: 110 }}>
-                            <div className={`flex items-center justify-center transition-all duration-300 ${hovered ? 'scale-[0.68] -translate-y-3' : 'scale-100'}`}>
-                              <img src={img} alt={alt} className={`${imgClass} w-auto object-contain`} />
-                            </div>
-                            <div className={`absolute bottom-0 left-0 right-0 px-3 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                              {[{ label: 'S/', value: acc.soles, key: keys.s }, { label: '$', value: acc.dolares, key: keys.d }].map(({ label, value, key }) => (
-                                <div key={key} className="flex items-center justify-between gap-1 py-0.5">
-                                  <div className="flex items-center gap-1 min-w-0">
-                                    <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                                    <span className="text-[9px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
-                                  </div>
-                                  <button onClick={() => handleCopy(value, key)} className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all" style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}>
-                                    {copiedKey === key ? '✓' : 'Copiar'}
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* Group 2 — CCI */}
-              <div className="flex-[1] flex flex-col">
-                <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>Interbancaria solo Lima</p>
-                {(() => {
-                  const hovered = hoveredBank === 'cci';
-                  const CCI = { soles: '003-200-003007757571-37', dolares: '003-200-003007757589-39' };
-                  return (
-                    <div
-                      className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-                      style={{ border: `1px solid ${hovered ? 'rgba(37,99,235,0.4)' : 'rgba(0,0,0,0.07)'}`, background: hovered ? 'rgba(37,99,235,0.025)' : '#ffffff', minHeight: 110, transform: hovered ? 'translateY(-3px)' : 'none', boxShadow: hovered ? '0 16px 40px rgba(37,99,235,0.1)' : '0 1px 6px rgba(0,0,0,0.03)' }}
-                      onMouseEnter={() => setHoveredBank('cci')}
-                      onMouseLeave={() => setHoveredBank(null)}
-                      onClick={() => setHoveredBank(hoveredBank === 'cci' ? null : 'cci')}
-                    >
-                      <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100'}`} style={{ gap: 2 }}>
-                        <div className="flex items-center justify-center gap-3 w-full">
-                          {[{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }].map(({ src, alt }) => (
-                            <div key={alt} className="flex items-center justify-center" style={{ width: 72, height: 44 }}>
-                              <img src={src} alt={alt} style={{ maxWidth: 72, maxHeight: 44, width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                            </div>
-                          ))}
-                        </div>
-                        <div className="flex items-center justify-center gap-3 w-full">
-                          {[{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancosantander.png', alt: 'Santander' }].map(({ src, alt }) => (
-                            <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? 90 : 72, height: alt === 'GNB' ? 56 : 44 }}>
-                              <img src={src} alt={alt} style={{ maxWidth: alt === 'GNB' ? 90 : 72, maxHeight: alt === 'GNB' ? 56 : 44, width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                            </div>
-                          ))}
-                          <div className="flex flex-col items-center justify-center rounded-lg" style={{ width: 72, height: 44, border: '1px solid rgba(37,99,235,0.28)', background: 'rgba(37,99,235,0.06)' }}>
-                            <span className="text-[7px] font-black uppercase tracking-[0.12em] leading-tight text-center" style={{ color: '#2563EB' }}>Otros<br />Bancos</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={`absolute bottom-0 left-0 right-0 px-2 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                        <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: 'rgba(13,27,42,0.38)' }}>Cuenta Interbancaria Interbank</p>
-                        {[{ label: 'S/', value: CCI.soles, key: 'cci-s' }, { label: '$', value: CCI.dolares, key: 'cci-d' }].map(({ label, value, key }) => (
-                          <div key={key} className="flex items-center justify-between gap-1 py-0.5">
-                            <div className="flex items-center gap-1 min-w-0">
-                              <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                              <span className="text-[8px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
-                            </div>
-                            <button onClick={() => handleCopy(value, key)} className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all" style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}>
-                              {copiedKey === key ? '✓' : 'Copiar'}
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Footer strip */}
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 pt-5" style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-              {[
-                { icon: CheckCircle2, label: 'Sin comisiones ocultas' },
-                { icon: Clock,        label: 'Liquidación en 15 min' },
-                { icon: Lock,         label: 'SSL cifrado' },
-                { icon: Shield,       label: 'Datos protegidos' },
-              ].map(({ icon: Icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: '#6B7280' }}>
-                  <Icon className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />{label}
-                </span>
-              ))}
+            <div className="ec-hl-img" style={{ flexShrink: 0, width: '48%', position: 'relative' }}>
+              <img src="/dddd.jpeg" alt="" style={{ width: '100%', height: 380, objectFit: 'cover', borderRadius: '20px 0 0 20px', display: 'block' }} />
+              <img src="/dfg.png" alt="" style={{ position: 'absolute', top: -90, left: -40, width: 280, objectFit: 'contain', filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35))' }} />
             </div>
           </div>
         </section>
 
         {/* ================================================================
-            HOW IT WORKS — CORPORATE PROCESS
+            CTA CARD
         ================================================================ */}
-        <section style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-14 sm:py-20">
+        <style>{`
+          .card-img {
+            transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease, filter 0.3s ease, box-shadow 0.3s ease;
+          }
+          .card-img:hover {
+            filter: drop-shadow(0 20px 48px rgba(37,99,235,0.45)) brightness(1.06) !important;
+            z-index: 10;
+          }
+          .card-img-left  { opacity: 0; transform: translateY(-40px) translateX(-140px) scale(0.88); }
+          .card-img-mid   { opacity: 0; transform: translateY(60px) scale(0.88); }
+          .card-img-right { opacity: 0; transform: translateY(120px) translateX(140px) scale(0.88); }
+          .card-img-left.visible  { opacity: 1; transform: translateY(-80px) translateX(-80px) scale(1); transition-delay: 0s; }
+          .card-img-mid.visible   { opacity: 1; transform: translateY(0px) scale(1); transition-delay: 0.12s; }
+          .card-img-right.visible { opacity: 1; transform: translateY(80px) translateX(80px) scale(1); transition-delay: 0.24s; }
+          .card-img-left.visible:hover  { transform: translateY(-80px) translateX(-80px) scale(1.06) !important; }
+          .card-img-mid.visible:hover   { transform: translateY(0px) scale(1.06) !important; }
+          .card-img-right.visible:hover { transform: translateY(80px) translateX(80px) scale(1.06) !important; }
 
-            <div className="text-center mb-12 sm:mb-14">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase mb-4" style={{ border: '1px solid rgba(0,0,0,0.08)', color: '#6B7280' }}>Proceso corporativo</span>
-              <h2 className="font-display font-black" style={{ color: '#0D1117', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
-                Eficiencia desde la<br /><span style={{ color: '#2563EB' }}>primera operación.</span>
-              </h2>
-            </div>
-
-            <div className="grid sm:grid-cols-3 gap-5 sm:gap-6 mb-12">
-              {[
-                {
-                  step: '01',
-                  title: 'Cotice su operación',
-                  desc: 'Ingrese el monto en dólares y obtenga su tipo de cambio corporativo exacto, garantizado y sin variaciones.',
-                  icon: (
-                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                      <rect x="2.5" y="4" width="23" height="20" rx="2.5" stroke="#2563EB" strokeWidth="1.7"/>
-                      <path d="M7 10h14M7 14.5h10M7 19h7" stroke="#2563EB" strokeWidth="1.7" strokeLinecap="round"/>
-                    </svg>
-                  ),
-                },
-                {
-                  step: '02',
-                  title: 'Transfiera a Qoricash',
-                  desc: 'Realice la transferencia desde BCP, Interbank, BanBif o vía CCI desde cualquier banco del Perú.',
-                  icon: (
-                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                      <path d="M4 14h20M16 7l8 7-8 7" stroke="#2563EB" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
-                },
-                {
-                  step: '03',
-                  title: 'Reciba en su cuenta',
-                  desc: 'Liquidamos en menos de 15 minutos a la cuenta bancaria que designe. Sin comisiones, sin cargos ocultos.',
-                  icon: (
-                    <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                      <path d="M14 4v20M6 16l8 8 8-8" stroke="#2563EB" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
-                },
-              ].map(({ step, title, desc, icon }) => (
-                <div key={step} className="ec-card rounded-2xl p-6" style={{ background: '#F8FAFC', border: '1px solid rgba(0,0,0,0.065)' }}>
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.12)' }}>
-                      {icon}
-                    </div>
-                    <span className="text-[10px] font-bold tracking-[0.22em] uppercase" style={{ color: 'rgba(0,0,0,0.22)' }}>Paso {step}</span>
-                  </div>
-                  <h3 className="font-bold text-base mb-2" style={{ color: '#0D1117' }}>{title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>{desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <button onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa')} className="inline-flex items-center gap-2.5 font-bold px-8 py-3.5 rounded-full text-sm text-white transition-all hover:-translate-y-0.5" style={{ background: '#2563EB', boxShadow: '0 8px 24px rgba(37,99,235,0.28)' }}>
-                Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
-              </button>
+          /* ── RESPONSIVE ─────────────────────────────── */
+          @media (max-width: 767px) {
+            /* Headline */
+            .ec-hl-row { flex-direction: column !important; gap: 0 !important; }
+            .ec-hl-txt { padding-left: 24px !important; padding-right: 24px !important; padding-bottom: 40px !important; }
+            .ec-hl-img { display: none !important; }
+            /* CTA card images */
+            .ec-card-row { flex-direction: column !important; align-items: center !important; gap: 16px !important; padding: 24px 16px !important; }
+            .card-img { height: 220px !important; }
+            .card-img-left  { transform: translateY(0) translateX(0) scale(0.88) !important; }
+            .card-img-right { transform: translateY(0) translateX(0) scale(0.88) !important; }
+            .card-img-left.visible  { transform: translateY(0) translateX(0) scale(1) !important; }
+            .card-img-right.visible { transform: translateY(0) translateX(0) scale(1) !important; }
+            .card-img-left.visible:hover  { transform: translateY(0) translateX(0) scale(1.04) !important; }
+            .card-img-right.visible:hover { transform: translateY(0) translateX(0) scale(1.04) !important; }
+            /* Banks section */
+            .ec-banks-flex { flex-direction: column !important; }
+            .ec-banks-left { flex: none !important; width: 100% !important; padding: 32px 24px 24px !important; }
+            .ec-banks-right { display: none !important; }
+            /* Fan carousel */
+            .ec-fan-arc { height: 200px !important; }
+            .fan-img { width: 160px !important; height: 108px !important; margin-left: -80px !important; }
+            .ec-fan-section { padding: 48px 20px 60px !important; }
+            /* CTA final */
+            .ec-cta-final { padding: 48px 20px 64px !important; }
+          }
+          @media (min-width: 768px) and (max-width: 1023px) {
+            /* Tablet */
+            .ec-hl-row { gap: 24px !important; }
+            .ec-banks-left { padding: 36px 32px !important; }
+            .ec-card-row { gap: 12px !important; }
+            .card-img { height: 380px !important; }
+            .card-img-left.visible  { transform: translateY(-40px) translateX(-40px) scale(1) !important; }
+            .card-img-right.visible { transform: translateY(40px) translateX(40px) scale(1) !important; }
+            .fan-img { width: 220px !important; height: 145px !important; margin-left: -110px !important; }
+            .ec-fan-arc { height: 270px !important; }
+          }
+        `}</style>
+        <section style={{ background: '#0A0A0A', padding: '40px 20px' }}>
+          <div ref={cardRef} style={{ maxWidth: 1100, margin: '0 auto', background: '#161616', borderRadius: 24, padding: '8px 48px', border: '1px solid rgba(255,255,255,0.07)', position: 'relative', backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '48px 48px' }}>
+            <div className="ec-card-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
+              <img src="/tyu/41.png" alt="" className={`card-img card-img-left${cardVisible ? ' visible' : ''}`} style={{ height: 500, width: 'auto', objectFit: 'contain' }} />
+              <img src="/tyu/43.png" alt="" className={`card-img card-img-mid${cardVisible ? ' visible' : ''}`}  style={{ height: 580, width: 'auto', objectFit: 'contain' }} />
+              <img src="/tyu/42.png" alt="" className={`card-img card-img-right${cardVisible ? ' visible' : ''}`} style={{ height: 500, width: 'auto', objectFit: 'contain' }} />
             </div>
           </div>
         </section>
 
         {/* ================================================================
-            BENEFITS — 2 COLS
+            BANCOS CORPORATIVOS
         ================================================================ */}
-        <section style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-14 sm:py-20">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <section style={{ background: '#0A0A0A', padding: '0 20px 80px' }}>
+          <div ref={banksCorpRef} style={{ maxWidth: 1100, margin: '0 auto', borderRadius: 28, overflow: 'hidden', background: 'linear-gradient(135deg, #0D1B3E 0%, #0F2150 50%, #0B1838 100%)', border: '1px solid rgba(37,99,235,0.2)', boxShadow: '0 32px 80px rgba(0,0,0,0.5)' }}>
+            <div className="ec-banks-flex" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 0 }}>
 
-              {/* Left */}
-              <div>
-                <span className="text-[10px] font-bold tracking-[0.22em] uppercase block mb-4" style={{ color: '#6B7280' }}>Por qué elegirnos</span>
-                <h2 className="font-display font-black leading-[1.08] mb-5" style={{ color: '#0D1117', fontSize: 'clamp(1.8rem, 3.8vw, 2.8rem)' }}>
-                  Diseñado para<br />empresas que<br /><span style={{ color: '#2563EB' }}>exigen más.</span>
+              {/* LEFT — Texto */}
+              <div className="ec-banks-left" style={{ flex: '0 0 45%', padding: '52px 48px' }}>
+                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 20 }}>Liquidación corporativa</p>
+                <h2 className="font-display font-black" style={{ color: '#ffffff', lineHeight: 1.05, marginBottom: 20 }}>
+                  <span style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', display: 'block' }}>Su empresa recibe en</span>
+                  <span style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', display: 'block', color: 'rgba(255,255,255,0.5)' }}>cualquier banco</span>
+                  <span style={{ fontSize: 'clamp(3rem, 5.5vw, 4.8rem)', display: 'block', color: '#ffffff', lineHeight: 0.93 }}>del Perú</span>
                 </h2>
-                <p className="text-sm sm:text-base leading-relaxed mb-8" style={{ color: '#6B7280' }}>
-                  Más de 3,000 empresas ya optimizan sus operaciones de cambio de divisas con Qoricash, generando un ahorro real y medible en cada transacción.
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, lineHeight: 1.7, marginBottom: 24, maxWidth: 320 }}>
+                  Transferimos directo a la cuenta designada por su empresa. Sin cuentas intermediarias, sin pasos adicionales. Liquidación en menos de 15 minutos en bancos principales.
                 </p>
-                {/* Exclusive access block */}
-                <div className="rounded-2xl p-5" style={{ background: 'rgba(37,99,235,0.05)', border: '1px solid rgba(37,99,235,0.12)' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-                    </svg>
-                    <div className="text-[9px] font-bold uppercase tracking-widest" style={{ color: '#2563EB' }}>TC Preferencial Corporativo</div>
+
+                {/* Bancos secundarios pills */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+                  {[
+                    { logo: '/BBVA.png',            name: 'BBVA',      h: 28, cls: 'banks-rp1' },
+                    { logo: '/Scotiabank.png',       name: 'Scotiabank',h: 40, cls: 'banks-rp2' },
+                    { logo: '/Banco Pichincha.png',  name: 'Pichincha', h: 40, cls: 'banks-rp3' },
+                    { logo: '/bancosantander.png',   name: 'Santander', h: 28, cls: 'banks-rp5' },
+                  ].map(b => (
+                    <div key={b.name} className={b.cls} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 999, padding: '5px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 34, border: '1px solid rgba(255,255,255,0.12)' }}>
+                      <img src={b.logo} alt={b.name} style={{ height: b.h, maxWidth: 90, width: 'auto', objectFit: 'contain', filter: 'brightness(10)' }} />
+                    </div>
+                  ))}
+                  <div className="banks-rp6" style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 999, padding: '5px 14px', height: 34, display: 'flex', alignItems: 'center', border: '1px solid rgba(255,255,255,0.12)' }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>+ Otros bancos</span>
                   </div>
-                  <p className="text-sm leading-relaxed mb-3" style={{ color: '#374151' }}>
-                    Nuestros clientes corporativos acceden a tipos de cambio significativamente superiores a los del mercado bancario tradicional.
-                  </p>
-                  <Link href="/crear-cuenta?tipo=empresa" className="inline-flex items-center gap-1.5 text-[11px] font-bold transition-colors hover:opacity-80" style={{ color: '#2563EB' }}>
-                    Registrarse para ver su TC <ArrowRight className="w-3 h-3" />
-                  </Link>
+                </div>
+
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6 }}>
+                  Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
+                </p>
+              </div>
+
+              {/* RIGHT — Imagen + pills bancos principales */}
+              <div className="ec-banks-right" style={{ flex: 1, position: 'relative', alignSelf: 'stretch', minHeight: 380, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 52px 40px 20px' }}>
+                <div style={{ position: 'relative', width: '100%', maxWidth: 380 }}>
+                  <img src="/kj.jpeg" alt="Qoricash bancos" className="banks-img" style={{ width: '100%', height: 'auto', borderRadius: 18, display: 'block', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' }} />
+                  {/* Pills BCP, Interbank, BanBif */}
+                  <div style={{ position: 'absolute', top: '15%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 10, zIndex: 10 }}>
+                    {[
+                      { logo: '/BCP.png',       name: 'BCP',      h: 36,  cls: 'banks-pr1' },
+                      { logo: '/Interbank.png', name: 'Interbank', h: 52,  cls: 'banks-pr2' },
+                      { logo: '/BanBif.png',    name: 'BanBif',    h: 36,  cls: 'banks-pr3' },
+                    ].map(b => (
+                      <div key={b.name} className={b.cls} style={{ background: '#ffffff', borderRadius: 12, padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.35)', minWidth: 76 }}>
+                        <img src={b.logo} alt={b.name} style={{ height: b.h, maxWidth: 100, width: 'auto', objectFit: 'contain' }} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Right — benefit cards */}
-              <div className="flex flex-col gap-3">
-                {[
-                  {
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      </svg>
-                    ),
-                    title: 'TC Preferencial Garantizado',
-                    sub: 'El tipo de cambio acordado es inalterable, independientemente del monto o fluctuación de mercado.',
-                  },
-                  {
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                      </svg>
-                    ),
-                    title: 'Liquidación en menos de 15 min',
-                    sub: 'Confirmación y transferencia en tiempo real. Sin esperas ni demoras innecesarias.',
-                  },
-                  {
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-                      </svg>
-                    ),
-                    title: 'Ejecutivo Corporativo Dedicado',
-                    sub: 'Atención personalizada para operaciones desde $5,000. Un ejecutivo asignado a su empresa.',
-                  },
-                  {
-                    icon: (
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-                      </svg>
-                    ),
-                    title: 'Sin comisiones ni cargos ocultos',
-                    sub: 'Solo el tipo de cambio, nada más. Transparencia total en cada operación.',
-                  },
-                ].map(({ icon, title, sub }) => (
-                  <div key={title} className="ec-card flex items-start gap-4 px-5 py-4 rounded-xl" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)' }}>
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(37,99,235,0.07)', border: '1px solid rgba(37,99,235,0.1)' }}>
-                      {icon}
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold mb-1" style={{ color: '#0D1117' }}>{title}</div>
-                      <div className="text-[11px] leading-relaxed" style={{ color: '#6B7280' }}>{sub}</div>
-                    </div>
-                  </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================
+            FAN CAROUSEL — RUBROS
+        ================================================================ */}
+        {(() => {
+          const rubros = [
+            {
+              src: '/ggg/Semi-trucks_driving_on_highway_2K_20260918101156.jpeg',
+              rubro: 'Transporte',
+              desc: 'Las empresas de transporte necesitan tipos de cambio competitivos para mantener la rentabilidad en cada ruta internacional y cubrir costos operativos en dólares.',
+            },
+            {
+              src: '/ggg/Crates_of_fruit_in_facility_2K_20260918101102.jpeg',
+              rubro: 'Agroexportación',
+              desc: 'Los agroexportadores peruanos facturan en dólares pero operan en soles. Cada centavo en el tipo de cambio se multiplica por toneladas de exportación.',
+            },
+            {
+              src: '/ggg/Customs_office_overlooking_port_2K_20260918101117.jpeg',
+              rubro: 'Agencias de Aduana',
+              desc: 'Las agencias aduaneras gestionan pagos en múltiples monedas. Un tipo de cambio corporativo preferencial reduce el costo de cada operación de importación o exportación.',
+            },
+            {
+              src: '/ggg/Travel_agency_storefront_in_city_2K_20260918101123.jpeg',
+              rubro: 'Agencias de Viaje',
+              desc: 'Los operadores turísticos manejan reservas en dólares y cobran en soles. El diferencial cambiario puede ser la diferencia entre ganar o perder en cada paquete vendido.',
+            },
+            {
+              src: '/ggg/Hotel_lobby_with_fireplace_2K_20260918101110.jpeg',
+              rubro: 'Hotelería',
+              desc: 'Los hoteles reciben huéspedes internacionales y gestionan costos en dólares. Optimizar el tipo de cambio corporativo incrementa directamente el margen de cada operación.',
+            },
+            {
+              src: '/ggg/Logistics_hub_and_shipping_conta…_2K_20260918101149.jpeg',
+              rubro: 'Logística e Importación',
+              desc: 'Las empresas de logística manejan grandes volúmenes en divisas. Con Qoricash acceden a un tipo de cambio que protege su margen en cada despacho y contrato.',
+            },
+            {
+              src: '/ggg/Modern_medical_office_reception_…_2K_20260918101120.jpeg',
+              rubro: 'Salud y Clínicas',
+              desc: 'Clínicas y centros médicos importan equipos e insumos en dólares. Un tipo de cambio preferencial reduce el costo de cada importación y mejora la rentabilidad.',
+            },
+            {
+              src: '/ggg/Fishing_boats_docked_at_pier_2K_20260918101059.jpeg',
+              rubro: 'Sector Pesquero',
+              desc: 'La industria pesquera exporta en dólares y opera en soles. Cada operación de cambio bien ejecutada suma directamente a la utilidad neta de la campaña.',
+            },
+            {
+              src: '/ggg/Textile_workshop_with_fabrics_an…_2K_20260918101136.jpeg',
+              rubro: 'Industria Textil',
+              desc: 'Los talleres y exportadores textiles negocian en dólares con clientes internacionales. Un tipo de cambio corporativo competitivo es ventaja directa frente a la competencia.',
+            },
+            {
+              src: '/ggg/Car_rental_agency_office_parked_2K_20260918101112.jpeg',
+              rubro: 'Renta de Vehículos',
+              desc: 'Las empresas de renta de autos gestionan flotas con costos en dólares. Acceder a tipos de cambio corporativos reduce el gasto financiero en cada renovación.',
+            },
+            {
+              src: '/ggg/Modern_gas_station_in_city_2K_20260918101106.jpeg',
+              rubro: 'Grifos y Combustibles',
+              desc: 'El sector de combustibles opera con precios indexados al dólar. Un tipo de cambio preferencial se traduce en mayor margen en cada litro comercializado.',
+            },
+          ];
+          const n = rubros.length;
+          const ANGLE_STEP = 14; // degrees between each card
+          const PIVOT_DIST = 1400; // px below card bottom — controls arc tightness
+          const CARD_W = 300;
+          const CARD_H = 200;
+          return (
+            <section style={{ background: '#0A0A0A', padding: '80px 24px 100px' }}>
+              <style>{`
+                @keyframes desc-fade { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+                .fan-img {
+                  transition: transform 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.65s ease, filter 0.3s ease;
+                  cursor: pointer;
+                  border-radius: 14px;
+                  object-fit: cover;
+                  display: block;
+                  position: absolute;
+                  width: ${CARD_W}px;
+                  height: ${CARD_H}px;
+                  left: 50%;
+                  margin-left: -${CARD_W / 2}px;
+                  bottom: 0;
+                  transform-origin: 50% calc(100% + ${PIVOT_DIST}px);
+                }
+                .fan-img:hover { filter: brightness(1.12) drop-shadow(0 12px 32px rgba(37,99,235,0.5)); }
+              `}</style>
+
+              {/* Header */}
+              <div style={{ maxWidth: 1100, margin: '0 auto 48px', padding: '0 20px' }}>
+                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 16 }}>Tu sector, nuestra solución</p>
+                <h2 style={{ color: '#ffffff', fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', fontWeight: 900, margin: 0 }}>
+                  Operamos con <span style={{ color: '#2563EB' }}>todos los rubros</span>
+                </h2>
+              </div>
+
+              {/* Fan arc */}
+              <div className="ec-fan-arc" style={{ position: 'relative', height: 340, maxWidth: 900, margin: '0 auto' }}>
+                {rubros.map((item, i) => {
+                  const offset = ((i - fanIndex) % n + n) % n;
+                  const norm = offset > n / 2 ? offset - n : offset;
+                  const absNorm = Math.abs(norm);
+                  const angle = norm * ANGLE_STEP;
+                  const opacity = absNorm === 0 ? 1 : absNorm === 1 ? 0.72 : absNorm === 2 ? 0.45 : absNorm === 3 ? 0.22 : 0;
+                  const zIndex = 10 - absNorm;
+                  if (absNorm > 4) return null;
+                  return (
+                    <img
+                      key={i}
+                      src={item.src}
+                      alt={item.rubro}
+                      className="fan-img"
+                      onClick={() => { fanPaused.current = true; setFanIndex(i); setTimeout(() => { fanPaused.current = false; }, 6000); }}
+                      style={{
+                        transform: `rotate(${angle}deg)`,
+                        opacity,
+                        zIndex,
+                        boxShadow: norm === 0 ? '0 20px 60px rgba(0,0,0,0.7)' : '0 6px 20px rgba(0,0,0,0.4)',
+                        outline: norm === 0 ? '2px solid rgba(37,99,235,0.6)' : 'none',
+                        pointerEvents: absNorm > 4 ? 'none' : 'auto',
+                      }}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Description */}
+              <div style={{ maxWidth: 560, margin: '48px auto 0', textAlign: 'center' }} key={fanIndex}>
+                <p style={{ color: '#2563EB', fontSize: 11, fontWeight: 800, letterSpacing: '0.22em', textTransform: 'uppercase', marginBottom: 10, animation: 'desc-fade 0.4s ease both' }}>
+                  {rubros[fanIndex].rubro}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, lineHeight: 1.7, margin: 0, animation: 'desc-fade 0.5s ease 0.05s both' }}>
+                  {rubros[fanIndex].desc}
+                </p>
+              </div>
+
+              {/* Arrows */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28 }}>
+                <button
+                  onClick={() => { fanPaused.current = true; setFanIndex(i => (i - 1 + n) % n); setTimeout(() => { fanPaused.current = false; }, 6000); }}
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'rgba(255,255,255,0.6)', transition: 'background 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(37,99,235,0.25)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button
+                  onClick={() => { fanPaused.current = true; setFanIndex(i => (i + 1) % n); setTimeout(() => { fanPaused.current = false; }, 6000); }}
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'rgba(255,255,255,0.6)', transition: 'background 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(37,99,235,0.25)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              </div>
+
+              {/* Dots */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 36 }}>
+                {rubros.map((_, i) => (
+                  <button key={i} onClick={() => { fanPaused.current = true; setFanIndex(i); setTimeout(() => { fanPaused.current = false; }, 6000); }}
+                    style={{ width: i === fanIndex ? 24 : 8, height: 8, borderRadius: 999, background: i === fanIndex ? '#2563EB' : 'rgba(255,255,255,0.2)', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease' }} />
                 ))}
               </div>
-            </div>
-          </div>
-        </section>
-
-
-        {/* ================================================================
-            MARKET SECTION — mercado en tiempo real, solo autenticados
-        ================================================================ */}
-        {isAuthenticated && <MarketSection variant="empresa" />}
+            </section>
+          );
+        })()}
 
         {/* ================================================================
-            TRUST STRIP
+            CTA FINAL
         ================================================================ */}
-        <section style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-6 sm:py-8">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <div className="rounded-xl px-4 py-2.5 flex items-center gap-2.5" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <Shield className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
-                <div>
-                  <div className="font-bold text-[11px] leading-tight" style={{ color: '#0D1117' }}>Empresa Registrada</div>
-                  <div className="text-[10px]" style={{ color: '#6B7280' }}>RUC: 20615113698 · Lima, Perú</div>
-                </div>
-              </div>
-              <div className="rounded-xl px-4 py-2.5 flex items-center gap-2.5" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.07)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#2563EB' }} />
-                <div>
-                  <div className="font-bold text-[11px] leading-tight" style={{ color: '#0D1117' }}>Registrados ante la SBS</div>
-                  <div className="text-[10px]" style={{ color: '#6B7280' }}>Res. N° 00313-2026</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ================================================================
-            ROI CALCULATOR
-        ================================================================ */}
-        <section style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.055)' }}>
-          <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-14 sm:py-20">
-            {/* Header */}
-            <div className="text-center mb-10">
-              <span className="inline-block text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: '#2563EB' }}>Calculadora de ahorro</span>
-              <h2 className="font-display font-black mb-3" style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)', color: '#0D1117' }}>
-                ¿Cuánto ahorra su empresa al mes?
-              </h2>
-              <p className="text-sm sm:text-base leading-relaxed max-w-lg mx-auto" style={{ color: '#6B7280' }}>
-                Ingrese el volumen mensual que opera en dólares y vea el ahorro real versus el banco.
-              </p>
-            </div>
-
-            {/* Card */}
-            <div className="max-w-2xl mx-auto rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
-              {/* Slider area */}
-              <div className="px-7 sm:px-10 pt-8 pb-6">
-                <div className="flex items-end justify-between mb-3">
-                  <span className="text-xs font-semibold" style={{ color: '#9CA3AF' }}>Volumen mensual en USD</span>
-                  <span className="text-2xl font-black" style={{ color: '#0D1117' }}>
-                    ${roiVolume.toLocaleString('en-US')}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={5000}
-                  max={200000}
-                  step={5000}
-                  value={roiVolume}
-                  onChange={e => setRoiVolume(Number(e.target.value))}
-                  className="w-full h-2 rounded-full appearance-none cursor-pointer"
-                  style={{ accentColor: '#2563EB', background: `linear-gradient(to right, #2563EB ${((roiVolume - 5000) / 195000) * 100}%, #E5E7EB ${((roiVolume - 5000) / 195000) * 100}%)` }}
-                />
-                <div className="flex justify-between mt-1.5">
-                  <span className="text-[10px]" style={{ color: '#D1D5DB' }}>$5,000</span>
-                  <span className="text-[10px]" style={{ color: '#D1D5DB' }}>$200,000</span>
-                </div>
-              </div>
-
-              {/* Divider */}
-              <div style={{ height: 1, background: 'rgba(0,0,0,0.055)' }} />
-
-              {/* Results */}
-              <div className="px-7 sm:px-10 py-7">
-                {/* Comparison bar */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-semibold" style={{ color: '#6B7280' }}>Banco tradicional</span>
-                    <span className="text-sm font-bold" style={{ color: '#EF4444' }}>
-                      S/ {(roiVolume * 3.72).toLocaleString('es-PE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
-                  <div className="h-3 rounded-full w-full" style={{ background: '#FEE2E2' }}>
-                    <div className="h-3 rounded-full" style={{ width: '100%', background: 'linear-gradient(to right, #EF4444, #FCA5A5)' }} />
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-semibold" style={{ color: '#2563EB' }}>Qoricash Corporate</span>
-                    <span className="text-sm font-bold" style={{ color: '#2563EB' }}>
-                      S/ {(roiVolume * 3.785).toLocaleString('es-PE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
-                  <div className="h-3 rounded-full w-full" style={{ background: '#DBEAFE' }}>
-                    <div className="h-3 rounded-full" style={{ width: `${(3.785 / 3.72) * 100}%`, background: 'linear-gradient(to right, #2563EB, #60A5FA)' }} />
-                  </div>
-                </div>
-
-                {/* Savings highlight */}
-                <div className="rounded-xl px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%)', border: '1px solid rgba(37,99,235,0.12)' }}>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: '#2563EB' }}>Ahorro mensual estimado</p>
-                    <p className="text-3xl font-black" style={{ color: '#0D1117' }}>
-                      S/ {(roiVolume * 0.065).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </p>
-                    <p className="text-[10px] mt-0.5" style={{ color: '#9CA3AF' }}>≈ S/ {(roiVolume * 0.065 * 12).toLocaleString('es-PE', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} al año</p>
-                  </div>
-                  <Link
-                    href="/crear-cuenta?tipo=empresa"
-                    className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-full text-sm text-white flex-shrink-0 transition-all hover:-translate-y-0.5"
-                    style={{ background: '#2563EB', boxShadow: '0 6px 20px rgba(37,99,235,0.32)' }}
-                  >
-                    Empezar a ahorrar <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-
-                <p className="text-[10px] text-center mt-4" style={{ color: '#D1D5DB' }}>
-                  * Estimación basada en spread promedio vs banca. Tipo de cambio referencial. Los resultados reales pueden variar.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ================================================================
-            CTA — DARK NAVY
-        ================================================================ */}
-        <section style={{ background: '#0B1426', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)', backgroundSize: '52px 52px', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, height: 400, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(37,99,235,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 py-16 sm:py-24 text-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6" style={{ background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.18)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-              <span className="text-[10px] font-bold tracking-[0.22em] uppercase" style={{ color: '#60A5FA' }}>Cuenta Corporativa</span>
-            </span>
-            <h2 className="font-display font-black text-white mb-4" style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3rem)' }}>
-              ¿Listo para optimizar sus<br /><span style={{ color: '#60A5FA' }}>operaciones de cambio?</span>
+        <section className="ec-cta-final" style={{ background: '#0A0A0A', padding: '80px 24px 100px' }}>
+          <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
+            <h2 style={{ color: '#ffffff', fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', fontWeight: 900, lineHeight: 1.05, margin: '0 0 20px' }}>
+              Su empresa merece el mejor<br />
+              <span style={{ color: '#2563EB' }}>tipo de cambio del mercado.</span>
             </h2>
-            <p className="text-sm sm:text-base leading-relaxed mb-8 max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.38)' }}>
-              Abra su cuenta corporativa hoy y empiece a ahorrar en cada operación de cambio de divisas. Sin cargos de apertura.
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 16, lineHeight: 1.75, maxWidth: 540, margin: '0 auto 40px' }}>
+              Sin importar el sector, el volumen o el banco de su empresa. Qoricash le da el tipo de cambio corporativo que la banca tradicional nunca le ofrecerá. Empiece hoy, sin costos de apertura.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa')} className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm text-white transition-all hover:-translate-y-0.5" style={{ background: '#2563EB', boxShadow: '0 8px 28px rgba(37,99,235,0.38)' }}>
-                Cotizar tipo de cambio corporativo <ArrowRight className="w-4 h-4" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <button
+                onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/crear-cuenta?tipo=empresa')}
+                className="inline-flex items-center gap-2 font-bold text-sm text-white hover:-translate-y-0.5 transition-all"
+                style={{ background: '#2563EB', borderRadius: 999, padding: '16px 36px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 32px rgba(37,99,235,0.45)' }}
+              >
+                Cambiar ahora <ArrowRight className="w-4 h-4" />
               </button>
-              <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm transition-all hover:-translate-y-0.5" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.65)' }}>
-                Cotizar por WhatsApp <ArrowRight className="w-4 h-4" />
+              <a
+                href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo."
+                target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-bold text-sm hover:-translate-y-0.5 transition-all"
+                style={{ borderRadius: 999, padding: '16px 36px', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)', background: 'rgba(255,255,255,0.04)', cursor: 'pointer' }}
+              >
+                Cotizar por WhatsApp
               </a>
             </div>
           </div>
@@ -954,72 +901,24 @@ export default function EmpresaPage() {
         {/* ================================================================
             FOOTER
         ================================================================ */}
-        <footer style={{ color: '#6B7280', background: '#ffffff' }}>
-          <div className="w-full px-6 sm:px-8 lg:px-10 py-8 sm:py-10">
-            <div className="max-w-5xl mx-auto">
-
-              {/* Logo + desc */}
-              <div className="flex items-center gap-3 mb-6">
-                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity shrink-0">
-                  <img src="/vg.png" alt="Qoricash" className="h-8 w-auto" />
+        <footer style={{ color: 'rgba(255,255,255,0.3)', background: '#0A0A0A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="w-full px-6 sm:px-8 lg:px-10 py-5">
+            <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] sm:text-xs">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+                  <img src="/vg.png" alt="Qoricash" className="h-6 w-auto" style={{ filter: 'invert(1)', opacity: 0.5 }} />
                 </Link>
-                <span className="hidden sm:block w-px h-6" style={{ background: 'rgba(0,0,0,0.1)' }} />
-                <p className="hidden sm:block text-xs leading-relaxed" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
-              </div>
-              <p className="sm:hidden text-xs leading-relaxed mb-6" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>
-
-              {/* Links */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mb-6">
-                <div>
-                  <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Servicios</h4>
-                  <ul className="space-y-2 text-[11px] sm:text-xs">
-                    <li><Link href="/servicios#compra" className="hover:text-gray-900 transition-colors">Compra USD</Link></li>
-                    <li><Link href="/servicios#venta" className="hover:text-gray-900 transition-colors">Venta USD</Link></li>
-                    <li><Link href="/servicios#tipo-cambio" className="hover:text-gray-900 transition-colors">Tipo de cambio</Link></li>
-                    <li><Link href="/preguntas-frecuentes" className="hover:text-gray-900 transition-colors">FAQ</Link></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Legal</h4>
-                  <ul className="space-y-2 text-[11px] sm:text-xs">
-                    <li><Link href="/sobre-nosotros" className="hover:text-gray-900 transition-colors">Nosotros</Link></li>
-                    <li><Link href="/terminos-condiciones" className="hover:text-gray-900 transition-colors">Términos</Link></li>
-                    <li><Link href="/politica-privacidad" className="hover:text-gray-900 transition-colors">Privacidad</Link></li>
-                    <li><Link href="/politica-cookies" className="hover:text-gray-900 transition-colors">Cookies</Link></li>
-                    <li><Link href="/libro-reclamaciones" className="hover:text-gray-900 transition-colors">Reclamaciones</Link></li>
-                  </ul>
-                </div>
-                <div className="col-span-2 md:col-span-2">
-                  <h4 className="font-semibold mb-3 text-[10px] sm:text-xs uppercase tracking-widest" style={{ color: '#0D1117' }}>Contacto</h4>
-                  <ul className="space-y-2.5 text-[11px] sm:text-xs">
-                    <li className="flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#2563EB' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                      <a href="mailto:info@qoricash.pe" className="hover:text-gray-900 transition-colors">info@qoricash.pe</a>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#25D366' }} fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                      <a href="https://wa.me/51910624404" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">910 624 404</a>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      <a href="https://maps.google.com/?q=Av.+Brasil+2790+Int.+504+Pueblo+Libre+Lima" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors leading-relaxed">Av. Brasil N° 2790, Int. 504 · Pueblo Libre</a>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      <span>Lun–Vie 9–6 pm · Sáb 9–1 pm</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Copyright */}
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] sm:text-xs" style={{ borderTop: '1px solid rgba(0,0,0,0.06)', color: '#9CA3AF' }}>
+                <span className="hidden sm:inline" style={{ color: 'rgba(255,255,255,0.12)' }}>|</span>
                 <p>© 2025 Qoricash. Todos los derechos reservados.</p>
-                <div className="flex items-center gap-3">
-                  <Link href="/terminos-condiciones" className="hover:text-gray-600 transition-colors">Términos</Link>
-                  <Link href="/politica-privacidad" className="hover:text-gray-600 transition-colors">Privacidad</Link>
-                  <Link href="/libro-reclamaciones" className="hover:text-gray-600 transition-colors">Reclamaciones</Link>
-                </div>
+                <span style={{ color: 'rgba(255,255,255,0.12)' }}>|</span>
+                <a href="mailto:info@qoricash.pe" className="hover:text-white transition-colors">info@qoricash.pe</a>
+                <span style={{ color: 'rgba(255,255,255,0.12)' }}>·</span>
+                <a href="tel:+51910624404" className="hover:text-white transition-colors">910 624 404</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link href="/terminos-condiciones" className="hover:text-white transition-colors">Términos</Link>
+                <Link href="/politica-privacidad" className="hover:text-white transition-colors">Privacidad</Link>
+                <Link href="/libro-reclamaciones" className="hover:text-white transition-colors">Reclamaciones</Link>
               </div>
             </div>
           </div>

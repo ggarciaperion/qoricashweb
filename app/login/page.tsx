@@ -28,15 +28,15 @@ export default function LoginPage() {
   const login = useAuthStore((s) => s.login);
   const clearError = useAuthStore((s) => s.clearError);
 
-  const getInitialType = (): ClientType | null => {
+  const getInitialType = (): ClientType => {
     const tipo = searchParams.get('tipo');
     if (tipo === 'empresa') return 'empresa';
     if (tipo === 'natural') return 'natural';
     if (fromPage.startsWith('/empresa')) return 'empresa';
-    return null;
+    return 'natural';
   };
 
-  const [clientType, setClientType] = useState<ClientType | null>(getInitialType);
+  const [clientType, setClientType] = useState<ClientType>(getInitialType);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginPhase, setLoginPhase] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -176,7 +176,7 @@ export default function LoginPage() {
   };
 
   const handleBackToSelector = () => {
-    setClientType(null);
+    router.push(fromPage);
     reset();
     setLoginPhase('idle');
     setIsLoading(false);
@@ -235,70 +235,6 @@ export default function LoginPage() {
   `;
 
   const BG = 'linear-gradient(160deg, #EFF6FF 0%, #ffffff 55%, #F8FAFC 100%)';
-
-  /* ══════════════════════════════════════════════════
-     STEP 1 — Selector de tipo
-  ══════════════════════════════════════════════════ */
-  if (clientType === null) {
-    return (
-      <>
-        <style>{SHARED_STYLES}</style>
-        <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: BG, position: 'relative', overflow: 'hidden' }}>
-
-          {/* Dot grid — decorativo, solo desktop */}
-          <div className="ln-bg-deco" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(37,99,235,0.055) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
-          {/* Glow — decorativo, solo desktop */}
-          <div className="ln-bg-deco" style={{ position: 'absolute', top: -200, right: -150, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
-          <div className="ln-bg-deco" style={{ position: 'absolute', bottom: -150, left: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-          <Link href={fromPage} style={{ position: 'absolute', top: 24, left: 24, display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748B', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>
-            <ArrowLeft size={14} />
-            Volver al inicio
-          </Link>
-
-          <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', width: '100%', maxWidth: 540, animation: 'ln-card-in 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
-
-            <img src="/vg.png" alt="QoriCash" style={{ height: 44, width: 'auto', marginBottom: 32 }} />
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0F172A', margin: '0 0 8px' }}>Iniciar sesión</h1>
-            <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 36px' }}>¿Cómo quieres acceder a tu cuenta?</p>
-
-            <div className="ln-type-grid" style={{ display: 'grid' }}>
-
-              {/* Persona Natural */}
-              <button className="ln-type-card natural" onClick={() => setClientType('natural')}>
-                <div style={{ width: 68, height: 68, borderRadius: 18, background: 'rgba(37,99,235,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563EB', animation: 'ln-float 3.2s ease-in-out infinite' }}>
-                  <User size={30} strokeWidth={1.5} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: '#0F172A', marginBottom: 5 }}>Persona Natural</div>
-                  <div style={{ fontSize: 12, color: '#94A3B8', fontWeight: 500 }}>DNI · Carnet de Extranjería</div>
-                </div>
-                <div style={{ width: 28, height: 2, borderRadius: 2, background: '#2563EB', opacity: 0.4 }} />
-              </button>
-
-              {/* Empresa */}
-              <button className="ln-type-card empresa" onClick={() => setClientType('empresa')}>
-                <div style={{ width: 68, height: 68, borderRadius: 18, background: 'rgba(11,20,38,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0B1426', animation: 'ln-float 3.2s ease-in-out 0.8s infinite' }}>
-                  <Building2 size={30} strokeWidth={1.5} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: '#0F172A', marginBottom: 5 }}>Empresa</div>
-                  <div style={{ fontSize: 12, color: '#94A3B8', fontWeight: 500 }}>Ficha RUC</div>
-                </div>
-                <div style={{ width: 28, height: 2, borderRadius: 2, background: '#0B1426', opacity: 0.3 }} />
-              </button>
-            </div>
-
-            <p style={{ marginTop: 32, fontSize: 13, color: '#9CA3AF' }}>
-              ¿No tienes cuenta?{' '}
-              <Link href="/crear-cuenta" style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none' }}>Crear cuenta gratis</Link>
-            </p>
-          </div>
-        </main>
-      </>
-    );
-  }
-
   /* ══════════════════════════════════════════════════
      STEP 2 — Formulario dos columnas
   ══════════════════════════════════════════════════ */
@@ -319,7 +255,7 @@ export default function LoginPage() {
         {/* Back */}
         <button onClick={handleBackToSelector} style={{ position: 'absolute', top: 24, left: 24, display: 'inline-flex', alignItems: 'center', gap: 6, color: '#64748B', fontSize: 13, fontWeight: 500, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <ArrowLeft size={14} />
-          Cambiar tipo
+          Volver
         </button>
 
         <div className="ln-two-col" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 860, borderRadius: 24, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.12)', animation: 'ln-card-in 0.45s cubic-bezier(0.22,1,0.36,1) both' }}>
