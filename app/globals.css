@@ -1326,32 +1326,11 @@ main {
   /* Prevent horizontal overflow from absolute-positioned floating elements */
   .hero-section { overflow-x: hidden !important; }
 
-  /* TC rate cards — reposition inside photo bounds on mobile */
-  .hero-tc-cards {
-    right: 8px !important;
-    transform: none !important;
-    width: 44% !important;
-  }
-  .hero-tc-cards > div {
-    padding: 6px 10px !important;
-    border-radius: 12px !important;
-  }
-  .tc-rate-number { font-size: 20px !important; }
+  /* TC rate cards — ocultas en móvil (reemplazadas por barra frosted en la foto) */
+  .hero-tc-cards { display: none !important; }
 
-  /* CTA pills — reposition inside photo bounds on mobile */
-  .hero-cta-pills {
-    left: 8px !important;
-    transform: none !important;
-    top: 68% !important;
-    gap: 7px !important;
-  }
-  .hero-cta-pills .pill-iniciar {
-    padding: 8px 12px !important;
-    border-radius: 10px !important;
-    gap: 7px !important;
-  }
-  .hero-cta-pills .pill-iniciar > span { font-size: 9px !important; }
-  .hero-cta-pills .pill-icon { width: 11px !important; height: 11px !important; }
+  /* CTA pills — ocultas en móvil */
+  .hero-cta-pills { display: none !important; }
 
   /* Reduce photo height */
   .hero-photo-wrap {

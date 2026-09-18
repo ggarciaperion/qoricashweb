@@ -1035,6 +1035,23 @@ export default function Home() {
                     <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.85)' }}>En vivo · USD / PEN</span>
                   </div>
 
+                  {/* Mobile: barra TC prominente en la parte inferior de la foto */}
+                  <div className="sm:hidden" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', padding: '14px 20px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Compramos</div>
+                      <div style={{ fontSize: 30, fontWeight: 900, color: '#ffffff', lineHeight: 1, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
+                        {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
+                      </div>
+                    </div>
+                    <div style={{ width: 1, height: 42, background: 'rgba(255,255,255,0.2)' }} />
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Vendemos</div>
+                      <div style={{ fontSize: 30, fontWeight: 900, color: '#70b4ff', lineHeight: 1, letterSpacing: '-0.02em', fontVariantNumeric: 'tabular-nums' }}>
+                        {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
 
                 {/* ── Pills: borde izquierdo de la foto, mitad dentro mitad fuera ── */}
@@ -1239,8 +1256,8 @@ export default function Home() {
                 Transferimos directo a tu cuenta bancaria. Sin pasos extra, sin cuentas intermediarias. Tu dinero llega donde tú decides.
               </p>
 
-              {/* Fila bancos secundarios */}
-              <div className="ps-bank-pills" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              {/* Fila bancos secundarios — oculta en móvil */}
+              <div className="hidden sm:flex ps-bank-pills" style={{ alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                 {[
                   { logo: '/BBVA.png',           name: 'BBVA',      h: 28, cls: 'banks-rp1' },
                   { logo: '/Scotiabank.png',      name: 'Scotiabank',h: 42, cls: 'banks-rp2' },
@@ -1256,12 +1273,12 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Nota CCI */}
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, marginTop: 10, textAlign: 'justify' }}>
+              {/* Nota CCI — solo desktop */}
+              <p className="hidden lg:block" style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, marginTop: 10, textAlign: 'justify' }}>
                 Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros se realizan vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
               </p>
 
-              {/* Mobile: bank image + BCP/Interbank/BanBif pills below text */}
+              {/* Mobile: imagen → logos BCP/Interbank/BanBif → nota CCI */}
               <div className="flex lg:hidden flex-col items-center mt-6 gap-3">
                 <img src="/kj.jpeg" alt="Qoricash bancos" style={{ width: '75%', maxWidth: 260, borderRadius: 14, display: 'block' }} />
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -1275,6 +1292,9 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', lineHeight: 1.55, marginTop: 4, textAlign: 'left', width: '100%' }}>
+                  Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros se realizan vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
+                </p>
               </div>
             </div>
 
