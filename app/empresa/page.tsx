@@ -99,6 +99,8 @@ export default function EmpresaPage() {
       )}
 
       <style>{`
+        @keyframes film-scroll-up   { from{transform:translateY(0)} to{transform:translateY(-50%)} }
+        @keyframes film-scroll-down { from{transform:translateY(-50%)} to{transform:translateY(0)} }
         @keyframes ec-shimmer   { 0%,100%{opacity:0.75} 50%{opacity:1} }
         @keyframes ec-glow-in   { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
         @keyframes ec-ping-slow { 0%{transform:scale(1);opacity:0.5} 100%{transform:scale(2.4);opacity:0} }
@@ -279,83 +281,104 @@ export default function EmpresaPage() {
         {/* ================================================================
             HERO — LIGHT CORPORATE
         ================================================================ */}
-        <section style={{ background: 'linear-gradient(160deg, #EFF6FF 0%, #ffffff 55%, #F8FAFC 100%)', position: 'relative', overflow: 'hidden', paddingTop: 80 }}>
-          {/* Dot grid */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(37,99,235,0.055) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
-          {/* Blue ambient glow — top right */}
-          <div style={{ position: 'absolute', top: -180, right: -120, width: 650, height: 650, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
-          {/* Subtle glow — bottom left */}
-          <div style={{ position: 'absolute', bottom: -100, left: -80, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <section style={{ background: '#0A0A0A', position: 'relative', overflow: 'hidden', paddingTop: 80, minHeight: '100dvh' }}>
 
-          {/* ── MICRO ANIMACIONES FONDO ── */}
+          {/* ── Film Strip Columns ── */}
+          {(() => {
+            const col1 = [
+              '/ty/Agro-exporter_viewing_transfer_n__2K_20260917133151.jpeg',
+              '/ty/Carpenter_looking_at_phone_2K_20260917133207.jpeg',
+              '/ty/Entrepreneur_holding_smartphone___2K_20260917133255.jpeg',
+              '/ty/Executive_looking_at_phone_2K_20260917133335.jpeg',
+              '/ty/Headphones_and_smartphone_on_sur__2K_20260917133312.jpeg',
+              '/ty/Man_smiling_at_smartphone_2K_20260917133338.jpeg',
+              '/ty/Watch_and_smartphone_on_wrist_2K_20260917133436.jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(3).jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(7).jpeg',
+              '/ty/Woman_looking_at_smartphone_2K_20260917133425.jpeg',
+            ];
+            const col2 = [
+              '/ty/Architect_showing_transaction_on__2K_20260917133416.jpeg',
+              '/ty/Engineer_reviewing_machinery_quo__2K_20260917133211.jpeg',
+              '/ty/Entrepreneur_smiling_with_smartp__2K_20260917133422.jpeg',
+              '/ty/Farmer_looking_at_phone_notifica__2K_20260917133233.jpeg',
+              '/ty/Man_checking_phone_in_mountains_2K_20260917133345.jpeg',
+              '/ty/Miner_holding_phone_in_shop_2K_20260917133155.jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55.jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(4).jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(8).jpeg',
+            ];
+            const col3 = [
+              '/ty/Baker_holding_smartphone_smiling_2K_20260917133344.jpeg',
+              '/ty/Engineer_reviewing_machinery_quo__2K_20260917133222.jpeg',
+              '/ty/Executive_holding_smartphone_in___2K_20260917133401.jpeg',
+              '/ty/Gas_station_owner_holding_smartp__2K_20260917133133.jpeg',
+              '/ty/Man_holding_smartphone_in_workshop_2K_20260917133349.jpeg',
+              '/ty/Professional_walking_holding_sma__2K_20260917133259.jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(1).jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(5).jpeg',
+              '/ty/Woman_holding_smartphone_with_ca__2K_20260917133255.jpeg',
+            ];
+            const col4 = [
+              '/ty/CFO_smiling_at_smartphone_2K_20260917133426.jpeg',
+              '/ty/Engineer_using_smartphone_in_mine_2K_20260917133138.jpeg',
+              '/ty/Executive_looking_at_phone_2K_20260917133159.jpeg',
+              '/ty/Gas_station_owner_holding_smartp__2K_20260917133225.jpeg',
+              '/ty/Man_smiling_at_phone_in_2K_20260917133252.jpeg',
+              '/ty/Traveler_viewing_phone_near_SUV_2K_20260917133258.jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(2).jpeg',
+              '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(6).jpeg',
+              '/ty/Woman_holding_tablet_with_quote_2K_20260917133239.jpeg',
+            ];
+            const imgStyle: React.CSSProperties = { width: '100%', height: 220, objectFit: 'cover', objectPosition: 'center top', borderRadius: 10, display: 'block', flexShrink: 0 };
+            return (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+                {/* LEFT — 2 columnas */}
+                <div className="hidden lg:flex" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '26%', gap: 8, padding: '0 8px' }}>
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, animation: 'film-scroll-up 70s linear infinite' }}>
+                      {[...col1, ...col1].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, animation: 'film-scroll-down 55s linear infinite' }}>
+                      {[...col2, ...col2].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                    </div>
+                  </div>
+                  <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to right, transparent, #0A0A0A)' }} />
+                </div>
+                {/* RIGHT — 2 columnas */}
+                <div className="hidden lg:flex" style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '26%', gap: 8, padding: '0 8px' }}>
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, animation: 'film-scroll-down 62s linear infinite' }}>
+                      {[...col3, ...col3].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, animation: 'film-scroll-up 48s linear infinite' }}>
+                      {[...col4, ...col4].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                    </div>
+                  </div>
+                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to left, transparent, #0A0A0A)' }} />
+                </div>
+                {/* Fade top + bottom */}
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 18%, transparent 82%, #0A0A0A 100%)' }} />
+              </div>
+            );
+          })()}
 
-          {/* Símbolo $ flotante izquierda */}
-          <div style={{ position: 'absolute', left: '6%', top: '18%', fontSize: 80, fontWeight: 900, color: '#2563EB', pointerEvents: 'none', userSelect: 'none', animation: 'ec-sym-float 7s ease-in-out infinite' }}>$</div>
-          {/* Símbolo $ flotante derecha pequeño */}
-          <div style={{ position: 'absolute', right: '8%', bottom: '22%', fontSize: 48, fontWeight: 900, color: '#2563EB', pointerEvents: 'none', userSelect: 'none', animation: 'ec-sym-float2 9s ease-in-out 1.5s infinite' }}>$</div>
+          <div className="relative z-10 max-w-3xl mx-auto px-6 sm:px-8 lg:px-10 pt-16 sm:pt-24 pb-16 sm:pb-24 flex flex-col items-center text-center">
 
-          {/* Velas japonesas — grupo decorativo bottom-left */}
-          <div style={{ position: 'absolute', bottom: 32, left: '12%', display: 'flex', alignItems: 'flex-end', gap: 5, pointerEvents: 'none' }}>
-            {[
-              { h: 48, color: '#2563EB', delay: '0s',    anim: 'ec-candle-up' },
-              { h: 32, color: '#94A3B8', delay: '0.4s',  anim: 'ec-candle-dn' },
-              { h: 60, color: '#2563EB', delay: '0.8s',  anim: 'ec-candle-up' },
-              { h: 24, color: '#94A3B8', delay: '0.2s',  anim: 'ec-candle-dn' },
-              { h: 52, color: '#2563EB', delay: '1.1s',  anim: 'ec-candle-up' },
-              { h: 38, color: '#2563EB', delay: '0.6s',  anim: 'ec-candle-up' },
-              { h: 20, color: '#94A3B8', delay: '1.3s',  anim: 'ec-candle-dn' },
-            ].map(({ h, color, delay, anim }, i) => (
-              <div key={i} style={{ width: 7, height: h, background: color, borderRadius: 2, opacity: 0.18, transformOrigin: 'bottom', animation: `${anim} ${4 + i * 0.4}s ease-in-out ${delay} infinite` }} />
-            ))}
-          </div>
-
-          {/* Línea de precio animada — SVG top-right */}
-          <svg width="280" height="70" viewBox="0 0 280 70" fill="none" style={{ position: 'absolute', top: 60, right: '4%', opacity: 0.09, pointerEvents: 'none' }}>
-            <polyline
-              points="0,55 35,45 70,50 105,30 140,35 175,15 210,20 245,8 280,12"
-              stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              fill="none"
-              strokeDasharray="600"
-              style={{ animation: 'ec-line-draw 4s ease-out forwards, ec-line-draw 8s ease-in-out 4s infinite alternate' }}
-            />
-            <circle cx="280" cy="12" r="3.5" fill="#2563EB" style={{ animation: 'ec-dot-blink 2s ease-in-out infinite' }} />
-          </svg>
-
-          {/* Ticker horizontal sutil — fila de texto cotizaciones */}
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, overflow: 'hidden', height: 24, pointerEvents: 'none', borderTop: '1px solid rgba(37,99,235,0.06)' }}>
-            <div style={{ display: 'flex', whiteSpace: 'nowrap', animation: 'ec-ticker-drift 28s linear infinite', opacity: 0.18 }}>
-              {['USD/PEN 3.358 ▲', 'EUR/USD 1.0842 ▲', 'GBP/USD 1.2631 ▼', 'USD/JPY 147.82 ▲', 'USD/CLP 945.30 ▼', 'USD/COP 4,132 ▲', 'USD/MXN 17.24 ▼',
-                'USD/PEN 3.358 ▲', 'EUR/USD 1.0842 ▲', 'GBP/USD 1.2631 ▼', 'USD/JPY 147.82 ▲', 'USD/CLP 945.30 ▼', 'USD/COP 4,132 ▲', 'USD/MXN 17.24 ▼'].map((t, i) => (
-                <span key={i} style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: '#2563EB', padding: '0 28px', fontFamily: 'monospace' }}>{t}</span>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative z-10 max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-12 sm:pt-16 pb-14 sm:pb-20">
-
-            {/* Mobile H1 */}
-            <h1 className="sm:hidden font-display font-black leading-[1.04] mb-6 text-center" style={{ fontSize: 'clamp(2rem, 6vw, 2.8rem)', color: '#0F172A' }}>
-              El tipo de cambio<br />que su empresa<br /><span style={{ color: '#2563EB' }}>merece.</span>
-            </h1>
-
-            <div className="grid sm:grid-cols-2 gap-8 lg:gap-14 items-center">
-
-              {/* ── LEFT ── */}
-              <div className="order-2 sm:order-1">
-
-                {/* Corporate label */}
-                <p className="hidden sm:block text-[11px] font-bold uppercase mb-8" style={{ color: '#9CA3AF', letterSpacing: '0.45em' }}>Qoricash Corporate · Fintech</p>
-
-                <h1 className="hidden sm:block font-display font-black leading-[1.04] mb-5" style={{ fontSize: 'clamp(2.2rem, 4.6vw, 3.4rem)', color: '#0F172A' }}>
-                  El tipo de cambio<br />que su empresa<br /><span style={{ color: '#2563EB' }}>merece.</span>
+                <h1 className="font-display font-black leading-[1.0] mb-6 uppercase" style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', color: '#ffffff', letterSpacing: '-0.02em' }}>
+                  En los negocios<br />cada centavo<br /><span style={{ color: '#2563EB' }}>cuenta.</span>
                 </h1>
 
-                <p className="text-sm sm:text-base leading-relaxed mb-9 max-w-md text-justify sm:text-left" style={{ color: '#64748B' }}>
-                  Plataforma especializada en cambio de divisas para empresas. TC preferencial garantizado, liquidación en menos de 15 minutos y ejecutivo dedicado para operaciones desde $5,000.
+                <p className="text-base sm:text-lg leading-relaxed mb-10 max-w-xl" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  Tu empresa merece más que el banco. Cambia dólares con el mejor tipo de cambio del mercado, sin comisiones ocultas y con un ejecutivo dedicado que gestiona cada operación.
                 </p>
 
                 {/* Trust strip */}
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-[11px] font-medium" style={{ color: '#64748B' }}>
+                <div className="flex flex-wrap items-center justify-center gap-6 text-[11px] font-medium mb-10" style={{ color: 'rgba(255,255,255,0.45)' }}>
                   <span className="flex items-center gap-1.5">
                     <Shield className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#2563EB' }} />
                     Registrado SBS
@@ -369,11 +392,8 @@ export default function EmpresaPage() {
                     0 comisiones
                   </span>
                 </div>
-              </div>
 
-              {/* ── RIGHT ── */}
-              <div className="order-1 sm:order-2 flex items-center justify-center">
-                <div className="w-full max-w-[400px]">
+                <div className="w-full max-w-[420px]">
                   {isAuthenticated ? (
                     /* ── Authenticated: live exchange rate card ── */
                     <div className="flex flex-col gap-3 w-full">
@@ -465,142 +485,8 @@ export default function EmpresaPage() {
                         <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                       </button>
                     </div>
-                  ) : (
-                    /* Corporate card */
-                    <div className="relative overflow-hidden rounded-2xl" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', animation: 'ec-glow-in 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s both' }}>
-                      {/* Accent bar */}
-                      <div className="h-[2px]" style={{ background: 'linear-gradient(90deg, #1E40AF, #2563EB 50%, #3B82F6)' }} />
-
-                      <div className="empresa-hero-card-body">
-
-                        {/* Header row */}
-                        <div className="flex items-center justify-between mb-6">
-                          <p className="text-[9px] font-bold uppercase tracking-[0.28em]" style={{ color: '#2563EB' }}>Corporativo</p>
-                          <span className="flex items-center gap-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', color: '#1D4ED8' }}>
-                            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-                            </svg>
-                            Exclusivo
-                          </span>
-                        </div>
-
-                        {/* Corporate FX visual */}
-                        <div className="mb-6 rounded-xl" style={{ background: 'rgba(37,99,235,0.03)', border: '1px solid rgba(37,99,235,0.1)', overflow: 'hidden' }}>
-                          <div style={{ padding: '18px 16px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-                            <svg width="210" height="96" viewBox="0 0 210 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                              {/* ─ Ground line ─ */}
-                              <line x1="18" y1="88" x2="192" y2="88" stroke="rgba(0,0,0,0.12)" strokeWidth="0.8"/>
-
-                              {/* ─ Left building wing ─ */}
-                              <rect x="40" y="46" width="24" height="42" fill="rgba(37,99,235,0.08)" stroke="rgba(37,99,235,0.25)" strokeWidth="0.8" rx="0.5"/>
-                              {[48,56,64,72,80].map((y,ri) => [43,51].map((x,ci) => (
-                                <rect key={`lw-${ri}-${ci}`} x={x} y={y} width="5" height="4" rx="0.4" fill="#2563EB"
-                                  style={{ animation: `ec-win ${2.2 + ri * 0.4 + ci * 0.3}s ease-in-out ${ri * 0.2 + ci * 0.15}s infinite`,
-                                    opacity: [[0.7,0.25],[0.25,0.65],[0.6,0.2],[0.2,0.7],[0.5,0.3]][ri][ci] }} />
-                              )))}
-
-                              {/* ─ Main tower ─ */}
-                              <rect x="68" y="18" width="36" height="70" fill="rgba(37,99,235,0.1)" stroke="rgba(37,99,235,0.35)" strokeWidth="1" rx="0.5"/>
-                              {/* Antenna */}
-                              <line x1="86" y1="18" x2="86" y2="10" stroke="rgba(37,99,235,0.4)" strokeWidth="0.9"/>
-                              {/* Beacon */}
-                              <circle cx="86" cy="9" r="2.2" fill="#2563EB"
-                                style={{ animation: 'ec-beacon 1.6s ease-in-out infinite', transformOrigin: '86px 9px' }}/>
-                              <circle cx="86" cy="9" r="5" fill="none" stroke="rgba(37,99,235,0.35)" strokeWidth="0.7"
-                                style={{ animation: 'ec-ping-slow 1.6s ease-out infinite', transformOrigin: '86px 9px' }}/>
-                              {/* Tower windows 4×5 */}
-                              {[20,29,38,47,56,65].map((y,ri) => [71,79,87,95].map((x,ci) => (
-                                <rect key={`tw-${ri}-${ci}`} x={x} y={y} width="4.5" height="5" rx="0.4" fill="#3B82F6"
-                                  style={{ animation: `ec-win ${2 + ri * 0.35 + ci * 0.25}s ease-in-out ${ri * 0.18 + ci * 0.12}s infinite`,
-                                    opacity: [[0.75,0.3,0.8,0.4],[0.3,0.75,0.2,0.7],[0.8,0.2,0.6,0.3],[0.4,0.78,0.7,0.25],[0.65,0.35,0.3,0.75],[0.3,0.6,0.75,0.4]][ri][ci] }} />
-                              )))}
-                              {/* Lobby */}
-                              <rect x="78" y="78" width="16" height="10" rx="0.5" fill="rgba(37,99,235,0.15)" stroke="rgba(37,99,235,0.3)" strokeWidth="0.6"/>
-
-                              {/* ─ Right building wing ─ */}
-                              <rect x="108" y="38" width="24" height="50" fill="rgba(37,99,235,0.08)" stroke="rgba(37,99,235,0.25)" strokeWidth="0.8" rx="0.5"/>
-                              {[41,49,57,65,73,81].map((y,ri) => [111,119].map((x,ci) => (
-                                <rect key={`rw-${ri}-${ci}`} x={x} y={y} width="5" height="4" rx="0.4" fill="#2563EB"
-                                  style={{ animation: `ec-win ${2.3 + ri * 0.3 + ci * 0.2}s ease-in-out ${ri * 0.22 + ci * 0.1}s infinite`,
-                                    opacity: [[0.55,0.25],[0.68,0.4],[0.2,0.65],[0.55,0.2],[0.3,0.6],[0.5,0.3]][ri][ci] }} />
-                              )))}
-
-                              {/* ─ Trend line (rising, right side) ─ */}
-                              <polyline points="140,80 150,62 159,68 168,46 178,28"
-                                stroke="#16A34A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-                                strokeDasharray="120"
-                                style={{ animation: 'ec-trend 3.5s ease-in-out infinite', strokeDashoffset: 120 }}/>
-                              {/* Trend dots */}
-                              {[[140,80,0.5],[150,62,0.65],[159,68,0.55],[168,46,0.8]].map(([x,y,o]) => (
-                                <circle key={`${x}`} cx={x} cy={y} r="2.2" fill="#16A34A" opacity={o as number}/>
-                              ))}
-                              <circle cx="178" cy="28" r="3" fill="#16A34A" style={{ animation: 'ec-node-pulse 1.8s ease-in-out infinite' }}/>
-                              {/* Up-arrow head */}
-                              <path d="M174 28 L178 22 L182 28" stroke="#16A34A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-
-                              {/* ─ $ node (left) ─ */}
-                              <circle cx="22" cy="60" r="16" fill="rgba(37,99,235,0.07)" stroke="rgba(37,99,235,0.35)" strokeWidth="1"/>
-                              <circle cx="22" cy="60" r="16" fill="none" stroke="rgba(37,99,235,0.15)" strokeWidth="0.9" strokeDasharray="3 4.5"
-                                style={{ transformOrigin: '22px 60px', animation: 'ec-spin-slow 22s linear infinite' }}/>
-                              <text x="22" y="65" textAnchor="middle" fontSize="15" fontWeight="900" fill="#1D4ED8" fontFamily="system-ui, sans-serif">$</text>
-
-                              {/* Connector $ → building */}
-                              <line x1="38" y1="62" x2="44" y2="65" stroke="rgba(37,99,235,0.2)" strokeWidth="0.8" strokeDasharray="2.5 3"/>
-
-                              {/* ─ S/ node (bottom right) ─ */}
-                              <circle cx="196" cy="74" r="13" fill="rgba(0,0,0,0.03)" stroke="rgba(0,0,0,0.18)" strokeWidth="0.9"/>
-                              <circle cx="196" cy="74" r="13" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="0.9" strokeDasharray="3 4.5"
-                                style={{ transformOrigin: '196px 74px', animation: 'ec-spin-r 18s linear infinite' }}/>
-                              <text x="196" y="78" textAnchor="middle" fontSize="11" fontWeight="900" fill="#374151" fontFamily="system-ui, sans-serif">S/</text>
-
-                              {/* Connector building → S/ */}
-                              <line x1="136" y1="72" x2="183" y2="74" stroke="rgba(0,0,0,0.1)" strokeWidth="0.8" strokeDasharray="2.5 3"/>
-
-                            </svg>
-
-                            {/* Caption */}
-                            <div style={{ textAlign: 'center' }}>
-                              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#94A3B8' }}>
-                                Solución corporativa de divisas
-                              </div>
-                              <div style={{ fontSize: 9, color: '#CBD5E1', marginTop: 3, letterSpacing: '0.05em' }}>
-                                TC preferencial exclusivo · Acceso para clientes registrados
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Pillars */}
-                        <div className="flex gap-6 mb-7">
-                          {[
-                            { value: "15'", label: 'Liquidación' },
-                            { value: '0%',   label: 'Comisiones' },
-                            { value: '+TC',  label: 'Preferencial' },
-                          ].map(({ value, label }) => (
-                            <div key={label}>
-                              <div className="text-xl font-black leading-none mb-1" style={{ color: '#0F172A' }}>{value}</div>
-                              <div className="text-[9px] font-medium" style={{ color: '#94A3B8' }}>{label}</div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="mb-5" style={{ height: 1, background: 'rgba(0,0,0,0.07)' }} />
-
-                        {/* CTAs */}
-                        <button onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa')} className="flex items-center justify-between w-full px-5 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:brightness-110 group mb-2.5" style={{ background: '#2563EB' }}>
-                          <span>Cotizar tipo de cambio corporativo</span>
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
-                        <Link href="/crear-cuenta?tipo=empresa" className="flex items-center justify-center w-full py-2 text-xs font-medium transition-colors hover:opacity-70" style={{ color: '#94A3B8' }}>
-                          Registrarme como empresa
-                        </Link>
-                      </div>
-                    </div>
-                  )}
+                  ) : null}
                 </div>
-              </div>
-            </div>
           </div>
         </section>
 

@@ -27,6 +27,14 @@ export default function Home() {
   const pathname = usePathname();
   const isEmpresaPage = pathname === '/empresa';
   const { user, isAuthenticated, logout } = useAuthStore();
+  const [topBarHidden, setTopBarHidden] = useState(false);
+  const [headerBg, setHeaderBg] = useState(!isEmpresaPage ? '#1463FF' : '#ffffff');
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const heroMediaRef = useRef<HTMLDivElement>(null);
+  const wspMediaRef = useRef<HTMLDivElement>(null);
+  const banksMediaRef = useRef<HTMLDivElement>(null);
+  const [wspActiveStep, setWspActiveStep] = useState(0);
+  const [wspResetting, setWspResetting] = useState(false);
   const [buyRate, setBuyRate] = useState('3.750');
   const [sellRate, setSellRate] = useState('3.770');
 
@@ -41,6 +49,7 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [hoveredBank, setHoveredBank] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [activeBankTab, setActiveBankTab] = useState<'bcp' | 'interbank' | 'banbif' | 'cci'>('bcp');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [bcrpData, setBcrpData] = useState<Array<{fecha:string;compra:number;venta:number}>>([]);
 
@@ -77,6 +86,102 @@ export default function Home() {
     const unsub = startRateSubscription();
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    const onScroll = () => setTopBarHidden(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Animaciones de entrada del panel de media (foto + cards + pills)
+  useEffect(() => {
+    const el = heroMediaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('hero-media-visible');
+        } else {
+          el.classList.remove('hero-media-visible');
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Animaciones de entrada + secuencia de checks — sección WhatsApp
+  useEffect(() => {
+    const el = wspMediaRef.current;
+    if (!el) return;
+    let timers: ReturnType<typeof setTimeout>[] = [];
+
+    const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+    const startCycle = () => {
+      clearTimers();
+      setWspResetting(false);
+      setWspActiveStep(0);
+      const t1 = setTimeout(() => setWspActiveStep(1), 1200);
+      const t2 = setTimeout(() => setWspActiveStep(2), 2300);
+      const t3 = setTimeout(() => setWspActiveStep(3), 3400);
+      const tOut = setTimeout(() => setWspResetting(true), 4600);   // fade out badges
+      const tReset = setTimeout(() => { setWspResetting(false); setWspActiveStep(0); }, 5200); // reset limpio
+      const t4 = setTimeout(startCycle, 5600);                      // reinicia ciclo
+      timers = [t1, t2, t3, tOut, tReset, t4];
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('wsp-media-visible');
+          startCycle();
+        } else {
+          el.classList.remove('wsp-media-visible');
+          clearTimers();
+          setWspActiveStep(0);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => { observer.disconnect(); clearTimers(); };
+  }, []);
+
+  // Animaciones de entrada sección Bancos
+  useEffect(() => {
+    const el = banksMediaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add('banks-section-visible');
+        } else {
+          el.classList.remove('banks-section-visible');
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Sincroniza el color del header con la sección que está detrás de él
+  useEffect(() => {
+    const el = heroSectionRef.current;
+    if (!el) return;
+    const heroColor = !isEmpresaPage ? '#1463FF' : '#ffffff';
+    setHeaderBg(heroColor);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setHeaderBg(entry.isIntersecting ? heroColor : '#ffffff');
+      },
+      { rootMargin: '-1px 0px 0px 0px', threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isEmpresaPage]);
 
   // Auto-redirigir solo si el usuario llega directamente (sin historial de navegación previo dentro del app)
   // No redirigir cuando viene desde el dashboard usando "Página de inicio"
@@ -118,7 +223,11 @@ export default function Home() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            entry.target.classList.remove('visible');
+          }
         });
       },
       { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
@@ -355,36 +464,98 @@ export default function Home() {
       document.body
     )}
 
-    <main className="min-h-screen pt-[72px]">
+    <main className="min-h-screen">
       {/* == FONDO FIJO == */}
       <div style={{ position: 'fixed', inset: 0, zIndex: -1, backgroundColor: '#F8FAFC' }} />
 
+      {/* == TOP BAR — desaparece al hacer scroll == */}
+      <div
+        className="fixed left-0 right-0 w-full z-[51] transition-transform duration-300 ease-in-out"
+        style={{
+          top: 0,
+          transform: topBarHidden ? 'translateY(-100%)' : 'translateY(0)',
+          background: '#F3F4F6',
+          borderBottom: '1px solid rgba(0,0,0,0.07)',
+          height: 36,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div className="flex items-center gap-1" style={{ fontSize: 12, fontWeight: 600, color: '#9CA3AF', letterSpacing: '0.04em' }}>
+          <button
+            onClick={() => {
+              if ('startViewTransition' in document) {
+                (document as any).startViewTransition(() => router.push('/'));
+              } else { router.push('/'); }
+            }}
+            className="px-3 py-0.5 rounded-full transition-all duration-200"
+            style={{
+              color: !isEmpresaPage ? '#111827' : '#9CA3AF',
+              fontWeight: !isEmpresaPage ? 700 : 500,
+              background: !isEmpresaPage ? 'rgba(0,0,0,0.07)' : 'transparent',
+            }}
+          >
+            Personas
+          </button>
+          <span style={{ color: '#D1D5DB' }}>·</span>
+          <button
+            onClick={() => {
+              if ('startViewTransition' in document) {
+                (document as any).startViewTransition(() => router.push('/empresa'));
+              } else { router.push('/empresa'); }
+            }}
+            className="px-3 py-0.5 rounded-full transition-all duration-200"
+            style={{
+              color: isEmpresaPage ? '#111827' : '#9CA3AF',
+              fontWeight: isEmpresaPage ? 700 : 500,
+              background: isEmpresaPage ? 'rgba(0,0,0,0.07)' : 'transparent',
+            }}
+          >
+            Negocios
+          </button>
+        </div>
+      </div>
+
       {/* == NAVBAR == */}
-      <header className="fixed top-0 left-0 right-0 w-full z-50" style={{ background: '#ffffff', borderBottom: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
+      <header
+        className="fixed left-0 right-0 w-full z-50 transition-all duration-500 ease-in-out"
+        style={{
+          top: topBarHidden ? 0 : 36,
+          background: headerBg,
+          borderBottom: headerBg === '#ffffff' ? '1px solid rgba(0,0,0,0.06)' : 'none',
+          boxShadow: headerBg === '#ffffff' ? '0 1px 8px rgba(0,0,0,0.04)' : 'none',
+          transition: 'background 0.3s ease, top 0.3s ease',
+        }}
+      >
         <nav className="w-full">
-          <div className="max-w-5xl mx-auto flex justify-between items-center h-20 px-6 sm:px-8 lg:px-10">
+          <div className={`relative flex justify-between items-center h-20 ${!isEmpresaPage ? 'px-6 sm:px-10 lg:px-16' : 'max-w-5xl mx-auto px-6 sm:px-8 lg:px-10'}`}>
+
+            {/* TC rates — centro del header, visible solo al hacer scroll */}
+            <div className="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-2"
+              style={{ opacity: headerBg === '#ffffff' ? 1 : 0, transform: `translateX(-50%) translateY(${headerBg === '#ffffff' ? '0px' : '6px'})`, transition: 'opacity 0.35s ease, transform 0.35s ease', pointerEvents: headerBg === '#ffffff' ? 'auto' : 'none' }}>
+              <div className="flex items-center gap-3 rounded-xl px-4 py-2" style={{ background: '#F8FAFF', border: '1px solid #E0EAFF' }}>
+                <div className="text-center">
+                  <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>Compramos</div>
+                  <div className="font-black text-base leading-tight" style={{ color: '#0D1117' }}>S/ {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}</div>
+                </div>
+                <div style={{ width: 1, height: 32, background: '#E0EAFF' }} />
+                <div className="text-center">
+                  <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6B7280' }}>Vendemos</div>
+                  <div className="font-black text-base leading-tight" style={{ color: '#1463FF' }}>S/ {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}</div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 sm:gap-4">
               <Link href="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
-                <img src="/vg.png" alt="Qoricash" className="h-16 w-auto" />
+                <img src="/rep.png" alt="Qoricash" style={{ height: 33, width: 'auto', objectFit: 'contain', filter: headerBg === '#ffffff' ? 'brightness(0)' : 'none', transition: 'filter 0.3s ease' }} />
                 {isEmpresaPage && (
-                  <span className="self-center text-[11px] font-bold uppercase" style={{ color: '#9CA3AF', letterSpacing: '0.45em' }}>Corporate</span>
+                  <span className="self-center text-[11px] font-bold uppercase" style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '0.45em' }}>Corporate</span>
                 )}
               </Link>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
-              {[
-              ].map(({ href, label, isLink }) => {
-                const cls = `relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900`;
-                const inner = (
-                  <>
-                    {label}
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
-                  </>
-                );
-                return isLink
-                  ? <Link key={href} href={href} className={cls}>{inner}</Link>
-                  : <a key={href} href={href} className={cls}>{inner}</a>;
-              })}
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
                   {user && (
@@ -404,10 +575,11 @@ export default function Home() {
                         }
                         setIsUserMenuOpen(!isUserMenuOpen);
                       }}
-                      className="relative flex items-center gap-2 text-sm font-medium transition-colors duration-200 group py-1 text-gray-700 hover:text-gray-900"
+                      className="relative flex items-center gap-2 text-sm font-medium transition-all duration-200 group py-1 hover:opacity-80"
+                      style={{ color: '#ffffff' }}
                     >
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-black shrink-0"
-                        style={{ background: '#2563EB' }}>
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black shrink-0"
+                        style={{ background: 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1.5px solid rgba(255,255,255,0.35)' }}>
                         {((user?.razon_social || user?.nombres) ?? '?').charAt(0).toUpperCase()}
                       </div>
                       <span className="max-w-[100px] truncate">
@@ -416,68 +588,37 @@ export default function Home() {
                           : user?.nombres?.trim().split(/\s+/)[0]}
                       </span>
                       <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                     </button>
                   </div>
                 </div>
               ) : (
                 <>
-                  {!isAuthenticated && (
-                    <>
-                      <button
-                        className="relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900"
-                        onClick={() => {
-                          const href = isEmpresaPage ? '/' : '/empresa';
-                          if ('startViewTransition' in document) {
-                            (document as any).startViewTransition(() => router.push(href));
-                          } else {
-                            router.push(href);
-                          }
-                        }}
-                      >
-                        {isEmpresaPage ? 'Personas' : 'Empresas'}
-                        <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
-                      </button>
-                      <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
-                    </>
-                  )}
-                  <Link href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`} className="relative text-sm font-medium transition-colors duration-200 group py-1 text-gray-600 hover:text-gray-900">
+                  <Link
+                    href={`/login?from=${isEmpresaPage ? '/empresa' : '/'}`}
+                    className="nav-login text-sm font-medium"
+                    style={{ color: headerBg === '#ffffff' ? '#1463FF' : 'rgba(255,255,255,0.85)', transition: 'color 0.3s ease' }}
+                  >
                     Iniciar Sesión
-                    <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white rounded-full transition-all duration-300 ease-out group-hover:w-full" />
                   </Link>
-                  <Link href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'} className="text-sm font-bold px-5 py-2 rounded-full hover:-translate-y-0.5 transition-all duration-200 shadow-md" style={{ background: '#0A0A0A', color: '#ffffff' }}>
+                  <Link
+                    href={isEmpresaPage ? '/crear-cuenta?tipo=empresa' : '/crear-cuenta'}
+                    className="nav-register text-sm font-bold px-5 py-2 rounded-full"
+                    style={{ background: '#ffffff', color: '#1247CC', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}
+                  >
                     Regístrate
                   </Link>
                 </>
               )}
             </div>
-            {/* Mobile - Personas/Empresas + separador + hamburger */}
-            <div className="lg:hidden flex items-center">
-              {!isAuthenticated && (
-                <>
-                  <button
-                    className="text-sm font-medium transition-colors px-2 text-gray-500 hover:text-gray-900"
-                    onClick={() => {
-                      const href = isEmpresaPage ? '/' : '/empresa';
-                      if ('startViewTransition' in document) {
-                        (document as any).startViewTransition(() => router.push(href));
-                      } else {
-                        router.push(href);
-                      }
-                    }}
-                  >
-                    {isEmpresaPage ? 'Personas' : 'Empresas'}
-                  </button>
-                  <span className="h-4 w-px" style={{ background: 'rgba(0,0,0,0.15)' }} aria-hidden="true" />
-                </>
-              )}
+            {/* Mobile - hamburger */}
+            <div className="lg:hidden flex items-center gap-2">
               {isAuthenticated && user && (
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black shrink-0 mr-0.5"
-                  style={{ background: '#2563EB' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                  style={{ background: 'rgba(255,255,255,0.2)', color: '#ffffff', border: '1.5px solid rgba(255,255,255,0.35)' }}>
                   {((user.razon_social || user.nombres) ?? '?').charAt(0).toUpperCase()}
                 </div>
               )}
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 transition text-gray-700 hover:text-gray-900" aria-label="Toggle mobile menu">
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 transition hover:opacity-70" style={{ color: '#ffffff' }} aria-label="Toggle mobile menu">
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -620,492 +761,346 @@ export default function Home() {
       {/* ======================================
           HERO - Geométrico minimalista
       ====================================== */}
-      <section className="relative flex flex-col overflow-hidden">
+      <section
+        ref={heroSectionRef}
+        className="relative flex flex-col overflow-hidden"
+        style={!isEmpresaPage ? { background: '#1463FF' } : { background: '#0A0A0A', minHeight: '100dvh' }}
+      >
 
-        {/* ── Decoraciones de fondo — solo página persona, solo desktop ── */}
+        {/* ── Decoraciones de fondo — solo página persona ── */}
         {!isEmpresaPage && (
-          <div className="hero-bg-deco absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-
-            {/* Símbolo $ grande — esquina superior derecha */}
-            <div style={{
-              position: 'absolute', top: '-20px', right: '-30px',
-              fontSize: 340, fontWeight: 900, lineHeight: 1,
-              color: 'rgba(37,99,235,0.035)',
-              fontFamily: 'var(--font-poppins)',
-              letterSpacing: '-0.05em',
-              userSelect: 'none',
-              animation: 'bgFloat1 9s ease-in-out infinite',
-            }}>$</div>
-
-            {/* Anillo orbital grande — centro-derecha */}
-            <div style={{
-              position: 'absolute', top: '50%', right: '8%',
-              width: 320, height: 320,
-              marginTop: -160,
-              animation: 'bgOrbitCW 28s linear infinite',
-            }}>
-              <svg width="320" height="320" viewBox="0 0 320 320" fill="none" style={{ position: 'absolute', inset: 0 }}>
-                <circle cx="160" cy="160" r="155" stroke="rgba(37,99,235,0.06)" strokeWidth="1.5" strokeDasharray="8 10" />
-              </svg>
-              {/* Punto orbital */}
-              <div style={{
-                position: 'absolute', top: 5, left: '50%', marginLeft: -5,
-                width: 10, height: 10, borderRadius: '50%',
-                background: 'rgba(37,99,235,0.18)',
-                boxShadow: '0 0 8px rgba(37,99,235,0.3)',
-              }} />
-            </div>
-
-            {/* Anillo orbital pequeño — contrarotación */}
-            <div style={{
-              position: 'absolute', top: '55%', right: '12%',
-              width: 180, height: 180,
-              marginTop: -90,
-              animation: 'bgOrbitCCW 18s linear infinite',
-            }}>
-              <svg width="180" height="180" viewBox="0 0 180 180" fill="none" style={{ position: 'absolute', inset: 0 }}>
-                <circle cx="90" cy="90" r="86" stroke="rgba(34,197,94,0.08)" strokeWidth="1" strokeDasharray="5 8" />
-              </svg>
-              <div style={{
-                position: 'absolute', bottom: 4, left: '50%', marginLeft: -4,
-                width: 8, height: 8, borderRadius: '50%',
-                background: 'rgba(34,197,94,0.25)',
-              }} />
-            </div>
-
-            {/* Gráfico de velas profesional — esquina inferior derecha */}
-            <div style={{
-              position: 'absolute', bottom: 20, right: '3%',
-              animation: 'bgFloat3 9s ease-in-out infinite',
-            }}>
-              <svg width="280" height="160" viewBox="0 0 260 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  {/* Gradiente área MA */}
-                  <linearGradient id="hmaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2563EB" stopOpacity="0.09" />
-                    <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
-                  </linearGradient>
-                  {/* Fade lateral izquierdo */}
-                  <linearGradient id="hfadeX" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%"   stopColor="white" stopOpacity="0" />
-                    <stop offset="28%"  stopColor="white" stopOpacity="1" />
-                    <stop offset="100%" stopColor="white" stopOpacity="1" />
-                  </linearGradient>
-                  <mask id="hfadeMask">
-                    <rect width="260" height="150" fill="url(#hfadeX)" />
-                  </mask>
-                </defs>
-
-                <g mask="url(#hfadeMask)">
-                  {/* Grid horizontal */}
-                  {[32, 64, 96, 128].map(y => (
-                    <line key={y} x1="0" y1={y} x2="260" y2={y}
-                      stroke="rgba(37,99,235,0.055)" strokeWidth="1" />
-                  ))}
-
-                  {/* Velas: [x, wickTop, open_y, close_y, wickBottom, bullish] */}
-                  {([
-                    [14,  140, 130, 120, 144, true ],
-                    [40,  117, 122, 128, 131, false],
-                    [66,  103, 130, 107, 135, true ],
-                    [92,  97,  113, 102, 118, false],
-                    [118, 79,  104, 83,  110, true ],
-                    [144, 61,  86,  65,  92,  true ],
-                    [170, 49,  68,  54,  74,  false],
-                    [196, 35,  56,  39,  62,  true ],
-                    [222, 18,  40,  22,  46,  true ], // última
-                  ] as [number,number,number,number,number,boolean][]).map(([x, wt, oy, cy, wb, bull], i) => {
-                    const bTop = Math.min(oy, cy);
-                    const bH   = Math.max(Math.abs(oy - cy), 2);
-                    const isLast = i === 8;
-                    const bullStroke = 'rgba(34,197,94,0.5)';
-                    const bearStroke = 'rgba(239,68,68,0.45)';
-                    const bullFill   = 'rgba(34,197,94,0.16)';
-                    const bearFill   = 'rgba(239,68,68,0.12)';
-                    return (
-                      <g key={x} style={isLast ? { animation: 'bgCandleBreath 2.2s ease-in-out infinite' } : undefined}>
-                        {/* Mecha */}
-                        <line x1={x+7} y1={wt} x2={x+7} y2={wb}
-                          stroke={bull ? 'rgba(34,197,94,0.38)' : 'rgba(239,68,68,0.32)'}
-                          strokeWidth="1.5" strokeLinecap="round" />
-                        {/* Cuerpo */}
-                        <rect x={x} y={bTop} width={14} height={bH}
-                          rx="1.5"
-                          fill={bull ? bullFill : bearFill}
-                          stroke={bull ? bullStroke : bearStroke}
-                          strokeWidth="1"
-                          style={isLast ? { animation: 'bgCandleGlow 2.2s ease-in-out infinite' } : undefined}
-                        />
-                      </g>
-                    );
-                  })}
-
-                  {/* Área bajo la MA */}
-                  <path
-                    d="M66,119 L92,113 L118,98 L144,84 L170,68 L196,53 L222,39 L222,150 L66,150 Z"
-                    fill="url(#hmaGrad)"
-                  />
-
-                  {/* Línea MA — se dibuja al cargar */}
-                  <polyline
-                    points="66,119 92,113 118,98 144,84 170,68 196,53 222,39"
-                    stroke="rgba(37,99,235,0.38)" strokeWidth="1.6"
-                    strokeLinecap="round" strokeLinejoin="round"
-                    strokeDasharray="220" strokeDashoffset="220"
-                    style={{ animation: 'bgMADraw 1.8s cubic-bezier(0.4,0,0.2,1) 0.4s forwards' }}
-                  />
-
-                  {/* Línea de último precio — dashed */}
-                  <line x1="10" y1="22" x2="232" y2="22"
-                    stroke="rgba(34,197,94,0.28)" strokeWidth="1"
-                    strokeDasharray="4 5" />
-
-                  {/* Punto vivo: outer ping */}
-                  <circle cx="236" cy="22" r="3.5"
-                    fill="rgba(34,197,94,0.35)">
-                    <animate attributeName="r" values="3.5;9;3.5" dur="2s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
-                  </circle>
-                  {/* Punto vivo: inner sólido */}
-                  <circle cx="236" cy="22" r="3" fill="rgba(34,197,94,0.85)" />
-
-                  {/* Label precio */}
-                  <rect x="241" y="16" width="17" height="12" rx="3"
-                    fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.3)" strokeWidth="0.8" />
-                  <text x="249.5" y="25" textAnchor="middle"
-                    fontSize="6.5" fontWeight="700" fill="rgba(34,197,94,0.75)"
-                    fontFamily="monospace">↑</text>
-                </g>
-              </svg>
-            </div>
-
-            {/* Ícono de dólar flotante pequeño — izquierda media */}
-            <div style={{
-              position: 'absolute', top: '38%', left: '2%',
-              animation: 'bgFloat2 11s ease-in-out infinite',
-              opacity: 0.07,
-            }}>
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="1" x2="12" y2="23" />
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </div>
-
-            {/* Pill tipo de cambio — decorativo, arriba izquierda */}
-            <div style={{
-              position: 'absolute', top: '12%', left: '3%',
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '5px 12px', borderRadius: 100,
-              background: 'rgba(37,99,235,0.04)',
-              border: '1px solid rgba(37,99,235,0.08)',
-              animation: 'bgFloat3 13s ease-in-out infinite',
-            }}>
-              <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'rgba(34,197,94,0.4)' }} />
-              <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(37,99,235,0.3)', letterSpacing: '0.1em', fontFamily: 'var(--font-poppins)' }}>USD / PEN</span>
-            </div>
-
-            {/* Línea de tendencia — fondo inferior */}
-            <svg
-              style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '70%', opacity: 0.07 }}
-              viewBox="0 0 700 80" preserveAspectRatio="none" fill="none"
-            >
-              <defs>
-                <linearGradient id="trendGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
-                  <stop offset="40%" stopColor="#2563EB" stopOpacity="1" />
-                  <stop offset="100%" stopColor="#22C55E" stopOpacity="1" />
-                </linearGradient>
-              </defs>
-              <polyline
-                points="0,70 80,60 160,55 200,45 280,50 350,30 420,35 500,20 580,25 640,10 700,15"
-                stroke="url(#trendGrad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              />
-            </svg>
-
-            {/* Puntos de cuadrícula tenue */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+            {/* Grid de puntos blancos tenue */}
             <div style={{
               position: 'absolute', inset: 0,
-              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(37,99,235,0.05) 1px, transparent 0)',
-              backgroundSize: '32px 32px',
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0)',
+              backgroundSize: '36px 36px',
+            }} />
+            {/* Círculo blur top-right */}
+            <div style={{
+              position: 'absolute', top: '-120px', right: '-80px',
+              width: 480, height: 480, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%)',
+            }} />
+            {/* Círculo blur bottom-left */}
+            <div style={{
+              position: 'absolute', bottom: '-80px', left: '-60px',
+              width: 320, height: 320, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)',
             }} />
           </div>
         )}
 
-        <div className="flex-1 flex flex-col items-start w-full max-w-5xl mx-auto px-6 sm:px-8 lg:px-10 pt-6 sm:pt-10 pb-4 sm:pb-8 relative z-10">
+        {/* ── Film Strip Columns — solo página empresa ── */}
+        {isEmpresaPage && (() => {
+          const col1 = [
+            '/ty/Agro-exporter_viewing_transfer_n__2K_20260917133151.jpeg',
+            '/ty/Carpenter_looking_at_phone_2K_20260917133207.jpeg',
+            '/ty/Entrepreneur_holding_smartphone___2K_20260917133255.jpeg',
+            '/ty/Executive_looking_at_phone_2K_20260917133335.jpeg',
+            '/ty/Headphones_and_smartphone_on_sur__2K_20260917133312.jpeg',
+            '/ty/Man_smiling_at_smartphone_2K_20260917133338.jpeg',
+            '/ty/Watch_and_smartphone_on_wrist_2K_20260917133436.jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(3).jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(7).jpeg',
+            '/ty/Woman_looking_at_smartphone_2K_20260917133425.jpeg',
+          ];
+          const col2 = [
+            '/ty/Architect_showing_transaction_on__2K_20260917133416.jpeg',
+            '/ty/Engineer_reviewing_machinery_quo__2K_20260917133211.jpeg',
+            '/ty/Entrepreneur_smiling_with_smartp__2K_20260917133422.jpeg',
+            '/ty/Farmer_looking_at_phone_notifica__2K_20260917133233.jpeg',
+            '/ty/Man_checking_phone_in_mountains_2K_20260917133345.jpeg',
+            '/ty/Miner_holding_phone_in_shop_2K_20260917133155.jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55.jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(4).jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(8).jpeg',
+          ];
+          const col3 = [
+            '/ty/Baker_holding_smartphone_smiling_2K_20260917133344.jpeg',
+            '/ty/Engineer_reviewing_machinery_quo__2K_20260917133222.jpeg',
+            '/ty/Executive_holding_smartphone_in___2K_20260917133401.jpeg',
+            '/ty/Gas_station_owner_holding_smartp__2K_20260917133133.jpeg',
+            '/ty/Man_holding_smartphone_in_workshop_2K_20260917133349.jpeg',
+            '/ty/Professional_walking_holding_sma__2K_20260917133259.jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(1).jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(5).jpeg',
+            '/ty/Woman_holding_smartphone_with_ca__2K_20260917133255.jpeg',
+          ];
+          const col4 = [
+            '/ty/CFO_smiling_at_smartphone_2K_20260917133426.jpeg',
+            '/ty/Engineer_using_smartphone_in_mine_2K_20260917133138.jpeg',
+            '/ty/Executive_looking_at_phone_2K_20260917133159.jpeg',
+            '/ty/Gas_station_owner_holding_smartp__2K_20260917133225.jpeg',
+            '/ty/Man_smiling_at_phone_in_2K_20260917133252.jpeg',
+            '/ty/Traveler_viewing_phone_near_SUV_2K_20260917133258.jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(2).jpeg',
+            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(6).jpeg',
+            '/ty/Woman_holding_tablet_with_quote_2K_20260917133239.jpeg',
+          ];
+          const imgStyle: React.CSSProperties = { width: '100%', height: 220, objectFit: 'cover', objectPosition: 'center top', borderRadius: 10, display: 'block', flexShrink: 0 };
+          return (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
+
+              {/* LEFT — 2 columnas */}
+              <div className="hidden lg:flex" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '26%', gap: 8, padding: '0 8px' }}>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-1" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {[...col1, ...col1].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                  </div>
+                </div>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-2" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {[...col2, ...col2].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                  </div>
+                </div>
+                {/* Fade interior → centro */}
+                <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to right, transparent, #0A0A0A)' }} />
+              </div>
+
+              {/* RIGHT — 2 columnas */}
+              <div className="hidden lg:flex" style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '26%', gap: 8, padding: '0 8px' }}>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-3" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {[...col3, ...col3].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                  </div>
+                </div>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div className="film-col-4" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {[...col4, ...col4].map((src, i) => <img key={i} src={src} alt="" style={imgStyle} />)}
+                  </div>
+                </div>
+                {/* Fade interior → centro */}
+                <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to left, transparent, #0A0A0A)' }} />
+              </div>
+
+              {/* Fade top + bottom sobre las columnas */}
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 20%, transparent 80%, #0A0A0A 100%)' }} />
+            </div>
+          );
+        })()}
+
+        <div
+          className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : 'items-center justify-center px-4 text-center'}`}
+          style={{ paddingTop: topBarHidden ? 96 : 132 }}
+        >
 
           {/* H1 personas - entre encabezado y grid, solo móvil */}
           {!isEmpresaPage && (
-            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full hero-anim hero-delay-0" style={{ color: '#0D1117' }}>
-              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
-              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', color: '#2563EB' }}>que siempre</span>
-              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
+            <h1 className="sm:hidden font-display font-black leading-[1.0] mb-4 text-center w-full hero-anim hero-delay-0 uppercase" style={{ color: '#ffffff', letterSpacing: '-0.01em' }}>
+              <span className="block" style={{ fontSize: 'clamp(2.2rem, 8vw, 3.6rem)' }}>El cambio de</span>
+              <span className="block" style={{ fontSize: 'clamp(2.2rem, 8vw, 3.6rem)' }}>dólares que</span>
+              <span className="block" style={{ fontSize: 'clamp(2.2rem, 8vw, 3.6rem)', color: 'rgba(255,255,255,0.75)' }}>siempre quisiste</span>
             </h1>
           )}
 
-          {/* H1 empresa - encima del card Herramientas Corporativas, solo móvil */}
-          {isEmpresaPage && (
-            <h1 className="sm:hidden font-display font-black leading-[1.05] mb-4 text-center w-full" style={{ color: '#0D1117' }}>
-              <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
-            </h1>
-          )}
+          {isEmpresaPage ? (
+            /* ─── EMPRESA: Film strip hero centrado ─── */
+            <div style={{ width: '100%', maxWidth: 520 }}>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 items-center w-full">
-
-            {/* LEFT - Texto */}
-            <div className="order-2 sm:order-1">
-              {/* Pill label */}
-              <div className="flex justify-center sm:justify-start mb-4 sm:mb-7 hero-anim hero-delay-0">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-[11px] font-bold tracking-[0.18em] uppercase" style={{ borderColor: '#2563EB', color: '#2563EB', background: 'rgba(37,99,235,0.06)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse" />
-                  Fintech de cambio de divisas · Perú
-                </span>
-              </div>
-
-              <h1 className="hidden sm:block font-display font-black leading-[1.05] mb-6 hero-anim hero-delay-1" style={{ color: '#0D1117' }}>
-                {isEmpresaPage ? (
-                  <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>En los negocios <span style={{ color: '#2563EB' }}>cada centavo</span> cuenta</span>
-                ) : (
-                  <>
-                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>El cambio de dólares</span>
-                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', color: '#2563EB' }}>que siempre</span>
-                    <span className="block" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>quisiste tener</span>
-                  </>
-                )}
-              </h1>
-
-              <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left hero-anim hero-delay-2" style={{ color: '#6B7280' }}>
-                {isEmpresaPage
-                  ? 'Gestiona tus operaciones cambiarias con una plataforma segura, atención personalizada y tasas competitivas que generan un impacto real en la rentabilidad de tu empresa.'
-                  : 'En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.'}
+              <p className="hero-anim hero-delay-0" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#2563EB', marginBottom: 24 }}>
+                Qoricash · Corporativo
               </p>
 
-              <div className="flex flex-wrap gap-3 mb-6 sm:mb-10 hero-anim hero-delay-3">
-                {isEmpresaPage ? (
-                  isAuthenticated && (
+              <h1 className="font-display font-black hero-anim hero-delay-1" style={{ color: '#ffffff', textTransform: 'uppercase', fontSize: 'clamp(2.6rem, 5.5vw, 5rem)', lineHeight: 1.0, marginBottom: 20, letterSpacing: '-0.01em' }}>
+                En los negocios,<br />cada centavo<br /><span style={{ color: '#2563EB' }}>cuenta.</span>
+              </h1>
+
+              <p className="hero-anim hero-delay-2" style={{ color: 'rgba(255,255,255,0.45)', fontSize: 15, lineHeight: 1.65, marginBottom: 36 }}>
+                TC preferencial, liquidación en 15 min y ejecutivo dedicado para operaciones corporativas.
+              </p>
+
+              <div className="hero-anim hero-delay-3" style={{ textAlign: 'left', marginBottom: 28 }}>
+                {!isAuthenticated ? (
+                  <div className="relative overflow-hidden rounded-2xl" style={{ background: '#111111', boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset, 0 32px 64px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: '#2563EB' }} />
+                    <div className="px-8 py-8">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.22em] mb-6" style={{ color: '#2563EB' }}>Corporativo</p>
+                      <h3 className="font-black leading-[1.1] mb-3" style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.75rem)', color: '#ffffff' }}>
+                        El tipo de cambio<br />que su empresa merece.
+                      </h3>
+                      <p className="text-sm leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                        TC preferencial, liquidación en 15 min y ejecutivo dedicado para operaciones desde $5,000.
+                      </p>
+                      <div className="flex gap-6 mb-8">
+                        {[{ value: "15'", label: 'Liquidación' }, { value: '0%', label: 'Comisiones' }, { value: '+TC', label: 'Preferencial' }].map(({ value, label }) => (
+                          <div key={label} className="flex flex-col">
+                            <span className="text-2xl font-black text-white leading-none">{value}</span>
+                            <span className="text-[10px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => guardedAction(() => router.push('/login?from=/empresa'))}
+                        className="flex items-center justify-between w-full px-5 py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:brightness-110 group"
+                        style={{ background: '#2563EB', border: 'none', cursor: 'pointer' }}
+                      >
+                        <span>Cotiza en línea</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                      <Link href="/login?from=/empresa"
+                        className="flex items-center justify-center w-full mt-3 py-2 text-xs font-medium transition-colors hover:opacity-80"
+                        style={{ color: 'rgba(255,255,255,0.3)' }}>
+                        Ya tengo cuenta
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <Calculator
+                    initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
+                    showContinueButton={true}
+                    dark={false}
+                    onOperationReady={(operationType, amountUSD, exchangeRate) => guardedAction(() => {
+                      const params = amountUSD && parseFloat(amountUSD) > 0
+                        ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
+                        : '';
+                      router.push(`/dashboard/empresa/nueva-operacion${params}`);
+                    })}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center justify-center gap-6 text-xs font-medium hero-anim hero-delay-4" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Rentabilidad</span>
+                <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Inmediato</span>
+                <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Exclusivo</span>
+              </div>
+            </div>
+
+          ) : (
+            /* ─── PERSONA: Grid 2 columnas ─── */
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-10 items-center w-full">
+
+              {/* LEFT - Texto */}
+              <div className="order-2 sm:order-1">
+                <h1 className="hidden sm:block font-display font-black leading-[1.0] mb-6 hero-anim hero-delay-1" style={{ color: '#ffffff', letterSpacing: '-0.01em', textTransform: 'uppercase' }}>
+                  <span className="block" style={{ fontSize: 'clamp(2.4rem, 5vw, 4.2rem)' }}>El cambio de</span>
+                  <span className="block" style={{ fontSize: 'clamp(2.4rem, 5vw, 4.2rem)' }}>dólares que</span>
+                  <span className="block" style={{ fontSize: 'clamp(2.4rem, 5vw, 4.2rem)', color: 'rgba(255,255,255,0.7)' }}>siempre quisiste</span>
+                </h1>
+                <p className="text-base sm:text-lg max-w-[440px] mb-6 sm:mb-9 leading-relaxed text-justify sm:text-left hero-anim hero-delay-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  En cada una de tus metas, estamos contigo. Cambia tus dólares de forma rápida, segura y 100% digital, con las mejores tasas y sin costos ocultos.
+                </p>
+                <div className="flex flex-wrap gap-3 mb-6 sm:mb-10 hero-anim hero-delay-3">
                   <button
-                    onClick={() => guardedAction(() => window.open('https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20tipo%20de%20cambio%20corporativo.', '_blank'))}
-                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm text-white w-full sm:w-auto btn-press active:scale-[0.97]"
-                    style={{ background: '#0A0A0A' }}
+                    onClick={() => guardedAction(() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login'))}
+                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm w-full sm:w-auto btn-press active:scale-[0.97] transition-all duration-200"
+                    style={{ background: '#ffffff', color: '#1247CC', boxShadow: '0 4px 20px rgba(0,0,0,0.18)', border: 'none', cursor: 'pointer' }}
                   >
                     Cotizar ahora
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                  )
-                ) : (
+                </div>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium hero-anim hero-delay-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                  <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />Registrados ante la SBS</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />En 15 minutos</span>
+                  <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.9)' }} />0 comisiones</span>
+                </div>
+              </div>
+
+              {/* RIGHT - Foto + cards flotantes */}
+              <div className="order-1 sm:order-2 relative flex items-center justify-center hero-anim hero-delay-1">
+                <div className="relative z-10 w-full max-w-[400px]">
+                  <div ref={heroMediaRef} className="relative w-full">
+
+                {/* Foto — ancho completo */}
+                <div style={{ borderRadius: 24, overflow: 'hidden', aspectRatio: '3/4', maxHeight: 480, position: 'relative' }}>
+                  <img
+                    src="/pl.jpeg"
+                    alt=""
+                    className="hero-img"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+                  />
+                  {/* Overlay sutil */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.3) 100%)' }} />
+
+                  {/* Dot vivo */}
+                  <div className="hero-badge" style={{ position: 'absolute', top: 14, left: 14, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,0.6)', borderRadius: 100, padding: '4px 10px' }}>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inset-0 rounded-full opacity-75" style={{ background: '#22C55E' }} />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#22C55E' }} />
+                    </span>
+                    <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.85)' }}>En vivo · USD / PEN</span>
+                  </div>
+
+                </div>
+
+                {/* ── Pills: borde izquierdo de la foto, mitad dentro mitad fuera ── */}
+                <div style={{
+                  position: 'absolute',
+                  top: '75%',
+                  left: 0,
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                  zIndex: 10,
+                }}>
+                  <button
+                    onClick={() => guardedAction(() => router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login'))}
+                    className="pill-iniciar hero-pill-1"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#42434b', borderRadius: 14, padding: '13px 20px', border: 'none', cursor: 'pointer' }}
+                  >
+                    <ArrowRight size={16} className="pill-icon" style={{ color: '#ffffff', flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffffff' }}>Iniciar cambio</span>
+                  </button>
                   <a
                     href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20el%20tipo%20de%20cambio."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 font-bold px-8 py-4 rounded-full text-sm text-white w-full sm:w-auto btn-press active:scale-[0.97]"
-                    style={{ background: '#000000' }}
+                    className="pill-iniciar hero-pill-2"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#70b4ff', borderRadius: 14, padding: '13px 20px', textDecoration: 'none' }}
                   >
-                    Cotizar ahora
-                    <ArrowRight className="w-4 h-4" />
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" className="pill-icon" style={{ flexShrink: 0 }}>
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.118 1.533 5.845L.057 23.486a.5.5 0 0 0 .609.61l5.7-1.493A11.938 11.938 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.034-1.388l-.36-.214-3.733.978.998-3.645-.235-.374A9.808 9.808 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+                    </svg>
+                    <span style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#ffffff' }}>Cotiza en WhatsApp</span>
                   </a>
-                )}
-              </div>
-
-<div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-medium hero-anim hero-delay-4" style={{ color: '#6B7280' }}>
-                {isEmpresaPage ? (
-                  <>
-                    <span className="flex items-center gap-1.5"><HandCoins className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Rentabilidad</span>
-                    <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Inmediato</span>
-                    <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />Exclusivo</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" style={{ color: '#000000' }} />Registrados ante la SBS</span>
-                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" style={{ color: '#000000' }} />En 15 minutos</span>
-                    <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" style={{ color: '#000000' }} />0 comisiones</span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* RIGHT - Calculadora / FX Terminal */}
-            <div className="order-1 sm:order-2 relative flex items-center justify-center hero-anim hero-delay-1">
-
-              <div className="relative z-10 w-full max-w-[400px]">
-              {isEmpresaPage && !isAuthenticated ? (
-                <div className="relative overflow-hidden rounded-2xl"
-                  style={{
-                    background: '#0A0A0A',
-                    boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 48px rgba(0,0,0,0.2)',
-                    border: '1px solid rgba(255,255,255,0.07)',
-                  }}>
-
-                  {/* Blue accent top bar */}
-                  <div className="absolute top-0 left-0 right-0 h-[2px]"
-                    style={{ background: '#2563EB' }} />
-
-                  <div className="px-8 py-8">
-
-                    {/* Eyebrow */}
-                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] mb-6" style={{ color: '#2563EB' }}>
-                      Corporativo
-                    </p>
-
-                    {/* Headline */}
-                    <h3 className="font-black leading-[1.1] mb-3" style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.75rem)', color: '#ffffff' }}>
-                      El tipo de cambio<br />que su empresa merece.
-                    </h3>
-
-                    <p className="text-sm leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                      TC preferencial, liquidación en 15 min y ejecutivo dedicado para operaciones desde $5,000.
-                    </p>
-
-                    {/* Three pillars */}
-                    <div className="flex gap-6 mb-8">
-                      {[
-                        { value: "15'", label: 'Liquidación' },
-                        { value: '0%',   label: 'Comisiones' },
-                        { value: '+TC',  label: 'Preferencial' },
-                      ].map(({ value, label }, i) => (
-                        <div key={label} className="flex flex-col">
-                          <span className="text-2xl font-black text-white leading-none">{value}</span>
-                          <span className="text-[10px] font-medium mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{label}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <button
-                      onClick={() => guardedAction(() => {
-                        router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login?from=/empresa');
-                      })}
-                      className="flex items-center justify-between w-full px-5 py-4 rounded-xl text-sm font-bold text-white transition-all duration-200 hover:brightness-110 group"
-                      style={{ background: '#2563EB', border: 'none', cursor: 'pointer' }}>
-                      <span>Cotiza en línea</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-
-                    <Link href="/login?from=/empresa"
-                      className="flex items-center justify-center w-full mt-3 py-2 text-xs font-medium transition-colors hover:opacity-80"
-                      style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      Ya tengo cuenta
-                    </Link>
-
-                  </div>
                 </div>
-              ) : isEmpresaPage ? (
-              <div>
-              <Calculator
-                initialRates={{ compra: parseFloat(buyRate), venta: parseFloat(sellRate) }}
-                showContinueButton={true}
-                dark={false}
-                onOperationReady={(operationType, amountUSD, exchangeRate) => guardedAction(() => {
-                  const params = amountUSD && parseFloat(amountUSD) > 0
-                    ? `?tipo=${operationType}&monto=${amountUSD}&tc=${exchangeRate}`
-                    : '';
-                  router.push(isAuthenticated ? `/dashboard/empresa/nueva-operacion${params}` : '/login?from=/empresa');
-                })}
-              />
-              </div>
-              ) : (
-              /* ── Persona: unified rate panel ── */
-              <div className="flex flex-col gap-3 w-full">
 
-                {/* Panel unificado */}
+                {/* ── Cards flotantes: borde derecho de la foto, mitad dentro mitad fuera ── */}
                 <div style={{
-                  background: 'linear-gradient(160deg, #070C18 0%, #0A1020 50%, #080E1A 100%)',
-                  borderRadius: 22,
-                  overflow: 'hidden',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
-                  animation: 'tcSlide 0.4s cubic-bezier(0.16,1,0.3,1) both',
+                  position: 'absolute',
+                  top: '10%',
+                  right: 0,
+                  transform: 'translateX(50%)',
+                  width: '42%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                  zIndex: 10,
                 }}>
-
-                  {/* Header */}
-                  <div style={{ padding: '13px 20px 11px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inset-0 rounded-full opacity-70" style={{ background: '#22C55E' }} />
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#22C55E' }} />
+                  {/* Card Compramos */}
+                  <div className="hero-card-1" style={{ background: '#ffffff', borderRadius: 16, padding: '10px 14px', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block' }} />
+                      <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#9CA3AF' }}>Compramos</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                      <span style={{ fontSize: 12, color: '#9CA3AF' }}>S/</span>
+                      <span className="tc-rate-number" style={{ fontSize: 32, fontWeight: 900, color: '#111827', lineHeight: 1 }}>
+                        {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
                       </span>
-                      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>En vivo</span>
-                    </div>
-                    <span style={{ fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.12em' }}>USD · PEN</span>
-                  </div>
-
-                  {/* Compramos */}
-                  <div style={{ padding: '22px 22px 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#4ADE80', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(74,222,128,0.7)', animation: 'tcGlowGreen 2.5s ease-in-out infinite' }} />
-                          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#4ADE80' }}>Compramos</span>
-                        </div>
-                        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú vendes dólares</p>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                        <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
-                        <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
-                          {(currentRates?.tipo_compra ?? parseFloat(buyRate)).toFixed(4)}
-                        </span>
-                      </div>
                     </div>
                   </div>
 
-                  {/* Divisor */}
-                  <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.07) 75%, transparent)', margin: '0 22px' }} />
-
-                  {/* Vendemos */}
-                  <div style={{ padding: '20px 22px 22px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#60A5FA', display: 'inline-block', flexShrink: 0, boxShadow: '0 0 5px rgba(96,165,250,0.7)', animation: 'tcGlowBlue 2.5s ease-in-out 0.8s infinite' }} />
-                          <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA' }}>Vendemos</span>
-                        </div>
-                        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 11 }}>Tú compras dólares</p>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                        <span style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.45)', paddingBottom: 5 }}>S/</span>
-                        <span className="tc-rate-number" style={{ fontWeight: 900, color: '#ffffff' }}>
-                          {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
-                        </span>
-                      </div>
+                  {/* Card Vendemos */}
+                  <div className="hero-card-2" style={{ background: '#ffffff', borderRadius: 16, padding: '10px 14px', boxShadow: '0 12px 40px rgba(0,0,0,0.18)', border: '1px solid rgba(0,0,0,0.05)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#3B82F6', display: 'inline-block' }} />
+                      <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#9CA3AF' }}>Vendemos</span>
                     </div>
-                  </div>
-
-                  {/* Footer dentro del panel */}
-                  <div style={{ padding: '9px 22px 13px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                      <Shield size={9} style={{ color: 'rgba(255,255,255,0.45)' }} />
-                      <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.45)' }}>Regulado SBS</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+                      <span style={{ fontSize: 12, color: '#9CA3AF' }}>S/</span>
+                      <span className="tc-rate-number" style={{ fontSize: 32, fontWeight: 900, color: '#111827', lineHeight: 1 }}>
+                        {(currentRates?.tipo_venta ?? parseFloat(sellRate)).toFixed(4)}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* CTA */}
-                <button
-                  onClick={() => guardedAction(() => {
-                    router.push(isAuthenticated ? '/dashboard/nueva-operacion' : '/login');
-                  })}
-                  className="w-full font-bold text-sm text-white flex items-center justify-center gap-2.5 group active:scale-[0.98]"
-                  style={{
-                    padding: '15px 20px',
-                    background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
-                    borderRadius: 14,
-                    border: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    animation: 'tcSlide 0.55s cubic-bezier(0.16,1,0.3,1) both',
-                  }}
-                >
-                  Iniciar operación
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                </button>
-
-                {!isAuthenticated && (
-                  <Link href="/crear-cuenta"
-                    className="text-center text-[11px] font-medium transition-opacity hover:opacity-70"
-                    style={{ color: '#9CA3AF' }}>
-                    Regístrate
-                  </Link>
-                )}
               </div>
-              )}
 
                 {/* Mercado en Vivo button - oculto temporalmente */}
                 {/* <Link
@@ -1131,314 +1126,332 @@ export default function Home() {
             </div>
 
           </div>
+          )}
         </div>
 
       </section>
 
       {/* ======================================
-          TRUST STRIP - Bancos + SBS mejorado
+          WHATSAPP - Opera sin descargar nada
       ====================================== */}
-      <section ref={banksSectionRef} className="py-4 sm:py-6">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-8">
+      <section style={{ background: '#ffffff' }} className="py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-10">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-          {/* Encabezado */}
-          <div className="mb-7 text-center reveal">
-            <h2 className="font-display font-black leading-[1.05]" style={{ color: '#0D1117', fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)' }}>
-              Operamos con los bancos <span style={{ color: '#2563EB' }}>principales del Peru</span>
-            </h2>
-          </div>
-
-          {/* Logos bancos - 2 grupos con etiqueta */}
-          <div className="flex flex-col sm:flex-row gap-5 sm:gap-4">
-
-          {/* Grupo 1 - Card unificada BCP + Interbank + BanBif */}
-          <div className="flex-[3]">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
-              Transferencias inmediatas a todo el Perú
-            </p>
-
-            {/* Card unificada */}
-            {(() => {
-              const hovered = hoveredBank === 'group1';
-              return (
-                <div
-                  className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-                  style={{
-                    border: `1px solid ${hovered ? 'rgba(37,99,235,0.45)' : 'rgba(0,0,0,0.08)'}`,
-                    background: hovered ? 'rgba(37,99,235,0.04)' : '#ffffff',
-                    boxShadow: hovered ? '0 16px 40px rgba(37,99,235,0.15), 0 4px 16px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.04)',
-                    minHeight: '110px',
-                    transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
-                  }}
-                  onMouseEnter={() => setHoveredBank('group1' as any)}
-                  onMouseLeave={() => setHoveredBank(null)}
-                  onClick={() => setHoveredBank(hoveredBank === 'group1' ? null : 'group1' as any)}
-                >
-                  <div className="grid grid-cols-3 h-full">
-                    {[
-                      { id: 'bcp',       img: '/BCP.png',      alt: 'BCP',      imgClass: 'h-16 sm:h-20', acc: BANK_ACCOUNTS.bcp,      keys: { s: 'bcp-s', d: 'bcp-d' } },
-                      { id: 'interbank', img: '/Interbank.png', alt: 'Interbank',imgClass: 'h-24 sm:h-28', acc: BANK_ACCOUNTS.interbank, keys: { s: 'itb-s', d: 'itb-d' } },
-                      { id: 'banbif',    img: '/BanBif.png',    alt: 'BanBif',   imgClass: 'h-16 sm:h-20', acc: BANK_ACCOUNTS.banbif,   keys: { s: 'bbf-s', d: 'bbf-d' } },
-                    ].map(({ id, img, alt, imgClass, acc, keys }) => (
-                      <div key={id} className="relative overflow-hidden flex flex-col items-center justify-center px-3 cursor-default" style={{ minHeight: '110px' }}>
-                        <div className={`flex items-center justify-center transition-all duration-300 ${hovered ? 'scale-[0.68] -translate-y-3' : 'scale-100 translate-y-0'}`}>
-                          <img src={img} alt={alt} className={`${imgClass} w-auto object-contain`} />
+            {/* Imagen + pills flotantes */}
+            <div ref={wspMediaRef} className="flex-1 order-1 w-full flex items-center justify-start" style={{ maxWidth: 500 }}>
+              <div style={{ position: 'relative', width: '65%' }}>
+                <img
+                  src="/wsp.png"
+                  alt="Opera por WhatsApp sin descargar ningún app"
+                  className="wsp-img"
+                  style={{ width: '100%', height: 'auto', display: 'block', border: 'none', outline: 'none', background: 'transparent' }}
+                />
+                {/* Pills flotantes sobre el borde derecho */}
+                <div style={{ position: 'absolute', top: '8%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 12, zIndex: 10 }}>
+                  {[
+                    { n: 1, text: 'Escríbenos cuánto quieres cambiar', cls: 'wsp-pill-1' },
+                    { n: 2, text: 'Te damos el tipo de cambio al instante', cls: 'wsp-pill-2' },
+                    { n: 3, text: 'El dinero llega directo a tu cuenta', cls: 'wsp-pill-3' },
+                  ].map((s) => {
+                    const checked = wspActiveStep >= s.n;
+                    return (
+                      <div key={s.n} className={s.cls} style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#ffffff', borderRadius: 999, padding: '9px 16px 9px 9px', boxShadow: '0 4px 20px rgba(0,0,0,0.10)', whiteSpace: 'nowrap' }}>
+                        <div style={{ flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: '#1463FF', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 900, opacity: wspResetting ? 0 : 1, transition: 'opacity 0.45s ease' }}>
+                          {checked ? (
+                            <svg key={`check-${s.n}-${checked}`} className={wspActiveStep === s.n ? 'wsp-check-icon' : ''} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <span>{s.n}</span>
+                          )}
                         </div>
-                        <div className={`absolute bottom-0 left-0 right-0 px-3 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                          {[{ label: 'S/', value: acc.soles, key: keys.s }, { label: '$', value: acc.dolares, key: keys.d }].map(({ label, value, key }) => (
-                            <div key={key} className="flex items-center justify-between gap-1 py-0.5">
-                              <div className="flex items-center gap-1 min-w-0">
-                                <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                                <span className="text-[9px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
-                              </div>
-                              <button
-                                onClick={() => handleCopy(value, key)}
-                                className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all"
-                                style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}
-                              >
-                                {copiedKey === key ? '✓' : 'Copiar'}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: checked ? '#1463FF' : '#0D1117', opacity: wspResetting ? 0 : 1, transition: 'color 0.3s ease, opacity 0.45s ease' }}>{s.text}</span>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              );
-            })()}
-          </div>{/* fin grupo 1 */}
+              </div>
+            </div>
 
-          {/* Grupo 2 - Interbancaria solo Lima */}
-          <div className="flex-[1] flex flex-col">
-            <p className="text-[9px] font-bold uppercase tracking-[0.18em] mb-2.5" style={{ color: '#9CA3AF' }}>
-              Interbancaria solo Lima
-            </p>
+            {/* Texto */}
+            <div className="flex-1 order-2">
+              <h2 className="reveal font-display font-black leading-[1.08] mb-6"
+                style={{ color: '#0D1117', fontSize: 'clamp(1.9rem, 3.8vw, 3rem)' }}>
+                Opera 100% desde<br />
+                <span style={{ color: '#1463FF' }}>WhatsApp.</span><br />
+                Sin descargar ningún app.
+              </h2>
 
-            {/* Card agrupada: 6 bancos - CCI Interbank */}
-            {(() => {
-              const hovered = hoveredBank === 'cci';
-              const CCI = { soles: '003-200-003007757571-37', dolares: '003-200-003007757589-39' };
-              return (
-                <div
-                  className={`relative overflow-hidden flex flex-col items-center justify-center px-3 rounded-2xl cursor-default transition-all duration-300 flex-1 ${isBanksSectionVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-                  style={{
-                    border: `1px solid ${hovered ? 'rgba(37,99,235,0.5)' : 'rgba(0,0,0,0.08)'}`,
-                    background: hovered ? 'rgba(37,99,235,0.04)' : '#ffffff',
-                    minHeight: '110px',
-                    transitionDelay: isBanksSectionVisible ? '0ms' : '360ms',
-                    transform: hovered ? 'translateY(-4px)' : 'translateY(0px)',
-                    boxShadow: hovered ? '0 16px 40px rgba(34,197,94,0.15), 0 4px 16px rgba(0,0,0,0.08)' : '0 1px 6px rgba(0,0,0,0.06)',
-                    zIndex: hovered ? 10 : 1,
-                  }}
-                  onMouseEnter={() => setHoveredBank('cci')}
-                  onMouseLeave={() => setHoveredBank(null)}
-                  onClick={() => setHoveredBank(hoveredBank === 'cci' ? null : 'cci')}
-                >
-                  {/* Logos - 2 filas de 3, uniformes */}
-                  <div className={`flex flex-col items-center px-2 transition-all duration-300 ${hovered ? 'scale-[0.6] -translate-y-8' : 'scale-100 translate-y-0'}`} style={{ gap: '2px' }}>
-                    {/* Fila 1 */}
-                    <div className="flex items-center justify-center gap-3 w-full">
-                      {[{ src: '/BBVA.png', alt: 'BBVA' }, { src: '/Scotiabank.png', alt: 'Scotiabank' }, { src: '/Banco Pichincha.png', alt: 'Pichincha' }].map(({ src, alt }) => (
-                        <div key={alt} className="flex items-center justify-center" style={{ width: '72px', height: '44px' }}>
-                          <img src={src} alt={alt} style={{ maxWidth: '72px', maxHeight: '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                        </div>
-                      ))}
-                    </div>
-                    {/* Fila 2 - GNB + Santander + card Otros Bancos */}
-                    <div className="flex items-center justify-center gap-3 w-full">
-                      {[{ src: '/bancognb.png', alt: 'GNB' }, { src: '/bancosantander.png', alt: 'Santander' }].map(({ src, alt }) => (
-                        <div key={alt} className="flex items-center justify-center" style={{ width: alt === 'GNB' ? '90px' : '72px', height: alt === 'GNB' ? '56px' : '44px' }}>
-                          <img src={src} alt={alt} style={{ maxWidth: alt === 'GNB' ? '90px' : '72px', maxHeight: alt === 'GNB' ? '56px' : '44px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                        </div>
-                      ))}
-                      {/* Card Otros Bancos */}
-                      <div className="flex flex-col items-center justify-center rounded-lg" style={{
-                        width: '72px', height: '44px',
-                        border: '1px solid rgba(37,99,235,0.35)',
-                        background: 'rgba(37,99,235,0.07)',
-                      }}>
-                        <span className="text-[7px] font-black uppercase tracking-[0.12em] leading-tight text-center" style={{ color: '#2563EB' }}>Otros<br/>Bancos</span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* CCI Interbank */}
-                  <div className={`absolute bottom-0 left-0 right-0 px-2 pb-2 transition-all duration-300 ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                    <p className="text-[8px] font-black uppercase tracking-wider mb-1" style={{ color: 'rgba(13,27,42,0.45)' }}>Cuenta Interbancaria Interbank</p>
-                    {[{ label: 'S/', value: CCI.soles, key: 'cci-s' }, { label: '$', value: CCI.dolares, key: 'cci-d' }].map(({ label, value, key }) => (
-                      <div key={key} className="flex items-center justify-between gap-1 py-0.5">
-                        <div className="flex items-center gap-1 min-w-0">
-                          <span className="text-[9px] font-black w-3 flex-shrink-0" style={{ color: '#22C55E' }}>{label}</span>
-                          <span className="text-[8px] font-bold tabular-nums truncate" style={{ color: '#1E293B' }}>{value}</span>
-                        </div>
-                        <button
-                          onClick={() => handleCopy(value, key)}
-                          className="flex-shrink-0 rounded-md px-1.5 py-0.5 text-[8px] font-bold transition-all"
-                          style={{ background: copiedKey === key ? 'rgba(34,197,94,0.2)' : 'rgba(13,27,42,0.07)', color: copiedKey === key ? '#16a34a' : 'rgba(13,27,42,0.5)' }}
-                        >
-                          {copiedKey === key ? '✓' : 'Copiar'}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
+              <p className="reveal text-base sm:text-lg leading-relaxed mb-10"
+                style={{ color: '#4B5563', maxWidth: 460 }}>
+                Cotiza al instante y recibe tus soles o dólares directo en tu cuenta bancaria.
+                De forma <strong style={{ color: '#0D1117' }}>inmediata</strong>, desde cualquier
+                dispositivo, sin instalar ninguna aplicación.
+              </p>
 
-          </div>{/* fin grupo 2 */}
-          </div>{/* fin flex container */}
+              <div className="reveal">
+                <a href="https://wa.me/51910624404?text=Hola%2C%20quiero%20cotizar%20el%20tipo%20de%20cambio"
+                  target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 rounded-xl px-6 py-3.5 font-bold text-sm text-white transition-all duration-200 hover:opacity-90 active:scale-95 shadow-lg"
+                  style={{ background: '#70b4ff', boxShadow: '0 8px 24px rgba(112,180,255,0.35)' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  Cotiza ahora
+                </a>
+              </div>
+            </div>
 
-          {/* Footer strip */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 pt-5 reveal">
-            {[
-              { icon: CheckCircle2, label: 'Sin comisiones ocultas' },
-              { icon: Clock,        label: 'En menos de 15 minutos' },
-              { icon: Lock,         label: 'SSL cifrado' },
-              { icon: Shield,       label: 'Datos protegidos por ley' },
-            ].map(({ icon: Icon, label }) => (
-              <span key={label} className="flex items-center gap-1.5 text-[11px] font-semibold" style={{ color: '#6B7280' }}>
-                <Icon className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />{label}
-              </span>
-            ))}
           </div>
         </div>
       </section>
 
+      {/* ======================================
+          BANCOS - Card azul con órbita premium
+      ====================================== */}
+      <section ref={banksSectionRef} className="py-10 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-2xl overflow-hidden reveal" style={{ background: '#1463FF', padding: '44px 52px' }}>
+          <div ref={banksMediaRef} className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
 
-      {!isEmpresaPage && (
-      <section className="py-10 sm:py-16" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-stretch">
+            {/* LEFT — Texto */}
+            <div className="min-w-0" style={{ flex: '0 0 40%', alignSelf: 'flex-start' }}>
+              <h2 className="font-display font-black" style={{ color: '#ffffff', lineHeight: 1.05, marginBottom: 16 }}>
+                <span style={{ fontSize: 'clamp(2rem, 2.9vw, 2.7rem)', display: 'block' }}>Recibe tu dinero en</span>
+                <span style={{ fontSize: 'clamp(2rem, 2.9vw, 2.7rem)', display: 'block', color: 'rgba(255,255,255,0.65)' }}>cualquier banco</span>
+                <span style={{ fontSize: 'clamp(3.9rem, 6.6vw, 6.2rem)', display: 'block', color: '#ffffff', lineHeight: 0.93 }}>del Perú</span>
+              </h2>
 
-            {/* LEFT - headline + 3 stats inline */}
-            <div className="reveal-left flex flex-col justify-between">
-              <div>
-                <h2 className="font-display font-black text-3xl md:text-4xl leading-[1.1] mb-3" style={{ color: '#0D1117' }}>
-                  Cada sol importa.<br />
-                  <span style={{ color: '#2563EB' }}>No lo pierdas</span> en el banco.
-                </h2>
-                <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase" style={{ color: '#000000' }}>
-                  <span className="w-3 h-px inline-block" style={{ background: '#000000' }} />Lo que ganas
-                </span>
-              </div>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, lineHeight: 1.65, marginBottom: 20, maxWidth: 300, textAlign: 'justify' }}>
+                Transferimos directo a tu cuenta bancaria. Sin pasos extra, sin cuentas intermediarias. Tu dinero llega donde tú decides.
+              </p>
 
-              {/* 3 stats compactos */}
-              <div className="grid grid-cols-3 gap-0" style={{ borderTop: '1px solid rgba(13,27,42,0.08)' }}>
+              {/* Fila bancos secundarios */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'nowrap' }}>
                 {[
-                  { value: 80, prefix: '~S/', suffix: '',    label: 'más por cada $1,000', sub: 'vs banco (aprox.)', speedClock: false },
-                  { value: 10, prefix: '',   suffix: 'min', label: 'tiempo aprox.',        sub: 'por operación', speedClock: true },
-                  { value: 0,  prefix: 'S/', suffix: '',    label: 'comisiones',           sub: 'siempre', speedClock: false },
-                ].map(({ value, prefix, suffix, label, sub, speedClock }, i) => (
-                  <div key={label} className="pt-5 pb-2" style={{ paddingLeft: i > 0 ? '20px' : '0', borderLeft: i > 0 ? '1px solid rgba(13,27,42,0.08)' : 'none' }}>
-                    <div className="flex items-center gap-1.5 mb-1">
-                      {speedClock && (
-                        <div className="relative flex items-center justify-center flex-shrink-0" style={{ width: '22px', height: '22px' }}>
-                          {/* Ghost trail sutil */}
-                          <Clock className="absolute w-4 h-4" style={{ color: '#000000', animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite', opacity: 0.12, filter: 'blur(1.5px)', animationDelay: '-0.3s' }} />
-                          {/* Icono principal */}
-                          <Clock className="relative w-4 h-4" style={{ color: '#000000', animation: 'clockOrganic 1.4s cubic-bezier(0.4,0,0.6,1) infinite' }} />
-                        </div>
-                      )}
-                      <div className="flex items-baseline gap-0.5">
-                        <span className="text-xs font-bold" style={{ color: '#000000' }}>{prefix}</span>
-                        <span className="text-3xl font-black tabular-nums leading-none" style={{ color: '#000000' }}><AnimatedStat value={value} label="" /></span>
-                        <span className="text-sm font-bold ml-0.5" style={{ color: '#000000' }}>{suffix}</span>
-                      </div>
-                    </div>
-                    <div className="text-[11px] font-semibold leading-tight" style={{ color: '#0D1117' }}>{label}</div>
-                    <div className="text-[10px]" style={{ color: '#9CA3AF' }}>{sub}</div>
+                  { logo: '/BBVA.png',           name: 'BBVA',      h: 28, cls: 'banks-rp1' },
+                  { logo: '/Scotiabank.png',      name: 'Scotiabank',h: 42, cls: 'banks-rp2' },
+                  { logo: '/Banco Pichincha.png', name: 'Pichincha', h: 42, cls: 'banks-rp3' },
+                  { logo: '/bancosantander.png',  name: 'Santander', h: 28, cls: 'banks-rp5' },
+                ].map((bank) => (
+                  <div key={bank.name} className={bank.cls} style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 999, padding: '5px 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 34, border: '1px solid rgba(255,255,255,0.18)', flexShrink: 0 }}>
+                    <img src={bank.logo} alt={bank.name} style={{ height: bank.h, maxWidth: 90, width: 'auto', objectFit: 'contain', filter: 'brightness(10)' }} />
                   </div>
                 ))}
-              </div>
-            </div>
-            {/* end reveal-left */}
-
-            {/* RIGHT - tabla compacta */}
-            <div className="reveal-right flex flex-col h-full">
-
-              {/* Tabla */}
-              <div className="flex-1 flex flex-col rounded-xl overflow-hidden" style={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-
-                {/* Encabezado único */}
-                <div className="flex items-center px-4 py-3" style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                  <div className="flex-1 flex items-center gap-2">
-                    <span className="text-xs font-bold tracking-tight" style={{ color: '#0D1117' }}>Tipo de cambio hoy</span>
-                    <span className="flex items-center gap-1 text-[9px] font-bold" style={{ color: '#4ade80' }}>
-                      <span className="relative flex w-1.5 h-1.5">
-                        <span className="absolute inline-flex h-full w-full rounded-full animate-ping" style={{ background: '#4ade80', opacity: 0.6 }} />
-                        <span className="relative inline-flex rounded-full w-1.5 h-1.5" style={{ background: '#4ade80' }} />
-                      </span>
-                      En vivo
-                    </span>
-                  </div>
-                  <div className="flex gap-1">
-                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Compra</span>
-                    <span className="w-14 text-right text-[9px] font-bold uppercase tracking-widest" style={{ color: '#9CA3AF' }}>Venta</span>
-                  </div>
+                <div className="banks-rp6" style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 999, padding: '5px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: 34, border: '1px solid rgba(255,255,255,0.18)', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>+ Otros bancos</span>
                 </div>
-
-                {/* Qoricash */}
-                {(() => {
-                  const qc_compra = currentRates?.tipo_compra?.toFixed(3) || buyRate;
-                  const qc_venta  = currentRates?.tipo_venta?.toFixed(3)  || sellRate;
-                  return (
-                    <div className="flex items-center px-4 py-3" style={{
-                      background: 'rgba(0,0,0,0.03)',
-                      borderBottom: '1px solid rgba(0,0,0,0.08)',
-                      borderLeft: '2px solid #000000',
-                    }}>
-                      <div className="flex items-center gap-2.5 flex-1">
-                        <img src="/vg.png" alt="Qoricash" className="h-8 w-auto object-contain flex-shrink-0" />
-                        <span className="text-[8px] font-black uppercase tracking-wider text-white px-1.5 py-0.5 rounded-full" style={{ background: '#2563EB' }}>Mejor</span>
-                      </div>
-                      <div className="flex gap-1">
-                        <span className="w-14 text-right text-sm font-black tabular-nums" style={{ color: '#0D1117' }}>{qc_compra}</span>
-                        <span className="w-14 text-right text-sm font-black tabular-nums" style={{ color: '#0D1117' }}>{qc_venta}</span>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Bancos - tasas calculadas en base al TC de Qoricash con spreads típicos de banca */}
-                {(() => {
-                  const base_c = currentRates?.tipo_compra ?? parseFloat(buyRate);
-                  const base_v = currentRates?.tipo_venta  ?? parseFloat(sellRate);
-                  const banks = [
-                    { name: 'BCP',        logo: '/BCP.png',        dc: -0.065, dv: +0.075 },
-                    { name: 'Interbank',  logo: '/Interbank.png',  dc: -0.058, dv: +0.068 },
-                    { name: 'BBVA',       logo: '/BBVA.png',       dc: -0.080, dv: +0.090 },
-                    { name: 'Scotiabank', logo: '/Scotiabank.png', dc: -0.072, dv: +0.082 },
-                  ];
-                  return (
-                    <div className="flex flex-col flex-1">
-                    {banks.map(({ name, logo, dc, dv }, i, arr) => {
-                      const compra = (base_c + dc).toFixed(3);
-                      const venta  = (base_v + dv).toFixed(3);
-                      return (
-                        <div key={name} className="flex flex-1 items-center px-4 py-2.5 transition-colors hover:bg-gray-50/80" style={{ borderBottom: i < arr.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none' }}>
-                          <div className="flex items-center gap-2.5 flex-1">
-                            <img src={logo} alt={name} className="h-7 w-auto object-contain flex-shrink-0" />
-                            <span className="text-sm font-medium" style={{ color: '#6B7280' }}>{name}</span>
-                          </div>
-                          <div className="flex gap-1">
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: '#374151' }}>{compra}</span>
-                            <span className="w-14 text-right text-sm tabular-nums font-medium" style={{ color: '#374151' }}>{venta}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    </div>
-                  );
-                })()}
               </div>
 
-              <p className="text-[10px] mt-2 text-right" style={{ color: '#9CA3AF' }}>
-                *Tasas bancarias referenciales.
+              {/* Nota CCI */}
+              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, marginTop: 10, textAlign: 'justify' }}>
+                Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros se realizan vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
               </p>
+            </div>
+
+            {/* RIGHT — Imagen con pills */}
+            <div className="flex-1 hidden lg:flex flex-col items-center justify-center gap-4">
+
+              {/* Imagen + pills en borde derecho */}
+              <div style={{ position: 'relative', width: '74%' }}>
+                <img
+                  src="/kj.jpeg"
+                  alt="Qoricash"
+                  className="banks-img"
+                  style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 16 }}
+                />
+
+                {/* Pills BCP, Interbank, BanBif */}
+                <div style={{ position: 'absolute', top: '18%', right: 0, transform: 'translateX(50%)', display: 'flex', flexDirection: 'column', gap: 10, zIndex: 10 }}>
+                  {[
+                    { logo: '/BCP.png',      name: 'BCP',      cls: 'banks-pr1', h: 36 },
+                    { logo: '/Interbank.png', name: 'Interbank',cls: 'banks-pr2', h: 52 },
+                    { logo: '/BanBif.png',    name: 'BanBif',   cls: 'banks-pr3', h: 36 },
+                  ].map((bank) => (
+                    <div key={bank.name} className={bank.cls} style={{ background: '#ffffff', borderRadius: 12, padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,0.2)', minWidth: 76 }}>
+                      <img src={bank.logo} alt={bank.name} style={{ height: bank.h, maxWidth: 100, width: 'auto', objectFit: 'contain' }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
 
           </div>
         </div>
+        </div>
+
+      </section>
+
+
+      {!isEmpresaPage && (
+      <section className="pt-8 sm:pt-12" style={{ position: 'relative', overflow: 'hidden', background: '#42434b', paddingBottom: 16 }}>
+        {/* Fondo sutil */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: 0 }}>
+          {/* Contenedor izq+centro: padded */}
+          <div style={{ flex: '0 0 58%', paddingLeft: 24, paddingRight: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+
+            {/* LEFT */}
+            <div className="flex flex-col gap-6">
+
+              {/* Eyebrow */}
+              <div className="reveal-left flex items-center gap-2">
+                <span style={{ width: 28, height: 2, background: '#70b4ff', borderRadius: 99, display: 'inline-block' }} />
+                <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#70b4ff' }}>Por qué Qoricash</span>
+              </div>
+
+              {/* Headline */}
+              <div className="reveal-left reveal-delay-1">
+                <h2 className="font-display font-black leading-[1.0]" style={{ fontSize: 'clamp(3.2rem, 6vw, 5.5rem)', color: '#ffffff' }}>
+                  Cada sol<br />
+                  <span style={{ color: '#70b4ff' }}>importa.</span>
+                </h2>
+                <p className="reveal-left reveal-delay-2" style={{ fontSize: 16, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65, marginTop: 18, maxWidth: 380 }}>
+                  No sigas perdiendo con el app de tu banco.
+                </p>
+                <a
+                  href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares"
+                  target="_blank" rel="noopener noreferrer"
+                  className="reveal-left reveal-delay-3"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 20, background: '#1463FF', color: '#ffffff', fontWeight: 800, fontSize: 14, padding: '12px 24px', borderRadius: 10, textDecoration: 'none', letterSpacing: '-0.01em', boxShadow: '0 4px 20px rgba(20,99,255,0.4)', transition: 'opacity 0.2s' }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                >
+                  Cambia y gana más hoy →
+                </a>
+              </div>
+
+            </div>
+
+            {/* CENTER — imagen + pills debajo */}
+            <div className="hidden lg:flex flex-col items-center justify-start gap-4">
+              <div className="reveal reveal-delay-2" style={{ background: '#F8FAFC', borderRadius: '24px 24px 0 0', padding: 16, paddingBottom: 320, marginBottom: -320, marginTop: 0, boxShadow: '0 24px 64px rgba(0,0,0,0.3)' }}>
+                <img
+                  src="/mkl.jpeg"
+                  alt="Qoricash"
+                  style={{ width: '100%', maxWidth: 300, height: 'auto', borderRadius: 14, objectFit: 'cover', display: 'block' }}
+                />
+              </div>
+              {/* 3 métricas como pills verticales */}
+              <div className="reveal reveal-delay-3" style={{ display: 'flex', flexDirection: 'column', gap: 18, width: '100%', maxWidth: 300, zIndex: 2, position: 'relative', marginTop: 16, }}>
+                {[
+                  { value: 80, prefix: '~S/', suffix: '',    label: 'más por $1,000', sub: 'vs banco',      bg: '#1463FF',  border: 'rgba(112,180,255,0.4)' },
+                  { value: 10, prefix: '',   suffix: 'min', label: 'por operación',  sub: 'tiempo aprox.', bg: '#0D1117',  border: 'rgba(255,255,255,0.12)' },
+                  { value: 0,  prefix: 'S/', suffix: '',    label: 'comisiones',     sub: 'siempre',        bg: '#4B5563',  border: 'rgba(255,255,255,0.15)' },
+                ].map(({ value, prefix, suffix, label, sub, bg, border }) => (
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 14, background: bg, border: `1px solid ${border}`, borderRadius: 0, padding: '10px 20px', boxShadow: '0 4px 16px rgba(0,0,0,0.3)' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, flexShrink: 0 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: '#70b4ff' }}>{prefix}</span>
+                      <span style={{ fontSize: 26, fontWeight: 900, color: '#ffffff', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
+                        <AnimatedStat value={value} label="" />
+                      </span>
+                      <span style={{ fontSize: 12, fontWeight: 800, color: '#70b4ff', marginLeft: 1 }}>{suffix}</span>
+                    </div>
+                    <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>{label}</span>
+                      <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>{sub}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>{/* fin contenedor izq+centro */}
+
+          {/* RIGHT — cards comparativas, llega al borde derecho */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 20, padding: '32px 0 32px 20px', alignSelf: 'stretch', minWidth: 0 }}>
+
+            {/* Card Qoricash — azul (arriba) */}
+            {(() => {
+              const qc_compra = currentRates?.tipo_compra?.toFixed(3) || buyRate;
+              const qc_venta  = currentRates?.tipo_venta?.toFixed(3)  || sellRate;
+              return (
+                <div className="reveal-right reveal-delay-2" style={{ background: '#1463FF', borderRadius: 18, padding: '24px 22px', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', width: 320, alignSelf: 'flex-start', marginLeft: 60 }}>
+                  <div className="reveal reveal-delay-3" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <img src="/vg.png" alt="Qoricash" style={{ height: 20, width: 'auto', objectFit: 'contain', filter: 'brightness(10)' }} />
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, fontWeight: 700, color: '#4ade80' }}>
+                      <span style={{ position: 'relative', display: 'inline-flex', width: 6, height: 6 }}>
+                        <span className="animate-ping" style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: '#4ade80', opacity: 0.7 }} />
+                        <span style={{ position: 'relative', borderRadius: '50%', background: '#4ade80', width: 6, height: 6 }} />
+                      </span>
+                      En vivo
+                    </span>
+                  </div>
+                  <div className="reveal reveal-delay-4" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>Compramos</span>
+                      <span style={{ fontSize: '2.1rem', fontWeight: 900, color: '#ffffff', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>S/ {qc_compra}</span>
+                    </div>
+                    <div style={{ width: 1, height: 48, background: 'rgba(255,255,255,0.2)', flexShrink: 0 }} />
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, paddingLeft: 14 }}>
+                      <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>Vendemos</span>
+                      <span style={{ fontSize: '2.1rem', fontWeight: 900, color: '#ffffff', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>S/ {qc_venta}</span>
+                    </div>
+                  </div>
+                  {/* Badge mitad dentro mitad fuera — borde derecho */}
+                  <div className="reveal-right reveal-delay-5" style={{ position: 'absolute', right: 0, top: '38%', transform: 'translateX(65%) translateY(-50%)', zIndex: 10, display: 'flex', alignItems: 'center', gap: 5, background: '#ffffff', borderRadius: 99, padding: '6px 14px', boxShadow: '0 4px 20px rgba(0,0,0,0.25)', whiteSpace: 'nowrap' }}>
+                    <CheckCircle2 style={{ width: 11, height: 11, color: '#1463FF' }} />
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#1463FF' }}>Mejor precio del mercado</span>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Imagen + card banco al lado */}
+            <div style={{ marginTop: 30, display: 'flex', alignItems: 'flex-start', gap: 14, alignSelf: 'center' }}>
+
+              {/* Imagen con card superpuesta */}
+              <div className="reveal reveal-delay-3" style={{ position: 'relative', flexShrink: 0 }}>
+                <img src="/ggg.jpeg" alt="" style={{ width: 260, height: 320, objectFit: 'cover', objectPosition: 'center', borderRadius: 14, display: 'block' }} />
+                {/* Card cuadrada en el borde izquierdo, mitad dentro mitad fuera */}
+                <div style={{ position: 'absolute', left: 0, top: '72%', transform: 'translateX(-50%) translateY(-50%)', zIndex: 10, background: '#ffffff', borderRadius: 16, padding: '18px 16px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', width: 180, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  {[
+                    { text: '¿Sigues cambiando con el banco?',         Icon: Building2,    delay: 'reveal-delay-4', attn: 'attention-shake' },
+                    { text: 'Estás perdiendo sin darte cuenta',        Icon: TrendingDown,  delay: 'reveal-delay-5', attn: 'attention-shake-2' },
+                    { text: 'Con Qoricash ahorras más por cada dólar', Icon: CheckCircle2,  delay: 'reveal-delay-6', attn: 'attention-glow' },
+                  ].map(({ text, Icon, delay, attn }) => (
+                    <div key={text} className={`reveal ${delay}`} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                      <Icon style={{ width: 14, height: 14, color: '#1463FF', flexShrink: 0, marginTop: 1 }} />
+                      <span className={attn} style={{ fontSize: 10, fontWeight: 700, color: '#0D1117', lineHeight: 1.4 }}>{text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card Tasa en bancos */}
+              {(() => {
+                const qc_compra = currentRates?.tipo_compra || parseFloat(buyRate);
+                const qc_venta  = currentRates?.tipo_venta  || parseFloat(sellRate);
+                const bk_compra = (qc_compra - 0.017).toFixed(3);
+                const bk_venta  = (qc_venta  + 0.015).toFixed(3);
+                return (
+                  <div style={{ background: '#ffffff', borderRadius: 16, padding: '20px 18px', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', width: 180, display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <span className="reveal reveal-delay-4" style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6B7280' }}>Tasa en bancos</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div className="reveal reveal-delay-5" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9CA3AF' }}>Compra</span>
+                        <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0D1117', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>S/ {bk_compra}</span>
+                      </div>
+                      <div style={{ height: 1, background: '#E5E7EB' }} />
+                      <div className="reveal reveal-delay-6" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9CA3AF' }}>Venta</span>
+                        <span style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0D1117', lineHeight: 1, fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>S/ {bk_venta}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+            </div>
+
+
+          </div>
+
+        </div>{/* fin flex outer */}
+
       </section>
       )}
 
@@ -1633,384 +1646,50 @@ export default function Home() {
       `}</style>
 
       {!isEmpresaPage && (
-      <section id="como-funciona" className="pt-8 sm:pt-12 pb-12 sm:pb-20" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="text-center mb-12 reveal">
-            <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase px-4 py-2 rounded-full mb-4" style={{ border: '1px solid rgba(0,0,0,0.1)', color: '#6B7280' }}>
-              Simple como siempre debió ser
-            </span>
-            <h2 className="font-display font-black text-3xl md:text-4xl" style={{ color: '#0D1117' }}>Opera en 3 simples pasos</h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mb-10">
-
-            {/* -- CARD 01 - Cotiza en línea -- */}
-            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-1" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
-              {/* Illustration zone */}
-              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* Dot grid */}
-                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
-                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
-                    <circle key={`s1-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
-                  )))}
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 30s linear infinite' }}>
-                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
-                    <circle cx="160" cy="17"  r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="248" cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="160" cy="193" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="72"  cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                  </g>
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 20s linear infinite', animationDelay: '-3s' }}>
-                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
-                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                  </g>
-                </svg>
-
-                {/* Central card */}
-                <div style={{
-                  position: 'relative', zIndex: 2,
-                  width: 154, height: 148,
-                  background: '#fff', borderRadius: 22,
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: 9, overflow: 'hidden', padding: '0 14px',
-                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
-                }}>
-                  {/* Scan line */}
-                  <div style={{
-                    position: 'absolute', left: 10, right: 10, height: 1.5,
-                    background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
-                    borderRadius: 2, animation: 'sp-scan 3s ease-in-out 1s infinite', zIndex: 4,
-                  }} />
-                  {/* ENVÍAS */}
-                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <div style={{ fontSize: 7.5, fontWeight: 700, color: '#94a3b8', letterSpacing: 0.5 }}>ENVÍAS</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#F8FAFC', borderRadius: 8, padding: '5px 8px', border: '1px solid #E2E8F0' }}>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: '#2563EB' }}>$</span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0D1117' }}>1,000</span>
-                      <span style={{ display: 'inline-block', width: 1.5, height: 12, background: '#0D1117', marginLeft: 1, animation: 'sp-cursor 1s ease-in-out infinite' }} />
-                      <span style={{ marginLeft: 'auto', fontSize: 8.5, fontWeight: 700, color: '#94a3b8' }}>USD</span>
-                    </div>
-                  </div>
-                  {/* Arrow */}
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 5v14M19 12l-7 7-7-7" />
-                  </svg>
-                  {/* RECIBES */}
-                  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <div style={{ fontSize: 7.5, fontWeight: 700, color: '#94a3b8', letterSpacing: 0.5 }}>RECIBES</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#EFF6FF', borderRadius: 8, padding: '5px 8px', border: '1px solid #BFDBFE' }}>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: '#0D1117' }}>S/</span>
-                      <span style={{ fontSize: 13, fontWeight: 800, color: '#0D1117', animation: 'sp-shimmer 2.5s ease-in-out infinite' }}>3,760.00</span>
-                      <span style={{ marginLeft: 'auto', fontSize: 8.5, fontWeight: 700, color: '#94a3b8' }}>PEN</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Badge: TC */}
-                <div style={{
-                  position: 'absolute', top: '7%', right: '4%', zIndex: 5,
-                  background: '#fff', borderRadius: 14, padding: '6px 11px',
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
-                }}>
-                  <div style={{ fontSize: 8, fontWeight: 600, color: '#94a3b8' }}>Tipo de Cambio</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0D1117' }}>3.760</div>
-                </div>
-
-                {/* Badge: Al instante */}
-                <div style={{
-                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
-                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
-                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
-                }}>
-                  <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#2563EB', animation: 'sp-blink 1.5s ease-in-out infinite' }} />
-                  <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff' }}>Al instante</span>
-                </div>
-
-                {/* Floating dots */}
-                <div style={{ position: 'absolute', top: '15%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
-                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
-                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
-              </div>
-
-              {/* Text body */}
-              <div id="step-text-1" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 01</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Cotiza en línea</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Ingresa el monto y ve tu tipo de cambio exacto al instante, sin sorpresas ni letras chicas.</p>
-              </div>
+      <section className="pb-10 sm:pb-16" style={{ paddingTop: 200 }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl reveal" style={{ background: '#1463FF', padding: '44px 52px', height: 460, display: 'flex', alignItems: 'flex-end', overflow: 'visible', position: 'relative' }}>
+            {/* Texto lado izquierdo */}
+            <div className="reveal-left reveal-delay-1" style={{ display: 'flex', flexDirection: 'column', gap: 0, lineHeight: 1, zIndex: 2, position: 'absolute', left: 52, top: '50%', transform: 'translateY(-50%)' }}>
+              {['haz que', 'tu dinero', 'trabaje', 'para ti'].map((line, i) => (
+                <span key={line} className={`reveal-left reveal-delay-${i + 1}`} style={{ fontSize: 'clamp(2.4rem, 4.5vw, 4rem)', fontWeight: 900, color: i === 3 ? 'rgba(255,255,255,0.4)' : '#ffffff', fontFamily: 'var(--font-sans)', letterSpacing: '-0.03em' }}>
+                  {line}
+                </span>
+              ))}
+            </div>
+            {/* Texto lado derecho */}
+            <div className="reveal-right reveal-delay-2" style={{ position: 'absolute', right: 52, top: '50%', transform: 'translateY(-50%)', maxWidth: 260, zIndex: 2, display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                ¿Sigues cambiando con el app de tu banco? Tu banco no te ofrece el mejor precio, te ofrece el precio que más le conviene a él. Cada operación tiene un margen que sale silenciosamente de tu bolsillo, sin que lo notes.
+              </p>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                Qoricash te da el <strong style={{ color: '#ffffff' }}>tipo de cambio real del mercado</strong>. Sin comisiones, sin letra chica. Tu dinero llega directo a tu cuenta en menos de 15 minutos desde cualquier banco del Perú.
+              </p>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: 0 }}>
+                La diferencia entre cambiar con tu banco y cambiar con Qoricash <strong style={{ color: '#4ade80' }}>se acumula con cada operación</strong>. Ese dinero puede quedarse contigo.
+              </p>
+              <a
+                href="https://wa.me/51910624404?text=Hola%2C%20quiero%20hacer%20un%20cambio%20de%20d%C3%B3lares"
+                target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#ffffff', color: '#1463FF', fontWeight: 800, fontSize: 13, padding: '11px 22px', borderRadius: 10, textDecoration: 'none', letterSpacing: '-0.01em', boxShadow: '0 4px 20px rgba(0,0,0,0.2)', transition: 'opacity 0.2s', alignSelf: 'flex-start' }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+              >
+                Empieza a ganar más →
+              </a>
             </div>
 
-            {/* -- CARD 02 - Transfiere -- */}
-            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-2" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
-              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* Dot grid */}
-                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
-                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
-                    <circle key={`s2-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
-                  )))}
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 35s linear infinite', animationDelay: '-6s' }}>
-                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
-                    <rect x="157" y="13" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <rect x="245" y="102" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <rect x="157" y="191" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <rect x="69"  y="102" width="6" height="6" rx="1.5" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                  </g>
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 22s linear infinite' }}>
-                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
-                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                  </g>
-                </svg>
-
-                {/* Central card */}
-                <div style={{
-                  position: 'relative', zIndex: 2,
-                  width: 178, height: 130,
-                  background: '#fff', borderRadius: 22,
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: 10, overflow: 'hidden', padding: '0 16px',
-                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
-                }}>
-                  {/* Scan line */}
-                  <div style={{
-                    position: 'absolute', left: 10, right: 10, height: 1.5,
-                    background: 'linear-gradient(90deg, transparent, #2563EB88, #2563EB, #2563EB88, transparent)',
-                    borderRadius: 2, animation: 'sp-scan 3.2s ease-in-out 1s infinite', zIndex: 4,
-                  }} />
-                  {/* Transfer row */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', justifyContent: 'center' }}>
-                    {/* Bank icon */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-                      <div style={{ width: 38, height: 38, borderRadius: 11, background: '#F8FAFC', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                          <path d="M14 3L25 9.5H3L14 3Z" fill="#0D1117" opacity="0.08" stroke="#0D1117" strokeWidth="1.2" strokeLinejoin="round"/>
-                          <rect x="3" y="9.5" width="22" height="2" fill="#0D1117" opacity="0.18"/>
-                          <rect x="5"   y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
-                          <rect x="9.5" y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
-                          <rect x="14"  y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
-                          <rect x="18.5" y="11.5" width="2.5" height="9" rx="0.8" fill="#0D1117" opacity="0.22"/>
-                          <rect x="2" y="20.5" width="24" height="2" rx="0.8" fill="#0D1117" opacity="0.14"/>
-                        </svg>
-                      </div>
-                      <span style={{ fontSize: 7.5, fontWeight: 600, color: '#94a3b8' }}>Tu banco</span>
-                    </div>
-                    {/* Animated flow dots */}
-                    <div style={{ flex: 1, position: 'relative', height: 14, overflow: 'hidden' }}>
-                      <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, #E2E8F0, #2563EB33, #E2E8F0)', marginTop: -0.5 }} />
-                      {[0, 0.5, 1.0].map(d => (
-                        <div key={d} style={{ position: 'absolute', top: '50%', marginTop: -5, width: 10, height: 10, animation: `sp-flow 1.5s ease-in-out ${d}s infinite` }}>
-                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                            <path d="M1 5h8M6 2l3 3-3 3" stroke="#2563EB" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      ))}
-                    </div>
-                    {/* Qoricash icon */}
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-                      <div style={{ width: 38, height: 38, borderRadius: 11, background: '#EFF6FF', border: '1px solid #BFDBFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                          <circle cx="14" cy="14" r="10" stroke="#2563EB" strokeWidth="1.4" opacity="0.35"/>
-                          <circle cx="14" cy="14" r="6.5" stroke="#2563EB" strokeWidth="1.1" opacity="0.2"/>
-                          <circle cx="14" cy="13.5" r="4" stroke="#2563EB" strokeWidth="1.9" opacity="0.9"/>
-                          <path d="M16.5 16.5l2.5 2.5" stroke="#2563EB" strokeWidth="1.9" strokeLinecap="round" opacity="0.9"/>
-                        </svg>
-                      </div>
-                      <span style={{ fontSize: 7.5, fontWeight: 700, color: '#2563EB' }}>Qoricash</span>
-                    </div>
-                  </div>
-                  {/* Bank chips */}
-                  <div style={{ display: 'flex', gap: 4 }}>
-                    {['BCP', 'Interbank', 'BanBif'].map(b => (
-                      <span key={b} style={{ fontSize: 7, fontWeight: 700, color: '#64748b', background: '#F1F5F9', borderRadius: 6, padding: '2px 5px', border: '1px solid #E2E8F0' }}>{b}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Badge: Encriptado */}
-                <div style={{
-                  position: 'absolute', top: '7%', right: '3%', zIndex: 5,
-                  background: '#fff', borderRadius: 14, padding: '7px 10px',
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
-                  display: 'flex', alignItems: 'center', gap: 7,
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
-                }}>
-                  <div style={{ width: 24, height: 24, borderRadius: 7, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>256-bit SSL</div>
-                    <div style={{ fontSize: 8, color: '#94a3b8', marginTop: 1 }}>Encriptado</div>
-                  </div>
-                </div>
-
-                {/* Badge: CCI */}
-                <div style={{
-                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
-                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
-                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
-                }}>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>+ cualquier banco vía CCI</span>
-                </div>
-
-                {/* Floating dots */}
-                <div style={{ position: 'absolute', top: '14%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
-                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
-                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
-              </div>
-
-              <div id="step-text-2" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 02</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Transfiere a Qoricash</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Transfiere directo desde BCP, Interbank o BanBif, o vía CCI desde BBVA, Scotiabank, Pichincha y cualquier otro banco del Perú.</p>
+            {/* Imagen centrada */}
+            <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }}>
+              <div className="reveal reveal-delay-2">
+                <img src="/wwws.png" alt="" style={{ maxWidth: 360, width: '100%', height: 'auto', display: 'block' }} />
               </div>
             </div>
-
-            {/* -- CARD 03 - Recibe tu dinero -- */}
-            <div className="group rounded-2xl overflow-hidden flex flex-col reveal reveal-delay-3" style={{ border: '1px solid rgba(13,27,42,0.07)', boxShadow: '0 2px 12px rgba(13,27,42,0.05)', transition: 'transform 0.35s cubic-bezier(0.22,0.68,0,1.1), box-shadow 0.35s ease, border-color 0.25s ease' }} onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-6px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 16px 40px rgba(13,27,42,0.12)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(37,99,235,0.18)'; }} onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(13,27,42,0.05)'; (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(13,27,42,0.07)'; }}>
-              <div style={{ position: 'relative', background: '#F8FAFC', height: 210, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* Dot grid */}
-                <svg width="100%" height="210" viewBox="0 0 320 210" fill="none" style={{ position: 'absolute', inset: 0 }}>
-                  {Array.from({ length: 4 }, (_, r) => Array.from({ length: 7 }, (_, c) => (
-                    <circle key={`s3-${r}-${c}`} cx={20 + c * 47} cy={22 + r * 56} r={1.2} fill="#CBD5E1" opacity={0.5} />
-                  )))}
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin 28s linear infinite', animationDelay: '-10s' }}>
-                    <circle cx="160" cy="105" r="88" stroke="#E2E8F0" strokeWidth="1" fill="none" strokeDasharray="3 8" />
-                    <circle cx="160" cy="17"  r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="248" cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="160" cy="193" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                    <circle cx="72"  cy="105" r="4" fill="#fff" stroke="#CBD5E1" strokeWidth="1.5" />
-                  </g>
-                  <g style={{ transformOrigin: '160px 105px', animation: 'sp-spin-r 18s linear infinite', animationDelay: '-2s' }}>
-                    <circle cx="160" cy="105" r="56" stroke="#F1F5F9" strokeWidth="1.5" fill="none" />
-                    <circle cx="160" cy="49"  r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="216" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="160" cy="161" r="3.5" fill="#2563EB" opacity="0.2" />
-                    <circle cx="104" cy="105" r="3.5" fill="#2563EB" opacity="0.2" />
-                  </g>
-                </svg>
-
-                {/* Central card */}
-                <div style={{
-                  position: 'relative', zIndex: 2,
-                  width: 148, height: 148,
-                  background: '#fff', borderRadius: 22,
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05)',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: 8, overflow: 'hidden',
-                  animation: 'sp-fadein 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s both',
-                }}>
-                  {/* Progress ring */}
-                  <div style={{ position: 'relative', width: 72, height: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', transform: 'rotate(-90deg)' }} viewBox="0 0 72 72">
-                      <circle cx="36" cy="36" r="30" fill="none" stroke="#F1F5F9" strokeWidth="3"/>
-                      <circle cx="36" cy="36" r="30" fill="none" stroke="#2563EB" strokeWidth="3"
-                        strokeLinecap="round" strokeDasharray="188"
-                        style={{ animation: 'sp-ring-p 4s ease-in-out infinite', filter: 'drop-shadow(0 0 4px rgba(37,99,235,0.35))' }}/>
-                    </svg>
-                    {/* Procesando text */}
-                    <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'sp-proc 4s ease-in-out infinite' }}>
-                      <span style={{ fontSize: 9, fontWeight: 600, color: '#94a3b8' }}>Procesando</span>
-                      <span style={{ fontSize: 16, fontWeight: 900, color: '#0D1117', fontFamily: 'monospace', letterSpacing: 2 }}>···</span>
-                    </div>
-                    {/* Check done */}
-                    <div style={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'sp-done 4s ease-in-out infinite', opacity: 0 }}>
-                      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-                        <circle cx="17" cy="17" r="15" fill="#EFF6FF"/>
-                        <path d="M9 17l6 6 10-10" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
-                          strokeDasharray="40" style={{ animation: 'sp-check 4s ease-in-out infinite' }}/>
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Amount */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                    <span style={{ fontSize: 15, fontWeight: 900, color: '#0D1117', animation: 'sp-shimmer 2.5s ease-in-out 0.5s infinite' }}>S/ 3,760.00</span>
-                    <span style={{ fontSize: 8, fontWeight: 600, color: '#94a3b8' }}>en tu cuenta bancaria</span>
-                  </div>
-                </div>
-
-                {/* Badge: < 15 min */}
-                <div style={{
-                  position: 'absolute', top: '7%', right: '3%', zIndex: 5,
-                  background: '#fff', borderRadius: 14, padding: '7px 10px',
-                  border: '1px solid rgba(0,0,0,0.07)',
-                  boxShadow: '0 6px 18px rgba(0,0,0,0.09)',
-                  display: 'flex', alignItems: 'center', gap: 7,
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s both, sp-float 4.5s ease-in-out 1.2s infinite',
-                }}>
-                  <div style={{ width: 24, height: 24, borderRadius: 7, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, fontWeight: 800, color: '#0D1117', lineHeight: 1.2 }}>&lt; 15 min</div>
-                    <div style={{ fontSize: 8, color: '#94a3b8', marginTop: 1 }}>Tiempo promedio</div>
-                  </div>
-                </div>
-
-                {/* Badge: Sin comisiones */}
-                <div style={{
-                  position: 'absolute', bottom: '8%', left: '3%', zIndex: 5,
-                  background: '#0D1117', borderRadius: 14, padding: '6px 10px',
-                  boxShadow: '0 6px 18px rgba(13,17,23,0.22)',
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  animation: 'sp-badge 0.7s cubic-bezier(0.22,1,0.36,1) 0.8s both, sp-float-r 5s ease-in-out 1.5s infinite',
-                }}>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                  <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff' }}>Sin comisiones</span>
-                </div>
-
-                {/* Floating dots */}
-                <div style={{ position: 'absolute', top: '14%', left: '10%', width: 6, height: 6, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 3.2s ease-in-out infinite' }} />
-                <div style={{ position: 'absolute', top: '72%', right: '11%', width: 4, height: 4, borderRadius: '50%', background: '#0D1117', animation: 'sp-dot 4s ease-in-out 0.7s infinite', opacity: 0.3 }} />
-                <div style={{ position: 'absolute', top: '40%', left: '5%', width: 4, height: 4, borderRadius: '50%', background: '#2563EB', animation: 'sp-dot 5s ease-in-out 1.2s infinite', opacity: 0.4 }} />
-              </div>
-
-              <div id="step-text-3" className="step-text-body px-6 py-5 flex-1" style={{ background: '#ffffff' }}>
-                <span className="text-[10px] font-bold tracking-widest uppercase block mb-1.5" style={{ color: 'rgba(13,27,42,0.35)' }}>Paso 03</span>
-                <h3 className="font-display font-bold text-lg mb-2 text-slate-800">Recibe tu dinero</h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(13,27,42,0.55)' }}>Te transferimos el contravalor en menos de 15 minutos. Sin comisiones, sin cargos ocultos.</p>
-              </div>
-            </div>
-
-          </div>
-
-          <div className="text-center reveal">
-            <Link
-              href={isAuthenticated ? '/dashboard' : '/login'}
-              className="inline-flex items-center gap-2.5 text-white font-bold px-9 py-4 rounded-full text-sm btn-press active:scale-[0.97]"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', boxShadow: '0 8px 24px rgba(37,99,235,0.35)' }}
-            >
-              Empezar ahora <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
         </div>
       </section>
       )}
+
 
       {isEmpresaPage && isAuthenticated && (
       <>
@@ -2027,11 +1706,6 @@ export default function Home() {
       </>
       )}
 
-      {/* MarketSection - mercado en tiempo real para personas */}
-      {!isEmpresaPage && <MarketSection variant="persona" />}
-
-      {/* AlertaTCBanner - solo en página personas */}
-      {!isAuthenticated && !isEmpresaPage && <AlertaTCBanner />}
 
 
       {/* ======================================
@@ -2068,7 +1742,7 @@ export default function Home() {
             {/* Fila 1 - Logo + descripción */}
             <div className="flex items-center gap-3 mb-5 sm:mb-6">
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity shrink-0">
-                <img src="/vg.png" alt="Qoricash" className="h-8 w-auto" />
+                <img src="/rep.png" alt="Qoricash" className="h-8 w-auto" style={{ objectFit: 'contain' }} />
               </Link>
               <span className="hidden sm:block w-px h-6" style={{ background: 'rgba(0,0,0,0.1)' }} />
               <p className="hidden sm:block text-xs leading-relaxed" style={{ color: '#6B7280' }}>Fintech de cambio de divisas líder en Perú. Seguridad, rapidez y los mejores tipos de cambio.</p>

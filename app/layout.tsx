@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+
+import localFont from "next/font/local";
 import { Suspense } from "react";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -9,17 +10,17 @@ import BackgroundDecor from "@/components/BackgroundDecor";
 import CookieBanner from "@/components/CookieBanner";
 import SwRegister from "@/components/SwRegister";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
+const sansation = localFont({
+  src: [
+    { path: "../public/fonts/Sansation_Light.ttf",        weight: "300", style: "normal" },
+    { path: "../public/fonts/Sansation_Light_Italic.ttf", weight: "300", style: "italic" },
+    { path: "../public/fonts/Sansation_Regular.ttf",      weight: "400", style: "normal" },
+    { path: "../public/fonts/Sansation_Italic.ttf",       weight: "400", style: "italic" },
+    { path: "../public/fonts/Sansation_Bold.ttf",         weight: "700", style: "normal" },
+    { path: "../public/fonts/Sansation_Bold_Italic.ttf",  weight: "700", style: "italic" },
+  ],
+  variable: "--font-sans",
   display: "swap",
 });
 
@@ -69,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${dmSans.variable} ${playfair.variable}`}>
+    <html lang="es" className={`${sansation.variable}`}>
       <head>
         {/* PWA — Apple splash / extra meta */}
         <meta name="mobile-web-app-capable" content="yes" />

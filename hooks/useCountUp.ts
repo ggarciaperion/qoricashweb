@@ -14,9 +14,8 @@ export function useCountUp({
   startOnView = true
 }: UseCountUpOptions) {
   const [count, setCount] = useState(0);
-  const [isInView, setIsInView] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!startOnView) {
@@ -26,9 +25,11 @@ export function useCountUp({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          setIsInView(true);
-          hasAnimated.current = true;
+        if (entry.isIntersecting) {
+          animateCount();
+        } else {
+          if (rafRef.current) cancelAnimationFrame(rafRef.current);
+          setCount(0);
         }
       },
       { threshold: 0.3 }
@@ -41,35 +42,24 @@ export function useCountUp({
     return () => observer.disconnect();
   }, [startOnView]);
 
-  useEffect(() => {
-    if (isInView || !startOnView) {
-      animateCount();
-    }
-  }, [isInView, startOnView]);
-
   const animateCount = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     const startTime = Date.now();
-    const startValue = 0;
 
     const updateCount = () => {
-      const currentTime = Date.now();
-      const elapsed = currentTime - startTime;
+      const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function (easeOutExpo)
       const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-
-      const currentCount = startValue + (end - startValue) * easeProgress;
-      setCount(currentCount);
+      setCount(end * easeProgress);
 
       if (progress < 1) {
-        requestAnimationFrame(updateCount);
+        rafRef.current = requestAnimationFrame(updateCount);
       } else {
         setCount(end);
       }
     };
 
-    requestAnimationFrame(updateCount);
+    rafRef.current = requestAnimationFrame(updateCount);
   };
 
   return { count, elementRef };
