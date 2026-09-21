@@ -860,6 +860,9 @@ export default function EmpresaPage() {
                   transform-origin: 50% calc(100% + ${PIVOT_DIST}px);
                 }
                 .fan-img:hover { filter: brightness(1.12) drop-shadow(0 12px 32px rgba(37,99,235,0.5)); }
+                @media (max-width: 767px) {
+                  .fan-img { transform-origin: 50% calc(100% + 320px) !important; }
+                }
               `}</style>
 
               {/* Header */}
