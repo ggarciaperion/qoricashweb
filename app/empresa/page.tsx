@@ -40,6 +40,7 @@ export default function EmpresaPage() {
   const banksSectionRef = useRef<HTMLDivElement>(null);
   const [roiVolume, setRoiVolume] = useState(50000);
   const [topBarHidden, setTopBarHidden] = useState(false);
+  const [mobilePhase, setMobilePhase] = useState<'film' | 'out' | 'content'>('film');
   const [cardVisible, setCardVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const banksCorpRef = useRef<HTMLDivElement>(null);
@@ -145,6 +146,14 @@ export default function EmpresaPage() {
     window.location.href = '/empresa';
   };
 
+  // Animación secuencial hero móvil: film → fade out → contenido
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.innerWidth >= 1024) return;
+    const t1 = setTimeout(() => setMobilePhase('out'), 2600);
+    const t2 = setTimeout(() => setMobilePhase('content'), 3350);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
   return (
     <>
       {loggingOut && createPortal(
@@ -173,6 +182,11 @@ export default function EmpresaPage() {
         @keyframes ec-beacon    { 0%,100%{r:2;opacity:0.9} 50%{r:3.5;opacity:0.5} }
         @keyframes ec-count-up  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         @keyframes ec-candle-up   { 0%,100%{transform:scaleY(0.3);opacity:0.18} 50%{transform:scaleY(1);opacity:0.32} }
+        @keyframes ec-content-in  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        @media (max-width:1023px) {
+          .ec-mobile-film { display:flex !important; }
+          .ec-content-reveal { opacity:0; animation:ec-content-in 0.9s cubic-bezier(0.22,1,0.36,1) 3.35s forwards; }
+        }
         @keyframes ec-candle-dn   { 0%,100%{transform:scaleY(0.5);opacity:0.12} 50%{transform:scaleY(0.85);opacity:0.22} }
         @keyframes ec-ticker-drift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
         @keyframes ec-sym-float   { 0%,100%{transform:translateY(0) rotate(-4deg);opacity:0.04} 50%{transform:translateY(-12px) rotate(-4deg);opacity:0.07} }
@@ -424,7 +438,38 @@ export default function EmpresaPage() {
             );
           })()}
 
-          <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 flex flex-col items-center text-center" style={{ paddingTop: 'clamp(70px, 9vw, 110px)', paddingBottom: 'clamp(60px, 8vw, 100px)', minHeight: '100dvh', justifyContent: 'center' }}>
+          {/* ── Film strip móvil full-screen — solo < lg ── */}
+          <div
+            className="ec-mobile-film"
+            style={{
+              display: 'none',
+              position: 'absolute', inset: 0, zIndex: 10,
+              gap: 6, padding: '0 6px',
+              opacity: mobilePhase === 'film' ? 1 : 0,
+              transition: mobilePhase === 'out' ? 'opacity 0.75s ease-out' : 'none',
+              pointerEvents: 'none',
+            }}
+          >
+            {[
+              { imgs: ['/ty/Agro-exporter_viewing_transfer_n__2K_20260917133151.jpeg','/ty/Carpenter_looking_at_phone_2K_20260917133207.jpeg','/ty/Entrepreneur_holding_smartphone___2K_20260917133255.jpeg','/ty/Executive_looking_at_phone_2K_20260917133335.jpeg','/ty/Headphones_and_smartphone_on_sur__2K_20260917133312.jpeg','/ty/Man_smiling_at_smartphone_2K_20260917133338.jpeg','/ty/Watch_and_smartphone_on_wrist_2K_20260917133436.jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(3).jpeg','/ty/Woman_looking_at_smartphone_2K_20260917133425.jpeg'], anim: 'film-scroll-up 32s linear infinite' },
+              { imgs: ['/ty/Architect_showing_transaction_on__2K_20260917133416.jpeg','/ty/Engineer_reviewing_machinery_quo__2K_20260917133211.jpeg','/ty/Entrepreneur_smiling_with_smartp__2K_20260917133422.jpeg','/ty/Farmer_looking_at_phone_notifica__2K_20260917133233.jpeg','/ty/Man_checking_phone_in_mountains_2K_20260917133345.jpeg','/ty/Miner_holding_phone_in_shop_2K_20260917133155.jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55.jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(4).jpeg'], anim: 'film-scroll-down 25s linear infinite' },
+              { imgs: ['/ty/Baker_holding_smartphone_smiling_2K_20260917133344.jpeg','/ty/Engineer_reviewing_machinery_quo__2K_20260917133222.jpeg','/ty/Executive_holding_smartphone_in___2K_20260917133401.jpeg','/ty/Gas_station_owner_holding_smartp__2K_20260917133133.jpeg','/ty/Man_holding_smartphone_in_workshop_2K_20260917133349.jpeg','/ty/Professional_walking_holding_sma__2K_20260917133259.jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(1).jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(5).jpeg'], anim: 'film-scroll-down 28s linear infinite' },
+              { imgs: ['/ty/CFO_smiling_at_smartphone_2K_20260917133426.jpeg','/ty/Engineer_using_smartphone_in_mine_2K_20260917133138.jpeg','/ty/Executive_looking_at_phone_2K_20260917133159.jpeg','/ty/Gas_station_owner_holding_smartp__2K_20260917133225.jpeg','/ty/Man_smiling_at_phone_in_2K_20260917133252.jpeg','/ty/Traveler_viewing_phone_near_SUV_2K_20260917133258.jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(2).jpeg','/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(6).jpeg'], anim: 'film-scroll-up 22s linear infinite' },
+            ].map((col, ci) => (
+              <div key={ci} style={{ flex: 1, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, animation: col.anim }}>
+                  {[...col.imgs, ...col.imgs].map((src, i) => (
+                    <img key={i} src={src} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                  ))}
+                </div>
+              </div>
+            ))}
+            {/* Fades */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to bottom, #0A0A0A, transparent)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to top, #0A0A0A, transparent)', pointerEvents: 'none' }} />
+          </div>
+
+          <div className="ec-content-reveal relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-10 flex flex-col items-center text-center" style={{ paddingTop: 'clamp(70px, 9vw, 110px)', paddingBottom: 'clamp(60px, 8vw, 100px)', minHeight: '100dvh', justifyContent: 'center' }}>
 
                 {/* Badge */}
                 <div className="inline-flex items-center gap-2 mb-6" style={{ background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.25)', borderRadius: 999, padding: '6px 16px' }}>
