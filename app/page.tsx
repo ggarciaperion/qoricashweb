@@ -52,6 +52,7 @@ export default function Home() {
   const [activeBankTab, setActiveBankTab] = useState<'bcp' | 'interbank' | 'banbif' | 'cci'>('bcp');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [bcrpData, setBcrpData] = useState<Array<{fecha:string;compra:number;venta:number}>>([]);
+  const [empresaMobilePhase, setEmpresaMobilePhase] = useState<'film' | 'transitioning' | 'content'>('film');
 
   const BANK_ACCOUNTS = {
     bcp:       { soles: '1937353150041',   dolares: '1917357790119'   },
@@ -228,6 +229,15 @@ export default function Home() {
     return () => { if (banksSectionRef.current) observer.unobserve(banksSectionRef.current); };
   }, []);
 
+  // Empresa mobile sequential animation: film → transitioning → content
+  useEffect(() => {
+    if (!isEmpresaPage) return;
+    if (typeof window === 'undefined' || window.innerWidth >= 1024) return;
+    const t1 = setTimeout(() => setEmpresaMobilePhase('transitioning'), 2600);
+    const t2 = setTimeout(() => setEmpresaMobilePhase('content'), 3350);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [isEmpresaPage]);
+
 
 
   useEffect(() => {
@@ -269,6 +279,53 @@ export default function Home() {
     await logout();
     window.location.href = '/';
   };
+
+  // Film strip image columns — used by empresa hero (desktop IIFE + mobile strip)
+  const filmCol1 = [
+    '/ty/Agro-exporter_viewing_transfer_n__2K_20260917133151.jpeg',
+    '/ty/Carpenter_looking_at_phone_2K_20260917133207.jpeg',
+    '/ty/Entrepreneur_holding_smartphone___2K_20260917133255.jpeg',
+    '/ty/Executive_looking_at_phone_2K_20260917133335.jpeg',
+    '/ty/Headphones_and_smartphone_on_sur__2K_20260917133312.jpeg',
+    '/ty/Man_smiling_at_smartphone_2K_20260917133338.jpeg',
+    '/ty/Watch_and_smartphone_on_wrist_2K_20260917133436.jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(3).jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(7).jpeg',
+    '/ty/Woman_looking_at_smartphone_2K_20260917133425.jpeg',
+  ];
+  const filmCol2 = [
+    '/ty/Architect_showing_transaction_on__2K_20260917133416.jpeg',
+    '/ty/Engineer_reviewing_machinery_quo__2K_20260917133211.jpeg',
+    '/ty/Entrepreneur_smiling_with_smartp__2K_20260917133422.jpeg',
+    '/ty/Farmer_looking_at_phone_notifica__2K_20260917133233.jpeg',
+    '/ty/Man_checking_phone_in_mountains_2K_20260917133345.jpeg',
+    '/ty/Miner_holding_phone_in_shop_2K_20260917133155.jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55.jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(4).jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(8).jpeg',
+  ];
+  const filmCol3 = [
+    '/ty/Baker_holding_smartphone_smiling_2K_20260917133344.jpeg',
+    '/ty/Engineer_reviewing_machinery_quo__2K_20260917133222.jpeg',
+    '/ty/Executive_holding_smartphone_in___2K_20260917133401.jpeg',
+    '/ty/Gas_station_owner_holding_smartp__2K_20260917133133.jpeg',
+    '/ty/Man_holding_smartphone_in_workshop_2K_20260917133349.jpeg',
+    '/ty/Professional_walking_holding_sma__2K_20260917133259.jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(1).jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(5).jpeg',
+    '/ty/Woman_holding_smartphone_with_ca__2K_20260917133255.jpeg',
+  ];
+  const filmCol4 = [
+    '/ty/CFO_smiling_at_smartphone_2K_20260917133426.jpeg',
+    '/ty/Engineer_using_smartphone_in_mine_2K_20260917133138.jpeg',
+    '/ty/Executive_looking_at_phone_2K_20260917133159.jpeg',
+    '/ty/Gas_station_owner_holding_smartp__2K_20260917133225.jpeg',
+    '/ty/Man_smiling_at_phone_in_2K_20260917133252.jpeg',
+    '/ty/Traveler_viewing_phone_near_SUV_2K_20260917133258.jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(2).jpeg',
+    '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(6).jpeg',
+    '/ty/Woman_holding_tablet_with_quote_2K_20260917133239.jpeg',
+  ];
 
   return (
     <>
@@ -805,51 +862,10 @@ export default function Home() {
 
         {/* ── Film Strip Columns — solo página empresa ── */}
         {isEmpresaPage && (() => {
-          const col1 = [
-            '/ty/Agro-exporter_viewing_transfer_n__2K_20260917133151.jpeg',
-            '/ty/Carpenter_looking_at_phone_2K_20260917133207.jpeg',
-            '/ty/Entrepreneur_holding_smartphone___2K_20260917133255.jpeg',
-            '/ty/Executive_looking_at_phone_2K_20260917133335.jpeg',
-            '/ty/Headphones_and_smartphone_on_sur__2K_20260917133312.jpeg',
-            '/ty/Man_smiling_at_smartphone_2K_20260917133338.jpeg',
-            '/ty/Watch_and_smartphone_on_wrist_2K_20260917133436.jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(3).jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(7).jpeg',
-            '/ty/Woman_looking_at_smartphone_2K_20260917133425.jpeg',
-          ];
-          const col2 = [
-            '/ty/Architect_showing_transaction_on__2K_20260917133416.jpeg',
-            '/ty/Engineer_reviewing_machinery_quo__2K_20260917133211.jpeg',
-            '/ty/Entrepreneur_smiling_with_smartp__2K_20260917133422.jpeg',
-            '/ty/Farmer_looking_at_phone_notifica__2K_20260917133233.jpeg',
-            '/ty/Man_checking_phone_in_mountains_2K_20260917133345.jpeg',
-            '/ty/Miner_holding_phone_in_shop_2K_20260917133155.jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55.jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(4).jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(8).jpeg',
-          ];
-          const col3 = [
-            '/ty/Baker_holding_smartphone_smiling_2K_20260917133344.jpeg',
-            '/ty/Engineer_reviewing_machinery_quo__2K_20260917133222.jpeg',
-            '/ty/Executive_holding_smartphone_in___2K_20260917133401.jpeg',
-            '/ty/Gas_station_owner_holding_smartp__2K_20260917133133.jpeg',
-            '/ty/Man_holding_smartphone_in_workshop_2K_20260917133349.jpeg',
-            '/ty/Professional_walking_holding_sma__2K_20260917133259.jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(1).jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(5).jpeg',
-            '/ty/Woman_holding_smartphone_with_ca__2K_20260917133255.jpeg',
-          ];
-          const col4 = [
-            '/ty/CFO_smiling_at_smartphone_2K_20260917133426.jpeg',
-            '/ty/Engineer_using_smartphone_in_mine_2K_20260917133138.jpeg',
-            '/ty/Executive_looking_at_phone_2K_20260917133159.jpeg',
-            '/ty/Gas_station_owner_holding_smartp__2K_20260917133225.jpeg',
-            '/ty/Man_smiling_at_phone_in_2K_20260917133252.jpeg',
-            '/ty/Traveler_viewing_phone_near_SUV_2K_20260917133258.jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(2).jpeg',
-            '/ty/WhatsApp_Image_2026-09-14_at_19.10.55_(6).jpeg',
-            '/ty/Woman_holding_tablet_with_quote_2K_20260917133239.jpeg',
-          ];
+          const col1 = filmCol1;
+          const col2 = filmCol2;
+          const col3 = filmCol3;
+          const col4 = filmCol4;
           const imgStyle: React.CSSProperties = { width: '100%', height: 220, objectFit: 'cover', objectPosition: 'center top', borderRadius: 10, display: 'block', flexShrink: 0 };
           return (
             <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
@@ -889,36 +905,58 @@ export default function Home() {
               {/* Fade top + bottom sobre las columnas (desktop) */}
               <div className="hidden lg:block" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0A0A0A 0%, transparent 20%, transparent 80%, #0A0A0A 100%)', pointerEvents: 'none' }} />
 
-              {/* ── MÓVIL: 2 columnas film strip al tope ── */}
-              <div className="flex lg:hidden" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '44vh', gap: 6, padding: '0 6px' }}>
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <div className="film-col-1" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {[...col1, ...col1].map((src, i) => (
-                      <img key={`m1-${i}`} src={src} alt="" style={{ width: '100%', height: 150, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
-                    ))}
-                  </div>
-                </div>
-                <div style={{ flex: 1, overflow: 'hidden' }}>
-                  <div className="film-col-3" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {[...col3, ...col3].map((src, i) => (
-                      <img key={`m3-${i}`} src={src} alt="" style={{ width: '100%', height: 150, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
-                    ))}
-                  </div>
-                </div>
-                {/* Fade superior (navbar) */}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 80, background: 'linear-gradient(to bottom, #0A0A0A, transparent)', pointerEvents: 'none' }} />
-                {/* Fade inferior → contenido */}
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to bottom, transparent, #0A0A0A)', pointerEvents: 'none' }} />
-              </div>
             </div>
           );
         })()}
 
-        {/* Spacer móvil empresa — deja espacio para el film strip */}
-        {isEmpresaPage && <div className="lg:hidden empresa-mobile-spacer" style={{ flexShrink: 0 }} />}
+        {/* ── MÓVIL empresa: film strip full-screen (solo < lg) ── */}
+        {isEmpresaPage && (
+          <div
+            className="empresa-film-mobile"
+            style={{
+              position: 'absolute', inset: 0, zIndex: 20,
+              gap: 6, padding: '0 6px',
+              opacity: empresaMobilePhase === 'film' ? 1 : 0,
+              transition: empresaMobilePhase === 'transitioning' ? 'opacity 0.75s ease-out' : 'none',
+              pointerEvents: empresaMobilePhase !== 'film' ? 'none' : 'auto',
+            }}
+          >
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <div className="film-col-1" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {[...filmCol1, ...filmCol1].map((src, i) => (
+                  <img key={`em1-${i}`} src={src} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                ))}
+              </div>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <div className="film-col-2" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {[...filmCol2, ...filmCol2].map((src, i) => (
+                  <img key={`em2-${i}`} src={src} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                ))}
+              </div>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <div className="film-col-3" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {[...filmCol3, ...filmCol3].map((src, i) => (
+                  <img key={`em3-${i}`} src={src} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                ))}
+              </div>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <div className="film-col-4" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {[...filmCol4, ...filmCol4].map((src, i) => (
+                  <img key={`em4-${i}`} src={src} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', objectPosition: 'center top', borderRadius: 8, display: 'block', flexShrink: 0 }} />
+                ))}
+              </div>
+            </div>
+            {/* Fades top + bottom */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to bottom, #0A0A0A, transparent)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to top, #0A0A0A, transparent)', pointerEvents: 'none' }} />
+          </div>
+        )}
 
         <div
-          className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : `items-center justify-center px-4 text-center${isEmpresaPage ? ' empresa-hero-content' : ''}`}`}
+          className={`flex-1 flex flex-col w-full pb-4 sm:pb-8 relative z-10 ${!isEmpresaPage ? 'items-start px-6 sm:px-10 lg:px-16' : `items-center justify-center px-4 text-center${isEmpresaPage ? ' empresa-content-reveal' : ''}`}`}
           style={{ paddingTop: isAuthenticated ? 96 : (topBarHidden ? 96 : 132) }}
         >
 

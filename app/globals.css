@@ -1403,14 +1403,24 @@ main {
   .hero-persona-grid { gap: 12px !important; }
 }
 
-/* ── 6. Empresa hero móvil — film strip + contenido secuencial ─ */
-@media (max-width: 1023px) {
-  /* Spacer que empuja el contenido debajo del film strip */
-  .empresa-mobile-spacer { height: 44vh; }
+/* ── 6. Empresa hero móvil — film strip secuencial + reveal contenido ─ */
 
-  /* Anula el paddingTop inline (que es para el navbar fijo) —
-     el contenido ya está desplazado por el spacer       */
-  .empresa-hero-content { padding-top: 28px !important; }
+/* El film strip full-screen solo se muestra en móvil (< 1024px) */
+.empresa-film-mobile { display: none; }
+
+@media (max-width: 1023px) {
+  .empresa-film-mobile { display: flex; }
+
+  /* Contenido oculto hasta que la fase sea 'content' */
+  .empresa-content-reveal {
+    opacity: 0;
+    animation: empresa-content-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 3.35s forwards;
+  }
+}
+
+@keyframes empresa-content-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── 7. Hero SBS badges — una sola línea en móvil ───────────── */
