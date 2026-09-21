@@ -915,7 +915,7 @@ export default function Home() {
             className="empresa-film-mobile"
             style={{
               position: 'absolute', inset: 0, zIndex: 20,
-              gap: 6, padding: '0 6px',
+              display: 'flex', gap: 6, padding: '0 6px',
               opacity: empresaMobilePhase === 'film' ? 1 : 0,
               transition: empresaMobilePhase === 'transitioning' ? 'opacity 0.75s ease-out' : 'none',
               pointerEvents: empresaMobilePhase !== 'film' ? 'none' : 'auto',
