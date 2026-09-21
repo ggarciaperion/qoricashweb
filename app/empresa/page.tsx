@@ -958,7 +958,7 @@ export default function EmpresaPage() {
             </p>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
               <button
-                onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/crear-cuenta?tipo=empresa')}
+                onClick={() => router.push(isAuthenticated ? '/dashboard/empresa/nueva-operacion' : '/login')}
                 className="inline-flex items-center gap-2 font-bold text-sm text-white hover:-translate-y-0.5 transition-all"
                 style={{ background: '#2563EB', borderRadius: 999, padding: '16px 36px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 32px rgba(37,99,235,0.45)' }}
               >
