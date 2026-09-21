@@ -661,6 +661,8 @@ export default function EmpresaPage() {
             .ec-banks-flex { flex-direction: column !important; }
             .ec-banks-left { flex: none !important; width: 100% !important; padding: 32px 24px 24px !important; }
             .ec-banks-right { display: none !important; }
+            .ec-secondary-banks { display: none !important; }
+            .ec-banks-mobile-img { display: flex !important; }
             /* Fan carousel */
             .ec-fan-arc { height: 200px !important; }
             .fan-img { width: 160px !important; height: 108px !important; margin-left: -80px !important; }
@@ -710,7 +712,7 @@ export default function EmpresaPage() {
                 </p>
 
                 {/* Bancos secundarios pills */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+                <div className="ec-secondary-banks" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
                   {[
                     { logo: '/BBVA.png',            name: 'BBVA',      h: 28, cls: 'banks-rp1' },
                     { logo: '/Scotiabank.png',       name: 'Scotiabank',h: 40, cls: 'banks-rp2' },
@@ -726,9 +728,28 @@ export default function EmpresaPage() {
                   </div>
                 </div>
 
-                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6 }}>
+                <p className="ec-secondary-banks" style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6 }}>
                   Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros vía CCI interbancario. Acreditación: 20 min – 24 h según banco y horario. Válido para plazas Lima.
                 </p>
+
+                {/* Imagen + BCP/Interbank/BanBif — solo móvil */}
+                <div className="ec-banks-mobile-img" style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 20 }}>
+                  <img src="/kj.jpeg" alt="Qoricash bancos" style={{ width: '75%', maxWidth: 260, borderRadius: 14, display: 'block' }} />
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {[
+                      { logo: '/BCP.png',       name: 'BCP',      h: 26 },
+                      { logo: '/Interbank.png', name: 'Interbank', h: 36 },
+                      { logo: '/BanBif.png',    name: 'BanBif',    h: 26 },
+                    ].map(b => (
+                      <div key={b.name} style={{ background: '#ffffff', borderRadius: 10, padding: '6px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+                        <img src={b.logo} alt={b.name} style={{ height: b.h, maxWidth: 80, width: 'auto', objectFit: 'contain' }} />
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', lineHeight: 1.6, textAlign: 'center', marginTop: 4 }}>
+                    Operaciones con BBVA, Scotiabank, Pichincha, GNB, Santander y otros vía CCI interbancario.
+                  </p>
+                </div>
               </div>
 
               {/* RIGHT — Imagen + pills bancos principales */}
