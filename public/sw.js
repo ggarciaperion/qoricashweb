@@ -3,7 +3,7 @@
  * www.qoricash.pe — Marketing + Client Portal
  */
 
-const CACHE_VERSION = 'v2.2';
+const CACHE_VERSION = 'v2.3';
 const CACHE_STATIC  = `qcweb-static-${CACHE_VERSION}`;
 const CACHE_PAGES   = `qcweb-pages-${CACHE_VERSION}`;
 const OFFLINE_URL   = '/offline';
@@ -81,6 +81,10 @@ self.addEventListener('fetch', event => {
 });
 
 function isStaticAsset(url) {
+  // Next.js JS chunks (/_next/static/chunks/) are content-hashed; the browser's
+  // HTTP cache (immutable / long max-age) handles them correctly.  Caching them
+  // here via cacheFirst would serve stale bundles indefinitely after a deploy.
+  if (url.pathname.startsWith('/_next/static/chunks/')) return false;
   const ext = url.pathname.split('.').pop();
   return ['css','js','png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf'].includes(ext)
       || url.pathname.startsWith('/icons/')
