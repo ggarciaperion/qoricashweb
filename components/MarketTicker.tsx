@@ -110,6 +110,7 @@ export default function MarketTicker({ hidden = false }: { hidden?: boolean }) {
         transform: hidden ? 'translateY(-116px)' : 'translateY(0)',
       }}
       aria-hidden="true"
+      data-nosnippet=""
     >
       {/* Fade izquierda */}
       <div

@@ -463,7 +463,7 @@ export default function MarketSection({ variant = 'persona' }: { variant?: 'pers
 
   // ── PERSONA ──────────────────────────────────────────────────────────────────
   return (
-    <section style={{ background: '#F1F5F9', borderTop: '1px solid rgba(0,0,0,0.055)', borderBottom: '1px solid rgba(0,0,0,0.055)', position: 'relative', overflow: 'hidden' }}>
+    <section data-nosnippet="" style={{ background: '#F1F5F9', borderTop: '1px solid rgba(0,0,0,0.055)', borderBottom: '1px solid rgba(0,0,0,0.055)', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
       <div style={{ position: 'absolute', top: -80, right: -80, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(34,197,94,0.07) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
