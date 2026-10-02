@@ -28,7 +28,7 @@ const BANK_LOGOS: Record<string, string> = {
 
 const bankAccountSchema = z.object({
   bank_name: z.string().min(1, 'Selecciona un banco'),
-  account_number: z.string().min(13, 'El número de cuenta debe tener al menos 13 dígitos').max(20, 'El número de cuenta debe tener máximo 20 dígitos'),
+  account_number: z.string().min(6, 'El número de cuenta debe tener al menos 6 dígitos').max(20, 'El número de cuenta debe tener máximo 20 dígitos'),
   account_type: z.enum(['Ahorro', 'Corriente'], { errorMap: () => ({ message: 'Selecciona un tipo de cuenta' }) }),
   currency: z.enum(['S/', '$'], { errorMap: () => ({ message: 'Selecciona una moneda' }) }),
   origen: z.enum(['Lima', 'Provincia'], { errorMap: () => ({ message: 'Selecciona el origen de la cuenta' }) }),
@@ -608,7 +608,7 @@ export default function AddBankAccountModal({ isOpen, onClose, onSuccess, dni, o
                     id="account_number"
                     className="w-full pl-8 pr-3 py-2 text-sm rounded-lg transition"
                     style={errors.account_number ? { ...e_input, borderColor: 'rgba(239,68,68,0.5)' } : e_input}
-                    placeholder={requiresCCI ? '20 dígitos' : '13-20 dígitos'}
+                    placeholder={requiresCCI ? '20 dígitos' : '6-20 dígitos'}
                     maxLength={20}
                     disabled={isSubmitting}
                     onKeyPress={(e) => {

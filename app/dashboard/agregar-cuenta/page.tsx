@@ -21,7 +21,7 @@ import {
 
 const bankAccountSchema = z.object({
   bank_name: z.string().min(1, 'Selecciona un banco'),
-  account_number: z.string().min(13, 'El número de cuenta debe tener al menos 13 dígitos').max(20, 'El número de cuenta debe tener máximo 20 dígitos'),
+  account_number: z.string().min(6, 'El número de cuenta debe tener al menos 6 dígitos').max(20, 'El número de cuenta debe tener máximo 20 dígitos'),
   account_type: z.enum(['Ahorro', 'Corriente'], { errorMap: () => ({ message: 'Selecciona un tipo de cuenta' }) }),
   currency: z.enum(['S/', '$'], { errorMap: () => ({ message: 'Selecciona una moneda' }) }),
   origen: z.enum(['Lima', 'Provincia'], { errorMap: () => ({ message: 'Selecciona el origen de la cuenta' }) }),
@@ -290,7 +290,7 @@ export default function AgregarCuentaPage() {
                   className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.account_number ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
-                  placeholder={requiresCCI ? '20 dígitos' : '13-20 dígitos'}
+                  placeholder={requiresCCI ? '20 dígitos' : '6-20 dígitos'}
                   maxLength={20}
                   disabled={isSubmitting}
                 />

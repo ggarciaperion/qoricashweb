@@ -107,11 +107,11 @@ export const banksApi = {
         };
       }
     } else {
-      // Regular account number (13-20 digits)
-      if (!/^\d{13,20}$/.test(numeroCuenta)) {
+      // Regular account number (6-20 digits)
+      if (!/^\d{6,20}$/.test(numeroCuenta)) {
         return {
           isValid: false,
-          error: 'El número de cuenta debe tener entre 13 y 20 dígitos',
+          error: 'El número de cuenta debe tener entre 6 y 20 dígitos',
         };
       }
     }
